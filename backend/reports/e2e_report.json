@@ -1,0 +1,354 @@
+{
+  "session_id": "verification-demo",
+  "run_id": "run-9b5fdd92",
+  "test_mode": "REPLAY",
+  "timestamp_utc": "2026-11-04T18:21:35.391344+00:00",
+  "status": "PASSED",
+  "stages": [
+    {
+      "stage_name": "1.PREFLIGHT",
+      "input_count": 0,
+      "output_count": 1,
+      "drop_count": 0,
+      "latency_ms": 94.92479899927275,
+      "status": "PASSED",
+      "details": {
+        "kafka_broker": "127.0.0.1:9092",
+        "flink_job_id": "d7eddf4d6095e092c81a5cb42d9ebc9c",
+        "flink_job_state": "RUNNING"
+      }
+    },
+    {
+      "stage_name": "2.RAW_INGEST_KAFKA",
+      "input_count": 1,
+      "output_count": 1,
+      "drop_count": 0,
+      "latency_ms": 4.988316000890336,
+      "status": "PASSED",
+      "details": {
+        "event_id": "evt-vsc-2b69c7ea",
+        "topic": "pulse.raw.race_control.v1"
+      }
+    },
+    {
+      "stage_name": "3.FLINK_STREAM_PROCESSING",
+      "input_count": 1,
+      "output_count": 1,
+      "drop_count": 0,
+      "latency_ms": 61.46717200135754,
+      "status": "PASSED",
+      "details": {
+        "event_id": "evt-vsc-2b69c7ea",
+        "topic": "pulse.norm.race_events.v1",
+        "flink_read_records": 72,
+        "flink_write_records": 72,
+        "flink_checkpoints": 123
+      }
+    },
+    {
+      "stage_name": "4.AGENT_1_EVENT_CONTROL",
+      "input_count": 1,
+      "output_count": 3,
+      "drop_count": 0,
+      "latency_ms": 21.03524300036952,
+      "status": "PASSED",
+      "details": {
+        "agent_id": "agent-01-event-control",
+        "model_version": "1.0.0",
+        "last_outcome": "FINDING_EMITTED",
+        "outcomes_count": {
+          "FINDING_EMITTED": 1,
+          "NO_FINDING": 0,
+          "FILTERED": 0,
+          "FAILED": 0
+        },
+        "findings_emitted": 3,
+        "finding_ids": [
+          "finding-lc-evt-vsc-2b69c7ea",
+          "finding-exp-evt-vsc-2b69c7ea-16",
+          "finding-exp-evt-vsc-2b69c7ea-44"
+        ]
+      }
+    },
+    {
+      "stage_name": "5.STATE_STORE_AND_API",
+      "input_count": 3,
+      "output_count": 3,
+      "drop_count": 0,
+      "latency_ms": 14.759679999770015,
+      "status": "PASSED",
+      "details": {
+        "statestore_persisted_count": 3,
+        "api_endpoint_verified": false
+      }
+    }
+  ],
+  "reconciliation_summary": {
+    "total_latency_ms": 198.67,
+    "stages_count": 5,
+    "stages_passed": 5,
+    "drop_count_total": 0,
+    "transport_verified": "KAFKA (Real broker @ localhost:9092, zero silent fallbacks)",
+    "flink_stream_verified": "RUNNING (pulse-race-control-normalizer-v1)",
+    "agent_verified": "agent-01-event-control (Race Event & Control Intelligence)",
+    "error": null
+  },
+  "trace_events": [
+    {
+      "timestamp": "2026-11-04T18:21:35.486351+00:00",
+      "stage": "PREFLIGHT",
+      "event": "CLUSTER_READY",
+      "payload": {
+        "kafka_broker": "127.0.0.1:9092",
+        "flink_job_id": "d7eddf4d6095e092c81a5cb42d9ebc9c",
+        "flink_job_state": "RUNNING"
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.491599+00:00",
+      "stage": "RAW_INGEST",
+      "event": "EVENT_PUBLISHED",
+      "payload": {
+        "event_id": "evt-vsc-2b69c7ea",
+        "event_type": "VSC_DEPLOYED",
+        "schema_version": 1,
+        "source": {
+          "provider": "PULSE_VERIFICATION_HARNESS",
+          "adapter": "e2e_runner_v1",
+          "source_record_id": "src-evt-vsc-2b69c7ea",
+          "capture_id": "capture-verification-demo",
+          "licence_reference": "PULSE-TEST-LICENCE-2026"
+        },
+        "run": {
+          "run_id": "run-9b5fdd92",
+          "session_instance_id": "verification-demo",
+          "mode": "REPLAY"
+        },
+        "session": {
+          "season": 2026,
+          "meeting_id": "monaco-2026",
+          "session_id": "verification-demo",
+          "session_type": "RACE"
+        },
+        "time": {
+          "event_time_utc": "2026-11-04T18:21:35.486481Z",
+          "session_elapsed_ms": 12000,
+          "ingest_time_utc": "2026-11-04T18:21:35.486481Z",
+          "replay_clock_ms": null,
+          "time_domain": "EVENT_TIME"
+        },
+        "subject": {
+          "driver_number": 16,
+          "segment_id": "sector-2"
+        },
+        "payload": {
+          "reason": "Debris on main straight approaching Turn 1",
+          "affected_drivers": [
+            16,
+            44
+          ]
+        },
+        "quality": {
+          "interpretation": "OBSERVED",
+          "completeness": "COMPLETE",
+          "missing_fields": [],
+          "unit_validation": "PASSED"
+        }
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.553373+00:00",
+      "stage": "FLINK_PROCESSING",
+      "event": "CANONICAL_EVENT_CONFIRMED",
+      "payload": {
+        "event_id": "evt-vsc-2b69c7ea",
+        "event_type": "VSC_DEPLOYED",
+        "schema_version": 1,
+        "source": {
+          "provider": "PULSE_VERIFICATION_HARNESS",
+          "adapter": "e2e_runner_v1",
+          "source_record_id": "src-evt-vsc-2b69c7ea",
+          "capture_id": "capture-verification-demo",
+          "licence_reference": "PULSE-TEST-LICENCE-2026"
+        },
+        "run": {
+          "run_id": "run-9b5fdd92",
+          "session_instance_id": "verification-demo",
+          "mode": "REPLAY"
+        },
+        "session": {
+          "season": 2026,
+          "meeting_id": "monaco-2026",
+          "session_id": "verification-demo",
+          "session_type": "RACE"
+        },
+        "time": {
+          "event_time_utc": "2026-11-04T18:21:35.486481Z",
+          "session_elapsed_ms": 12000,
+          "ingest_time_utc": "2026-11-04T18:21:35.486481Z",
+          "replay_clock_ms": null,
+          "time_domain": "EVENT_TIME"
+        },
+        "subject": {
+          "driver_number": 16,
+          "segment_id": "sector-2"
+        },
+        "payload": {
+          "reason": "Debris on main straight approaching Turn 1",
+          "affected_drivers": [
+            16,
+            44
+          ]
+        },
+        "quality": {
+          "interpretation": "OBSERVED",
+          "completeness": "COMPLETE",
+          "missing_fields": [],
+          "unit_validation": "PASSED"
+        }
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.574562+00:00",
+      "stage": "AGENT_EXECUTION",
+      "event": "FINDING_EMITTED",
+      "payload": {
+        "finding_id": "finding-lc-evt-vsc-2b69c7ea",
+        "finding_version": 1,
+        "agent_id": "agent-01-event-control",
+        "finding_type": "RACE_EVENT_LIFECYCLE",
+        "session_id": "verification-demo",
+        "run_id": "run-9b5fdd92",
+        "subject": {
+          "driver_number": null,
+          "segment_id": "sector-2"
+        },
+        "trigger_event_id": "evt-vsc-2b69c7ea",
+        "as_of_event_time": "2026-11-04T18:21:35.486481Z",
+        "interpretation": "OBSERVED",
+        "result": {
+          "event_type": "VSC",
+          "lifecycle": "ACTIVE",
+          "scope": "TRACK_WIDE",
+          "incident_location": "Debris on main straight approaching Turn 1",
+          "source_provenance": {
+            "provider": "PULSE_VERIFICATION_HARNESS",
+            "adapter": "e2e_runner_v1",
+            "source_record_id": "src-evt-vsc-2b69c7ea",
+            "capture_id": "capture-verification-demo",
+            "data_mode": "REPLAY"
+          }
+        },
+        "uncertainty": {},
+        "evidence_refs": [
+          "evt-vsc-2b69c7ea"
+        ],
+        "model_version": "1.0.0",
+        "assessment_status": "CONFIRMED",
+        "supersedes_finding_id": null,
+        "reason_codes": [
+          "RCM_VSC_DEPLOYED"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.574654+00:00",
+      "stage": "AGENT_EXECUTION",
+      "event": "FINDING_EMITTED",
+      "payload": {
+        "finding_id": "finding-exp-evt-vsc-2b69c7ea-16",
+        "finding_version": 1,
+        "agent_id": "agent-01-event-control",
+        "finding_type": "DRIVER_EVENT_EXPOSURE",
+        "session_id": "verification-demo",
+        "run_id": "run-9b5fdd92",
+        "subject": {
+          "driver_number": 16,
+          "segment_id": null
+        },
+        "trigger_event_id": "evt-vsc-2b69c7ea",
+        "as_of_event_time": "2026-11-04T18:21:35.486481Z",
+        "interpretation": "DERIVED",
+        "result": {
+          "driver_number": 16,
+          "exposure_level": "CRITICAL_OPPORTUNITY",
+          "pit_window_status": "OPEN",
+          "event_type": "VSC",
+          "source_provenance": {
+            "provider": "PULSE_VERIFICATION_HARNESS",
+            "adapter": "e2e_runner_v1",
+            "source_record_id": "src-evt-vsc-2b69c7ea",
+            "capture_id": "capture-verification-demo",
+            "data_mode": "REPLAY"
+          }
+        },
+        "uncertainty": {},
+        "evidence_refs": [
+          "evt-vsc-2b69c7ea"
+        ],
+        "model_version": "1.0.0",
+        "assessment_status": "PROVISIONAL",
+        "supersedes_finding_id": null,
+        "reason_codes": [
+          "VSC_EXPOSURE_CALCULATED"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.574721+00:00",
+      "stage": "AGENT_EXECUTION",
+      "event": "FINDING_EMITTED",
+      "payload": {
+        "finding_id": "finding-exp-evt-vsc-2b69c7ea-44",
+        "finding_version": 1,
+        "agent_id": "agent-01-event-control",
+        "finding_type": "DRIVER_EVENT_EXPOSURE",
+        "session_id": "verification-demo",
+        "run_id": "run-9b5fdd92",
+        "subject": {
+          "driver_number": 44,
+          "segment_id": null
+        },
+        "trigger_event_id": "evt-vsc-2b69c7ea",
+        "as_of_event_time": "2026-11-04T18:21:35.486481Z",
+        "interpretation": "DERIVED",
+        "result": {
+          "driver_number": 44,
+          "exposure_level": "HIGH_TRAFFIC_RISK",
+          "pit_window_status": "EXPOSED",
+          "event_type": "VSC",
+          "source_provenance": {
+            "provider": "PULSE_VERIFICATION_HARNESS",
+            "adapter": "e2e_runner_v1",
+            "source_record_id": "src-evt-vsc-2b69c7ea",
+            "capture_id": "capture-verification-demo",
+            "data_mode": "REPLAY"
+          }
+        },
+        "uncertainty": {},
+        "evidence_refs": [
+          "evt-vsc-2b69c7ea"
+        ],
+        "model_version": "1.0.0",
+        "assessment_status": "PROVISIONAL",
+        "supersedes_finding_id": null,
+        "reason_codes": [
+          "VSC_EXPOSURE_CALCULATED"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-04T18:21:35.589584+00:00",
+      "stage": "PERSISTENCE",
+      "event": "VERIFIED",
+      "payload": {
+        "statestore_persisted_count": 3,
+        "api_endpoint_verified": false
+      }
+    }
+  ],
+  "artifacts": {
+    "pipeline_trace.json": "reports/pipeline_trace.json",
+    "stage_reconciliation.csv": "reports/stage_reconciliation.csv"
+  }
+}

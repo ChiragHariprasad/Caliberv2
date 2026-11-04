@@ -1,0 +1,44 @@
+Requirement ID,Requirement,Architectural Component,Implementation Workstream,Dependency,Verification Method,Acceptance Criterion,Priority,Current Status
+REQ-SRC-01,No scraping or token extraction of F1 TV,Data Ingestion / Adapters,WS0-Governance,None,Codebase Regex Audit,Zero scraping / F1 TV token code exists,CRITICAL,PASSED
+REQ-SRC-02,OpenF1 excluded as primary or required dependency,Data Ingestion / Adapters,WS0-Governance,None,Dependency & Code Audit,OpenF1 not in pyproject.toml or primary ingestion,CRITICAL,PASSED
+REQ-SRC-03,Provider-independent source adapter registry and manifest,Data Ingestion / Adapters,WS1-Ingestion,BaseSourceAdapter,Unit & Contract Test,Manifest carries provider licence and SHA-256 hash,HIGH,IN_PROGRESS
+REQ-SRC-04,Every event carries full provenance and data mode,Contracts & Schemas,WS0-Contracts,EventEnvelope,Contract Validation Test,Event rejects missing provider/mode/timestamps,CRITICAL,PASSED
+REQ-SRC-05,Data modes (SIMULATED REPLAY LIVE) never silently mixed,Contracts & Projections,WS0-Contracts,RunContext,Run Isolation Test,Run rejects mixed provenance events,CRITICAL,IN_PROGRESS
+REQ-CIR-01,Actual circuit geometry assets for Monaco Silverstone Suzuka,Circuit Engine,WS1-Geometry,GeoJSON Assets,GeoJSON Schema Validation,Real centerline corners sectors and DRS zones defined,CRITICAL,IN_PROGRESS
+REQ-CIR-02,Dynamic circuit loading based on selected session,API & Frontend,WS1-Geometry,Circuit Registry,Integration API Test,Session loads matching circuit geometry automatically,HIGH,IN_PROGRESS
+REQ-CIR-03,Remove hand-drawn generic SVG oval,Frontend TrackMap,WS3-UI,Circuit Renderer,Visual & DOM Test,No static oval paths remain in frontend,CRITICAL,IN_PROGRESS
+REQ-DRV-01,Display all registered session drivers dynamically (full grid),State & Frontend,WS2-State,Jolpica / Session Entry,Snapshot API Test,Grid renders all session drivers (20+ cars),CRITICAL,IN_PROGRESS
+REQ-DRV-02,Driver markers display number team color position status,Frontend TrackMap,WS3-UI,DriverState,Component Unit Test,Markers show dynamic team colors and statuses,HIGH,IN_PROGRESS
+REQ-DRV-03,Interactive telemetry popover on marker hover and click,Frontend TrackMap,WS3-UI,Telemetry Popover,E2E Cypress / Playwright,Popover opens on click displaying real-time metrics,HIGH,IN_PROGRESS
+REQ-DRV-04,Telemetry channels show Speed Throttle Brake Gear RPM DRS Tyres,API & Frontend,WS2-API,Telemetry Contract,API Contract Test,Telemetry returns available channels with units and age,HIGH,IN_PROGRESS
+REQ-DRV-05,Missing telemetry labeled UNKNOWN or NOT AVAILABLE without fabrication,API & Frontend,WS2-API,Telemetry Contract,Contract Test,Missing sensors never imputed or fabricated,HIGH,IN_PROGRESS
+REQ-RC-01,Dedicated Race Control & Stewarding operational interface,Frontend & API,WS6-RaceControl,RaceControlRouter,Component Test,Dedicated view for official timeline and decisions,CRITICAL,IN_PROGRESS
+REQ-RC-02,Strict separation of official FIA notices from PULSE assessments,Frontend & API,WS6-RaceControl,Domain Model,Visual & Contract Test,Official notices visually and logically segregated,CRITICAL,IN_PROGRESS
+REQ-RC-03,Explicit official lifecycle statuses (NOTED UNDER_INVESTIGATION etc),Domain Contracts,WS6-RaceControl,Event FSM,State Machine Test,Only source-supported official statuses used,HIGH,IN_PROGRESS
+REQ-RC-04,PULSE assessments provide context evidence and penalty impact,Agents & Fusion,WS5-Agents,Agent 5 Fusion,Fusion Unit Test,PULSE outputs analytical impact without issuing penalties,HIGH,IN_PROGRESS
+REQ-AGT-01,Five distinct specialist analytics agents with live status cards,Specialist Agents,WS5-Agents,BaseAgent,Agent Metrics Test,5 independent operational status panels rendered,CRITICAL,IN_PROGRESS
+REQ-AGT-02,Agent telemetry: lag latency p50/p95 processed and filtered counts,Agent Telemetry,WS5-Agents,Kafka Consumer Telemetry,Metrics API Test,Real runtime telemetry reported per agent,HIGH,IN_PROGRESS
+REQ-AGT-03,Explicit terminal execution outcomes (FINDING_EMITTED NO_FINDING etc),Specialist Agents,WS5-Agents,Agent Interface,Outcome Accounting Test,Every eligible event accounts for explicit outcome,CRITICAL,IN_PROGRESS
+REQ-AGT-04,Execution trace explorer for each agent finding,API & Frontend,WS5-Agents,Trace Store,Trace API Test,Clicking finding reveals input events and features,HIGH,IN_PROGRESS
+REQ-AGT-05,End-to-end lineage tracing from source record to dashboard insight,API & Frontend,WS5-Agents,Lineage Graph,Lineage Traversal Test,Insight navigates back to raw source event IDs,HIGH,IN_PROGRESS
+REQ-KAF-01,Kafka topic catalogue with explicit partitioning and keys,Stream Backbone,WS1-Kafka,aiokafka Broker,Kafka Admin Test,Topics partitioned by session or driver key,HIGH,PASSED
+REQ-KAF-02,Producer idempotence and explicit consumer offset commits,Stream Backbone,WS1-Kafka,Kafka Broker,Idempotence Test,Zero message loss under simulated crash,HIGH,IN_PROGRESS
+REQ-KAF-03,Dead-letter queue (DLQ) for malformed and unparseable events,Stream Backbone,WS1-Kafka,Normalizer,DLQ Consumer Test,Corrupt records routed to DLQ without stalling stream,HIGH,IN_PROGRESS
+REQ-KAF-04,In-memory bus explicitly flagged in health API and UI,Stream & API,WS1-Kafka,Health Router,Health API Test,UI reflects IN_MEMORY_DISPATCH when Kafka offline,MEDIUM,PASSED
+REQ-FLK-01,Apache Flink Job 1: Normalization deduplication and watermarks,Flink Stream Engine,WS2-Flink,PyFlink / Streaming API,Flink Job Test,Job running on JobManager with watermark progression,CRITICAL,IN_PROGRESS
+REQ-FLK-02,Apache Flink Job 2: Stateful race state reconstruction,Flink Stream Engine,WS2-Flink,KeyedState,Flink Checkpoint Test,Keyed driver and segment state preserved,CRITICAL,IN_PROGRESS
+REQ-FLK-03,Apache Flink Job 3: Streaming feature engineering,Flink Stream Engine,WS2-Flink,Sliding Windows,Feature Schema Test,Rolling pace deviations and pit loss computed,HIGH,IN_PROGRESS
+REQ-FLK-04,Verified Flink job execution via REST API (not just endpoint 200),Testing Harness,WS4-E2E,Flink REST Client,Flink REST Verification,Verifies job state is RUNNING with records processed,CRITICAL,IN_PROGRESS
+REQ-DSH-01,Remove conflicting SIMULATED and LIVE STREAM badges,Frontend Header,WS3-UI,BroadcastBanner,Visual & State Test,Banner separates Data Mode from Pipeline Connection,HIGH,IN_PROGRESS
+REQ-DSH-02,Remove invented team radio and Groq Synthesized badges,Frontend & Fusion,WS3-UI,Fusion Engine,DOM & Output Audit,Zero fabricated radio quotes or unbacked badges,CRITICAL,IN_PROGRESS
+REQ-DSH-03,Remove synthetic momentum bezier curves,Frontend Chart,WS3-UI,MomentumChart,Component Test,Momentum computed from real lap pace deltas,MEDIUM,IN_PROGRESS
+REQ-DSH-04,Remove hardcoded confidence scores (68% 85% 74%),Fusion & Frontend,WS5-Agents,Uncertainty Contract,Contract Test,Confidence labeled uncalibrated or derived from variance,MEDIUM,IN_PROGRESS
+REQ-E2E-01,Orchestrated verification runner python -m pulse.testing.run_e2e,Testing Harness,WS4-E2E,CLI Runner,E2E CLI Execution,Executes 10-stage verification from single command,CRITICAL,IN_PROGRESS
+REQ-E2E-02,10-stage pipeline execution and stage reconciliation,Testing Harness,WS4-E2E,Reconciliation Engine,Stage Accounting Test,Event IDs reconciled across all 10 stages,CRITICAL,IN_PROGRESS
+REQ-E2E-03,16 deterministic golden fixtures covering edge cases and faults,Testing Harness,WS4-E2E,Fixture Engine,Fixture Suite Test,All 16 fixtures match expected golden outputs,CRITICAL,IN_PROGRESS
+REQ-E2E-04,Automated machine-readable JSON and Markdown verification reports,Testing Harness,WS4-E2E,Report Generator,Report File Verification,Generates e2e_report.json and e2e_report.md,HIGH,IN_PROGRESS
+REQ-LAB-01,Dedicated Pipeline Lab dashboard with visual execution graph,Frontend & API,WS7-PipelineLab,LabRouter,Component Test,Node-by-node pipeline graph rendered with live health,HIGH,IN_PROGRESS
+REQ-LAB-02,Interactive replay controls (speed pause restart step),Frontend & API,WS7-PipelineLab,Runner API,Replay Control Test,Replay speed adjusted and pause/resume verified,MEDIUM,PASSED
+REQ-LAB-03,Fault injection triggers (duplicate drop lag crash),Frontend & API,WS7-PipelineLab,Fault Engine,Fault Injection Test,Fault profile successfully injected and recovered,HIGH,IN_PROGRESS
+REQ-TST-01,Fix existing broken unit test in test_agents.py,Backend Tests,WS0-Fixes,EventControlAgent,Pytest Execution,All 21+ backend unit tests pass with zero failures,CRITICAL,IN_PROGRESS
+

@@ -1,0 +1,176 @@
+[
+  {
+    "timestamp": "2026-11-04T18:46:44.251171+00:00",
+    "stage": "PREFLIGHT",
+    "event": "CLUSTER_ONLINE",
+    "payload": {
+      "kafka_broker": "127.0.0.1:9092",
+      "flink_job_id": "4ac2d03605f6993dfba914eadc3faec8",
+      "flink_job_name": "pulse-canonical-normalizer-v2",
+      "flink_job_state": "RUNNING",
+      "checkpoints_completed": 181
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.256029+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_SESSION_STARTED",
+    "payload": {
+      "event_id": "evt-e2e-01-d675eb",
+      "topic": "pulse.raw.race_control.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.257677+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_VSC_DEPLOYED",
+    "payload": {
+      "event_id": "evt-e2e-02-83484e",
+      "topic": "pulse.raw.race_control.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.260228+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_PIT_ENTRY",
+    "payload": {
+      "event_id": "evt-e2e-03-bb703e",
+      "topic": "pulse.raw.pit.events.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.262605+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_TYRE_FITTED",
+    "payload": {
+      "event_id": "evt-e2e-04-d4b71f",
+      "topic": "pulse.raw.tyres.stints.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.265085+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_WEATHER_OBSERVATION",
+    "payload": {
+      "event_id": "evt-e2e-05-916192",
+      "topic": "pulse.raw.weather.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.267478+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_TRACK_STATUS_UPDATE",
+    "payload": {
+      "event_id": "evt-e2e-06-cac62e",
+      "topic": "pulse.raw.track_status.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.269746+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_LAP_COMPLETED",
+    "payload": {
+      "event_id": "evt-e2e-07-da6f1e",
+      "topic": "pulse.raw.timing.laps.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.270963+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_VSC_ENDING",
+    "payload": {
+      "event_id": "evt-e2e-08-d3500e",
+      "topic": "pulse.raw.race_control.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.272336+00:00",
+    "stage": "RAW_INGEST",
+    "event": "PUBLISHED_VSC_ENDED",
+    "payload": {
+      "event_id": "evt-e2e-09-b5afd7",
+      "topic": "pulse.raw.race_control.v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.759488+00:00",
+    "stage": "FLINK_NORMALIZATION",
+    "event": "ALL_CANONICAL_CONFIRMED",
+    "payload": {
+      "count": 9
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.807000+00:00",
+    "stage": "AGENT_1",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 5,
+      "types": [
+        "RACE_EVENT_LIFECYCLE",
+        "RACE_EVENT_LIFECYCLE",
+        "DRIVER_EVENT_EXPOSURE",
+        "DRIVER_EVENT_EXPOSURE",
+        "RACE_EVENT_LIFECYCLE"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.835090+00:00",
+    "stage": "AGENT_2",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 2
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.856502+00:00",
+    "stage": "AGENT_3",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 1
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.880562+00:00",
+    "stage": "AGENT_4",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 1
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.905673+00:00",
+    "stage": "AGENT_5",
+    "event": "REVISION_CHAIN_CONFIRMED",
+    "payload": {
+      "assessments_produced": 4,
+      "drivers_evaluated": [
+        16,
+        44
+      ],
+      "revision_history_depth": 4
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:44.907519+00:00",
+    "stage": "FAULT_HANDLING",
+    "event": "QUALITY_SCENARIOS_VERIFIED",
+    "payload": {
+      "missing_telemetry_handled": true,
+      "insufficient_data_outcomes_agent_3": 1,
+      "late_finding_revision_applied": true
+    }
+  },
+  {
+    "timestamp": "2026-11-04T18:46:46.650024+00:00",
+    "stage": "PERSISTENCE",
+    "event": "LINEAGE_VERIFIED",
+    "payload": {
+      "statestore_findings_count": 10,
+      "statestore_assessments_count": 5,
+      "agents_registered_count": 5,
+      "api_endpoint_verified": false
+    }
+  }
+]
