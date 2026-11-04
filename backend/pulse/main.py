@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from typing import Any
@@ -195,9 +196,10 @@ async def lifespan(app: FastAPI):
 
         kafka_consumer_task = asyncio.create_task(kafka_consumer_loop())
 
-    # 8. Auto-start ScenarioRunner in background
-    await runner.start()
-    logger.info("Deterministic scenario runner dispatched in background.")
+    # 8. Initialize backend ReplayController
+    from pulse.replay.controller import get_replay_controller
+    replay_controller = get_replay_controller()
+    logger.info("Backend ReplayController initialized in READY state (session: %s).", replay_controller.session_id)
 
     yield
 
@@ -209,6 +211,8 @@ async def lifespan(app: FastAPI):
             await kafka_consumer_task
         except asyncio.CancelledError:
             pass
+    if replay_controller.status == "RUNNING":
+        replay_controller.pause()
     if runner.status == RunStatus.RUNNING:
         runner.pause()
     await broker.stop()

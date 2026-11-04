@@ -1,0 +1,194 @@
+[
+  {
+    "driver_number": 27,
+    "driver_id": "hulkenberg",
+    "stop_number": 1,
+    "lap": 7,
+    "time_utc": "2023-07-09T15:14:17Z",
+    "duration_seconds": 41.972
+  },
+  {
+    "driver_number": 22,
+    "driver_id": "tsunoda",
+    "stop_number": 1,
+    "lap": 14,
+    "time_utc": "2023-07-09T15:25:15Z",
+    "duration_seconds": 28.353
+  },
+  {
+    "driver_number": 16,
+    "driver_id": "leclerc",
+    "stop_number": 1,
+    "lap": 18,
+    "time_utc": "2023-07-09T15:31:08Z",
+    "duration_seconds": 28.244
+  },
+  {
+    "driver_number": 24,
+    "driver_id": "zhou",
+    "stop_number": 1,
+    "lap": 24,
+    "time_utc": "2023-07-09T15:40:56Z",
+    "duration_seconds": 29.177
+  },
+  {
+    "driver_number": 55,
+    "driver_id": "sainz",
+    "stop_number": 1,
+    "lap": 26,
+    "time_utc": "2023-07-09T15:43:36Z",
+    "duration_seconds": 28.869
+  },
+  {
+    "driver_number": 21,
+    "driver_id": "de_vries",
+    "stop_number": 1,
+    "lap": 27,
+    "time_utc": "2023-07-09T15:45:34Z",
+    "duration_seconds": 28.242
+  },
+  {
+    "driver_number": 63,
+    "driver_id": "russell",
+    "stop_number": 1,
+    "lap": 28,
+    "time_utc": "2023-07-09T15:46:37Z",
+    "duration_seconds": 29.455
+  },
+  {
+    "driver_number": 11,
+    "driver_id": "perez",
+    "stop_number": 1,
+    "lap": 28,
+    "time_utc": "2023-07-09T15:46:50Z",
+    "duration_seconds": 28.06
+  },
+  {
+    "driver_number": 81,
+    "driver_id": "piastri",
+    "stop_number": 1,
+    "lap": 29,
+    "time_utc": "2023-07-09T15:48:05Z",
+    "duration_seconds": 28.655
+  },
+  {
+    "driver_number": 2,
+    "driver_id": "sargeant",
+    "stop_number": 1,
+    "lap": 29,
+    "time_utc": "2023-07-09T15:48:37Z",
+    "duration_seconds": 28.847
+  },
+  {
+    "driver_number": 10,
+    "driver_id": "gasly",
+    "stop_number": 1,
+    "lap": 31,
+    "time_utc": "2023-07-09T15:51:30Z",
+    "duration_seconds": 28.458
+  },
+  {
+    "driver_number": 18,
+    "driver_id": "stroll",
+    "stop_number": 1,
+    "lap": 31,
+    "time_utc": "2023-07-09T15:51:39Z",
+    "duration_seconds": 28.561
+  },
+  {
+    "driver_number": 23,
+    "driver_id": "albon",
+    "stop_number": 1,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:53:10Z",
+    "duration_seconds": 29.634
+  },
+  {
+    "driver_number": 16,
+    "driver_id": "leclerc",
+    "stop_number": 2,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:53:11Z",
+    "duration_seconds": 28.805
+  },
+  {
+    "driver_number": 77,
+    "driver_id": "bottas",
+    "stop_number": 1,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:53:38Z",
+    "duration_seconds": 29.662
+  },
+  {
+    "driver_number": 22,
+    "driver_id": "tsunoda",
+    "stop_number": 2,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:53:48Z",
+    "duration_seconds": 28.603
+  },
+  {
+    "driver_number": 21,
+    "driver_id": "de_vries",
+    "stop_number": 2,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:53:55Z",
+    "duration_seconds": 28.413
+  },
+  {
+    "driver_number": 27,
+    "driver_id": "hulkenberg",
+    "stop_number": 2,
+    "lap": 32,
+    "time_utc": "2023-07-09T15:54:11Z",
+    "duration_seconds": 30.003
+  },
+  {
+    "driver_number": 1,
+    "driver_id": "max_verstappen",
+    "stop_number": 1,
+    "lap": 33,
+    "time_utc": "2023-07-09T15:54:29Z",
+    "duration_seconds": 29.056
+  },
+  {
+    "driver_number": 4,
+    "driver_id": "norris",
+    "stop_number": 1,
+    "lap": 33,
+    "time_utc": "2023-07-09T15:54:43Z",
+    "duration_seconds": 28.438
+  },
+  {
+    "driver_number": 44,
+    "driver_id": "hamilton",
+    "stop_number": 1,
+    "lap": 33,
+    "time_utc": "2023-07-09T15:54:58Z",
+    "duration_seconds": 29.169
+  },
+  {
+    "driver_number": 14,
+    "driver_id": "alonso",
+    "stop_number": 1,
+    "lap": 33,
+    "time_utc": "2023-07-09T15:55:09Z",
+    "duration_seconds": 28.679
+  },
+  {
+    "driver_number": 24,
+    "driver_id": "zhou",
+    "stop_number": 2,
+    "lap": 33,
+    "time_utc": "2023-07-09T15:56:08Z",
+    "duration_seconds": 28.709
+  },
+  {
+    "driver_number": 24,
+    "driver_id": "zhou",
+    "stop_number": 3,
+    "lap": 36,
+    "time_utc": "2023-07-09T16:02:39Z",
+    "duration_seconds": 34.374
+  }
+]

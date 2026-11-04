@@ -1,0 +1,18 @@
+{
+  "status": "UNAVAILABLE",
+  "reason": "Formula 1 TV / FOM programmatic extraction restriction per F1 TV Terms of Service",
+  "available_channels": [
+    "TIMING_TRANSPONDER_GAPS",
+    "LAP_SECTOR_TIMING",
+    "PIT_STOP_TIMING",
+    "TYRE_COMPOUND_STINTS"
+  ],
+  "restricted_channels": [
+    "CAN_BUS_ECU_HIGH_FREQ_SPEED",
+    "THROTTLE_PERCENT",
+    "BRAKE_HYDRAULIC_PRESSURE",
+    "STEERING_ANGLE",
+    "ENGINE_RPM"
+  ],
+  "treatment_in_pulse": "Missing channels are marked strictly as UNAVAILABLE. PULSE never generates artificial telemetry curves or fake CAN-bus signals during genuine race replay."
+}

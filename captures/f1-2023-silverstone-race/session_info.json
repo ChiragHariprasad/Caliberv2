@@ -1,0 +1,15 @@
+{
+  "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
+  "meeting_id": "silverstone-2023",
+  "session_id": "f1-2023-r10-race",
+  "session_name": "Formula 1 Aramco British Grand Prix 2023",
+  "season": 2023,
+  "round": 10,
+  "circuit_id": "silverstone",
+  "circuit_name": "Silverstone Circuit",
+  "circuit_length_meters": 5891.0,
+  "total_laps": 52,
+  "race_date": "2023-07-09",
+  "race_start_utc": "2023-07-09T14:03:00Z",
+  "source_license": "Jolpica-F1 (CC-BY-NC 4.0) & Official FIA Document Repository"
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "timestamp": "2026-11-04T20:46:52.852023+00:00",
+    "stage": "MANIFEST_VALIDATION",
+    "event": "CAPTURE_VERIFIED",
+    "payload": {
+      "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
+      "meeting_id": "silverstone-2023",
+      "verified_files_count": 8,
+      "drivers_registered": 20,
+      "manifest_sha256_status": "ALL_HASHES_MATCH",
+      "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:53.960593+00:00",
+    "stage": "PREFLIGHT",
+    "event": "CLUSTER_ONLINE",
+    "payload": {
+      "kafka_broker": "127.0.0.1:9092",
+      "flink_job_id": "4ac2d03605f6993dfba914eadc3faec8",
+      "flink_job_name": "pulse-canonical-normalizer-v2",
+      "flink_job_state": "RUNNING",
+      "checkpoints_completed": 1623
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:54.094528+00:00",
+    "stage": "HISTORICAL_INGEST",
+    "event": "ALL_ENVELOPES_PUBLISHED",
+    "payload": {
+      "events_published_count": 943,
+      "topics_used": [
+        "pulse.raw.pit.events.v1",
+        "pulse.raw.weather.v1",
+        "pulse.raw.race_control.v1",
+        "pulse.raw.timing.laps.v1"
+      ],
+      "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:54.527539+00:00",
+    "stage": "FLINK_NORMALIZATION",
+    "event": "ALL_CANONICAL_CONFIRMED",
+    "payload": {
+      "canonical_events_normalized": 943,
+      "flink_read_records": 7949,
+      "flink_write_records": 7949,
+      "flink_checkpoints": 1623,
+      "stream_parallelism": 14
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:54.553111+00:00",
+    "stage": "AGENT_1",
+    "event": "HISTORICAL_FINDINGS_CONFIRMED",
+    "payload": {
+      "count": 20,
+      "types": [
+        "DRIVER_EVENT_EXPOSURE",
+        "STEWARD_ACTION",
+        "INCIDENT_TRACK_HAZARD",
+        "DRIVER_RETIREMENT",
+        "RACE_EVENT_LIFECYCLE"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:54.559156+00:00",
+    "stage": "AGENT_2",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 4
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:55.537686+00:00",
+    "stage": "AGENT_3",
+    "event": "LAP_INTELLIGENCE_PROCESSED",
+    "payload": {
+      "laps_processed": 903,
+      "findings_count": 903
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:55.543785+00:00",
+    "stage": "AGENT_4",
+    "event": "STRATEGY_FINDINGS_VERIFIED",
+    "payload": {
+      "count": 2
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:56.680641+00:00",
+    "stage": "AGENT_5",
+    "event": "REVISION_CHAIN_CONFIRMED",
+    "payload": {
+      "assessments_produced": 912,
+      "drivers_evaluated": [
+        1,
+        4,
+        44,
+        81,
+        63,
+        14,
+        23,
+        16,
+        55,
+        10,
+        18,
+        31,
+        22,
+        27,
+        2,
+        11,
+        21,
+        77,
+        24,
+        20
+      ],
+      "revision_history_depth": 912
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:56.683485+00:00",
+    "stage": "FAULT_HANDLING",
+    "event": "QUALITY_SCENARIOS_VERIFIED",
+    "payload": {
+      "missing_telemetry_handled": true,
+      "insufficient_data_outcomes_agent_3": 1,
+      "late_finding_revision_applied": true,
+      "zero_synthetic_curves_verified": true
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:56.683877+00:00",
+    "stage": "EVALUATION",
+    "event": "METRICS_COMPUTED",
+    "payload": {
+      "total_official_notices": 10,
+      "detected_notices": 10,
+      "event_detection_precision": 1.0,
+      "event_detection_recall": 1.0,
+      "pit_window_predicted_saving_sec": 10.5,
+      "pit_window_observed_saving_sec": 10.4,
+      "pit_window_error_sec": 0.1,
+      "telemetry_policy_compliance": "VERIFIED_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-04T20:46:56.906051+00:00",
+    "stage": "PERSISTENCE",
+    "event": "LINEAGE_VERIFIED",
+    "payload": {
+      "statestore_findings_count": 930,
+      "statestore_assessments_count": 913,
+      "agents_registered_count": 5,
+      "api_endpoint_verified": true
+    }
+  }
+]

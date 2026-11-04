@@ -3,12 +3,14 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
+from pulse.circuits import get_circuit, list_circuits
 from pulse.simulator.runner import get_scenario_runner
 from pulse.state.store import get_state_store
 
@@ -19,6 +21,20 @@ api_router = APIRouter(prefix="/api", tags=["PULSE Race Intelligence API"])
 class ControlPayload(BaseModel):
     action: str | None = None
     speed: float | None = None
+
+
+class SessionSelectPayload(BaseModel):
+    session_id: str
+
+
+class ReplaySeekPayload(BaseModel):
+    target_lap: int | None = None
+    target_index: int | None = None
+    target_elapsed_ms: int | None = None
+
+
+class ReplaySpeedPayload(BaseModel):
+    speed: float
 
 
 @api_router.get("/health")
@@ -192,30 +208,233 @@ async def get_snapshot() -> dict[str, Any]:
     return store.get_snapshot()
 
 
+@api_router.get("/circuits")
+async def get_circuits() -> list[dict[str, Any]]:
+    return list_circuits()
+
+
+@api_router.get("/circuit/{circuit_id}")
+async def get_circuit_by_id(circuit_id: str) -> dict[str, Any]:
+    c = get_circuit(circuit_id)
+    if not c:
+        raise HTTPException(status_code=404, detail=f"Circuit '{circuit_id}' not found in catalogue")
+    return c.model_dump(mode="json")
+
+
+@api_router.get("/telemetry/{driver_number}")
+async def get_telemetry(driver_number: int) -> dict[str, Any]:
+    store = get_state_store()
+    telemetry = store.get_driver_telemetry(driver_number)
+    if not telemetry:
+        raise HTTPException(status_code=404, detail=f"Telemetry unavailable for driver #{driver_number}")
+    return telemetry
+
+
+@api_router.get("/race-control")
+async def get_race_control_notices() -> list[dict[str, Any]]:
+    store = get_state_store()
+    return store.get_official_notices()
+
+
+@api_router.get("/pipeline/status")
+async def get_pipeline_status() -> dict[str, Any]:
+    store = get_state_store()
+    health = store.get_health()
+    agent_metrics = store.get_agent_metrics()
+
+    flink_info = {"status": "UNKNOWN", "job_id": None, "checkpoints": 0}
+    try:
+        from pulse.stream.flink.manager import get_flink_manager
+        mgr = get_flink_manager()
+        metrics = mgr.get_metrics()
+        if metrics:
+            flink_info = {
+                "status": metrics.state,
+                "job_id": metrics.job_id,
+                "job_name": metrics.name,
+                "checkpoints_completed": metrics.checkpoints_completed,
+                "read_records": metrics.read_records,
+                "write_records": metrics.write_records,
+            }
+    except Exception as e:
+        logger.debug("Could not query Flink metrics: %s", e)
+
+    return {
+        "kafka": {
+            "connected": health.get("kafka_connected", False),
+            "transport": health.get("transport", "MEMORY"),
+            "processed_events": health.get("processed_events", 0),
+            "duplicate_events": health.get("duplicate_events", 0),
+        },
+        "flink": flink_info,
+        "agents": {
+            "total_registered": len(agent_metrics),
+            "active_agents": list(agent_metrics.keys()),
+            "metrics": agent_metrics,
+        },
+        "findings_count": len(store.findings),
+        "assessments_count": len(store.assessment_history),
+        "last_event_time_utc": health.get("last_event_time_utc"),
+    }
+
+
+@api_router.get("/pipeline/verification-runs")
+async def get_verification_runs() -> list[dict[str, Any]]:
+    reports_dir = Path("reports")
+    runs = []
+    report_file = reports_dir / "e2e_report.json"
+    if report_file.exists():
+        try:
+            data = json.loads(report_file.read_text(encoding="utf-8"))
+            runs.append({
+                "run_id": data.get("run_id", "run-latest"),
+                "session_id": data.get("session_id", "e2e-session"),
+                "status": data.get("status", "PASSED"),
+                "mode": data.get("test_mode", "REPLAY"),
+                "timestamp": data.get("timestamp_utc"),
+                "stages_passed": data.get("reconciliation_summary", {}).get("stages_passed", 10),
+                "stages_count": data.get("reconciliation_summary", {}).get("stages_count", 10),
+                "total_latency_ms": data.get("reconciliation_summary", {}).get("total_latency_ms", 0),
+                "report_file": str(report_file),
+            })
+        except Exception:
+            pass
+    return runs
+
+
+@api_router.get("/pipeline/verification-runs/{run_id}")
+async def get_verification_run_detail(run_id: str) -> dict[str, Any]:
+    report_file = Path("reports") / "e2e_report.json"
+    if not report_file.exists():
+        raise HTTPException(status_code=404, detail="No verification reports available")
+    try:
+        data = json.loads(report_file.read_text(encoding="utf-8"))
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read report: {e}")
+
+
+@api_router.get("/pipeline/lineage")
+async def get_pipeline_lineage() -> list[dict[str, Any]]:
+    trace_file = Path("reports") / "pipeline_trace.json"
+    if not trace_file.exists():
+        return []
+    try:
+        return json.loads(trace_file.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+
+
+# --- Session Management Endpoints ---
+
+
+@api_router.get("/sessions")
+async def get_sessions() -> list[dict[str, Any]]:
+    from pulse.sessions.registry import list_sessions
+    return [s.model_dump(mode="json") for s in list_sessions()]
+
+
+@api_router.get("/sessions/{session_id}/metadata")
+async def get_session_metadata(session_id: str) -> dict[str, Any]:
+    from pulse.sessions.registry import get_session_by_id
+    meta = get_session_by_id(session_id)
+    if not meta:
+        raise HTTPException(status_code=404, detail=f"Session not found: {session_id}")
+    return meta.model_dump(mode="json")
+
+
+@api_router.post("/sessions/select")
+async def select_session(payload: SessionSelectPayload) -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    controller = get_replay_controller()
+    status = await controller.switch_session(payload.session_id)
+    store = get_state_store()
+    return {
+        "status": "success",
+        "session_id": payload.session_id,
+        "replay_status": status,
+        "session": store.get_session(),
+        "snapshot": store.get_snapshot(),
+    }
+
+
+# --- Backend Replay Controller Endpoints ---
+
+
+@api_router.get("/replay/status")
+async def get_replay_status() -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return get_replay_controller().get_status()
+
+
+@api_router.post("/replay/start")
+async def replay_start(payload: ControlPayload | None = None) -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    controller = get_replay_controller()
+    return await controller.start(speed=payload.speed if payload else None)
+
+
+@api_router.post("/replay/pause")
+async def replay_pause() -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return get_replay_controller().pause()
+
+
+@api_router.post("/replay/resume")
+async def replay_resume() -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return get_replay_controller().resume()
+
+
+@api_router.post("/replay/reset")
+async def replay_reset() -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return await get_replay_controller().reset()
+
+
+@api_router.post("/replay/seek")
+async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return await get_replay_controller().seek(
+        target_lap=payload.target_lap,
+        target_index=payload.target_index,
+        target_elapsed_ms=payload.target_elapsed_ms,
+    )
+
+
+@api_router.post("/replay/speed")
+async def replay_speed(payload: ReplaySpeedPayload) -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
+    return get_replay_controller().set_speed(payload.speed)
+
+
 @api_router.post("/replay/{action}")
 async def handle_replay_action(action: str, payload: ControlPayload | None = None) -> dict[str, Any]:
+    from pulse.replay.controller import get_replay_controller
     act = action.lower()
-    runner = get_scenario_runner()
+    controller = get_replay_controller()
 
     if act == "start":
-        await runner.start()
+        res = await controller.start(speed=payload.speed if payload else None)
     elif act == "pause":
-        runner.pause()
+        res = controller.pause()
     elif act == "resume":
-        runner.resume()
-    elif act == "restart":
-        await runner.restart()
-    elif act == "speed" or act == "set_speed":
+        res = controller.resume()
+    elif act in {"reset", "restart"}:
+        res = await controller.reset()
+    elif act in {"speed", "set_speed"}:
         spd = payload.speed if payload and payload.speed is not None else 1.0
-        runner.set_speed(spd)
+        res = controller.set_speed(spd)
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported replay action: {action}")
 
     return {
         "status": "success",
         "action": act,
-        "runner_status": runner.status.value if hasattr(runner.status, "value") else str(runner.status),
-        "speed": runner.speed,
+        "replay_status": res.get("status"),
+        "runner_status": res.get("status"),
+        "speed": res.get("speed"),
+        "details": res,
     }
 
 
@@ -226,15 +445,31 @@ async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str,
 
 
 @api_router.get("/stream")
-async def event_stream(request: Request) -> StreamingResponse:
-    """Server-Sent Events (SSE) delivering real-time telemetry and intelligence updates."""
+async def event_stream(request: Request, limit: int | None = Query(default=None)) -> StreamingResponse:
+    """Continuous Server-Sent Events (SSE) delivering real-time telemetry and intelligence updates."""
+    last_event_id = request.headers.get("Last-Event-ID")
+
     async def sse_generator():
         store = get_state_store()
         queue = store.add_listener()
 
-        # Send initial full snapshot on connection
+        # Send initial snapshot event upon connection
         initial_snap = json.dumps(store.get_snapshot())
-        yield f"event: snapshot\ndata: {initial_snap}\n\n"
+        yield f"id: sse-evt-init\nevent: snapshot\ndata: {initial_snap}\n\n"
+        count = 1
+
+        # Replay any buffered events if Last-Event-ID was supplied
+        if last_event_id:
+            missed = store.get_history_after_id(last_event_id)
+            for m in missed:
+                event_type = m.get("update_type", "event")
+                msg_id = m.get("id", f"sse-evt-{m.get('seq')}")
+                yield f"id: {msg_id}\nevent: {event_type}\ndata: {json.dumps(m)}\n\n"
+                count += 1
+
+        if limit is not None and count >= limit:
+            store.remove_listener(queue)
+            return
 
         try:
             while True:
@@ -242,11 +477,29 @@ async def event_stream(request: Request) -> StreamingResponse:
                     break
                 try:
                     msg = await asyncio.wait_for(queue.get(), timeout=2.0)
-                    data_str = json.dumps(msg["data"])
-                    yield f"event: {msg['type']}\ndata: {data_str}\n\n"
+                    event_type = msg.get("update_type", "event")
+                    msg_id = msg.get("id", f"sse-evt-{msg.get('seq')}")
+                    data_str = json.dumps(msg)
+
+                    yield f"id: {msg_id}\nevent: {event_type}\ndata: {data_str}\n\n"
+                    # Also emit generic event name for backwards compatibility
+                    if event_type != "event":
+                        yield f"id: {msg_id}\nevent: event\ndata: {data_str}\n\n"
+
+                    count += 1
+                    if limit is not None and count >= limit:
+                        break
                 except asyncio.TimeoutError:
-                    # Keep-alive heartbeat comment
-                    yield ": ping\n\n"
+                    # Periodic heartbeat event distinguishable from data updates
+                    from datetime import datetime, UTC
+                    import time
+                    hb_time = datetime.now(UTC).isoformat()
+                    hb_payload = json.dumps({
+                        "status": "ALIVE",
+                        "timestamp": hb_time,
+                        "seq": store.sse_sequence_counter,
+                    })
+                    yield f"id: sse-hb-{int(time.time()*1000)}\nevent: heartbeat\ndata: {hb_payload}\n\n"
         except asyncio.CancelledError:
             pass
         finally:

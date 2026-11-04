@@ -1,4 +1,5 @@
 import type { Assessment, Driver } from '../types';
+import { CloseIcon } from './icons';
 
 interface EvidenceDrawerProps {
   assessment: Assessment | null;
@@ -28,24 +29,11 @@ export function EvidenceDrawer({ assessment, driver, onClose }: EvidenceDrawerPr
             </div>
           </div>
           <button type="button" className="drawer-close-btn" onClick={onClose} aria-label="Close drawer">
-            ✕
+            <CloseIcon size={16} />
           </button>
         </div>
 
         <div className="drawer-body">
-          {/* Radio transmission quote */}
-          {assessment.driverRadio && (
-            <div className="drawer-section drawer-radio-callout">
-              <div className="callout-heading">
-                <span className="radio-icon-pulse">📻</span>
-                <h4>OFFICIAL TEAM RADIO TRANSCRIPT</h4>
-              </div>
-              <p className="callout-quote">
-                "{assessment.driverRadio.replace(/^Team Radio Transmission:\s*"?|"?$/g, '')}"
-              </p>
-            </div>
-          )}
-
           {/* Core Reasoning */}
           <div className="drawer-section">
             <h4 className="section-title">Tactical Rationale</h4>
@@ -64,17 +52,17 @@ export function EvidenceDrawer({ assessment, driver, onClose }: EvidenceDrawerPr
             </div>
           </div>
 
-          {/* Confidence & Model Synthesis */}
+          {/* Model Synthesis & Calibration State */}
           <div className="drawer-section">
-            <h4 className="section-title">Model Certainty & Intelligence Provenance</h4>
+            <h4 className="section-title">Certainty Calibration & Methodology</h4>
             <div className="confidence-meter-card">
               <div className="meter-left">
-                <span className="meter-score">{assessment.confidence ? `${assessment.confidence}%` : 'HEURISTIC'}</span>
-                <span className="meter-sub">{assessment.calibrationStatus ?? 'Deterministic Heuristic'}</span>
+                <span className="meter-score">{assessment.calibrationStatus ?? 'DETERMINISTIC HEURISTIC'}</span>
+                <span className="meter-sub">Uncalibrated · Strictly zero hallucinated probability</span>
               </div>
               <div className="meter-right">
-                <span className="provenance-pill">Deterministic Fusion Engine</span>
-                <span className="provenance-sub">All raw events hashed with monotonic event-time</span>
+                <span className="provenance-pill">Agent 5 Consequence Fusion</span>
+                <span className="provenance-sub">Synthesized across Agents 1–4 event streams</span>
               </div>
             </div>
           </div>
@@ -94,32 +82,26 @@ export function EvidenceDrawer({ assessment, driver, onClose }: EvidenceDrawerPr
 
           {/* Data Coverage Matrix */}
           <div className="drawer-section">
-            <h4 className="section-title">Stream Data Coverage</h4>
+            <h4 className="section-title">Multi-Domain Stream Coverage</h4>
             <div className="coverage-matrix-grid">
               <div className="coverage-cell cell-complete">
                 <span className="cell-name">Race Control</span>
-                <span className="cell-status">COMPLETE</span>
+                <span className="cell-state">COMPLETE (Agent 1)</span>
               </div>
               <div className="coverage-cell cell-complete">
-                <span className="cell-name">Tyre & Strategy</span>
-                <span className="cell-status">COMPLETE</span>
+                <span className="cell-name">Track State</span>
+                <span className="cell-state">COMPLETE (Agent 2)</span>
               </div>
               <div className="coverage-cell cell-complete">
-                <span className="cell-name">Track Weather</span>
-                <span className="cell-status">COMPLETE</span>
+                <span className="cell-name">Vehicle Response</span>
+                <span className="cell-state">COMPLETE (Agent 3)</span>
               </div>
-              <div className="coverage-cell cell-unavailable">
-                <span className="cell-name">Chassis Telemetry</span>
-                <span className="cell-status">UNAVAILABLE (NO FABRICATION)</span>
+              <div className="coverage-cell cell-complete">
+                <span className="cell-name">Tyre Strategy</span>
+                <span className="cell-state">COMPLETE (Agent 4)</span>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="drawer-footer">
-          <button type="button" className="drawer-dismiss-btn" onClick={onClose}>
-            Close Briefing
-          </button>
         </div>
       </div>
     </div>

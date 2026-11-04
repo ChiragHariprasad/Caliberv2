@@ -1,4 +1,5 @@
 import type { Assessment, Driver } from '../types';
+import { SparkleIcon } from './icons';
 
 interface ImpactCardProps {
   assessment: Assessment;
@@ -24,37 +25,17 @@ export function ImpactCard({ assessment, driver, onEvidence }: ImpactCardProps) 
           {assessment.version && (
             <span className="version-pill">REV v{assessment.version}</span>
           )}
-          {assessment.confidence !== null && assessment.confidence !== undefined ? (
-            <span
-              className="confidence-ring"
-              title={`Model confidence: ${assessment.confidence}%`}
-              style={{ '--confidence': `${assessment.confidence * 3.6}deg` } as React.CSSProperties}
-            >
-              {assessment.confidence}%
-            </span>
-          ) : (
-            <span className="uncalibrated-chip" title="Model outputs deterministic heuristic, not calibrated probability">
-              HEURISTIC
-            </span>
-          )}
+          <span className="uncalibrated-chip" title="Model outputs deterministic heuristic, not calibrated probability">
+            {assessment.calibrationStatus ?? 'DETERMINISTIC HEURISTIC'}
+          </span>
         </div>
       </div>
 
       <h3 className="impact-card__headline">{assessment.title}</h3>
       <p className="impact-card__narrative">{assessment.narrative}</p>
 
-      {assessment.driverRadio && (
-        <div className="radio-transmission">
-          <div className="radio-header">
-            <span className="radio-wave-icon">📻</span>
-            <span>TEAM RADIO INTERCEPT</span>
-          </div>
-          <p className="radio-body">"{assessment.driverRadio.replace(/^Team Radio Transmission:\s*"?|"?$/g, '')}"</p>
-        </div>
-      )}
-
       <div className="impact-card__forecast">
-        <span className="forecast-icon">✦</span>
+        <SparkleIcon size={12} className="forecast-icon text-amber-400" />
         <span>{assessment.forecast}</span>
       </div>
 
@@ -65,7 +46,7 @@ export function ImpactCard({ assessment, driver, onEvidence }: ImpactCardProps) 
           </span>
           {assessment.supersedesId && (
             <span className="superseded-badge" title={`Supersedes ${assessment.supersedesId}`}>
-              Supersedes v1
+              Supersedes {assessment.supersedesId}
             </span>
           )}
         </div>

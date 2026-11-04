@@ -1,0 +1,6427 @@
+{
+  "1": [
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:36.551",
+      "lap_time_seconds": 96.551,
+      "position": 1
+    },
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:37.167",
+      "lap_time_seconds": 97.167,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:37.773",
+      "lap_time_seconds": 97.773,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:38.300",
+      "lap_time_seconds": 98.3,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:38.651",
+      "lap_time_seconds": 98.65100000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:39.284",
+      "lap_time_seconds": 99.28399999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:40.026",
+      "lap_time_seconds": 100.02600000000001,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:40.664",
+      "lap_time_seconds": 100.664,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:41.014",
+      "lap_time_seconds": 101.01400000000001,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:41.364",
+      "lap_time_seconds": 101.364,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:42.049",
+      "lap_time_seconds": 102.049,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:42.516",
+      "lap_time_seconds": 102.51599999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:43.165",
+      "lap_time_seconds": 103.16499999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:43.503",
+      "lap_time_seconds": 103.503,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:43.792",
+      "lap_time_seconds": 103.792,
+      "position": 15
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:44.033",
+      "lap_time_seconds": 104.033,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:44.444",
+      "lap_time_seconds": 104.444,
+      "position": 17
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:44.975",
+      "lap_time_seconds": 104.975,
+      "position": 18
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:45.239",
+      "lap_time_seconds": 105.239,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:45.771",
+      "lap_time_seconds": 105.771,
+      "position": 20
+    }
+  ],
+  "2": [
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.046",
+      "lap_time_seconds": 93.04599999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:33.433",
+      "lap_time_seconds": 93.43299999999999,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.845",
+      "lap_time_seconds": 93.845,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.994",
+      "lap_time_seconds": 93.994,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:34.115",
+      "lap_time_seconds": 94.11500000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:34.177",
+      "lap_time_seconds": 94.17699999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:34.419",
+      "lap_time_seconds": 94.419,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:34.361",
+      "lap_time_seconds": 94.36099999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:34.706",
+      "lap_time_seconds": 94.706,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:35.004",
+      "lap_time_seconds": 95.00399999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:35.093",
+      "lap_time_seconds": 95.093,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:35.230",
+      "lap_time_seconds": 95.22999999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:35.252",
+      "lap_time_seconds": 95.25200000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:35.277",
+      "lap_time_seconds": 95.277,
+      "position": 14
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:35.482",
+      "lap_time_seconds": 95.482,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:36.266",
+      "lap_time_seconds": 96.26599999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:36.208",
+      "lap_time_seconds": 96.208,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:35.912",
+      "lap_time_seconds": 95.912,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:36.741",
+      "lap_time_seconds": 96.741,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:36.337",
+      "lap_time_seconds": 96.337,
+      "position": 20
+    }
+  ],
+  "3": [
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.180",
+      "lap_time_seconds": 93.18,
+      "position": 1
+    },
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.730",
+      "lap_time_seconds": 92.72999999999999,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.499",
+      "lap_time_seconds": 92.499,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.934",
+      "lap_time_seconds": 92.934,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.096",
+      "lap_time_seconds": 93.096,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.456",
+      "lap_time_seconds": 93.456,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.424",
+      "lap_time_seconds": 93.424,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.662",
+      "lap_time_seconds": 93.662,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.605",
+      "lap_time_seconds": 93.60499999999999,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.809",
+      "lap_time_seconds": 93.809,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.021",
+      "lap_time_seconds": 94.021,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:34.113",
+      "lap_time_seconds": 94.113,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.229",
+      "lap_time_seconds": 94.229,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.530",
+      "lap_time_seconds": 94.53,
+      "position": 14
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:34.380",
+      "lap_time_seconds": 94.38,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.577",
+      "lap_time_seconds": 94.577,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.746",
+      "lap_time_seconds": 94.74600000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.679",
+      "lap_time_seconds": 94.679,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.865",
+      "lap_time_seconds": 94.86500000000001,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:35.169",
+      "lap_time_seconds": 95.169,
+      "position": 20
+    }
+  ],
+  "4": [
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.772",
+      "lap_time_seconds": 92.77199999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.780",
+      "lap_time_seconds": 92.78,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.581",
+      "lap_time_seconds": 92.581,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.961",
+      "lap_time_seconds": 92.961,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.084",
+      "lap_time_seconds": 93.084,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.975",
+      "lap_time_seconds": 92.975,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.156",
+      "lap_time_seconds": 93.156,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.086",
+      "lap_time_seconds": 93.086,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.349",
+      "lap_time_seconds": 93.34899999999999,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.866",
+      "lap_time_seconds": 93.866,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.799",
+      "lap_time_seconds": 93.799,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:33.941",
+      "lap_time_seconds": 93.941,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.362",
+      "lap_time_seconds": 94.362,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.354",
+      "lap_time_seconds": 94.354,
+      "position": 14
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:34.339",
+      "lap_time_seconds": 94.339,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.332",
+      "lap_time_seconds": 94.332,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.199",
+      "lap_time_seconds": 94.199,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.408",
+      "lap_time_seconds": 94.408,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.611",
+      "lap_time_seconds": 94.61099999999999,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.731",
+      "lap_time_seconds": 94.731,
+      "position": 20
+    }
+  ],
+  "5": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.582",
+      "lap_time_seconds": 92.582,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.914",
+      "lap_time_seconds": 93.914,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.461",
+      "lap_time_seconds": 93.461,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:34.409",
+      "lap_time_seconds": 94.40899999999999,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:34.211",
+      "lap_time_seconds": 94.211,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.666",
+      "lap_time_seconds": 93.666,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:34.157",
+      "lap_time_seconds": 94.157,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.718",
+      "lap_time_seconds": 93.718,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.863",
+      "lap_time_seconds": 93.863,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.860",
+      "lap_time_seconds": 93.86,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.856",
+      "lap_time_seconds": 93.856,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:33.946",
+      "lap_time_seconds": 93.946,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.457",
+      "lap_time_seconds": 94.457,
+      "position": 13
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:34.073",
+      "lap_time_seconds": 94.07300000000001,
+      "position": 14
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:35.588",
+      "lap_time_seconds": 95.588,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.842",
+      "lap_time_seconds": 94.842,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.761",
+      "lap_time_seconds": 94.761,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.736",
+      "lap_time_seconds": 94.73599999999999,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.804",
+      "lap_time_seconds": 94.804,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.598",
+      "lap_time_seconds": 94.598,
+      "position": 20
+    }
+  ],
+  "6": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:33.027",
+      "lap_time_seconds": 93.027,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.112",
+      "lap_time_seconds": 93.112,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.008",
+      "lap_time_seconds": 93.00800000000001,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.761",
+      "lap_time_seconds": 93.761,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.839",
+      "lap_time_seconds": 93.839,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:34.215",
+      "lap_time_seconds": 94.215,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:34.636",
+      "lap_time_seconds": 94.636,
+      "position": 7
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:34.556",
+      "lap_time_seconds": 94.556,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:34.143",
+      "lap_time_seconds": 94.143,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:34.210",
+      "lap_time_seconds": 94.21000000000001,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.189",
+      "lap_time_seconds": 94.189,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:34.381",
+      "lap_time_seconds": 94.381,
+      "position": 12
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.671",
+      "lap_time_seconds": 93.67099999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:35.373",
+      "lap_time_seconds": 95.37299999999999,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.356",
+      "lap_time_seconds": 94.356,
+      "position": 15
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:35.631",
+      "lap_time_seconds": 95.631,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.907",
+      "lap_time_seconds": 94.907,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.807",
+      "lap_time_seconds": 94.807,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.791",
+      "lap_time_seconds": 94.791,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.933",
+      "lap_time_seconds": 94.93299999999999,
+      "position": 20
+    }
+  ],
+  "7": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:33.100",
+      "lap_time_seconds": 93.1,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.190",
+      "lap_time_seconds": 93.19,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.290",
+      "lap_time_seconds": 93.28999999999999,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.403",
+      "lap_time_seconds": 93.40299999999999,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.432",
+      "lap_time_seconds": 93.432,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.427",
+      "lap_time_seconds": 93.42699999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.328",
+      "lap_time_seconds": 93.328,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:34.645",
+      "lap_time_seconds": 94.64500000000001,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:34.399",
+      "lap_time_seconds": 94.399,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:34.099",
+      "lap_time_seconds": 94.09899999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.115",
+      "lap_time_seconds": 94.11500000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:34.346",
+      "lap_time_seconds": 94.346,
+      "position": 12
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.919",
+      "lap_time_seconds": 93.919,
+      "position": 13
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.571",
+      "lap_time_seconds": 94.571,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.581",
+      "lap_time_seconds": 94.581,
+      "position": 15
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.412",
+      "lap_time_seconds": 94.412,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:35.054",
+      "lap_time_seconds": 95.054,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.995",
+      "lap_time_seconds": 94.995,
+      "position": 18
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.879",
+      "lap_time_seconds": 94.87899999999999,
+      "position": 19
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.950",
+      "lap_time_seconds": 94.95,
+      "position": 20
+    }
+  ],
+  "8": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.884",
+      "lap_time_seconds": 92.884,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.101",
+      "lap_time_seconds": 93.101,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.233",
+      "lap_time_seconds": 93.233,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.244",
+      "lap_time_seconds": 93.244,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.136",
+      "lap_time_seconds": 93.136,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.442",
+      "lap_time_seconds": 93.44200000000001,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.483",
+      "lap_time_seconds": 93.483,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:34.019",
+      "lap_time_seconds": 94.019,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.905",
+      "lap_time_seconds": 93.905,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.922",
+      "lap_time_seconds": 93.922,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.872",
+      "lap_time_seconds": 93.872,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:34.032",
+      "lap_time_seconds": 94.032,
+      "position": 12
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.568",
+      "lap_time_seconds": 93.568,
+      "position": 13
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.486",
+      "lap_time_seconds": 94.48599999999999,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.108",
+      "lap_time_seconds": 94.108,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.896",
+      "lap_time_seconds": 93.896,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.267",
+      "lap_time_seconds": 94.267,
+      "position": 17
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.476",
+      "lap_time_seconds": 94.476,
+      "position": 18
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.427",
+      "lap_time_seconds": 94.42699999999999,
+      "position": 19
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:07.922",
+      "lap_time_seconds": 127.922,
+      "position": 20
+    }
+  ],
+  "9": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.822",
+      "lap_time_seconds": 92.822,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.612",
+      "lap_time_seconds": 92.612,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.790",
+      "lap_time_seconds": 92.78999999999999,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.087",
+      "lap_time_seconds": 93.087,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.154",
+      "lap_time_seconds": 93.154,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.417",
+      "lap_time_seconds": 93.417,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.331",
+      "lap_time_seconds": 93.331,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.657",
+      "lap_time_seconds": 93.657,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.592",
+      "lap_time_seconds": 93.592,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.731",
+      "lap_time_seconds": 93.731,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.871",
+      "lap_time_seconds": 93.87100000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 31,
+      "driver_id": "ocon",
+      "lap_time": "1:33.846",
+      "lap_time_seconds": 93.846,
+      "position": 12
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.271",
+      "lap_time_seconds": 93.271,
+      "position": 13
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.235",
+      "lap_time_seconds": 94.235,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.940",
+      "lap_time_seconds": 93.94,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.774",
+      "lap_time_seconds": 93.774,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.044",
+      "lap_time_seconds": 94.044,
+      "position": 17
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.386",
+      "lap_time_seconds": 94.386,
+      "position": 18
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.577",
+      "lap_time_seconds": 94.577,
+      "position": 19
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.669",
+      "lap_time_seconds": 93.669,
+      "position": 20
+    }
+  ],
+  "10": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.594",
+      "lap_time_seconds": 92.594,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.977",
+      "lap_time_seconds": 92.977,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.379",
+      "lap_time_seconds": 93.37899999999999,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.167",
+      "lap_time_seconds": 93.167,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.424",
+      "lap_time_seconds": 93.424,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.405",
+      "lap_time_seconds": 93.405,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.624",
+      "lap_time_seconds": 93.624,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.711",
+      "lap_time_seconds": 93.711,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.855",
+      "lap_time_seconds": 93.85499999999999,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:34.045",
+      "lap_time_seconds": 94.045,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.007",
+      "lap_time_seconds": 94.007,
+      "position": 11
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.364",
+      "lap_time_seconds": 93.364,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.173",
+      "lap_time_seconds": 94.173,
+      "position": 13
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.310",
+      "lap_time_seconds": 94.31,
+      "position": 14
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.985",
+      "lap_time_seconds": 93.985,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.392",
+      "lap_time_seconds": 94.392,
+      "position": 16
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.306",
+      "lap_time_seconds": 94.306,
+      "position": 17
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.715",
+      "lap_time_seconds": 94.715,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.525",
+      "lap_time_seconds": 93.525,
+      "position": 19
+    }
+  ],
+  "11": [
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.978",
+      "lap_time_seconds": 92.97800000000001,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.976",
+      "lap_time_seconds": 92.976,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.048",
+      "lap_time_seconds": 93.048,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.089",
+      "lap_time_seconds": 93.089,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.279",
+      "lap_time_seconds": 93.279,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.519",
+      "lap_time_seconds": 93.519,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.737",
+      "lap_time_seconds": 93.737,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.836",
+      "lap_time_seconds": 93.836,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.842",
+      "lap_time_seconds": 93.842,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.198",
+      "lap_time_seconds": 94.19800000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.547",
+      "lap_time_seconds": 93.547,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.085",
+      "lap_time_seconds": 94.08500000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.925",
+      "lap_time_seconds": 93.925,
+      "position": 14
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.758",
+      "lap_time_seconds": 93.75800000000001,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.221",
+      "lap_time_seconds": 94.221,
+      "position": 16
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.354",
+      "lap_time_seconds": 94.354,
+      "position": 17
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.310",
+      "lap_time_seconds": 94.31,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.966",
+      "lap_time_seconds": 93.96600000000001,
+      "position": 19
+    }
+  ],
+  "12": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.687",
+      "lap_time_seconds": 92.687,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.116",
+      "lap_time_seconds": 93.116,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.464",
+      "lap_time_seconds": 93.464,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.621",
+      "lap_time_seconds": 93.62100000000001,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.354",
+      "lap_time_seconds": 93.354,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.323",
+      "lap_time_seconds": 93.32300000000001,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.908",
+      "lap_time_seconds": 93.908,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.951",
+      "lap_time_seconds": 93.951,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.705",
+      "lap_time_seconds": 93.705,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.857",
+      "lap_time_seconds": 93.857,
+      "position": 10
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.429",
+      "lap_time_seconds": 93.429,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.766",
+      "lap_time_seconds": 94.76599999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.237",
+      "lap_time_seconds": 94.237,
+      "position": 13
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.239",
+      "lap_time_seconds": 94.239,
+      "position": 14
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.165",
+      "lap_time_seconds": 94.16499999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.235",
+      "lap_time_seconds": 94.235,
+      "position": 16
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.541",
+      "lap_time_seconds": 94.541,
+      "position": 17
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.544",
+      "lap_time_seconds": 94.544,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.022",
+      "lap_time_seconds": 94.02199999999999,
+      "position": 19
+    }
+  ],
+  "13": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.678",
+      "lap_time_seconds": 92.678,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.986",
+      "lap_time_seconds": 92.98599999999999,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.144",
+      "lap_time_seconds": 93.144,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.214",
+      "lap_time_seconds": 93.214,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.159",
+      "lap_time_seconds": 93.15899999999999,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.105",
+      "lap_time_seconds": 93.10499999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.280",
+      "lap_time_seconds": 93.28,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.565",
+      "lap_time_seconds": 93.565,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.683",
+      "lap_time_seconds": 93.68299999999999,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.751",
+      "lap_time_seconds": 93.751,
+      "position": 10
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.452",
+      "lap_time_seconds": 93.452,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.308",
+      "lap_time_seconds": 94.30799999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.433",
+      "lap_time_seconds": 94.43299999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.329",
+      "lap_time_seconds": 94.32900000000001,
+      "position": 14
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.232",
+      "lap_time_seconds": 94.232,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.130",
+      "lap_time_seconds": 94.13,
+      "position": 16
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.618",
+      "lap_time_seconds": 94.618,
+      "position": 17
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.339",
+      "lap_time_seconds": 94.339,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.300",
+      "lap_time_seconds": 94.3,
+      "position": 19
+    }
+  ],
+  "14": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:33.046",
+      "lap_time_seconds": 93.04599999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.670",
+      "lap_time_seconds": 93.67,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.603",
+      "lap_time_seconds": 93.60300000000001,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.523",
+      "lap_time_seconds": 93.523,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.729",
+      "lap_time_seconds": 93.729,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.941",
+      "lap_time_seconds": 93.941,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.324",
+      "lap_time_seconds": 93.324,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.880",
+      "lap_time_seconds": 93.88,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.843",
+      "lap_time_seconds": 93.843,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.951",
+      "lap_time_seconds": 93.951,
+      "position": 10
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.751",
+      "lap_time_seconds": 93.751,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.213",
+      "lap_time_seconds": 94.213,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.683",
+      "lap_time_seconds": 93.68299999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:34.769",
+      "lap_time_seconds": 94.769,
+      "position": 14
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.879",
+      "lap_time_seconds": 94.87899999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.418",
+      "lap_time_seconds": 94.418,
+      "position": 16
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.604",
+      "lap_time_seconds": 94.604,
+      "position": 17
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:35.024",
+      "lap_time_seconds": 95.024,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:34.186",
+      "lap_time_seconds": 94.186,
+      "position": 19
+    }
+  ],
+  "15": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.990",
+      "lap_time_seconds": 92.99000000000001,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:33.221",
+      "lap_time_seconds": 93.221,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.267",
+      "lap_time_seconds": 93.267,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.542",
+      "lap_time_seconds": 93.542,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.270",
+      "lap_time_seconds": 93.27000000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.623",
+      "lap_time_seconds": 93.62299999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.156",
+      "lap_time_seconds": 93.156,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.736",
+      "lap_time_seconds": 93.73599999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.769",
+      "lap_time_seconds": 93.769,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.786",
+      "lap_time_seconds": 93.786,
+      "position": 10
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.480",
+      "lap_time_seconds": 93.47999999999999,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.931",
+      "lap_time_seconds": 93.931,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:34.123",
+      "lap_time_seconds": 94.12299999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.170",
+      "lap_time_seconds": 94.17,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.677",
+      "lap_time_seconds": 94.67699999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.627",
+      "lap_time_seconds": 94.62700000000001,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.606",
+      "lap_time_seconds": 94.606,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:54.644",
+      "lap_time_seconds": 114.644,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.925",
+      "lap_time_seconds": 93.925,
+      "position": 19
+    }
+  ],
+  "16": [
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.931",
+      "lap_time_seconds": 92.931,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.437",
+      "lap_time_seconds": 93.437,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.535",
+      "lap_time_seconds": 93.535,
+      "position": 9
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.055",
+      "lap_time_seconds": 93.055,
+      "position": 10
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:34.343",
+      "lap_time_seconds": 94.343,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.798",
+      "lap_time_seconds": 93.798,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.771",
+      "lap_time_seconds": 93.771,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.148",
+      "lap_time_seconds": 94.148,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.263",
+      "lap_time_seconds": 94.263,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:34.367",
+      "lap_time_seconds": 94.36699999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.559",
+      "lap_time_seconds": 94.559,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.058",
+      "lap_time_seconds": 93.05799999999999,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.640",
+      "lap_time_seconds": 93.64,
+      "position": 19
+    }
+  ],
+  "17": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.603",
+      "lap_time_seconds": 92.60300000000001,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.985",
+      "lap_time_seconds": 92.985,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.775",
+      "lap_time_seconds": 92.775,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.151",
+      "lap_time_seconds": 93.15100000000001,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.174",
+      "lap_time_seconds": 93.174,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.076",
+      "lap_time_seconds": 93.076,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.120",
+      "lap_time_seconds": 93.12,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.188",
+      "lap_time_seconds": 93.188,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.138",
+      "lap_time_seconds": 93.138,
+      "position": 9
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.280",
+      "lap_time_seconds": 93.28,
+      "position": 10
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.707",
+      "lap_time_seconds": 93.707,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.651",
+      "lap_time_seconds": 93.65100000000001,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.728",
+      "lap_time_seconds": 93.72800000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.637",
+      "lap_time_seconds": 93.637,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:34.027",
+      "lap_time_seconds": 94.027,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.867",
+      "lap_time_seconds": 93.86699999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.216",
+      "lap_time_seconds": 94.21600000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.952",
+      "lap_time_seconds": 92.952,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.616",
+      "lap_time_seconds": 93.616,
+      "position": 19
+    }
+  ],
+  "18": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.507",
+      "lap_time_seconds": 92.507,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.731",
+      "lap_time_seconds": 92.731,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.019",
+      "lap_time_seconds": 93.019,
+      "position": 3
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.475",
+      "lap_time_seconds": 92.475,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.072",
+      "lap_time_seconds": 93.072,
+      "position": 5
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.302",
+      "lap_time_seconds": 93.30199999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.313",
+      "lap_time_seconds": 93.313,
+      "position": 7
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.317",
+      "lap_time_seconds": 93.31700000000001,
+      "position": 8
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.291",
+      "lap_time_seconds": 93.291,
+      "position": 9
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.099",
+      "lap_time_seconds": 93.09899999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.615",
+      "lap_time_seconds": 93.61500000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.294",
+      "lap_time_seconds": 93.294,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.465",
+      "lap_time_seconds": 93.465,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.453",
+      "lap_time_seconds": 93.453,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.861",
+      "lap_time_seconds": 93.86099999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.749",
+      "lap_time_seconds": 93.749,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.795",
+      "lap_time_seconds": 93.795,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.094",
+      "lap_time_seconds": 93.094,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.591",
+      "lap_time_seconds": 93.59100000000001,
+      "position": 19
+    }
+  ],
+  "19": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.338",
+      "lap_time_seconds": 92.338,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.500",
+      "lap_time_seconds": 92.5,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.880",
+      "lap_time_seconds": 92.88,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.807",
+      "lap_time_seconds": 92.807,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.242",
+      "lap_time_seconds": 93.24199999999999,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.201",
+      "lap_time_seconds": 93.201,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.185",
+      "lap_time_seconds": 93.185,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.199",
+      "lap_time_seconds": 93.199,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.276",
+      "lap_time_seconds": 93.27600000000001,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.654",
+      "lap_time_seconds": 93.654,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.338",
+      "lap_time_seconds": 93.338,
+      "position": 11
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:52.861",
+      "lap_time_seconds": 112.86099999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.573",
+      "lap_time_seconds": 93.57300000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.835",
+      "lap_time_seconds": 93.83500000000001,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.907",
+      "lap_time_seconds": 93.907,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.730",
+      "lap_time_seconds": 93.72999999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.281",
+      "lap_time_seconds": 94.281,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.424",
+      "lap_time_seconds": 93.424,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.763",
+      "lap_time_seconds": 93.763,
+      "position": 19
+    }
+  ],
+  "20": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.295",
+      "lap_time_seconds": 92.295,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.770",
+      "lap_time_seconds": 92.77000000000001,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.660",
+      "lap_time_seconds": 92.66,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.803",
+      "lap_time_seconds": 92.803,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.007",
+      "lap_time_seconds": 93.007,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.956",
+      "lap_time_seconds": 92.956,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.016",
+      "lap_time_seconds": 93.01599999999999,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.248",
+      "lap_time_seconds": 93.24799999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.202",
+      "lap_time_seconds": 93.202,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.440",
+      "lap_time_seconds": 93.44,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.489",
+      "lap_time_seconds": 93.489,
+      "position": 11
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.870",
+      "lap_time_seconds": 92.87,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.387",
+      "lap_time_seconds": 93.387,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.480",
+      "lap_time_seconds": 93.47999999999999,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.726",
+      "lap_time_seconds": 93.726,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.671",
+      "lap_time_seconds": 93.67099999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.935",
+      "lap_time_seconds": 93.935,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.281",
+      "lap_time_seconds": 93.281,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.555",
+      "lap_time_seconds": 93.555,
+      "position": 19
+    }
+  ],
+  "21": [
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.848",
+      "lap_time_seconds": 92.848,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.458",
+      "lap_time_seconds": 93.458,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.652",
+      "lap_time_seconds": 93.652,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.560",
+      "lap_time_seconds": 93.56,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.607",
+      "lap_time_seconds": 93.607,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.083",
+      "lap_time_seconds": 94.083,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.189",
+      "lap_time_seconds": 93.189,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.350",
+      "lap_time_seconds": 93.35,
+      "position": 19
+    }
+  ],
+  "22": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.184",
+      "lap_time_seconds": 92.184,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.637",
+      "lap_time_seconds": 92.637,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.537",
+      "lap_time_seconds": 92.537,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.568",
+      "lap_time_seconds": 92.568,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.871",
+      "lap_time_seconds": 92.87100000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.821",
+      "lap_time_seconds": 92.821,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.092",
+      "lap_time_seconds": 93.092,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.168",
+      "lap_time_seconds": 93.168,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.026",
+      "lap_time_seconds": 93.02600000000001,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.021",
+      "lap_time_seconds": 93.021,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.431",
+      "lap_time_seconds": 93.431,
+      "position": 11
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.035",
+      "lap_time_seconds": 93.035,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.479",
+      "lap_time_seconds": 93.479,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.647",
+      "lap_time_seconds": 93.64699999999999,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.679",
+      "lap_time_seconds": 93.679,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.468",
+      "lap_time_seconds": 93.468,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.997",
+      "lap_time_seconds": 93.997,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.004",
+      "lap_time_seconds": 93.00399999999999,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.143",
+      "lap_time_seconds": 93.143,
+      "position": 19
+    }
+  ],
+  "23": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.272",
+      "lap_time_seconds": 92.27199999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.619",
+      "lap_time_seconds": 92.619,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.732",
+      "lap_time_seconds": 92.732,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.683",
+      "lap_time_seconds": 92.68299999999999,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.755",
+      "lap_time_seconds": 92.755,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.974",
+      "lap_time_seconds": 92.97399999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.026",
+      "lap_time_seconds": 93.02600000000001,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:32.846",
+      "lap_time_seconds": 92.846,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:33.262",
+      "lap_time_seconds": 93.262,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.117",
+      "lap_time_seconds": 93.11699999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.114",
+      "lap_time_seconds": 93.114,
+      "position": 11
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.554",
+      "lap_time_seconds": 92.554,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.212",
+      "lap_time_seconds": 93.212,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.622",
+      "lap_time_seconds": 93.622,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.642",
+      "lap_time_seconds": 93.642,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.787",
+      "lap_time_seconds": 93.787,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.980",
+      "lap_time_seconds": 93.97999999999999,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.098",
+      "lap_time_seconds": 93.098,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.294",
+      "lap_time_seconds": 93.294,
+      "position": 19
+    }
+  ],
+  "24": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.350",
+      "lap_time_seconds": 92.35,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.721",
+      "lap_time_seconds": 92.721,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.676",
+      "lap_time_seconds": 92.676,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.852",
+      "lap_time_seconds": 92.852,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.770",
+      "lap_time_seconds": 92.77000000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.703",
+      "lap_time_seconds": 92.703,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.017",
+      "lap_time_seconds": 93.017,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.164",
+      "lap_time_seconds": 93.164,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.726",
+      "lap_time_seconds": 92.726,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.163",
+      "lap_time_seconds": 93.163,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.391",
+      "lap_time_seconds": 93.39099999999999,
+      "position": 11
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.731",
+      "lap_time_seconds": 92.731,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.502",
+      "lap_time_seconds": 93.50200000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.663",
+      "lap_time_seconds": 93.663,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.170",
+      "lap_time_seconds": 93.17,
+      "position": 15
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.464",
+      "lap_time_seconds": 93.464,
+      "position": 16
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.891",
+      "lap_time_seconds": 93.89099999999999,
+      "position": 17
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.205",
+      "lap_time_seconds": 93.205,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.461",
+      "lap_time_seconds": 93.461,
+      "position": 19
+    }
+  ],
+  "25": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.295",
+      "lap_time_seconds": 92.295,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.949",
+      "lap_time_seconds": 92.949,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.809",
+      "lap_time_seconds": 92.809,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.863",
+      "lap_time_seconds": 92.863,
+      "position": 4
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:33.133",
+      "lap_time_seconds": 93.13300000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:33.087",
+      "lap_time_seconds": 93.087,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:33.078",
+      "lap_time_seconds": 93.078,
+      "position": 7
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.098",
+      "lap_time_seconds": 93.098,
+      "position": 8
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.907",
+      "lap_time_seconds": 92.907,
+      "position": 9
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.374",
+      "lap_time_seconds": 93.374,
+      "position": 10
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.798",
+      "lap_time_seconds": 92.798,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.280",
+      "lap_time_seconds": 94.28,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.508",
+      "lap_time_seconds": 93.50800000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.553",
+      "lap_time_seconds": 93.553,
+      "position": 14
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.292",
+      "lap_time_seconds": 93.292,
+      "position": 15
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:34.037",
+      "lap_time_seconds": 94.037,
+      "position": 16
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.224",
+      "lap_time_seconds": 93.22399999999999,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:55.240",
+      "lap_time_seconds": 115.24000000000001,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.351",
+      "lap_time_seconds": 93.351,
+      "position": 19
+    }
+  ],
+  "26": [
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.319",
+      "lap_time_seconds": 93.319,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.524",
+      "lap_time_seconds": 92.524,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.644",
+      "lap_time_seconds": 93.644,
+      "position": 19
+    }
+  ],
+  "27": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.138",
+      "lap_time_seconds": 92.138,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.734",
+      "lap_time_seconds": 92.73400000000001,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.844",
+      "lap_time_seconds": 92.844,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:33.062",
+      "lap_time_seconds": 93.062,
+      "position": 4
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.714",
+      "lap_time_seconds": 92.714,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.914",
+      "lap_time_seconds": 92.914,
+      "position": 6
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:32.988",
+      "lap_time_seconds": 92.988,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.742",
+      "lap_time_seconds": 92.74199999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.126",
+      "lap_time_seconds": 93.126,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.942",
+      "lap_time_seconds": 92.94200000000001,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.237",
+      "lap_time_seconds": 93.237,
+      "position": 11
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:52.728",
+      "lap_time_seconds": 112.72800000000001,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.731",
+      "lap_time_seconds": 93.731,
+      "position": 13
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.299",
+      "lap_time_seconds": 93.299,
+      "position": 14
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.588",
+      "lap_time_seconds": 93.588,
+      "position": 15
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.935",
+      "lap_time_seconds": 93.935,
+      "position": 16
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.418",
+      "lap_time_seconds": 93.418,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.912",
+      "lap_time_seconds": 92.912,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.122",
+      "lap_time_seconds": 93.122,
+      "position": 19
+    }
+  ],
+  "28": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.215",
+      "lap_time_seconds": 92.215,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.714",
+      "lap_time_seconds": 92.714,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:33.190",
+      "lap_time_seconds": 93.19,
+      "position": 3
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:32.504",
+      "lap_time_seconds": 92.50399999999999,
+      "position": 4
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.320",
+      "lap_time_seconds": 92.32,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.744",
+      "lap_time_seconds": 92.744,
+      "position": 6
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.255",
+      "lap_time_seconds": 93.255,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.235",
+      "lap_time_seconds": 92.235,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:33.084",
+      "lap_time_seconds": 93.084,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.814",
+      "lap_time_seconds": 92.814,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.260",
+      "lap_time_seconds": 93.25999999999999,
+      "position": 11
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.220",
+      "lap_time_seconds": 92.22,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:33.490",
+      "lap_time_seconds": 93.49000000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.500",
+      "lap_time_seconds": 93.5,
+      "position": 14
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.760",
+      "lap_time_seconds": 93.75999999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.275",
+      "lap_time_seconds": 93.275,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:53.094",
+      "lap_time_seconds": 113.094,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.999",
+      "lap_time_seconds": 92.999,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.280",
+      "lap_time_seconds": 93.28,
+      "position": 19
+    }
+  ],
+  "29": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.251",
+      "lap_time_seconds": 92.251,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.806",
+      "lap_time_seconds": 92.806,
+      "position": 2
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:32.563",
+      "lap_time_seconds": 92.563,
+      "position": 3
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.155",
+      "lap_time_seconds": 92.155,
+      "position": 4
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.727",
+      "lap_time_seconds": 92.727,
+      "position": 5
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.283",
+      "lap_time_seconds": 93.283,
+      "position": 6
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.869",
+      "lap_time_seconds": 92.869,
+      "position": 7
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.658",
+      "lap_time_seconds": 92.658,
+      "position": 8
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:53.262",
+      "lap_time_seconds": 113.262,
+      "position": 9
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.702",
+      "lap_time_seconds": 93.702,
+      "position": 10
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.945",
+      "lap_time_seconds": 91.945,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.723",
+      "lap_time_seconds": 92.723,
+      "position": 12
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:50.559",
+      "lap_time_seconds": 110.559,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.351",
+      "lap_time_seconds": 93.351,
+      "position": 14
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.356",
+      "lap_time_seconds": 93.356,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.118",
+      "lap_time_seconds": 93.118,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.499",
+      "lap_time_seconds": 92.499,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.812",
+      "lap_time_seconds": 92.812,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.107",
+      "lap_time_seconds": 93.107,
+      "position": 19
+    }
+  ],
+  "30": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.363",
+      "lap_time_seconds": 92.363,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.609",
+      "lap_time_seconds": 92.60900000000001,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.246",
+      "lap_time_seconds": 92.24600000000001,
+      "position": 3
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.686",
+      "lap_time_seconds": 92.686,
+      "position": 4
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.299",
+      "lap_time_seconds": 93.299,
+      "position": 5
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:52.490",
+      "lap_time_seconds": 112.49000000000001,
+      "position": 6
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.882",
+      "lap_time_seconds": 92.882,
+      "position": 7
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.464",
+      "lap_time_seconds": 92.464,
+      "position": 8
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.510",
+      "lap_time_seconds": 91.51,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.129",
+      "lap_time_seconds": 92.12899999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.014",
+      "lap_time_seconds": 94.01400000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.408",
+      "lap_time_seconds": 91.408,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.367",
+      "lap_time_seconds": 93.36699999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.466",
+      "lap_time_seconds": 93.46600000000001,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.211",
+      "lap_time_seconds": 93.211,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:52.724",
+      "lap_time_seconds": 112.72399999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.564",
+      "lap_time_seconds": 92.564,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.006",
+      "lap_time_seconds": 93.006,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.332",
+      "lap_time_seconds": 93.332,
+      "position": 19
+    }
+  ],
+  "31": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:32.388",
+      "lap_time_seconds": 92.388,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:32.808",
+      "lap_time_seconds": 92.80799999999999,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:32.744",
+      "lap_time_seconds": 92.744,
+      "position": 3
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.916",
+      "lap_time_seconds": 92.916,
+      "position": 4
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.680",
+      "lap_time_seconds": 91.68,
+      "position": 5
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:33.391",
+      "lap_time_seconds": 93.39099999999999,
+      "position": 6
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.816",
+      "lap_time_seconds": 92.816,
+      "position": 7
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.800",
+      "lap_time_seconds": 91.8,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:33.233",
+      "lap_time_seconds": 93.233,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.494",
+      "lap_time_seconds": 92.494,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:32.933",
+      "lap_time_seconds": 92.93299999999999,
+      "position": 11
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.532",
+      "lap_time_seconds": 91.532,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.440",
+      "lap_time_seconds": 93.44,
+      "position": 13
+    },
+    {
+      "driver_number": 20,
+      "driver_id": "kevin_magnussen",
+      "lap_time": "1:33.464",
+      "lap_time_seconds": 93.464,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.279",
+      "lap_time_seconds": 93.279,
+      "position": 15
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.994",
+      "lap_time_seconds": 91.994,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.829",
+      "lap_time_seconds": 92.82900000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.073",
+      "lap_time_seconds": 93.07300000000001,
+      "position": 18
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:33.133",
+      "lap_time_seconds": 93.13300000000001,
+      "position": 19
+    }
+  ],
+  "32": [
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:35.161",
+      "lap_time_seconds": 95.161,
+      "position": 3
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:38.559",
+      "lap_time_seconds": 98.559,
+      "position": 4
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:39.410",
+      "lap_time_seconds": 99.41,
+      "position": 5
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:36.773",
+      "lap_time_seconds": 96.773,
+      "position": 6
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:36.215",
+      "lap_time_seconds": 96.215,
+      "position": 7
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:40.097",
+      "lap_time_seconds": 100.09700000000001,
+      "position": 8
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:42.583",
+      "lap_time_seconds": 102.583,
+      "position": 9
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:44.380",
+      "lap_time_seconds": 104.38,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:06.804",
+      "lap_time_seconds": 126.804,
+      "position": 11
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:45.965",
+      "lap_time_seconds": 105.965,
+      "position": 12
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:47.079",
+      "lap_time_seconds": 107.07900000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:11.273",
+      "lap_time_seconds": 131.273,
+      "position": 14
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:52.267",
+      "lap_time_seconds": 112.267,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:50.128",
+      "lap_time_seconds": 110.128,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:55.002",
+      "lap_time_seconds": 115.00200000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:54.146",
+      "lap_time_seconds": 114.146,
+      "position": 18
+    }
+  ],
+  "33": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:58.611",
+      "lap_time_seconds": 118.61099999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "2:02.830",
+      "lap_time_seconds": 122.83,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "2:03.496",
+      "lap_time_seconds": 123.496,
+      "position": 3
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "2:03.930",
+      "lap_time_seconds": 123.93,
+      "position": 4
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "2:07.856",
+      "lap_time_seconds": 127.856,
+      "position": 5
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "2:08.178",
+      "lap_time_seconds": 128.178,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "2:09.650",
+      "lap_time_seconds": 129.65,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "2:08.084",
+      "lap_time_seconds": 128.084,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "2:26.603",
+      "lap_time_seconds": 146.603,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "2:26.130",
+      "lap_time_seconds": 146.13,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:08.973",
+      "lap_time_seconds": 128.973,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:08.963",
+      "lap_time_seconds": 128.963,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:08.913",
+      "lap_time_seconds": 128.913,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:26.908",
+      "lap_time_seconds": 146.90800000000002,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "2:04.102",
+      "lap_time_seconds": 124.102,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "2:25.863",
+      "lap_time_seconds": 145.863,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "2:24.933",
+      "lap_time_seconds": 144.933,
+      "position": 17
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:26.674",
+      "lap_time_seconds": 146.674,
+      "position": 18
+    }
+  ],
+  "34": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "2:58.471",
+      "lap_time_seconds": 178.471,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "2:45.401",
+      "lap_time_seconds": 165.401,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "2:31.747",
+      "lap_time_seconds": 151.747,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "2:14.583",
+      "lap_time_seconds": 134.583,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "2:11.011",
+      "lap_time_seconds": 131.011,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "2:27.213",
+      "lap_time_seconds": 147.213,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "2:10.323",
+      "lap_time_seconds": 130.323,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "2:05.804",
+      "lap_time_seconds": 125.804,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "2:06.403",
+      "lap_time_seconds": 126.403,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "2:06.609",
+      "lap_time_seconds": 126.609,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:05.716",
+      "lap_time_seconds": 125.716,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:06.623",
+      "lap_time_seconds": 126.623,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:05.672",
+      "lap_time_seconds": 125.672,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:06.680",
+      "lap_time_seconds": 126.68,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "2:07.037",
+      "lap_time_seconds": 127.037,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "2:06.545",
+      "lap_time_seconds": 126.545,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "2:22.914",
+      "lap_time_seconds": 142.914,
+      "position": 17
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:05.892",
+      "lap_time_seconds": 125.892,
+      "position": 18
+    }
+  ],
+  "35": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "2:27.771",
+      "lap_time_seconds": 147.77100000000002,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "2:27.853",
+      "lap_time_seconds": 147.853,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "2:27.418",
+      "lap_time_seconds": 147.418,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "2:28.389",
+      "lap_time_seconds": 148.389,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "2:26.512",
+      "lap_time_seconds": 146.512,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "2:25.191",
+      "lap_time_seconds": 145.191,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "2:23.064",
+      "lap_time_seconds": 143.064,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "2:22.313",
+      "lap_time_seconds": 142.313,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "2:22.565",
+      "lap_time_seconds": 142.565,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "2:23.719",
+      "lap_time_seconds": 143.719,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:17.502",
+      "lap_time_seconds": 137.502,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:03.428",
+      "lap_time_seconds": 123.428,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:02.167",
+      "lap_time_seconds": 122.167,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:00.029",
+      "lap_time_seconds": 120.029,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:54.219",
+      "lap_time_seconds": 114.219,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:48.964",
+      "lap_time_seconds": 108.964,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:47.368",
+      "lap_time_seconds": 107.368,
+      "position": 17
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:41.883",
+      "lap_time_seconds": 101.88300000000001,
+      "position": 18
+    }
+  ],
+  "36": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "2:26.545",
+      "lap_time_seconds": 146.54500000000002,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "2:26.496",
+      "lap_time_seconds": 146.496,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "2:26.619",
+      "lap_time_seconds": 146.619,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "2:25.400",
+      "lap_time_seconds": 145.4,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "2:26.366",
+      "lap_time_seconds": 146.36599999999999,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "2:25.427",
+      "lap_time_seconds": 145.427,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "2:25.182",
+      "lap_time_seconds": 145.182,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "2:25.094",
+      "lap_time_seconds": 145.094,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "2:25.067",
+      "lap_time_seconds": 145.067,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "2:23.860",
+      "lap_time_seconds": 143.86,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:24.007",
+      "lap_time_seconds": 144.007,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:24.060",
+      "lap_time_seconds": 144.06,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:24.892",
+      "lap_time_seconds": 144.892,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:25.248",
+      "lap_time_seconds": 145.248,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "2:20.527",
+      "lap_time_seconds": 140.527,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "2:24.840",
+      "lap_time_seconds": 144.84,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "2:25.061",
+      "lap_time_seconds": 145.061,
+      "position": 17
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:17.786",
+      "lap_time_seconds": 137.786,
+      "position": 18
+    }
+  ],
+  "37": [
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:25.271",
+      "lap_time_seconds": 145.27100000000002,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:25.027",
+      "lap_time_seconds": 145.027,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "2:23.518",
+      "lap_time_seconds": 143.518,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "2:23.969",
+      "lap_time_seconds": 143.969,
+      "position": 16
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:23.160",
+      "lap_time_seconds": 143.16,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "2:28.721",
+      "lap_time_seconds": 148.721,
+      "position": 18
+    }
+  ],
+  "38": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "2:21.674",
+      "lap_time_seconds": 141.674,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "2:21.488",
+      "lap_time_seconds": 141.488,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "2:20.046",
+      "lap_time_seconds": 140.046,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "2:19.502",
+      "lap_time_seconds": 139.502,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "2:18.924",
+      "lap_time_seconds": 138.924,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "2:17.955",
+      "lap_time_seconds": 137.95499999999998,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "2:17.408",
+      "lap_time_seconds": 137.40800000000002,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "2:16.625",
+      "lap_time_seconds": 136.625,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "2:15.556",
+      "lap_time_seconds": 135.556,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "2:14.823",
+      "lap_time_seconds": 134.823,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:13.934",
+      "lap_time_seconds": 133.934,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "2:13.174",
+      "lap_time_seconds": 133.174,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "2:12.192",
+      "lap_time_seconds": 132.192,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "2:11.371",
+      "lap_time_seconds": 131.371,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "2:10.750",
+      "lap_time_seconds": 130.75,
+      "position": 15
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "2:09.789",
+      "lap_time_seconds": 129.789,
+      "position": 16
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "2:08.983",
+      "lap_time_seconds": 128.983,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "2:07.914",
+      "lap_time_seconds": 127.914,
+      "position": 18
+    }
+  ],
+  "39": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.348",
+      "lap_time_seconds": 90.348,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.243",
+      "lap_time_seconds": 91.243,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.427",
+      "lap_time_seconds": 91.42699999999999,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.646",
+      "lap_time_seconds": 91.646,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.848",
+      "lap_time_seconds": 91.848,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.320",
+      "lap_time_seconds": 92.32,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.459",
+      "lap_time_seconds": 92.459,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.503",
+      "lap_time_seconds": 92.503,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.630",
+      "lap_time_seconds": 92.63,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.500",
+      "lap_time_seconds": 92.5,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:32.306",
+      "lap_time_seconds": 92.306,
+      "position": 11
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:32.980",
+      "lap_time_seconds": 92.97999999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.794",
+      "lap_time_seconds": 92.794,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.618",
+      "lap_time_seconds": 92.618,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.882",
+      "lap_time_seconds": 92.882,
+      "position": 15
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.527",
+      "lap_time_seconds": 92.527,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.647",
+      "lap_time_seconds": 93.64699999999999,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.188",
+      "lap_time_seconds": 93.188,
+      "position": 18
+    }
+  ],
+  "40": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.547",
+      "lap_time_seconds": 90.547,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:30.997",
+      "lap_time_seconds": 90.997,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.279",
+      "lap_time_seconds": 91.279,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.475",
+      "lap_time_seconds": 91.475,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.606",
+      "lap_time_seconds": 91.606,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.691",
+      "lap_time_seconds": 91.691,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.783",
+      "lap_time_seconds": 91.783,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.909",
+      "lap_time_seconds": 91.90899999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.176",
+      "lap_time_seconds": 92.176,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.234",
+      "lap_time_seconds": 92.23400000000001,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:32.320",
+      "lap_time_seconds": 92.32,
+      "position": 11
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:32.823",
+      "lap_time_seconds": 92.82300000000001,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.949",
+      "lap_time_seconds": 92.949,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.056",
+      "lap_time_seconds": 93.056,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.932",
+      "lap_time_seconds": 92.932,
+      "position": 15
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.932",
+      "lap_time_seconds": 92.932,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:33.180",
+      "lap_time_seconds": 93.18,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:33.310",
+      "lap_time_seconds": 93.31,
+      "position": 18
+    }
+  ],
+  "41": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.688",
+      "lap_time_seconds": 90.688,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:30.760",
+      "lap_time_seconds": 90.76,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:30.673",
+      "lap_time_seconds": 90.673,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:30.850",
+      "lap_time_seconds": 90.85,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.124",
+      "lap_time_seconds": 91.124,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.652",
+      "lap_time_seconds": 91.652,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.427",
+      "lap_time_seconds": 91.42699999999999,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.391",
+      "lap_time_seconds": 91.39099999999999,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.273",
+      "lap_time_seconds": 91.273,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.286",
+      "lap_time_seconds": 91.286,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.707",
+      "lap_time_seconds": 91.707,
+      "position": 11
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:31.827",
+      "lap_time_seconds": 91.827,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.840",
+      "lap_time_seconds": 91.84,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.229",
+      "lap_time_seconds": 92.229,
+      "position": 14
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.104",
+      "lap_time_seconds": 92.104,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.321",
+      "lap_time_seconds": 93.321,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.650",
+      "lap_time_seconds": 92.65,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.655",
+      "lap_time_seconds": 92.655,
+      "position": 18
+    }
+  ],
+  "42": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.275",
+      "lap_time_seconds": 90.275,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:30.922",
+      "lap_time_seconds": 90.922,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.042",
+      "lap_time_seconds": 91.042,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.178",
+      "lap_time_seconds": 91.178,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.188",
+      "lap_time_seconds": 91.188,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.829",
+      "lap_time_seconds": 91.82900000000001,
+      "position": 6
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.643",
+      "lap_time_seconds": 91.643,
+      "position": 7
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.716",
+      "lap_time_seconds": 91.71600000000001,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.879",
+      "lap_time_seconds": 91.879,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.926",
+      "lap_time_seconds": 91.926,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.508",
+      "lap_time_seconds": 91.508,
+      "position": 11
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:31.539",
+      "lap_time_seconds": 91.539,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.699",
+      "lap_time_seconds": 91.699,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:31.902",
+      "lap_time_seconds": 91.902,
+      "position": 14
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.097",
+      "lap_time_seconds": 92.09700000000001,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.306",
+      "lap_time_seconds": 92.306,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.369",
+      "lap_time_seconds": 92.369,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.243",
+      "lap_time_seconds": 92.243,
+      "position": 18
+    }
+  ],
+  "43": [
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.231",
+      "lap_time_seconds": 91.231,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.747",
+      "lap_time_seconds": 91.747,
+      "position": 6
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:32.005",
+      "lap_time_seconds": 92.005,
+      "position": 7
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.890",
+      "lap_time_seconds": 92.89,
+      "position": 8
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.752",
+      "lap_time_seconds": 91.752,
+      "position": 9
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.052",
+      "lap_time_seconds": 92.05199999999999,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.803",
+      "lap_time_seconds": 91.803,
+      "position": 11
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:31.648",
+      "lap_time_seconds": 91.648,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.743",
+      "lap_time_seconds": 91.743,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.047",
+      "lap_time_seconds": 92.047,
+      "position": 14
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.325",
+      "lap_time_seconds": 92.325,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.572",
+      "lap_time_seconds": 92.572,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.516",
+      "lap_time_seconds": 92.51599999999999,
+      "position": 17
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.645",
+      "lap_time_seconds": 92.64500000000001,
+      "position": 18
+    }
+  ],
+  "44": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.648",
+      "lap_time_seconds": 90.648,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:30.786",
+      "lap_time_seconds": 90.786,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.589",
+      "lap_time_seconds": 91.589,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.465",
+      "lap_time_seconds": 91.465,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.568",
+      "lap_time_seconds": 91.568,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.131",
+      "lap_time_seconds": 92.131,
+      "position": 6
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.712",
+      "lap_time_seconds": 91.712,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.057",
+      "lap_time_seconds": 92.057,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.815",
+      "lap_time_seconds": 92.815,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:34.622",
+      "lap_time_seconds": 94.622,
+      "position": 10
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:32.862",
+      "lap_time_seconds": 92.862,
+      "position": 11
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:34.010",
+      "lap_time_seconds": 94.00999999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.849",
+      "lap_time_seconds": 92.84899999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.563",
+      "lap_time_seconds": 92.563,
+      "position": 14
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.441",
+      "lap_time_seconds": 92.441,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.534",
+      "lap_time_seconds": 92.53399999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.789",
+      "lap_time_seconds": 92.789,
+      "position": 17
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:34.017",
+      "lap_time_seconds": 94.017,
+      "position": 18
+    }
+  ],
+  "45": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.342",
+      "lap_time_seconds": 91.342,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.301",
+      "lap_time_seconds": 91.301,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.359",
+      "lap_time_seconds": 91.35900000000001,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.406",
+      "lap_time_seconds": 91.406,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.718",
+      "lap_time_seconds": 91.718,
+      "position": 5
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.036",
+      "lap_time_seconds": 92.036,
+      "position": 6
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.571",
+      "lap_time_seconds": 91.571,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.146",
+      "lap_time_seconds": 92.146,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.900",
+      "lap_time_seconds": 91.9,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:32.606",
+      "lap_time_seconds": 92.606,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:33.008",
+      "lap_time_seconds": 93.00800000000001,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.724",
+      "lap_time_seconds": 92.72399999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:33.177",
+      "lap_time_seconds": 93.17699999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.534",
+      "lap_time_seconds": 92.53399999999999,
+      "position": 14
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "1:36.665",
+      "lap_time_seconds": 96.66499999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.494",
+      "lap_time_seconds": 92.494,
+      "position": 16
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.502",
+      "lap_time_seconds": 92.50200000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.829",
+      "lap_time_seconds": 92.82900000000001,
+      "position": 18
+    }
+  ],
+  "46": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.114",
+      "lap_time_seconds": 91.114,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.094",
+      "lap_time_seconds": 91.094,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.559",
+      "lap_time_seconds": 91.559,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.496",
+      "lap_time_seconds": 91.496,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.984",
+      "lap_time_seconds": 91.98400000000001,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.675",
+      "lap_time_seconds": 91.675,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.891",
+      "lap_time_seconds": 92.89099999999999,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:32.116",
+      "lap_time_seconds": 92.116,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.850",
+      "lap_time_seconds": 91.85,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.906",
+      "lap_time_seconds": 91.906,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.998",
+      "lap_time_seconds": 91.998,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.421",
+      "lap_time_seconds": 92.42099999999999,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.284",
+      "lap_time_seconds": 92.28399999999999,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.584",
+      "lap_time_seconds": 92.584,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.535",
+      "lap_time_seconds": 92.535,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.329",
+      "lap_time_seconds": 92.32900000000001,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.716",
+      "lap_time_seconds": 92.71600000000001,
+      "position": 17
+    },
+    {
+      "driver_number": 10,
+      "driver_id": "gasly",
+      "lap_time": "2:35.981",
+      "lap_time_seconds": 155.981,
+      "position": 18
+    }
+  ],
+  "47": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.148",
+      "lap_time_seconds": 91.148,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.593",
+      "lap_time_seconds": 91.593,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.248",
+      "lap_time_seconds": 91.248,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.427",
+      "lap_time_seconds": 91.42699999999999,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.644",
+      "lap_time_seconds": 91.644,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.505",
+      "lap_time_seconds": 91.505,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.828",
+      "lap_time_seconds": 91.828,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.537",
+      "lap_time_seconds": 91.537,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.360",
+      "lap_time_seconds": 91.36,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.592",
+      "lap_time_seconds": 91.592,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.768",
+      "lap_time_seconds": 91.768,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.868",
+      "lap_time_seconds": 91.868,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.079",
+      "lap_time_seconds": 92.07900000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.101",
+      "lap_time_seconds": 92.101,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.291",
+      "lap_time_seconds": 92.291,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:31.957",
+      "lap_time_seconds": 91.957,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.456",
+      "lap_time_seconds": 92.456,
+      "position": 17
+    }
+  ],
+  "48": [
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:31.769",
+      "lap_time_seconds": 91.769,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.353",
+      "lap_time_seconds": 92.35300000000001,
+      "position": 17
+    }
+  ],
+  "49": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.218",
+      "lap_time_seconds": 91.218,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.020",
+      "lap_time_seconds": 91.02,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.286",
+      "lap_time_seconds": 91.286,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.422",
+      "lap_time_seconds": 91.422,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.612",
+      "lap_time_seconds": 91.612,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.360",
+      "lap_time_seconds": 91.36,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:32.075",
+      "lap_time_seconds": 92.075,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.912",
+      "lap_time_seconds": 91.912,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.781",
+      "lap_time_seconds": 91.781,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.723",
+      "lap_time_seconds": 91.723,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.860",
+      "lap_time_seconds": 91.86,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.873",
+      "lap_time_seconds": 91.873,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.167",
+      "lap_time_seconds": 92.167,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.080",
+      "lap_time_seconds": 92.08,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.504",
+      "lap_time_seconds": 92.50399999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.599",
+      "lap_time_seconds": 92.59899999999999,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.540",
+      "lap_time_seconds": 92.53999999999999,
+      "position": 17
+    }
+  ],
+  "50": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.292",
+      "lap_time_seconds": 91.292,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.560",
+      "lap_time_seconds": 91.56,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.526",
+      "lap_time_seconds": 91.526,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.752",
+      "lap_time_seconds": 91.752,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.421",
+      "lap_time_seconds": 91.42099999999999,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.139",
+      "lap_time_seconds": 91.139,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.999",
+      "lap_time_seconds": 91.999,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.860",
+      "lap_time_seconds": 91.86,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.716",
+      "lap_time_seconds": 91.71600000000001,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.408",
+      "lap_time_seconds": 91.408,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.794",
+      "lap_time_seconds": 91.794,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:32.085",
+      "lap_time_seconds": 92.08500000000001,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.163",
+      "lap_time_seconds": 92.163,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.158",
+      "lap_time_seconds": 92.158,
+      "position": 14
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.790",
+      "lap_time_seconds": 92.78999999999999,
+      "position": 15
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.459",
+      "lap_time_seconds": 92.459,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.632",
+      "lap_time_seconds": 92.632,
+      "position": 17
+    }
+  ],
+  "51": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:31.397",
+      "lap_time_seconds": 91.39699999999999,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.077",
+      "lap_time_seconds": 91.077,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.703",
+      "lap_time_seconds": 91.703,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:31.305",
+      "lap_time_seconds": 91.305,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.563",
+      "lap_time_seconds": 91.563,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:30.914",
+      "lap_time_seconds": 90.914,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.930",
+      "lap_time_seconds": 91.93,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.930",
+      "lap_time_seconds": 91.93,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:31.763",
+      "lap_time_seconds": 91.763,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.366",
+      "lap_time_seconds": 91.366,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:31.691",
+      "lap_time_seconds": 91.691,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.956",
+      "lap_time_seconds": 91.956,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:32.133",
+      "lap_time_seconds": 92.13300000000001,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:32.166",
+      "lap_time_seconds": 92.166,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.090",
+      "lap_time_seconds": 92.09,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:33.212",
+      "lap_time_seconds": 93.212,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.445",
+      "lap_time_seconds": 92.445,
+      "position": 17
+    }
+  ],
+  "52": [
+    {
+      "driver_number": 1,
+      "driver_id": "max_verstappen",
+      "lap_time": "1:30.975",
+      "lap_time_seconds": 90.975,
+      "position": 1
+    },
+    {
+      "driver_number": 4,
+      "driver_id": "norris",
+      "lap_time": "1:31.251",
+      "lap_time_seconds": 91.251,
+      "position": 2
+    },
+    {
+      "driver_number": 44,
+      "driver_id": "hamilton",
+      "lap_time": "1:31.823",
+      "lap_time_seconds": 91.82300000000001,
+      "position": 3
+    },
+    {
+      "driver_number": 81,
+      "driver_id": "piastri",
+      "lap_time": "1:30.941",
+      "lap_time_seconds": 90.941,
+      "position": 4
+    },
+    {
+      "driver_number": 63,
+      "driver_id": "russell",
+      "lap_time": "1:31.433",
+      "lap_time_seconds": 91.43299999999999,
+      "position": 5
+    },
+    {
+      "driver_number": 11,
+      "driver_id": "perez",
+      "lap_time": "1:31.188",
+      "lap_time_seconds": 91.188,
+      "position": 6
+    },
+    {
+      "driver_number": 14,
+      "driver_id": "alonso",
+      "lap_time": "1:31.711",
+      "lap_time_seconds": 91.711,
+      "position": 7
+    },
+    {
+      "driver_number": 23,
+      "driver_id": "albon",
+      "lap_time": "1:31.809",
+      "lap_time_seconds": 91.809,
+      "position": 8
+    },
+    {
+      "driver_number": 16,
+      "driver_id": "leclerc",
+      "lap_time": "1:32.257",
+      "lap_time_seconds": 92.257,
+      "position": 9
+    },
+    {
+      "driver_number": 55,
+      "driver_id": "sainz",
+      "lap_time": "1:31.880",
+      "lap_time_seconds": 91.88,
+      "position": 10
+    },
+    {
+      "driver_number": 18,
+      "driver_id": "stroll",
+      "lap_time": "1:32.138",
+      "lap_time_seconds": 92.138,
+      "position": 11
+    },
+    {
+      "driver_number": 2,
+      "driver_id": "sargeant",
+      "lap_time": "1:31.984",
+      "lap_time_seconds": 91.98400000000001,
+      "position": 12
+    },
+    {
+      "driver_number": 77,
+      "driver_id": "bottas",
+      "lap_time": "1:31.852",
+      "lap_time_seconds": 91.852,
+      "position": 13
+    },
+    {
+      "driver_number": 27,
+      "driver_id": "hulkenberg",
+      "lap_time": "1:31.776",
+      "lap_time_seconds": 91.776,
+      "position": 14
+    },
+    {
+      "driver_number": 24,
+      "driver_id": "zhou",
+      "lap_time": "1:32.114",
+      "lap_time_seconds": 92.114,
+      "position": 15
+    },
+    {
+      "driver_number": 22,
+      "driver_id": "tsunoda",
+      "lap_time": "1:32.780",
+      "lap_time_seconds": 92.78,
+      "position": 16
+    },
+    {
+      "driver_number": 21,
+      "driver_id": "de_vries",
+      "lap_time": "1:32.420",
+      "lap_time_seconds": 92.42,
+      "position": 17
+    }
+  ]
+}

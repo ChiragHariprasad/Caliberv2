@@ -203,8 +203,8 @@ class EventControlAgent(BaseAgent):
                 self.record_outcome("FINDING_EMITTED", latency_ms=latency)
                 self.outcomes_count["FINDING_EMITTED"] += 1
 
-            elif event_type in {"SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED", "RED_FLAG", "YELLOW_FLAG"}:
-                status_lifecycle = "ACTIVE" if "DEPLOYED" in event_type or "FLAG" in event_type else ("ENDING" if "ENDING" in event_type else "ENDED")
+            elif event_type in {"SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED", "SAFETY_CAR_IN_THIS_LAP", "RED_FLAG", "YELLOW_FLAG"}:
+                status_lifecycle = "ACTIVE" if ("DEPLOYED" in event_type or "FLAG" in event_type) else ("ENDING" if ("ENDING" in event_type or "IN_THIS_LAP" in event_type) else "ENDED")
                 self.active_lifecycle = status_lifecycle
                 finding_sc = Finding(
                     finding_id=f"finding-{event_type.lower()}-{event.event_id}",
@@ -223,6 +223,161 @@ class EventControlAgent(BaseAgent):
                     model_version=self.model_version,
                 )
                 await self.emit_finding(finding_sc)
+                latency = (time.perf_counter() - t0) * 1000.0
+                self.record_outcome("FINDING_EMITTED", latency_ms=latency)
+                self.outcomes_count["FINDING_EMITTED"] += 1
+
+            elif event_type in {"GREEN_FLAG_RESUMED", "GREEN_FLAG", "TRACK_STATUS_GREEN"}:
+                self.active_lifecycle = "ACTIVE"
+                self.active_event_type = "GREEN_FLAG"
+                finding_green = Finding(
+                    finding_id=f"finding-green-{event.event_id}",
+                    agent_id=self.agent_id,
+                    finding_type="RACE_EVENT_LIFECYCLE",
+                    session_id=event.session.session_id,
+                    run_id=event.run.run_id,
+                    subject=Subject(segment_id=event.subject.segment_id or "track"),
+                    trigger_event_id=event.event_id,
+                    as_of_event_time=event.time.event_time_utc,
+                    interpretation=Interpretation.OBSERVED,
+                    result={"event_type": "GREEN_FLAG", "lifecycle": "ACTIVE", "source_provenance": provenance},
+                    evidence_refs=[event.event_id],
+                    assessment_status=FindingStatus.CONFIRMED,
+                    reason_codes=["RCM_GREEN_FLAG_RESUMED"],
+                    model_version=self.model_version,
+                )
+                await self.emit_finding(finding_green)
+                latency = (time.perf_counter() - t0) * 1000.0
+                self.record_outcome("FINDING_EMITTED", latency_ms=latency)
+                self.outcomes_count["FINDING_EMITTED"] += 1
+
+            elif event_type in {"DRIVER_RETIRED", "RETIREMENT"}:
+                dn = event.subject.driver_number
+                finding_ret = Finding(
+                    finding_id=f"finding-ret-{event.event_id}-{dn or 'unk'}",
+                    agent_id=self.agent_id,
+                    finding_type="DRIVER_RETIREMENT",
+                    session_id=event.session.session_id,
+                    run_id=event.run.run_id,
+                    subject=Subject(driver_number=dn),
+                    trigger_event_id=event.event_id,
+                    as_of_event_time=event.time.event_time_utc,
+                    interpretation=Interpretation.OBSERVED,
+                    result={
+                        "driver_number": dn,
+                        "status": "RETIRED",
+                        "reason": event.payload.get("detail", event.payload.get("reason", "Mechanical failure")),
+                        "source_provenance": provenance,
+                    },
+                    evidence_refs=[event.event_id],
+                    assessment_status=FindingStatus.CONFIRMED,
+                    reason_codes=["FIA_DRIVER_RETIREMENT_CONFIRMED"],
+                    model_version=self.model_version,
+                )
+                await self.emit_finding(finding_ret)
+                latency = (time.perf_counter() - t0) * 1000.0
+                self.record_outcome("FINDING_EMITTED", latency_ms=latency)
+                self.outcomes_count["FINDING_EMITTED"] += 1
+
+            elif event_type in {"STEWARD_DECISION", "STEWARDS_DECISION", "PENALTY"}:
+                dn = event.subject.driver_number
+                finding_stew = Finding(
+                    finding_id=f"finding-stew-{event.event_id}-{dn or 'unk'}",
+                    agent_id=self.agent_id,
+                    finding_type="STEWARD_ACTION",
+                    session_id=event.session.session_id,
+                    run_id=event.run.run_id,
+                    subject=Subject(driver_number=dn),
+                    trigger_event_id=event.event_id,
+                    as_of_event_time=event.time.event_time_utc,
+                    interpretation=Interpretation.OBSERVED,
+                    result={
+                        "driver_number": dn,
+                        "decision": event.payload.get("title", "Steward Action"),
+                        "detail": event.payload.get("detail", ""),
+                        "source_provenance": provenance,
+                    },
+                    evidence_refs=[event.event_id],
+                    assessment_status=FindingStatus.CONFIRMED,
+                    reason_codes=["FIA_STEWARDS_DECISION_APPLIED"],
+                    model_version=self.model_version,
+                )
+                await self.emit_finding(finding_stew)
+                latency = (time.perf_counter() - t0) * 1000.0
+                self.record_outcome("FINDING_EMITTED", latency_ms=latency)
+                self.outcomes_count["FINDING_EMITTED"] += 1
+
+            elif event_type in {"SESSION_CHEQUERED", "CHEQUERED_FLAG"}:
+                self.active_lifecycle = "CONCLUDED"
+                finding_chq = Finding(
+                    finding_id=f"finding-chq-{event.event_id}",
+                    agent_id=self.agent_id,
+                    finding_type="RACE_EVENT_LIFECYCLE",
+                    session_id=event.session.session_id,
+                    run_id=event.run.run_id,
+                    subject=Subject(segment_id="track"),
+                    trigger_event_id=event.event_id,
+                    as_of_event_time=event.time.event_time_utc,
+                    interpretation=Interpretation.OBSERVED,
+                    result={"event_type": "CHEQUERED_FLAG", "lifecycle": "CONCLUDED", "source_provenance": provenance},
+                    evidence_refs=[event.event_id],
+                    assessment_status=FindingStatus.CONFIRMED,
+                    reason_codes=["SESSION_CHEQUERED_FLAG"],
+                    model_version=self.model_version,
+                )
+                await self.emit_finding(finding_chq)
+                latency = (time.perf_counter() - t0) * 1000.0
+                self.record_outcome("FINDING_EMITTED", latency_ms=latency)
+                self.outcomes_count["FINDING_EMITTED"] += 1
+
+            elif event_type in {"RACE_CONTROL_MESSAGE", "RACE_CONTROL_NOTICE"}:
+                cat = (event.payload.get("category") or "").upper()
+                flag = (event.payload.get("flag") or "").upper()
+                title = (event.payload.get("title") or "").upper()
+                dn = event.subject.driver_number
+                finding_type = "RACE_EVENT_LIFECYCLE"
+                reason_code = "RCM_NOTICE"
+                res_payload: dict[str, Any] = {"category": cat, "flag": flag, "title": event.payload.get("title", ""), "source_provenance": provenance}
+
+                if "CHEQUERED" in title:
+                    finding_type = "RACE_EVENT_LIFECYCLE"
+                    reason_code = "SESSION_CHEQUERED_FLAG"
+                    self.active_lifecycle = "CONCLUDED"
+                    res_payload.update({"event_type": "CHEQUERED_FLAG", "lifecycle": "CONCLUDED"})
+                elif cat == "RETIREMENT" or "RETIRED" in title:
+                    finding_type = "DRIVER_RETIREMENT"
+                    reason_code = "FIA_DRIVER_RETIREMENT_CONFIRMED"
+                    res_payload.update({"driver_number": dn, "status": "RETIRED", "detail": event.payload.get("detail", "")})
+                elif cat == "STEWARDS" or "STEWARDS DECISION" in title or "PENALTY" in title:
+                    finding_type = "STEWARD_ACTION"
+                    reason_code = "FIA_STEWARDS_DECISION_APPLIED"
+                    res_payload.update({"driver_number": dn, "detail": event.payload.get("detail", "")})
+                elif cat == "INCIDENT" or "STOPPED" in title:
+                    finding_type = "INCIDENT_TRACK_HAZARD"
+                    reason_code = "RCM_INCIDENT_REPORTED"
+                    res_payload.update({"driver_number": dn, "location": event.payload.get("title", "")})
+                elif "SAFETY_CAR" in cat or flag == "YELLOW":
+                    finding_type = "RACE_EVENT_LIFECYCLE"
+                    reason_code = "RCM_NEUTRALISATION"
+                    res_payload.update({"event_type": "SAFETY_CAR", "lifecycle": "ACTIVE"})
+
+                finding_rcm = Finding(
+                    finding_id=f"finding-rcm-{event.event_id}",
+                    agent_id=self.agent_id,
+                    finding_type=finding_type,
+                    session_id=event.session.session_id,
+                    run_id=event.run.run_id,
+                    subject=Subject(driver_number=dn, segment_id=event.subject.segment_id or "track"),
+                    trigger_event_id=event.event_id,
+                    as_of_event_time=event.time.event_time_utc,
+                    interpretation=Interpretation.OBSERVED,
+                    result=res_payload,
+                    evidence_refs=[event.event_id],
+                    assessment_status=FindingStatus.CONFIRMED,
+                    reason_codes=[reason_code],
+                    model_version=self.model_version,
+                )
+                await self.emit_finding(finding_rcm)
                 latency = (time.perf_counter() - t0) * 1000.0
                 self.record_outcome("FINDING_EMITTED", latency_ms=latency)
                 self.outcomes_count["FINDING_EMITTED"] += 1

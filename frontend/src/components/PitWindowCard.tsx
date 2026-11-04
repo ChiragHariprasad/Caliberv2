@@ -1,4 +1,5 @@
 import type { StrategyOption } from '../types';
+import { ClockIcon, ZapIcon } from './icons';
 
 interface PitWindowCardProps {
   strategies: StrategyOption[];
@@ -12,13 +13,13 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
     <section className="panel pit-window-panel" aria-labelledby="pit-window-title">
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">Strategic Opportunity Analysis</p>
-          <h2 id="pit-window-title">VSC Pit Loss Window Compression</h2>
+          <p className="eyebrow">Strategic Window Analysis · Agent 4 (v1.2.0)</p>
+          <h2 id="pit-window-title">{isVSC ? 'VSC Pit Loss Window Compression' : 'Pit Stop Loss & Delta Strategy'}</h2>
         </div>
         <div className="pit-badge-group">
           <span className="pit-opportunity-pill">
-            <span className="sparkle-icon">⚡</span>
-            <strong>+10.5s FREE STOP WINDOW</strong>
+            <ZapIcon size={14} className="sparkle-icon" />
+            <strong>+10.5s VSC DELTA SAVING</strong>
           </span>
         </div>
       </div>
@@ -51,7 +52,7 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
                 <span>11.0s</span>
               </div>
               <div className="saving-indicator-marker" style={{ left: '51.1%', width: '48.9%' }}>
-                <span className="saving-text">★ 10.5s Net Saved vs Rivals</span>
+                <span className="saving-text">SAVING: 10.5s Net Saved vs Rivals</span>
               </div>
             </div>
           </div>
@@ -66,13 +67,11 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
             >
               <div className="scenario-card-header">
                 <span className="scenario-label">{option.label}</span>
-                <span className="scenario-score" title="Strategy confidence score">
-                  {option.score}%
-                </span>
+                <span className="scenario-calc-tag">v{option.calculationVersion ?? '1.2.0'}</span>
               </div>
               <h4 className="scenario-action">{option.action}</h4>
               <div className="scenario-delta">
-                <span className="delta-icon">⏱</span>
+                <ClockIcon size={12} className="delta-icon" />
                 <span>{option.delta}</span>
               </div>
               <p className="scenario-note">{option.note}</p>
@@ -82,7 +81,7 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
       </div>
 
       <div className="panel-footer-note">
-        <span>ℹ️ VSC neutralisation cuts the field pace by ~40% under delta regulations while pit lane speed limits remain constant at 80 km/h, creating a ~10.5s advantage for drivers stopping during the period.</span>
+        <span>Calculation Lineage: Under VSC regulations, on-track delta cuts field speed by ~40% while pit lane remains regulated at 60 km/h, yielding a deterministic 10.5s pit loss compression.</span>
       </div>
     </section>
   );

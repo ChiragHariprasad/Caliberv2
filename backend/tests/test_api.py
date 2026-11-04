@@ -98,6 +98,9 @@ def test_api_replay_controls():
     assert speed_res.status_code == 200
     assert speed_res.json()["speed"] == 2.0
 
+    cleanup_res = client.post("/api/replay/pause")
+    assert cleanup_res.status_code == 200
+
 
 def test_api_findings_and_agents_transparency():
     # Test findings endpoint

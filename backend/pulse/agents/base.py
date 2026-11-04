@@ -113,6 +113,11 @@ class BaseAgent(ABC):
             self.output_finding_ids.append(finding.finding_id)
         routing_key = f"{finding.session_id}:{finding.subject.driver_number or 'session'}"
         await self.bus.publish(self.output_topic, routing_key, finding)
+        try:
+            from pulse.state.store import get_state_store
+            get_state_store().record_finding(finding)
+        except Exception:
+            pass
         logger.debug(
             "Agent [%s] emitted finding [%s] of type %s",
             self.agent_id,

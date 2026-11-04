@@ -1,0 +1,89 @@
+{
+  "phase": "4.2",
+  "title": "Real-Time Streaming, Replay Controller and UI Synchronisation",
+  "timestamp": "2026-11-05T02:18:00Z",
+  "status": "COMPLETED",
+  "summary": {
+    "total_tests": 90,
+    "tests_passed": 90,
+    "tests_failed": 0,
+    "pass_rate_percent": 100.0,
+    "emojis_remaining": 0,
+    "icons_implemented": 18
+  },
+  "root_cause_analysis": {
+    "static_values": "ScenarioRunner previously ran 9 synthetic events and halted, leaving StateStore static. Replaced with dedicated async ReplayController scheduling envelopes according to wall-clock / speed scaling.",
+    "session_switching": "BroadcastBanner previously only mutated a local UI circuit string without updating backend session state. Implemented backend Session Registry and POST /api/sessions/select with StateStore isolation.",
+    "sse_polling_bottleneck": "Frontend previously polled complete snapshot on generic events without partial typed updates. Implemented continuous SSE with sequence tracking, Last-Event-ID reconnection, and typed domain events."
+  },
+  "replay_controller": {
+    "states": ["READY", "RUNNING", "PAUSED", "COMPLETED", "RESETTING", "FAILED"],
+    "allowed_speeds": [0.25, 0.5, 1.0, 2.0, 5.0],
+    "endpoints": [
+      "GET /api/replay/status",
+      "POST /api/replay/start",
+      "POST /api/replay/pause",
+      "POST /api/replay/resume",
+      "POST /api/replay/reset",
+      "POST /api/replay/seek",
+      "POST /api/replay/speed"
+    ],
+    "seek_modes": ["target_lap", "target_index", "target_elapsed_ms"]
+  },
+  "sessions_registered": [
+    {
+      "session_id": "f1-2023-silverstone-race",
+      "circuit_id": "silverstone",
+      "availability_status": "AVAILABLE_HISTORICAL",
+      "total_laps": 52,
+      "drivers_count": 20,
+      "source": "JOLPICA_F1_AND_FIA_OFFICIAL"
+    },
+    {
+      "session_id": "f1-2026-monaco-sim",
+      "circuit_id": "monaco",
+      "availability_status": "AVAILABLE_SIMULATION",
+      "total_laps": 78,
+      "drivers_count": 20,
+      "source": "PULSE_DETERMINISTIC_SIMULATOR"
+    },
+    {
+      "session_id": "f1-2026-suzuka-preview",
+      "circuit_id": "suzuka",
+      "availability_status": "NO_SESSION_DATA",
+      "total_laps": 53,
+      "drivers_count": 0,
+      "source": "PREVIEW_GEOMETRY_CATALOGUE"
+    }
+  ],
+  "sse_domain_events": [
+    "SESSION_STATE_UPDATED",
+    "DRIVER_STATE_UPDATED",
+    "TELEMETRY_UPDATED",
+    "TRACK_STATE_UPDATED",
+    "RACE_CONTROL_UPDATED",
+    "AGENT_STATUS_UPDATED",
+    "AGENT_FINDING_UPDATED",
+    "IMPACT_ASSESSMENT_UPDATED",
+    "REPLAY_STATUS_UPDATED",
+    "heartbeat"
+  ],
+  "emoji_audit": {
+    "initial_count": 39,
+    "final_count": 0,
+    "components_audited": [
+      "AgentOperationsView.tsx",
+      "BroadcastBanner.tsx",
+      "DriverTelemetryModal.tsx",
+      "EvidenceDrawer.tsx",
+      "ImpactCard.tsx",
+      "LeaderboardTable.tsx",
+      "PipelineLabView.tsx",
+      "PitWindowCard.tsx",
+      "RaceControlView.tsx",
+      "ReplayControls.tsx",
+      "TrackMap.tsx"
+    ]
+  }
+}
+

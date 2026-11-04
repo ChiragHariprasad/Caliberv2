@@ -215,3 +215,61 @@ The page must be able to say “insufficient evidence” clearly. It must not ma
 - If telemetry is missing, the Vehicle Response module says unavailable/partial rather than showing fabricated charts.
 - A user can select an older assessment version and retrieve its evidence references through the API.
 
+---
+
+## Phase 3 Implementation Updates (Cockpit, Telemetry & Multi-View Operations)
+
+### Extended Endpoint Inventory (Phase 3 Verified)
+
+| Method | Path | Response Type | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/api/circuits` | `list[CircuitGeometrySummary]` | List available circuit geometry models (Monaco, Silverstone, Suzuka) with metadata and SHA-256 checksums. |
+| `GET` | `/api/circuit/{circuit_id}` | `CircuitGeometry` | Retrieve complete circuit asset: centreline, boundary offsets, corners, DRS zones, pit lane, start/finish line. |
+| `GET` | `/api/telemetry/{driver_number}` | `DriverTelemetryPayload` | Rich per-driver telemetry (speed, throttle, brake, gear, rpm, drs, tyre, stint) with quality states and 20-point time-series history. |
+| `GET` | `/api/race-control` | `list[OfficialNotice]` | Verbatim FIA official race notices with regulatory article references (e.g. Art 56.4), flag statuses, and timestamps. |
+| `GET` | `/api/pipeline/status` | `PipelineStatusData` | Real-time health, Kafka broker transport, Flink JobManager checkpoint/record metrics, and 5-agent registration counts. |
+| `GET` | `/api/pipeline/verification-runs` | `list[VerificationRun]` | Historical verification runs with stage-by-stage reconciliation status (10/10 stages passed). |
+| `GET` | `/api/pipeline/verification-runs/{run_id}` | `VerificationRunDetail` | Complete execution audit report and latency profiles for a verification run. |
+| `GET` | `/api/pipeline/lineage` | `list[LineageTraceEvent]` | End-to-end event lineage tracing from raw Kafka ingestion through Flink normalization, agent findings, and fusion. |
+
+### Visual Architecture & Views
+
+The upgraded PULSE frontend cockpit delivers a cohesive dark Formula 1 operational layout across four primary operational modules:
+
+1. **🏁 Cockpit View (`Cockpit`)**:
+   - **Dynamic SVG Circuit Map**: Renders exact circuit geometry centreline and track boundaries for Monaco (3.337 km), Silverstone (5.891 km), and Suzuka (5.807 km).
+   - **Full-Grid Driver Tracking**: Spatially tracks all 20+ active cars with team-colored pulsing nodes, positions, and hover preview cards.
+   - **Interactive Telemetry Modal**: Clicking any driver displays real-time gauges, time-series SVG line chart (speed, throttle, brake), explicit `UNAVAILABLE` channel handling, and provenance lineage footer.
+   - **Full 20-Driver Leaderboard**: Complete timing grid with status filters (All, Active, Pit Lane, Out), tyre compound badges (Soft, Medium, Hard, Inter, Wet), stint age, gaps, and tactical consequence tags.
+   - **Live Tactical Consequence Feed & Strategy Card**: Displays fused multi-agent consequences and VSC pit window saving calculation with explicit arithmetic assumptions (e.g., 10.5s neutralised saving).
+
+2. **🏛️ Race Control & Stewarding View (`RaceControlView`)**:
+   - **Strict Domain Separation**: Segregates official FIA communications from PULSE AI analytical predictions.
+   - **Official Domain**: Chronological notices table with notice ID, UTC timestamp, flag severity, driver references, and formal regulatory citations (e.g. FIA Sporting Regulations Art 56.4).
+   - **PULSE Domain**: Multi-agent consequence synthesis, provisional vs confirmed assessments, and superseding revision audit cards.
+
+3. **🤖 Agent Operations View (`AgentOperationsView`)**:
+   - **Live Specialist Agent Cards**: 5 dedicated cards for Event Control, Track State, Vehicle Response, Tyre Strategy, and Consequence Fusion.
+   - **13 Operational Telemetry Metrics**: Exposes events received, eligible inputs, processed inputs, emitted findings, dropped inputs, invalid payloads, p50/p95/max latency, memory, uptime, and last active timestamp.
+   - **Clickable Execution Trace Modal**: Opens complete deterministic audit log of findings emitted by each specialist agent with causal parent references.
+
+4. **🔬 Pipeline Lab View (`PipelineLabView`)**:
+   - **Live Streaming Topology Flow**: Node-by-node execution diagram (Raw Ingestion ➔ Normalization ➔ Kafka Stream ➔ Multi-Agent Processing ➔ Consequence Fusion ➔ State & API).
+   - **Real-Time Engine Metrics**: Real-time Kafka broker transport state and Flink JobManager checkpoint accounting.
+   - **Verification Run Selector**: Interactive selector over automated verification test runs with full 10-stage reconciliation accounting table.
+   - **Lineage Explorer**: Detailed event-to-finding trace breakdown.
+
+### Verified Visual Baseline (Playwright High-Resolution Captures)
+
+All modules have been verified via automated Playwright browser tests and captured into `docs/screenshots/`:
+
+| Screenshot | File | Description |
+| --- | --- | --- |
+| **01** | `docs/screenshots/01_cockpit_monaco.png` | Monaco cockpit view with dynamic centreline, 20 drivers, leaderboard, and VSC tactical feed. |
+| **02** | `docs/screenshots/02_driver_telemetry_modal.png` | Real-time telemetry inspector for Car #16 (Leclerc) with gauges and SVG time-series chart. |
+| **03** | `docs/screenshots/03_race_control_stewarding.png` | Race Control view separating Official FIA regulatory notices (Art 56.4) from PULSE AI predictions. |
+| **04** | `docs/screenshots/04_agent_operations.png` | Agent Operations view with 13 live execution metrics across all 5 agents and trace modal. |
+| **05** | `docs/screenshots/05_pipeline_lab.png` | Streaming pipeline topology diagram, Flink/Kafka metrics, and 10-stage reconciliation table. |
+| **06** | `docs/screenshots/06_cockpit_silverstone.png` | Dynamically switched Silverstone circuit geometry with 18 corners and 2 DRS zones. |
+
+

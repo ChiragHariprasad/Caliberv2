@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import type { Driver } from '../types';
+import { BarChartIcon } from './icons';
 
 interface LeaderboardTableProps {
   drivers: Driver[];
   selectedDriverNumber: number | null;
   onSelectDriver: (driverNumber: number) => void;
+  onInspectTelemetry?: (driverNumber: number) => void;
 }
 
 const TEAM_COLORS: Record<string, string> = {
@@ -14,6 +17,10 @@ const TEAM_COLORS: Record<string, string> = {
   Mercedes: '#27F4D2',
   Williams: '#64C4FF',
   'Aston Martin': '#229971',
+  Alpine: '#0093CC',
+  'Racing Bulls': '#6692FF',
+  'Kick Sauber': '#52E252',
+  Haas: '#B6BABD',
 };
 
 const TYRE_COLORS: Record<string, { bg: string; text: string; label: string }> = {
@@ -28,15 +35,54 @@ export function LeaderboardTable({
   drivers,
   selectedDriverNumber,
   onSelectDriver,
+  onInspectTelemetry,
 }: LeaderboardTableProps) {
+  const [filter, setFilter] = useState<'ALL' | 'ACTIVE' | 'PIT_LANE' | 'RETIRED'>('ALL');
+
+  const filteredDrivers = drivers.filter((d) => {
+    if (filter === 'ACTIVE') return d.status === 'ACTIVE' || !d.status;
+    if (filter === 'PIT_LANE') return d.status === 'PIT_LANE';
+    if (filter === 'RETIRED') return d.status === 'RETIRED' || d.status === 'DNS';
+    return true;
+  });
+
   return (
     <section className="panel leaderboard-panel" aria-labelledby="leaderboard-title">
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">Timing & Positions</p>
-          <h2 id="leaderboard-title">Live Driver Standings</h2>
+          <p className="eyebrow">Timing, Standings & Telemetry</p>
+          <h2 id="leaderboard-title">Live Session Leaderboard ({drivers.length} Drivers)</h2>
         </div>
-        <span className="subtle-chip">{drivers.length} Cars Tracked</span>
+        <div className="leaderboard-filters">
+          <button
+            type="button"
+            className={`filter-btn ${filter === 'ALL' ? 'active' : ''}`}
+            onClick={() => setFilter('ALL')}
+          >
+            All ({drivers.length})
+          </button>
+          <button
+            type="button"
+            className={`filter-btn ${filter === 'ACTIVE' ? 'active' : ''}`}
+            onClick={() => setFilter('ACTIVE')}
+          >
+            Active ({drivers.filter((d) => d.status === 'ACTIVE' || !d.status).length})
+          </button>
+          <button
+            type="button"
+            className={`filter-btn ${filter === 'PIT_LANE' ? 'active' : ''}`}
+            onClick={() => setFilter('PIT_LANE')}
+          >
+            Pit Lane ({drivers.filter((d) => d.status === 'PIT_LANE').length})
+          </button>
+          <button
+            type="button"
+            className={`filter-btn ${filter === 'RETIRED' ? 'active' : ''}`}
+            onClick={() => setFilter('RETIRED')}
+          >
+            Out ({drivers.filter((d) => d.status === 'RETIRED' || d.status === 'DNS').length})
+          </button>
+        </div>
       </div>
 
       <div className="table-responsive">
@@ -45,24 +91,25 @@ export function LeaderboardTable({
             <tr>
               <th scope="col" className="col-pos">POS</th>
               <th scope="col" className="col-driver">DRIVER</th>
+              <th scope="col" className="col-status">STATUS</th>
               <th scope="col" className="col-interval">GAP / INT</th>
               <th scope="col" className="col-tyre">TYRE / AGE</th>
               <th scope="col" className="col-lastlap">LAST LAP</th>
-              <th scope="col" className="col-momentum">MOMENTUM</th>
               <th scope="col" className="col-tactical">TACTICAL SITUATION</th>
+              <th scope="col" className="col-action">ACTION</th>
             </tr>
           </thead>
           <tbody>
-            {drivers.map((driver) => {
-              const teamColor = TEAM_COLORS[driver.team] || '#718096';
+            {filteredDrivers.map((driver) => {
+              const teamColor = driver.teamColor || TEAM_COLORS[driver.team] || '#718096';
               const tyreInfo = TYRE_COLORS[driver.tyre] || { bg: '#888', text: '#FFF', label: driver.tyre };
               const isSelected = selectedDriverNumber === driver.number;
-              const degradationPercent = Math.min(100, Math.round((driver.tyreAge / 32) * 100));
+              const isRetired = driver.status === 'RETIRED' || driver.status === 'DNS';
 
               return (
                 <tr
                   key={driver.number}
-                  className={`leaderboard-row ${isSelected ? 'is-selected' : ''}`}
+                  className={`leaderboard-row ${isSelected ? 'is-selected' : ''} ${isRetired ? 'is-retired-row' : ''}`}
                   onClick={() => onSelectDriver(driver.number)}
                   tabIndex={0}
                   role="button"
@@ -70,7 +117,9 @@ export function LeaderboardTable({
                   onKeyDown={(e) => e.key === 'Enter' && onSelectDriver(driver.number)}
                 >
                   <td className="col-pos">
-                    <span className="pos-badge">P{driver.position}</span>
+                    <span className="pos-badge" style={{ borderColor: isSelected ? teamColor : 'transparent' }}>
+                      P{driver.position}
+                    </span>
                   </td>
 
                   <td className="col-driver">
@@ -81,6 +130,12 @@ export function LeaderboardTable({
                         <span className="driver-team-tag">{driver.team} #{driver.number}</span>
                       </div>
                     </div>
+                  </td>
+
+                  <td className="col-status">
+                    <span className={`status-chip status-chip--${(driver.status ?? 'ACTIVE').toLowerCase()}`}>
+                      {driver.status ?? 'ACTIVE'}
+                    </span>
                   </td>
 
                   <td className="col-interval">
@@ -101,39 +156,31 @@ export function LeaderboardTable({
                       >
                         {driver.tyre}
                       </span>
-                      <div className="tyre-age-gauge">
-                        <span className="age-label">{driver.tyreAge} Laps</span>
-                        <div className="mini-progress-bar" title={`Tyre degradation ~${degradationPercent}%`}>
-                          <div
-                            className={`mini-progress-fill ${degradationPercent > 70 ? 'fill-worn' : ''}`}
-                            style={{ width: `${degradationPercent}%` }}
-                          />
-                        </div>
-                      </div>
+                      <span className="tyre-age-text">{driver.tyreAge} Laps</span>
                     </div>
                   </td>
 
                   <td className="col-lastlap">
-                    <span className="lap-time-code">{driver.lastLap}</span>
-                  </td>
-
-                  <td className="col-momentum">
-                    <div className="momentum-score-wrapper">
-                      <div className="momentum-bar-bg">
-                        <div
-                          className={`momentum-bar-fill ${driver.momentum > 70 ? 'momentum-high' : driver.momentum < 40 ? 'momentum-low' : 'momentum-mid'}`}
-                          style={{ width: `${driver.momentum}%` }}
-                        />
-                      </div>
-                      <span className="momentum-val">{driver.momentum}</span>
-                    </div>
+                    <span className="lap-time-value">{driver.lastLap}</span>
                   </td>
 
                   <td className="col-tactical">
-                    <span className={`tactical-pill tactical-pill--${driver.impact.tone}`}>
-                      <span className="pill-dot" />
-                      {driver.impact.label}
-                    </span>
+                    <div className={`tactical-badge tone-${driver.impact.tone}`}>
+                      <span className="tactical-dot" />
+                      <span className="tactical-text">{driver.impact.label}</span>
+                    </div>
+                  </td>
+
+                  <td className="col-action" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      type="button"
+                      className="btn-row-inspect"
+                      title="Inspect Real-time Telemetry"
+                      aria-label="Inspect Real-time Telemetry"
+                      onClick={() => onInspectTelemetry?.(driver.number)}
+                    >
+                      <BarChartIcon size={14} className="action-icon" />
+                    </button>
                   </td>
                 </tr>
               );

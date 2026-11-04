@@ -19,8 +19,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="PULSE End-to-End Pipeline Verification Runner")
     parser.add_argument("--session-id", default=None, help="Session identifier for verification run")
     parser.add_argument("--mode", default="REPLAY", choices=["REPLAY", "SIMULATED", "LIVE"], help="Test execution mode")
-    parser.add_argument("--output-dir", default="reports", help="Directory where verification artifacts will be generated")
+    parser.add_argument("--output-dir", default="reports/full_race", help="Directory where verification artifacts will be generated")
     parser.add_argument("--broker", default=None, help="Kafka bootstrap broker address (defaults to PULSE_KAFKA_BOOTSTRAP_SERVERS)")
+    parser.add_argument("--capture-id", default="pulse-capture-f1-2023-silverstone-race-v1", help="Capture ID for historical race replay")
+    parser.add_argument("--replay-speed", type=float, default=1.0, help="Replay clock acceleration factor")
 
     args = parser.parse_args()
     setup_cli_logging()
@@ -30,6 +32,8 @@ def main() -> None:
         mode=args.mode,
         output_dir=args.output_dir,
         broker_bootstrap=args.broker,
+        capture_id=args.capture_id,
+        replay_speed=args.replay_speed,
     )
 
     try:

@@ -1,0 +1,166 @@
+[
+  {
+    "event_id": "RC-SILV-001",
+    "timestamp_utc": "2023-07-09T14:03:00Z",
+    "lap": 1,
+    "session_elapsed_ms": 0,
+    "category": "FLAG",
+    "flag": "GREEN",
+    "title": "RACE START \u2014 GREEN FLAG",
+    "detail": "Standing start completed. Green flag racing underway across all sectors.",
+    "affected_drivers": [],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 44.1",
+    "source": "FIA Race Director Official Channel"
+  },
+  {
+    "event_id": "RC-SILV-002",
+    "timestamp_utc": "2023-07-09T14:16:30Z",
+    "lap": 9,
+    "session_elapsed_ms": 810000,
+    "category": "RETIREMENT",
+    "flag": "YELLOW",
+    "title": "CAR 31 (OCON) RETIRED IN PIT LANE",
+    "detail": "Car 31 entered pit lane with hydraulic leak. Confirmed retirement.",
+    "affected_drivers": [
+      31
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 26.1",
+    "source": "FIA Technical Delegate & Race Director"
+  },
+  {
+    "event_id": "RC-SILV-003",
+    "timestamp_utc": "2023-07-09T14:52:10Z",
+    "lap": 33,
+    "session_elapsed_ms": 2950000,
+    "category": "INCIDENT",
+    "flag": "DOUBLE_YELLOW",
+    "title": "CAR 20 (MAGNUSSEN) STOPPED \u2014 WELLINGTON STRAIGHT",
+    "detail": "Car 20 stopped on track with power unit smoke and fire. Marshals deployed with extinguishers.",
+    "affected_drivers": [
+      20
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 56.1",
+    "source": "FIA Race Control Central"
+  },
+  {
+    "event_id": "RC-SILV-004",
+    "timestamp_utc": "2023-07-09T14:52:25Z",
+    "lap": 33,
+    "session_elapsed_ms": 2965000,
+    "category": "SAFETY_CAR",
+    "flag": "YELLOW",
+    "title": "VIRTUAL SAFETY CAR DEPLOYED",
+    "detail": "Virtual Safety Car deployed to allow recovery vehicle entry for Car 20. Delta time enforced.",
+    "affected_drivers": [
+      1,
+      4,
+      44,
+      81,
+      63,
+      14,
+      23,
+      16,
+      55
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 56.4",
+    "source": "FIA Race Director"
+  },
+  {
+    "event_id": "RC-SILV-005",
+    "timestamp_utc": "2023-07-09T14:53:45Z",
+    "lap": 33,
+    "session_elapsed_ms": 3045000,
+    "category": "SAFETY_CAR",
+    "flag": "YELLOW",
+    "title": "SAFETY CAR DEPLOYED",
+    "detail": "Physical Safety Car deployed due to track contamination and heavy recovery crane on Wellington Straight.",
+    "affected_drivers": [
+      1,
+      4,
+      44,
+      81,
+      63,
+      11,
+      14,
+      23,
+      16,
+      55
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 55.1",
+    "source": "FIA Race Director"
+  },
+  {
+    "event_id": "RC-SILV-006",
+    "timestamp_utc": "2023-07-09T15:03:30Z",
+    "lap": 39,
+    "session_elapsed_ms": 3630000,
+    "category": "SAFETY_CAR",
+    "flag": "YELLOW",
+    "title": "SAFETY CAR IN THIS LAP",
+    "detail": "Track clear. All debris recovered. Safety Car lights out, entering pit lane at end of lap 39.",
+    "affected_drivers": [],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 55.13",
+    "source": "FIA Race Director"
+  },
+  {
+    "event_id": "RC-SILV-007",
+    "timestamp_utc": "2023-07-09T15:05:00Z",
+    "lap": 40,
+    "session_elapsed_ms": 3720000,
+    "category": "FLAG",
+    "flag": "GREEN",
+    "title": "TRACK CLEAR \u2014 GREEN FLAG RESUMED",
+    "detail": "Green flag racing resumed at start/finish line. DRS enabled on lap 42.",
+    "affected_drivers": [],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 55.14",
+    "source": "FIA Race Director"
+  },
+  {
+    "event_id": "RC-SILV-008",
+    "timestamp_utc": "2023-07-09T15:14:20Z",
+    "lap": 46,
+    "session_elapsed_ms": 4280000,
+    "category": "INCIDENT",
+    "flag": "YELLOW",
+    "title": "CAR 10 (GASLY) RETIRED \u2014 SUSPENSION DAMAGE",
+    "detail": "Car 10 suffered right rear suspension failure following turn 16 contact with Car 18. Pitted and retired.",
+    "affected_drivers": [
+      10,
+      18
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 38.2",
+    "source": "FIA Race Control"
+  },
+  {
+    "event_id": "RC-SILV-009",
+    "timestamp_utc": "2023-07-09T15:20:00Z",
+    "lap": 50,
+    "session_elapsed_ms": 4620000,
+    "category": "STEWARDS",
+    "flag": "CLEAR",
+    "title": "STEWARDS DECISION DOC 49: 5-SECOND PENALTY CAR 18",
+    "detail": "Car 18 (Stroll) penalized 5 seconds added to elapsed race time for causing a collision with Car 10 at Turn 16.",
+    "affected_drivers": [
+      18
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 38.3 & Appendix L Ch IV",
+    "source": "FIA Panel of the Stewards"
+  },
+  {
+    "event_id": "RC-SILV-010",
+    "timestamp_utc": "2023-07-09T15:23:45Z",
+    "lap": 52,
+    "session_elapsed_ms": 4845000,
+    "category": "FLAG",
+    "flag": "CHEQUERED",
+    "title": "CHEQUERED FLAG \u2014 RACE FINISH",
+    "detail": "52 laps completed. Winner: Car 1 (Verstappen), P2: Car 4 (Norris), P3: Car 44 (Hamilton).",
+    "affected_drivers": [
+      1,
+      4,
+      44
+    ],
+    "regulatory_reference": "FIA F1 Sporting Regulations Art 59.1",
+    "source": "FIA Race Director"
+  }
+]
