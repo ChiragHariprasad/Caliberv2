@@ -269,8 +269,10 @@ def run_browser_verification():
             page.evaluate("""() => {
                 const slider = document.querySelector('input.timeline-slider');
                 if (slider) {
-                    slider.value = 50;
+                    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+                    setter.call(slider, 50);
                     slider.dispatchEvent(new Event('input', { bubbles: true }));
+                    slider.dispatchEvent(new Event('change', { bubbles: true }));
                     slider.dispatchEvent(new Event('mouseup', { bubbles: true }));
                 }
             }""")

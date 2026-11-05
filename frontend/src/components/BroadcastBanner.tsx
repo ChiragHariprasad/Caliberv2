@@ -42,9 +42,9 @@ export function BroadcastBanner({
     if (val === 'f1-2023-silverstone-race') {
       onChangeCircuit?.('silverstone');
       onChangeSession?.('f1-2023-silverstone-race');
-    } else if (val === 'f1-2026-suzuka-preview') {
+    } else if (val === 'f1-2026-suzuka-race' || val === 'f1-2026-suzuka-preview') {
       onChangeCircuit?.('suzuka');
-      onChangeSession?.('f1-2026-suzuka-preview');
+      onChangeSession?.(val);
     } else {
       onChangeCircuit?.('monaco');
       onChangeSession?.('f1-2026-monaco-sim');
@@ -107,9 +107,10 @@ export function BroadcastBanner({
             value={sessionId}
             onChange={(e) => handleSessionChange(e.target.value)}
           >
-            <option value="f1-2026-monaco-sim">Monaco GP · Simulation (3.337 km)</option>
-            <option value="f1-2023-silverstone-race">Silverstone 2023 · Historical Replay (5.891 km)</option>
-            <option value="f1-2026-suzuka-preview">Suzuka Preview · (No Session Data)</option>
+            <option value="f1-2026-monaco-sim">Monaco Grand Prix · Circuit de Monaco (3.337 km)</option>
+            <option value="f1-2023-silverstone-race">British Grand Prix · Silverstone Circuit (5.891 km)</option>
+            <option value="f1-2026-suzuka-race">Japanese Grand Prix · Suzuka Circuit (5.807 km)</option>
+            <option value="f1-2026-suzuka-preview">Suzuka Preview · Homologated Geometry</option>
           </select>
         </div>
 

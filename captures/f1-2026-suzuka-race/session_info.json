@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2026-suzuka-race",
+  "meeting_id": "f1-2026-suzuka-race",
+  "session_name": "Formula 1 Japanese Grand Prix",
+  "circuit_id": "suzuka",
+  "total_laps": 53,
+  "total_drivers": 20,
+  "duration_seconds": 3600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

@@ -98,7 +98,7 @@ Respond ONLY with a valid JSON object matching this schema:
                 model=self.settings.groq_model,
                 temperature=0.2,
                 response_format={"type": "json_object"},
-                max_tokens=350,
+                max_tokens=1024,
             )
             raw_text = chat_completion.choices[0].message.content
             parsed = json.loads(raw_text)

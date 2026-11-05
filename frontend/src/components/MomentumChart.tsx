@@ -2,10 +2,22 @@ import type { Driver } from '../types';
 
 interface MomentumChartProps {
   drivers: Driver[];
+  currentLap?: number;
+  activeEvent?: string;
 }
 
-export function MomentumChart({ drivers }: MomentumChartProps) {
+export function MomentumChart({ drivers, currentLap = 1, activeEvent = 'Green Flag' }: MomentumChartProps) {
   const rows = drivers.slice(0, 5);
+  const lapNum = currentLap > 0 ? currentLap : 1;
+  const l1 = Math.max(1, lapNum - 5);
+  const l2 = Math.max(1, lapNum - 4);
+  const l3 = Math.max(1, lapNum - 3);
+  const l4 = Math.max(1, lapNum - 2);
+  const l5 = Math.max(1, lapNum - 1);
+  const lCurrent = activeEvent && !activeEvent.toLowerCase().includes('green')
+    ? activeEvent
+    : `Lap ${lapNum}`;
+
   return (
     <section className="panel momentum-panel" aria-labelledby="momentum-title">
       <div className="panel-heading">
@@ -22,13 +34,14 @@ export function MomentumChart({ drivers }: MomentumChartProps) {
         <div className="chart-axis chart-axis--left"><span>rising</span><span>steady</span><span>under pressure</span></div>
         <div className="chart-lines">
           {rows.map((driver, index) => {
-            const end = Math.max(10, Math.min(95, driver.momentum));
-            const start = Math.max(10, Math.min(95, driver.momentum - (index === 0 ? 5 : -4)));
+            const momentumVal = typeof driver.momentum === 'number' && !isNaN(driver.momentum) ? driver.momentum : 50;
+            const end = Math.max(10, Math.min(95, momentumVal));
+            const start = Math.max(10, Math.min(95, momentumVal - (index === 0 ? 5 : -4)));
             const points = [start, start + 2, start - 1, start + 3, end - 2, end];
             const coords = points.map((value, pointIndex) => `${pointIndex * 20},${100 - value}`).join(' ');
             return (
               <div className="chart-line" key={driver.number}>
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={`${driver.name} momentum ${driver.momentum}`}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-label={`${driver.name} momentum ${momentumVal}`}>
                   <polyline className={`momentum-line momentum-line--${(index % 5) + 1}`} points={coords} vectorEffect="non-scaling-stroke" />
                   <circle cx="100" cy={100 - end} r="2.2" className={`momentum-end momentum-end--${(index % 5) + 1}`} />
                 </svg>
@@ -37,9 +50,16 @@ export function MomentumChart({ drivers }: MomentumChartProps) {
             );
           })}
         </div>
-        <div className="chart-axis chart-axis--bottom"><span>Lap 19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>VSC</span></div>
+        <div className="chart-axis chart-axis--bottom">
+          <span>Lap {l1}</span>
+          <span>{l2}</span>
+          <span>{l3}</span>
+          <span>{l4}</span>
+          <span>{l5}</span>
+          <span>{lCurrent}</span>
+        </div>
       </div>
-      <div className="chart-insight"><span className="insight-spark">↗</span> Real-time pace momentum derived from sector timing deltas and lap progression.</div>
+      <div className="chart-insight"><span className="insight-spark">·</span> Real-time pace momentum derived from sector timing deltas and lap progression.</div>
     </section>
   );
 }

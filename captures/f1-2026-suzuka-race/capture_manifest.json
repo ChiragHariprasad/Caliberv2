@@ -1,0 +1,10 @@
+{
+  "capture_id": "f1-2026-suzuka-race",
+  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "session_id": "f1-2026-suzuka-race",
+  "session_name": "Formula 1 Japanese Grand Prix",
+  "total_canonical_records": 72617,
+  "circuit_id": "suzuka",
+  "total_laps": 53,
+  "duration_seconds": 3600
+}

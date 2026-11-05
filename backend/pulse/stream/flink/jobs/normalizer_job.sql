@@ -1,6 +1,7 @@
 SET 'execution.runtime-mode' = 'streaming';
 SET 'pipeline.name' = 'pulse-canonical-normalizer-v2';
 SET 'execution.checkpointing.interval' = '5000';
+SET 'table.exec.state.ttl' = '60000 ms';
 
 -- ============================================================
 -- 1. RACE CONTROL & SESSION STATUS -> pulse.norm.race_events.v1

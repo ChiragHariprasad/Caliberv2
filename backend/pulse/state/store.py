@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,7 @@ class StateStore:
         self._listeners: list[asyncio.Queue[dict[str, Any]]] = []
         self._history_events: list[dict[str, Any]] = []
         self.sse_sequence_counter: int = 0
+        self._last_driver_sse_wall_time: float = 0.0
         self._lock = asyncio.Lock()
         self.agents: dict[str, Any] = {}
 
@@ -109,6 +111,8 @@ class StateStore:
             self.projector.session_type = "PREVIEW_ONLY"
             self.projector.current_lap = 0
             self.projector.total_laps = meta.total_laps if meta else 53
+            self.projector.active_lifecycle = "NONE"
+            self.projector.active_event = "NONE"
             self.projector.active_event_display = "NO_SESSION_DATA_AVAILABLE"
             self.projector.status = "NO_SESSION_DATA"
             self.projector.elapsed_time = "00:00:00"
@@ -129,6 +133,8 @@ class StateStore:
             self.projector.session_type = meta.session_type
             self.projector.current_lap = 1
             self.projector.total_laps = meta.total_laps
+            self.projector.active_lifecycle = "NONE"
+            self.projector.active_event = "GREEN_FLAG"
             self.projector.active_event_display = "Green Flag"
             self.projector.status = "Green Flag"
             self.projector.elapsed_time = "00:00:00"
@@ -140,8 +146,10 @@ class StateStore:
             self.assessment_history.clear()
 
             # Load entry list dynamically from capture directory
-            capture_id = meta.capture_id or "f1-2023-silverstone-race"
+            capture_id = meta.capture_id or session_id
             entry_file = Path("captures") / capture_id / "entry_list.json"
+            if not entry_file.exists():
+                entry_file = Path("captures") / session_id / "entry_list.json"
             if not entry_file.exists():
                 entry_file = Path("captures/f1-2023-silverstone-race/entry_list.json")
             if entry_file.exists():
@@ -182,10 +190,18 @@ class StateStore:
         # Emit backward-compatible event message
         self._notify_listeners("event", envelope.model_dump(mode="json"))
 
-        # Emit typed SSE updates based on event domain
-        self.notify_session_state()
+        now = time.monotonic()
+        is_priority = et in {
+            "LAP_COMPLETED", "DRIVER_RETIRED", "DRIVER_DNS",
+            "VSC_DEPLOYED", "VSC_ENDED", "SAFETY_CAR_DEPLOYED",
+            "SAFETY_CAR_ENDING", "STEWARD_DECISION", "SESSION_CHEQUERED",
+            "PIT_ENTRY", "PIT_EXIT", "SESSION_STARTED"
+        }
 
-        if et in {"LAP_COMPLETED", "POSITION_UPDATE", "DRIVER_RETIRED", "DRIVER_DNS"}:
+        # Pace driver & session broadcasts to ~0.5s cadence for smooth, non-bursty frontend rendering
+        if is_priority or (now - self._last_driver_sse_wall_time >= 0.5):
+            self._last_driver_sse_wall_time = now
+            self.notify_session_state()
             self.notify_driver_state(envelope.subject.driver_number)
 
         if et in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
@@ -329,7 +345,7 @@ class StateStore:
             "sessionId": self.current_session_id,
             "lap": self.projector.current_lap,
             "totalLaps": self.projector.total_laps,
-            "status": "Neutralised" if self.projector.active_lifecycle == "ACTIVE" else getattr(self.projector, "status", "Green Flag"),
+            "status": "NO_SESSION_DATA" if getattr(self.projector, "status", None) == "NO_SESSION_DATA" else ("Neutralised" if self.projector.active_lifecycle == "ACTIVE" else getattr(self.projector, "status", "Green Flag")),
             "elapsed": self.projector.elapsed_time,
             "activeEvent": self.projector.active_event_display,
             "sourceLabel": f"PULSE {self.projector.data_mode.lower()} pipeline · {self.projector.session_name}",

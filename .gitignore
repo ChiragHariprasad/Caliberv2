@@ -24,6 +24,10 @@ wheels/
 .coverage
 htmlcov/
 .env
+.env.*
+.env.local
+!.env.example
+*.env
 
 # Node / Frontend
 node_modules/

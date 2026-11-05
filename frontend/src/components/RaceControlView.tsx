@@ -94,8 +94,8 @@ export function RaceControlView({ notices, timeline, assessments }: RaceControlV
                     </td>
                   </tr>
                 ) : (
-                  filteredNotices.map((notice) => (
-                    <tr key={notice.notice_id} className={`notice-row flag-${notice.flag.toLowerCase()}`}>
+                  filteredNotices.map((notice, nIdx) => (
+                    <tr key={`${notice.notice_id || 'notice'}-${nIdx}`} className={`notice-row flag-${notice.flag.toLowerCase()}`}>
                       <td className="col-notice-id">
                         <code>{notice.notice_id}</code>
                       </td>
@@ -114,8 +114,8 @@ export function RaceControlView({ notices, timeline, assessments }: RaceControlV
                       <td className="col-cars">
                         {notice.driver_numbers.length > 0 ? (
                           <div className="driver-chips">
-                            {notice.driver_numbers.map((dn) => (
-                              <span key={dn} className="driver-mini-chip">#{dn}</span>
+                            {notice.driver_numbers.map((dn, dIdx) => (
+                              <span key={`${dn}-${dIdx}`} className="driver-mini-chip">#{dn}</span>
                             ))}
                           </div>
                         ) : (
@@ -156,8 +156,8 @@ export function RaceControlView({ notices, timeline, assessments }: RaceControlV
           </div>
 
           <div className="pulse-assessment-cards-grid">
-            {assessments.map((a) => (
-              <div key={a.id} className={`assessment-audit-card tone-${a.impact}`}>
+            {assessments.map((a, aIdx) => (
+              <div key={`${a.id || 'assessment'}-${aIdx}`} className={`assessment-audit-card tone-${a.impact}`}>
                 <div className="audit-card-top">
                   <span className="audit-driver">Car #{a.driverNumber}</span>
                   <span className={`audit-status status-${a.status.toLowerCase()}`}>

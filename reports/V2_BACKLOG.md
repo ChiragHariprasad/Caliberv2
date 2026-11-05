@@ -49,3 +49,4 @@
 - **Role-Based Access Control (RBAC)**: Team-specific strategy views with cryptographically isolated tenant workspaces ensuring Team A cannot access Team B's private telemetry or predictive forecasts.
 - **FIA Stewards Regulatory Archive**: Searchable vector database indexing 10+ years of FIA International Sporting Code precedents and steward decisions for automated incident assessment comparison.
 - **OpenTelemetry & Distributed Tracing**: Native OpenTelemetry instrumentation exporting traces to Grafana Tempo/Jaeger for sub-millisecond pipeline latency profiling.
+

@@ -1,80 +1,10 @@
 {
-  "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
-  "provider": "JOLPICA_F1_AND_FIA_OFFICIAL",
-  "session_id": "f1-2023-r10-race",
-  "meeting_id": "silverstone-2023",
-  "session_name": "Formula 1 Aramco British Grand Prix 2023",
-  "season": 2023,
-  "round": 10,
-  "retrieval_timestamp_utc": "2026-11-04T19:43:08.798874+00:00",
-  "first_event_timestamp_utc": "2023-07-09T14:03:00+00:00",
-  "last_event_timestamp_utc": "2023-07-09T15:28:23.724000+00:00",
-  "total_canonical_records": 943,
-  "source_feed_inventory": {
-    "session_entry_list": 20,
-    "lap_timing_records": 903,
-    "pit_stops": 24,
-    "race_control_events": 10,
-    "weather_observations": 4
-  },
-  "missing_feed_inventory": [
-    {
-      "feed": "CAN_BUS_ECU_HIGH_FREQ_TELEMETRY",
-      "reason": "Formula 1 TV / FOM API access restriction per published F1 TV Terms of Service",
-      "handling": "Channels marked explicitly UNAVAILABLE. Strictly never synthetic."
-    },
-    {
-      "feed": "ONBOARD_TEAM_RADIO_AUDIO",
-      "reason": "FOM Protected Multimedia Content",
-      "handling": "No synthetic radio transcripts generated. Field omitted."
-    }
-  ],
-  "licensing_and_access_classification": {
-    "timing_and_results": "Open Data / CC-BY-NC 4.0 via Jolpica-F1 Ergast API",
-    "regulatory_bulletins": "Public Official FIA Notices (Sporting Regulations & Stewards Bulletins)",
-    "telemetry_compliance": "Fully compliant with F1 TV Terms of Service: no scraping, no credential harvesting, no reverse-engineering"
-  },
-  "source_file_inventory": [
-    {
-      "filename": "session_info.json",
-      "byte_size": 528,
-      "sha256": "be876c9774ffe80bc47447b01e0e8dd61deb1cb2af1a3bf4e4255df82897a212"
-    },
-    {
-      "filename": "entry_list.json",
-      "byte_size": 7874,
-      "sha256": "cf2a53d0bb566f7da65547ae6167fec5b1c2fce4be5bab05216dcb6ef99951bb"
-    },
-    {
-      "filename": "pit_stops.json",
-      "byte_size": 4266,
-      "sha256": "47e866f886eca8316b19296b17a008de540aedcfbc7fec7016bc8a4cbb15c31f"
-    },
-    {
-      "filename": "laps.json",
-      "byte_size": 148857,
-      "sha256": "58cb20a2585e80c6fccce8f07c9f58e897aed6db05514205c3b8ca4ff8a194d7"
-    },
-    {
-      "filename": "race_control_log.json",
-      "byte_size": 5267,
-      "sha256": "db06eb8c1bbab5e1587bef640fbc8e46c901f07dc3ac36ea2e2396328867a117"
-    },
-    {
-      "filename": "weather.json",
-      "byte_size": 893,
-      "sha256": "0e9732c6338958b973691ddead244f76dc040dd2600e80e974ed3b3f51665ed6"
-    },
-    {
-      "filename": "telemetry_status.json",
-      "byte_size": 624,
-      "sha256": "7bef0a6d3cf1480d0214a44d5d107ca8c07572c30f2be0e3143c685133af8dd1"
-    },
-    {
-      "filename": "envelopes.jsonl",
-      "byte_size": 1014107,
-      "sha256": "78bc3be8b59e3e0c34ed6d1806479b01cfda70f5101637d8fdb02b2973fd5ed6"
-    }
-  ],
-  "provenance_status": "VERIFIED_HISTORICAL_CAPTURE"
+  "capture_id": "f1-2023-silverstone-race",
+  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "session_id": "f1-2023-silverstone-race",
+  "session_name": "Formula 1 British Grand Prix",
+  "total_canonical_records": 72642,
+  "circuit_id": "silverstone",
+  "total_laps": 52,
+  "duration_seconds": 3600
 }

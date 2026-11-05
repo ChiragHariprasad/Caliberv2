@@ -1,0 +1,10 @@
+{
+  "capture_id": "f1-2026-monaco-sim",
+  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "session_id": "f1-2026-monaco-sim",
+  "session_name": "Formula 1 Grand Prix de Monaco",
+  "total_canonical_records": 72926,
+  "circuit_id": "monaco",
+  "total_laps": 78,
+  "duration_seconds": 3600
+}

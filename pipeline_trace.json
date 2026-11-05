@@ -1,90 +1,92 @@
 [
   {
-    "timestamp": "2026-11-05T02:29:14.753649+00:00",
+    "timestamp": "2026-11-05T04:42:49.999585+00:00",
     "stage": "MANIFEST_VALIDATION",
     "event": "CAPTURE_VERIFIED",
     "payload": {
-      "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
-      "meeting_id": "silverstone-2023",
-      "verified_files_count": 8,
+      "capture_id": "f1-2023-silverstone-race",
+      "meeting_id": null,
+      "verified_files_count": 0,
       "drivers_registered": 20,
       "manifest_sha256_status": "ALL_HASHES_MATCH",
       "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:15.770815+00:00",
+    "timestamp": "2026-11-05T04:42:51.344788+00:00",
     "stage": "PREFLIGHT",
     "event": "CLUSTER_ONLINE",
     "payload": {
       "kafka_broker": "127.0.0.1:9092",
-      "flink_job_id": "4ac2d03605f6993dfba914eadc3faec8",
+      "flink_job_id": "4467980eb2b8d7f98439cf94226fbba6",
       "flink_job_name": "pulse-canonical-normalizer-v2",
       "flink_job_state": "RUNNING",
-      "checkpoints_completed": 5731
+      "checkpoints_completed": 14
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:15.940945+00:00",
+    "timestamp": "2026-11-05T04:43:04.609073+00:00",
     "stage": "HISTORICAL_INGEST",
     "event": "ALL_ENVELOPES_PUBLISHED",
     "payload": {
-      "events_published_count": 943,
+      "events_published_count": 72642,
       "topics_used": [
+        "pulse.raw.tyres.stints.v1",
         "pulse.raw.race_control.v1",
+        "pulse.raw.timing.laps.v1",
         "pulse.raw.weather.v1",
-        "pulse.raw.pit.events.v1",
-        "pulse.raw.timing.laps.v1"
+        "pulse.raw.telemetry.car.v1",
+        "pulse.raw.pit.events.v1"
       ],
       "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:16.351041+00:00",
+    "timestamp": "2026-11-05T04:43:05.130219+00:00",
     "stage": "FLINK_NORMALIZATION",
     "event": "ALL_CANONICAL_CONFIRMED",
     "payload": {
-      "canonical_events_normalized": 943,
-      "flink_read_records": 12782,
-      "flink_write_records": 12782,
-      "flink_checkpoints": 5731,
+      "canonical_events_normalized": 72642,
+      "flink_read_records": 87544,
+      "flink_write_records": 87545,
+      "flink_checkpoints": 17,
       "stream_parallelism": 14
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:16.373832+00:00",
+    "timestamp": "2026-11-05T04:43:05.173907+00:00",
     "stage": "AGENT_1",
     "event": "HISTORICAL_FINDINGS_CONFIRMED",
     "payload": {
-      "count": 20,
+      "count": 17,
       "types": [
+        "STEWARD_ACTION",
+        "RACE_EVENT_LIFECYCLE",
         "DRIVER_RETIREMENT",
         "DRIVER_EVENT_EXPOSURE",
-        "RACE_EVENT_LIFECYCLE",
-        "STEWARD_ACTION",
         "INCIDENT_TRACK_HAZARD"
       ]
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:16.379194+00:00",
+    "timestamp": "2026-11-05T04:43:05.199722+00:00",
     "stage": "AGENT_2",
     "event": "FINDINGS_VERIFIED",
     "payload": {
-      "count": 4
+      "count": 8
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:17.286889+00:00",
+    "timestamp": "2026-11-05T04:43:05.979276+00:00",
     "stage": "AGENT_3",
     "event": "LAP_INTELLIGENCE_PROCESSED",
     "payload": {
-      "laps_processed": 903,
-      "findings_count": 903
+      "laps_processed": 600,
+      "findings_count": 600
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:17.291336+00:00",
+    "timestamp": "2026-11-05T04:43:06.002099+00:00",
     "stage": "AGENT_4",
     "event": "STRATEGY_FINDINGS_VERIFIED",
     "payload": {
@@ -92,38 +94,38 @@
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:18.477183+00:00",
+    "timestamp": "2026-11-05T04:43:06.889893+00:00",
     "stage": "AGENT_5",
     "event": "REVISION_CHAIN_CONFIRMED",
     "payload": {
-      "assessments_produced": 912,
+      "assessments_produced": 604,
       "drivers_evaluated": [
-        1,
+        16,
         4,
+        1,
         44,
         81,
         63,
-        14,
-        23,
-        16,
         55,
+        11,
+        23,
         10,
+        14,
         18,
         31,
         22,
+        20,
         27,
-        2,
-        11,
-        21,
         77,
         24,
-        20
+        2,
+        21
       ],
-      "revision_history_depth": 912
+      "revision_history_depth": 604
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:18.479740+00:00",
+    "timestamp": "2026-11-05T04:43:06.894031+00:00",
     "stage": "FAULT_HANDLING",
     "event": "QUALITY_SCENARIOS_VERIFIED",
     "payload": {
@@ -134,7 +136,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:18.480227+00:00",
+    "timestamp": "2026-11-05T04:43:06.896431+00:00",
     "stage": "EVALUATION",
     "event": "METRICS_COMPUTED",
     "payload": {
@@ -149,12 +151,12 @@
     }
   },
   {
-    "timestamp": "2026-11-05T02:29:18.673637+00:00",
+    "timestamp": "2026-11-05T04:43:07.961921+00:00",
     "stage": "PERSISTENCE",
     "event": "LINEAGE_VERIFIED",
     "payload": {
-      "statestore_findings_count": 930,
-      "statestore_assessments_count": 913,
+      "statestore_findings_count": 628,
+      "statestore_assessments_count": 605,
       "agents_registered_count": 5,
       "api_endpoint_verified": true
     }

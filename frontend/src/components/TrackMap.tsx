@@ -179,6 +179,7 @@ export function TrackMap({
               return (
                 <g
                   key={driver.number}
+                  data-driver-number={driver.number}
                   className={`car-node ${isSelected ? 'is-selected' : ''} ${isRetired ? 'is-retired' : ''}`}
                   style={{ transform: `translate(${x}px, ${y}px)` }}
                   onClick={() => onSelectDriver?.(driver.number)}

@@ -427,6 +427,45 @@ class RaceStateProjector:
                     self.drivers[dn]["interval"] = p["interval"]
                 if "progress" in p:
                     self.drivers[dn]["progress"] = p["progress"]
+                if "lap" in p:
+                    self.drivers[dn]["lap"] = p["lap"]
+                    self.current_lap = max(self.current_lap, p["lap"])
+                if "tyre" in p:
+                    self.drivers[dn]["tyre"] = p["tyre"]
+                if "tyre_age" in p:
+                    self.drivers[dn]["tyreAge"] = p["tyre_age"]
+                if "status" in p and p["status"]:
+                    self.drivers[dn]["status"] = p["status"]
+
+                # Update CAN-bus telemetry channels
+                if "speed" in p and "speed" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["speed"]["value"] = p["speed"]
+                if "throttle" in p and "throttle" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["throttle"]["value"] = p["throttle"]
+                if "brake" in p and "brake" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["brake"]["value"] = p["brake"]
+                if "gear" in p and "gear" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["gear"]["value"] = p["gear"]
+                if "rpm" in p and "engine_rpm" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["engine_rpm"]["value"] = p["rpm"]
+                if "drs" in p and "drs_status" in self.drivers[dn].get("telemetry", {}):
+                    self.drivers[dn]["telemetry"]["drs_status"]["value"] = p["drs"]
+
+                # Append to history point for telemetry modal charts
+                if "speed" in p:
+                    if "history" not in self.drivers[dn]:
+                        self.drivers[dn]["history"] = []
+                    self.drivers[dn]["history"].append({
+                        "time_offset_s": 0.0,
+                        "speed": p["speed"],
+                        "throttle": p.get("throttle", 0),
+                        "brake": p.get("brake", 0),
+                        "gear": p.get("gear", 0),
+                        "rpm": p.get("rpm", 0),
+                        "drs": p.get("drs", 0),
+                    })
+                    if len(self.drivers[dn]["history"]) > 25:
+                        self.drivers[dn]["history"].pop(0)
 
         elif event_type == "LAP_COMPLETED":
             dn = envelope.subject.driver_number

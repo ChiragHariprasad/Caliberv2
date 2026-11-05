@@ -72,17 +72,16 @@ class ReplayController:
         self.capture_id = meta.capture_id or ""
         self.mode = "REPLAY" if meta.availability_status == "AVAILABLE_HISTORICAL" else "SIMULATED"
 
-        if meta.availability_status == "AVAILABLE_HISTORICAL":
-            capture_dir = Path("captures/f1-2023-silverstone-race")
-            if not capture_dir.exists():
-                capture_dir = Path("captures") / self.capture_id
-            env_file = capture_dir / "envelopes.jsonl"
-            if env_file.exists():
-                with open(env_file, "r", encoding="utf-8") as f:
-                    for line in f:
-                        if line.strip():
-                            self.envelopes.append(EventEnvelope.model_validate(json.loads(line)))
+        capture_dir = Path("captures") / self.capture_id
+        if not capture_dir.exists():
+            capture_dir = Path("captures") / self.session_id
+        env_file = capture_dir / "envelopes.jsonl"
 
+        if env_file.exists():
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip():
+                        self.envelopes.append(EventEnvelope.model_validate(json.loads(line)))
         elif meta.availability_status == "AVAILABLE_SIMULATION":
             from pulse.simulator.scenarios import build_vsc_scenario
             self.envelopes = build_vsc_scenario()
@@ -300,10 +299,12 @@ class ReplayController:
                 if self.status in {ReplayStatus.RESETTING, ReplayStatus.FAILED, ReplayStatus.COMPLETED}:
                     break
 
-                env = self.envelopes[self.current_index]
+                env = self.envelopes[self.current_index].model_copy(deep=True)
                 env.run.run_id = self.run_id
                 env.run.session_instance_id = self.session_id
                 env.run.mode = RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED
+                # Suffix event_id with run_id so Flink watermarking & deduplication treats each replay execution as fresh
+                env.event_id = f"{env.event_id}-{self.run_id}"
 
                 topic = raw_topic_for_event(env.event_type)
                 key = routing_key(self.session_id, env.subject.driver_number, env.subject.segment_id)
@@ -321,8 +322,8 @@ class ReplayController:
 
                 self.current_index += 1
 
-                # Every 5 events or on significant events, broadcast replay status
-                if self.current_index % 5 == 0 or env.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "DRIVER_RETIRED"}:
+                # Every 10 events (~0.5s at 20Hz) or on significant events, broadcast replay status
+                if self.current_index % 10 == 0 or env.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "DRIVER_RETIRED"}:
                     store.notify_replay_status(self.get_status())
 
                 # Event-time scheduling: wall_clock_delay = delta / speed
@@ -339,9 +340,11 @@ class ReplayController:
                             if self.status != ReplayStatus.RUNNING:
                                 break
                             rem = end_sleep - asyncio.get_running_loop().time()
-                            await asyncio.sleep(min(0.05, max(0.001, rem)))
+                            await asyncio.sleep(min(0.025, max(0.001, rem)))
                     else:
-                        await asyncio.sleep(0.001)
+                        # Prevent microsecond bursts if two events share the same millisecond timestamp
+                        min_paced = max(0.002, 0.010 / max(0.1, self.speed))
+                        await asyncio.sleep(min_paced)
 
             self.status = ReplayStatus.COMPLETED
             store.notify_replay_status(self.get_status())

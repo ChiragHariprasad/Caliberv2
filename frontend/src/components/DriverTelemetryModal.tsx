@@ -24,7 +24,7 @@ export function DriverTelemetryModal({ driverNumber, onClose }: DriverTelemetryM
     };
 
     load();
-    const interval = setInterval(load, 1000);
+    const interval = setInterval(load, 500);
 
     return () => {
       active = false;

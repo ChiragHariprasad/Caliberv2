@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2026-monaco-sim",
+  "meeting_id": "f1-2026-monaco-sim",
+  "session_name": "Formula 1 Grand Prix de Monaco",
+  "circuit_id": "monaco",
+  "total_laps": 78,
+  "total_drivers": 20,
+  "duration_seconds": 3600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

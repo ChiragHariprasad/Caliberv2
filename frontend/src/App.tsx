@@ -19,6 +19,7 @@ import { EvidenceDrawer } from './components/EvidenceDrawer';
 import { AlertTriangleIcon, InfoIcon, MapPinIcon } from './components/icons';
 import { ImpactCard } from './components/ImpactCard';
 import { LeaderboardTable } from './components/LeaderboardTable';
+import { MomentumChart } from './components/MomentumChart';
 import { PipelineLabView } from './components/PipelineLabView';
 import { PitWindowCard } from './components/PitWindowCard';
 import { PulseTimeline } from './components/PulseTimeline';
@@ -61,7 +62,7 @@ export default function App() {
       setSessionId(newSessionId);
       let newCircuit = 'monaco';
       if (newSessionId === 'f1-2023-silverstone-race') newCircuit = 'silverstone';
-      if (newSessionId === 'f1-2026-suzuka-preview') newCircuit = 'suzuka';
+      if (newSessionId === 'f1-2026-suzuka-preview' || newSessionId === 'f1-2026-suzuka-race') newCircuit = 'suzuka';
       setCircuitId(newCircuit);
 
       await selectSession(newSessionId);
@@ -353,11 +354,11 @@ export default function App() {
                   </div>
 
                   <div className="impact-cards-stack">
-                    {snapshot.assessments.map((assessment) => {
+                    {snapshot.assessments.map((assessment, idx) => {
                       const driver = snapshot.drivers.find((d) => d.number === assessment.driverNumber);
                       return (
                         <ImpactCard
-                          key={assessment.id}
+                          key={assessment.id ? `${assessment.id}-${idx}` : `assess-${idx}`}
                           assessment={assessment}
                           driver={driver}
                           onEvidence={(a) => setActiveEvidenceAssessment(a)}
@@ -368,7 +369,10 @@ export default function App() {
                 </section>
               )}
 
-              <PulseTimeline events={snapshot.timeline} />
+              <div className="cockpit-side-column" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <MomentumChart drivers={snapshot.drivers} currentLap={snapshot.lap} activeEvent={snapshot.activeEvent} />
+                <PulseTimeline events={snapshot.timeline} />
+              </div>
             </div>
           </div>
         )}

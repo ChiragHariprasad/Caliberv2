@@ -463,6 +463,19 @@ body {
   letter-spacing: 0.5px;
 }
 
+.pit-standard-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 209, 106, 0.15);
+  border: 1px solid #00d16a;
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: #00ff88;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
 .pit-window-content {
   display: flex;
   flex-direction: column;
@@ -1790,7 +1803,7 @@ body {
 /* Interactive Car Nodes */
 .car-node {
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  transition: transform 0.5s linear;
 }
 
 .car-node:hover .car-circle {

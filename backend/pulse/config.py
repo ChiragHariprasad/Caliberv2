@@ -33,10 +33,10 @@ class Settings(BaseSettings):
     default_replay_speed: float = Field(default=1.0, gt=0, le=32)
     groq_enabled: bool = True
     groq_api_key: str = Field(
-        default_factory=lambda: os.environ.get("GROQ_API_KEY", ""),
+        default="",
         validation_alias=AliasChoices("PULSE_GROQ_API_KEY", "GROQ_API_KEY")
     )
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
 
     @property
     def cors_origin_list(self) -> list[str]:
