@@ -151,7 +151,8 @@ class TrackStateAgent(BaseAgent):
             if event_type in {"VSC_DEPLOYED", "VSC_ENDED", "SESSION_STARTED"}:
                 is_vsc = (event_type == "VSC_DEPLOYED")
                 sec_id = event.subject.segment_id or "sector-2"
-                self.sector_states[sec_id]["status"] = "VSC_CONTROLLED" if is_vsc else "CLEAR"
+                target_sector = sec_id if sec_id in self.sector_states else "sector-2"
+                self.sector_states[target_sector]["status"] = "VSC_CONTROLLED" if is_vsc else "CLEAR"
 
                 finding = Finding(
                     finding_id=f"finding-track-{event.event_id}",

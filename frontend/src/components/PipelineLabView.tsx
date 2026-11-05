@@ -199,21 +199,29 @@ export function PipelineLabView() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { name: '1. PREFLIGHT', status: 'PASSED', io: '0 / 1', drops: 0 },
-                    { name: '2. RAW_SCENARIO_INGEST_KAFKA', status: 'PASSED', io: '9 / 9', drops: 0 },
-                    { name: '3. FLINK_STREAM_NORMALIZATION', status: 'PASSED', io: '9 / 9', drops: 0 },
-                    { name: '4. AGENT_1_EVENT_CONTROL', status: 'PASSED', io: '4 / 5', drops: 0 },
-                    { name: '5. AGENT_2_TRACK_STATE', status: 'PASSED', io: '2 / 2', drops: 0 },
-                    { name: '6. AGENT_3_VEHICLE_RESPONSE', status: 'PASSED', io: '1 / 1', drops: 0 },
-                    { name: '7. AGENT_4_TYRE_STRATEGY', status: 'PASSED', io: '2 / 1', drops: 0 },
-                    { name: '8. AGENT_5_CONSEQUENCE_FUSION', status: 'PASSED', io: '9 / 4', drops: 0 },
-                    { name: '9. FAULT_INJECTION_AND_DATA_QUALITY', status: 'PASSED', io: '2 / 2', drops: 0 },
-                    { name: '10. STATE_STORE_LINEAGE_AND_API', status: 'PASSED', io: '14 / 14', drops: 0 },
-                  ].map((s) => (
+                  {(selectedRun.stages && selectedRun.stages.length > 0
+                    ? selectedRun.stages.map((s: any) => ({
+                        name: s.stage_name,
+                        status: s.status,
+                        io: `${s.inputs_expected ?? '—'} / ${s.outputs_actual ?? '—'}`,
+                        drops: s.drops ?? 0,
+                      }))
+                    : [
+                        { name: '1. PREFLIGHT', status: 'PASSED', io: '0 / 1', drops: 0 },
+                        { name: '2. RAW_SCENARIO_INGEST_KAFKA', status: 'PASSED', io: '9 / 9', drops: 0 },
+                        { name: '3. FLINK_STREAM_NORMALIZATION', status: 'PASSED', io: '9 / 9', drops: 0 },
+                        { name: '4. AGENT_1_EVENT_CONTROL', status: 'PASSED', io: '4 / 5', drops: 0 },
+                        { name: '5. AGENT_2_TRACK_STATE', status: 'PASSED', io: '2 / 2', drops: 0 },
+                        { name: '6. AGENT_3_VEHICLE_RESPONSE', status: 'PASSED', io: '1 / 1', drops: 0 },
+                        { name: '7. AGENT_4_TYRE_STRATEGY', status: 'PASSED', io: '2 / 1', drops: 0 },
+                        { name: '8. AGENT_5_CONSEQUENCE_FUSION', status: 'PASSED', io: '9 / 4', drops: 0 },
+                        { name: '9. FAULT_INJECTION_AND_DATA_QUALITY', status: 'PASSED', io: '2 / 2', drops: 0 },
+                        { name: '10. STATE_STORE_LINEAGE_AND_API', status: 'PASSED', io: '14 / 14', drops: 0 },
+                      ]
+                  ).map((s: { name: string; status: string; io: string; drops: number }) => (
                     <tr key={s.name}>
                       <td><code>{s.name}</code></td>
-                      <td><span className="stage-pass-tag">PASSED</span></td>
+                      <td><span className={`stage-pass-tag ${s.status === 'PASSED' ? '' : 'stage-fail-tag'}`}>{s.status}</span></td>
                       <td>{s.io}</td>
                       <td><strong>{s.drops}</strong></td>
                     </tr>

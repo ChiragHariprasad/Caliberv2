@@ -95,6 +95,12 @@ class StateStore:
         self.current_session_id = session_id
         meta = get_session_by_id(session_id)
 
+        for agent in self.agents.values():
+            if hasattr(agent, "reset_metrics"):
+                agent.reset_metrics()
+            if hasattr(agent, "reset"):
+                agent.reset()
+
         if not meta or meta.availability_status == "NO_SESSION_DATA":
             circuit = meta.circuit_id if meta else "suzuka"
             name = meta.grand_prix_name if meta else "Japanese Grand Prix"
@@ -133,8 +139,11 @@ class StateStore:
             self.latest_assessments.clear()
             self.assessment_history.clear()
 
-            # Load entry list
-            entry_file = Path("captures/f1-2023-silverstone-race/entry_list.json")
+            # Load entry list dynamically from capture directory
+            capture_id = meta.capture_id or "f1-2023-silverstone-race"
+            entry_file = Path("captures") / capture_id / "entry_list.json"
+            if not entry_file.exists():
+                entry_file = Path("captures/f1-2023-silverstone-race/entry_list.json")
             if entry_file.exists():
                 entries = json.loads(entry_file.read_text(encoding="utf-8"))
                 self.projector.load_session_entry_list(entries)
@@ -258,7 +267,7 @@ class StateStore:
     # --- SSE Subscription & Event Delivery ---
 
     def add_listener(self) -> asyncio.Queue[dict[str, Any]]:
-        queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=200)
+        queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=2000)
         self._listeners.append(queue)
         return queue
 
@@ -300,7 +309,11 @@ class StateStore:
             try:
                 queue.put_nowait(envelope)
             except asyncio.QueueFull:
-                logger.debug("Listener queue full, dropping message")
+                try:
+                    queue.get_nowait()
+                    queue.put_nowait(envelope)
+                except Exception:
+                    pass
             except Exception:
                 pass
 

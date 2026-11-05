@@ -1,0 +1,129 @@
+{
+  "suite": "PULSE V1 Browser End-to-End Verification",
+  "timestamp_utc": "2026-11-05T02:29:26Z",
+  "frontend_url": "http://127.0.0.1:5173",
+  "backend_url": "http://127.0.0.1:8000",
+  "steps": [
+    {
+      "step": "B2_initial_load",
+      "description": "Initial application load, circuit geometry, driver grid, and stream connectivity",
+      "status": "PASSED",
+      "duration_ms": 1976,
+      "details": {
+        "connection_pill": "STREAM: CONNECTED",
+        "mode_badge": "MODE: REPLAY",
+        "driver_count": 20,
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\01_initial_load.png"
+      }
+    },
+    {
+      "step": "B2_session_switching",
+      "description": "Switch to Silverstone 2023 Historical Replay and reinitialise grid",
+      "status": "PASSED",
+      "duration_ms": 1273,
+      "details": {
+        "mode": "MODE: REPLAY",
+        "driver_count": 20,
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\02_silverstone_selected.png"
+      }
+    },
+    {
+      "step": "B7_speed_adjustment",
+      "description": "Adjust replay acceleration factor to 5x",
+      "status": "PASSED",
+      "duration_ms": 1166,
+      "details": {
+        "speed_selected": true,
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\03_speed_5x_selected.png"
+      }
+    },
+    {
+      "step": "B3_playback_play",
+      "description": "Start replay and verify streaming advancement across pipeline",
+      "status": "PASSED",
+      "duration_ms": 8176,
+      "details": {
+        "status": "RUNNING",
+        "scrubber_readout": "Event 4 / 943 (0.4%)",
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\04_playback_running.png"
+      }
+    },
+    {
+      "step": "B4_pause_resume",
+      "description": "Pause playback, verify cursor freeze, and resume playback",
+      "status": "PASSED",
+      "duration_ms": 6846,
+      "details": {
+        "paused_status": "PAUSED",
+        "pause_held": true,
+        "resumed_status": "RUNNING",
+        "scrubber_resumed": "Event 20 / 943 (2.1%)",
+        "screenshot_paused": "E:\\Caliberv2\\reports\\browser_verification\\05_paused.png",
+        "screenshot_resumed": "E:\\Caliberv2\\reports\\browser_verification\\06_resumed.png"
+      }
+    },
+    {
+      "step": "B6_seek_scrubber",
+      "description": "Scrub cursor to Event 50 and verify state catchup",
+      "status": "PASSED",
+      "duration_ms": 2130,
+      "details": {
+        "readout": "Event 24 / 943 (2.5%)",
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\07_seek.png"
+      }
+    },
+    {
+      "step": "B5_reset",
+      "description": "Reset replay to index 0 with clean state under a fresh run ID",
+      "status": "PASSED",
+      "duration_ms": 2165,
+      "details": {
+        "status": "READY",
+        "readout": "Event 0 / 943 (0%)",
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\08_reset.png"
+      }
+    },
+    {
+      "step": "B8_tab_navigation",
+      "description": "Navigate through Cockpit, Agent Operations, Race Control, and Pipeline Lab tabs",
+      "status": "PASSED",
+      "duration_ms": 4585,
+      "details": {
+        "agent_cards_count": 5,
+        "official_notices_count": 1,
+        "pipeline_nodes_count": 6,
+        "screenshots": [
+          "E:\\Caliberv2\\reports\\browser_verification\\09_tab_agents.png",
+          "E:\\Caliberv2\\reports\\browser_verification\\10_tab_race_control.png",
+          "E:\\Caliberv2\\reports\\browser_verification\\11_tab_pipeline_lab.png",
+          "E:\\Caliberv2\\reports\\browser_verification\\12_tab_cockpit.png"
+        ]
+      }
+    },
+    {
+      "step": "B8_telemetry_modal",
+      "description": "Open and inspect live CAN-bus car telemetry modal",
+      "status": "PASSED",
+      "duration_ms": 809,
+      "details": {
+        "gauge_cards": 6,
+        "has_graph": true,
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\13_telemetry_modal.png"
+      }
+    },
+    {
+      "step": "B2_no_session_data_state",
+      "description": "Verify Suzuka preview displays verified track geometry with graceful empty state",
+      "status": "PASSED",
+      "duration_ms": 2120,
+      "details": {
+        "empty_state_visible": true,
+        "screenshot": "E:\\Caliberv2\\reports\\browser_verification\\14_suzuka_no_session_data.png"
+      }
+    }
+  ],
+  "console_errors": [],
+  "console_warnings": [],
+  "failed_requests": [],
+  "overall_status": "PASSED"
+}

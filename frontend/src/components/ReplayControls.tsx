@@ -4,7 +4,7 @@ import { ClockIcon, PauseIcon, PlayIcon, ResetIcon, SpeedIcon } from './icons';
 
 interface ReplayControlsProps {
   statusData?: ReplayStatusData | null;
-  onControl: (action: 'START' | 'PAUSE' | 'RESUME' | 'RESTART' | 'RESET' | 'SEEK' | 'SPEED', value?: any) => void;
+  onControl: (action: 'START' | 'PAUSE' | 'RESUME' | 'RESTART' | 'RESET' | 'SEEK' | 'SPEED', value?: any) => Promise<any> | void;
   status: string;
   speed: number;
   currentLap?: number;
@@ -29,37 +29,68 @@ export function ReplayControls({
   const totalEvents = statusData?.totalEvents ?? 100;
   const currentIndex = statusData?.currentIndex ?? 0;
   const [scrubIndex, setScrubIndex] = useState<number | null>(null);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
 
   const displayIndex = scrubIndex !== null ? scrubIndex : currentIndex;
   const progressPercent = statusData?.progressPercent ?? Math.round((displayIndex / Math.max(1, totalEvents)) * 100);
 
-  const handleTogglePlay = () => {
-    if (isRunning) {
-      onControl('PAUSE');
-    } else {
-      onControl('RESUME');
+  const handleTogglePlay = async () => {
+    if (pendingAction) return;
+    try {
+      if (isRunning) {
+        setPendingAction('PAUSE');
+        await onControl('PAUSE');
+      } else if (currentStatus === 'READY' || currentStatus === 'COMPLETED') {
+        setPendingAction('START');
+        await onControl('START');
+      } else {
+        setPendingAction('RESUME');
+        await onControl('RESUME');
+      }
+    } finally {
+      setPendingAction(null);
     }
   };
 
-  const handleReset = () => {
-    setScrubIndex(null);
-    onControl('RESET');
+  const handleReset = async () => {
+    if (pendingAction) return;
+    try {
+      setPendingAction('RESET');
+      setScrubIndex(null);
+      await onControl('RESET');
+    } finally {
+      setPendingAction(null);
+    }
   };
 
-  const handleSpeedSelect = (s: number) => {
-    onControl('SPEED', s);
+  const handleSpeedSelect = async (s: number) => {
+    if (pendingAction) return;
+    try {
+      setPendingAction(`SPEED_${s}`);
+      await onControl('SPEED', s);
+    } finally {
+      setPendingAction(null);
+    }
   };
 
   const handleSliderChange = (e: ChangeEvent<HTMLInputElement>) => {
     setScrubIndex(Number(e.target.value));
   };
 
-  const handleSliderCommit = () => {
-    if (scrubIndex !== null) {
-      onControl('SEEK', { targetIndex: scrubIndex });
-      setScrubIndex(null);
+  const handleSliderCommit = async () => {
+    if (scrubIndex !== null && !pendingAction) {
+      try {
+        setPendingAction('SEEK');
+        await onControl('SEEK', { targetIndex: scrubIndex });
+        setScrubIndex(null);
+      } finally {
+        setPendingAction(null);
+      }
     }
   };
+
+  const isPendingPlay = pendingAction === 'START' || pendingAction === 'PAUSE' || pendingAction === 'RESUME';
+  const isPendingReset = pendingAction === 'RESET';
 
   return (
     <div className="replay-controls-bar" role="region" aria-label="Replay Controls">
@@ -69,10 +100,16 @@ export function ReplayControls({
           type="button"
           className={`control-btn play-btn ${isRunning ? 'is-active' : ''}`}
           onClick={handleTogglePlay}
+          disabled={Boolean(pendingAction)}
           title={isRunning ? 'Pause Replay Stream' : 'Resume / Play Stream'}
           aria-label={isRunning ? 'Pause Replay' : 'Play Replay'}
         >
-          {isRunning ? (
+          {isPendingPlay ? (
+            <>
+              <span className="btn-spinner" />
+              <span>Updating...</span>
+            </>
+          ) : isRunning ? (
             <>
               <PauseIcon size={14} className="btn-icon" />
               <span>Pause</span>
@@ -89,11 +126,21 @@ export function ReplayControls({
           type="button"
           className="control-btn restart-btn"
           onClick={handleReset}
+          disabled={Boolean(pendingAction)}
           title="Reset to Initial Envelope Cursor"
           aria-label="Reset Replay"
         >
-          <ResetIcon size={14} className="btn-icon" />
-          <span>Reset</span>
+          {isPendingReset ? (
+            <>
+              <span className="btn-spinner" />
+              <span>Resetting...</span>
+            </>
+          ) : (
+            <>
+              <ResetIcon size={14} className="btn-icon" />
+              <span>Reset</span>
+            </>
+          )}
         </button>
       </div>
 
@@ -103,6 +150,7 @@ export function ReplayControls({
           <span className="scrubber-label">TIMELINE SCRUBBER</span>
           <span className="scrubber-progress-readout">
             Event {displayIndex} / {totalEvents} ({progressPercent}%)
+            {pendingAction === 'SEEK' && <span className="ml-2 text-cyan-400">Seeking...</span>}
           </span>
         </div>
         <input
@@ -111,6 +159,7 @@ export function ReplayControls({
           min={0}
           max={Math.max(1, totalEvents - 1)}
           value={displayIndex}
+          disabled={Boolean(pendingAction)}
           onChange={handleSliderChange}
           onMouseUp={handleSliderCommit}
           onTouchEnd={handleSliderCommit}
@@ -130,9 +179,11 @@ export function ReplayControls({
             key={s}
             type="button"
             className={`speed-chip ${currentSpeed === s ? 'is-selected' : ''}`}
+            disabled={Boolean(pendingAction)}
             onClick={() => handleSpeedSelect(s)}
             aria-label={`Playback speed ${s}x`}
           >
+            {pendingAction === `SPEED_${s}` ? <span className="btn-spinner" /> : null}
             {s}x
           </button>
         ))}

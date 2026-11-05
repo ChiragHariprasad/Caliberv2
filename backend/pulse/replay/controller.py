@@ -180,7 +180,7 @@ class ReplayController:
 
     def resume(self) -> dict[str, Any]:
         """Resumes playback from the current cursor."""
-        if self.status == ReplayStatus.PAUSED:
+        if self.status in {ReplayStatus.PAUSED, ReplayStatus.READY}:
             self.status = ReplayStatus.RUNNING
             if self._task is None or self._task.done():
                 self._task = asyncio.create_task(self._replay_loop())
@@ -319,25 +319,29 @@ class ReplayController:
                 self.last_event_time_utc = env.time.event_time_utc
                 self.elapsed_ms = env.time.session_elapsed_ms or 0
 
-                # Apply to StateStore and notify SSE stream
-                store.record_canonical_event(env)
-
                 self.current_index += 1
 
                 # Every 5 events or on significant events, broadcast replay status
                 if self.current_index % 5 == 0 or env.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "DRIVER_RETIRED"}:
                     store.notify_replay_status(self.get_status())
 
-                # Event-time scheduling
+                # Event-time scheduling: wall_clock_delay = delta / speed
                 if self.current_index < len(self.envelopes):
                     next_env = self.envelopes[self.current_index]
                     t_cur = env.time.session_elapsed_ms or 0
                     t_nxt = next_env.time.session_elapsed_ms or t_cur
-                    delta_ms = max(0, t_nxt - t_cur)
-                    # Smooth delay: map delta_ms into [40ms, 2500ms] divided by playback speed
-                    scaled_delay_ms = min(2500.0, max(40.0, float(delta_ms)))
-                    wall_clock_sec = (scaled_delay_ms / 1000.0) / max(0.1, self.speed)
-                    await asyncio.sleep(wall_clock_sec)
+                    delta_ms = min(2500, max(0, t_nxt - t_cur))
+                    if delta_ms > 0:
+                        wall_clock_sec = (delta_ms / 1000.0) / max(0.1, self.speed)
+                        # Chunked responsive sleep to allow immediate pause/reset/seek reaction
+                        end_sleep = asyncio.get_running_loop().time() + wall_clock_sec
+                        while asyncio.get_running_loop().time() < end_sleep:
+                            if self.status != ReplayStatus.RUNNING:
+                                break
+                            rem = end_sleep - asyncio.get_running_loop().time()
+                            await asyncio.sleep(min(0.05, max(0.001, rem)))
+                    else:
+                        await asyncio.sleep(0.001)
 
             self.status = ReplayStatus.COMPLETED
             store.notify_replay_status(self.get_status())

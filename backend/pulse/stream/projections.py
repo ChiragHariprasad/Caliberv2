@@ -210,7 +210,7 @@ class RaceStateProjector:
                     "gap": {"value": entry.get("gap", "—"), "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
                     "interval": {"value": entry.get("interval", "—"), "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
                 }
-                history = [] if (is_inactive or self.data_mode != "SIMULATED") else _generate_synthetic_telemetry_history(spd, gear, rpm)
+                history = [] if is_inactive else _generate_synthetic_telemetry_history(spd, gear, rpm)
 
             tone = "positive" if pos <= 3 else ("negative" if pos >= 15 or is_inactive else "neutral")
             label = entry.get("label") or ("Did Not Start" if status == "DNS" else ("Retired" if status == "RETIRED" else "Running"))
@@ -457,9 +457,14 @@ class RaceStateProjector:
 
                 lap_val = p.get("lap")
                 if lap_val:
+                    self.drivers[dn]["lap"] = int(lap_val)
                     self.current_lap = max(self.current_lap, int(lap_val))
                 elif dn in {1, 16, 44}:
                     self.current_lap = max(self.current_lap, self.drivers[dn]["tyreAge"])
+
+                pos = self.drivers[dn].get("position", 10)
+                lap_num = self.drivers[dn].get("lap", self.current_lap)
+                self.drivers[dn]["progress"] = round(((lap_num * 0.17 + (21 - pos) * 0.048)) % 1.0, 4)
 
         elif event_type in {"RACE_CONTROL_NOTICE", "RACE_CONTROL_MESSAGE"}:
             cat = p.get("category", "NOTICE")

@@ -40,6 +40,7 @@ export default function App() {
   const [activeEvidenceAssessment, setActiveEvidenceAssessment] = useState<Assessment | null>(null);
   const [replayStatusData, setReplayStatusData] = useState<ReplayStatusData | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'CONNECTED' | 'RECONNECTING' | 'DISCONNECTED'>('DISCONNECTED');
+  const [switchingToSession, setSwitchingToSession] = useState<string | null>(null);
 
   const isNoSessionData = sessionId === 'f1-2026-suzuka-preview' || snapshot.status === 'NO_SESSION_DATA';
 
@@ -55,14 +56,19 @@ export default function App() {
 
   // Switch session handler
   const handleSessionChange = async (newSessionId: string) => {
-    setSessionId(newSessionId);
-    let newCircuit = 'monaco';
-    if (newSessionId === 'f1-2023-silverstone-race') newCircuit = 'silverstone';
-    if (newSessionId === 'f1-2026-suzuka-preview') newCircuit = 'suzuka';
-    setCircuitId(newCircuit);
+    try {
+      setSwitchingToSession(newSessionId);
+      setSessionId(newSessionId);
+      let newCircuit = 'monaco';
+      if (newSessionId === 'f1-2023-silverstone-race') newCircuit = 'silverstone';
+      if (newSessionId === 'f1-2026-suzuka-preview') newCircuit = 'suzuka';
+      setCircuitId(newCircuit);
 
-    await selectSession(newSessionId);
-    await refreshState();
+      await selectSession(newSessionId);
+      await refreshState();
+    } finally {
+      setSwitchingToSession(null);
+    }
   };
 
   // Load circuit geometry when circuitId changes
@@ -134,6 +140,36 @@ export default function App() {
           lastUpdated: 'live',
         }));
       },
+      onImpactAssessmentUpdate: (assessment) => {
+        setSnapshot((prev) => {
+          const dn = assessment.subject?.driver_number;
+          const existing = prev.assessments.filter((a) => a.id !== assessment.assessment_id);
+          const formatted = {
+            id: assessment.assessment_id,
+            version: assessment.assessment_version,
+            driverNumber: dn || 0,
+            title: assessment.impact?.summary || 'Tactical Assessment',
+            narrative: assessment.impact?.inferred_effects?.[0] || assessment.impact?.summary || '',
+            driverRadio: null,
+            impact: dn === 16 ? ('positive' as const) : (dn === 44 ? ('negative' as const) : ('neutral' as const)),
+            status: assessment.status || 'PROVISIONAL',
+            confidence: assessment.uncertainty?.confidence_score,
+            calibrationStatus: assessment.uncertainty?.calibration_status || 'UNCALIBRATED',
+            forecast: assessment.impact?.forecast?.position_delta_range
+              ? `Position retention projected: P${assessment.impact.forecast.position_delta_range[0]}–P${assessment.impact.forecast.position_delta_range[1]}`
+              : 'P1 retention highly probable across pit cycle',
+            alternative: assessment.impact?.alternatives?.[0] || 'Stay out and risk track position',
+            evidence: assessment.evidence_refs || [],
+            supersedesId: assessment.supersedes_assessment_id,
+            changedAt: 'just now',
+          };
+          return {
+            ...prev,
+            assessments: [formatted, ...existing],
+            lastUpdated: 'live',
+          };
+        });
+      },
       onConnectionChange: (state) => {
         setConnectionStatus(state);
         setConnected(state === 'CONNECTED');
@@ -178,11 +214,19 @@ export default function App() {
     if (res) {
       setReplayStatusData(res);
     }
-    setTimeout(refreshState, 200);
+    return res;
   };
 
   return (
     <div className="pulse-app">
+      {/* Session Switching Loading Overlay */}
+      {switchingToSession && (
+        <div className="session-switching-overlay" role="status">
+          <span className="session-switching-spinner" />
+          <span>Switching session to {switchingToSession} · Reinitialising stream state and telemetry...</span>
+        </div>
+      )}
+
       {/* Live Broadcast Header with View Tabs & Circuit / Session Selector */}
       <BroadcastBanner
         sessionName={snapshot.sessionName}

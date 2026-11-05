@@ -2790,3 +2790,92 @@ body {
   overflow-y: auto;
   color: #38bdf8;
 }
+
+/* ============================================================
+   Loading, Skeleton Shimmer & Progress Experience
+   ============================================================ */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 4px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 6px;
+}
+
+.control-btn:disabled, .speed-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.session-switching-overlay {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: rgba(13, 17, 23, 0.92);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-bottom: 1px solid #38bdf8;
+  color: #e6edf3;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.session-switching-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(56, 189, 248, 0.25);
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.modal-loading-skeleton {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-row {
+  height: 24px;
+  width: 100%;
+}
+
+.skeleton-box {
+  height: 120px;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer, .btn-spinner, .session-switching-spinner {
+    animation: none;
+  }
+}

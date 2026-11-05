@@ -49,7 +49,14 @@ OPS_TOPICS = {
 
 def raw_topic_for_event(event_type: str) -> str:
     event_type = event_type.upper()
-    if event_type in {"VSC_DEPLOYED", "VSC_ENDING", "VSC_ENDED", "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED", "RED_FLAG", "YELLOW_FLAG", "INCIDENT_NOTICE"}:
+    if event_type in {
+        "VSC_DEPLOYED", "VSC_ENDING", "VSC_ENDED",
+        "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED",
+        "RED_FLAG", "YELLOW_FLAG", "INCIDENT_NOTICE", "TRACK_STATUS_GREEN",
+        "RACE_CONTROL_NOTICE", "RACE_CONTROL_MESSAGE", "CHEQUERED_FLAG",
+        "GREEN_FLAG", "STEWARD_DECISION", "DRIVER_RETIRED", "DRIVER_DNS",
+        "SESSION_STARTED", "SESSION_ENTRY_LIST"
+    }:
         return RAW_TOPICS["race_control"]
     if event_type in {"TRACK_STATUS_UPDATE", "SEGMENT_STATUS_UPDATE"}:
         return RAW_TOPICS["track_status"]
@@ -57,7 +64,7 @@ def raw_topic_for_event(event_type: str) -> str:
         return RAW_TOPICS["timing_laps"]
     if event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE"}:
         return RAW_TOPICS["timing_positions"]
-    if event_type == "CAR_TELEMETRY_SAMPLE":
+    if event_type in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
         return RAW_TOPICS["telemetry_car"]
     if event_type == "WEATHER_OBSERVATION":
         return RAW_TOPICS["weather"]
@@ -65,7 +72,7 @@ def raw_topic_for_event(event_type: str) -> str:
         return RAW_TOPICS["tyres_stints"]
     if event_type in {"PIT_ENTRY", "PIT_STOP", "PIT_EXIT"}:
         return RAW_TOPICS["pit_events"]
-    return RAW_TOPICS["session_status"]
+    return RAW_TOPICS["race_control"]
 
 
 def routing_key(session_instance_id: str, driver_number: int | None = None, segment_id: str | None = None) -> str:

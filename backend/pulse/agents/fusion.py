@@ -172,12 +172,27 @@ class ConsequenceFusionEngine(BaseAgent):
             evidence_refs=list(finding.evidence_refs),
         )
 
+    async def _emit_assessment(self, assessment: Assessment, routing_key: str) -> None:
+        """Publishes synthesized assessment to output topic, registers metrics, and informs StateStore."""
+        self.emitted_findings += 1
+        if assessment.assessment_id not in self.output_finding_ids:
+            self.output_finding_ids.append(assessment.assessment_id)
+        dn = assessment.subject.driver_number
+        if dn:
+            self.latest_assessments[dn] = assessment
+        if not any(a.assessment_id == assessment.assessment_id for a in self.assessment_history):
+            self.assessment_history.append(assessment)
+        await self.bus.publish(self.output_topic, routing_key, assessment)
+        try:
+            from pulse.state.store import get_state_store
+            get_state_store().record_assessment(assessment)
+        except Exception:
+            pass
+
     async def _publish_provisional_v1(self, driver_number: int, finding: Finding) -> None:
         """Publishes provisional Assessment v1."""
         assessment = self._build_provisional_v1(driver_number, finding)
-        self.latest_assessments[driver_number] = assessment
-        self.assessment_history.append(assessment)
-        await self.bus.publish(self.output_topic, f"{finding.session_id}:{driver_number}", assessment)
+        await self._emit_assessment(assessment, f"{finding.session_id}:{driver_number}")
         logger.info("Published provisional Assessment v1 for driver #%d", driver_number)
 
     async def _publish_superseding_v2(self, driver_number: int, strat_finding: Finding) -> None:
@@ -245,10 +260,7 @@ class ConsequenceFusionEngine(BaseAgent):
             evidence_refs=list(set(all_evidence)),
         )
 
-        self.latest_assessments[driver_number] = assessment
-        if not any(a.assessment_id == assessment_id for a in self.assessment_history):
-            self.assessment_history.append(assessment)
-        await self.bus.publish(self.output_topic, f"{strat_finding.session_id}:{driver_number}", assessment)
+        await self._emit_assessment(assessment, f"{strat_finding.session_id}:{driver_number}")
         logger.info("Published revised Assessment v2 for driver #%d (supersedes %s)", driver_number, v1_id)
 
     async def _publish_pace_consequence_assessment(self, driver_number: int, finding: Finding) -> None:
@@ -316,8 +328,5 @@ class ConsequenceFusionEngine(BaseAgent):
             supersedes_assessment_id=existing.assessment_id if existing else None,
             evidence_refs=list(set(evidence)),
         )
-        self.latest_assessments[driver_number] = assessment
-        if not any(a.assessment_id == assessment_id for a in self.assessment_history):
-            self.assessment_history.append(assessment)
-        await self.bus.publish(self.output_topic, f"{finding.session_id}:{driver_number}", assessment)
+        await self._emit_assessment(assessment, f"{finding.session_id}:{driver_number}")
         logger.info("Published consequence assessment for driver #%d (version %d)", driver_number, version)

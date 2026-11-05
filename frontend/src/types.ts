@@ -243,6 +243,14 @@ export interface VerificationRun {
   stages_count: number;
   total_latency_ms: number;
   report_file: string;
+  stages?: Array<{
+    stage_name: string;
+    status: string;
+    inputs_expected?: number | null;
+    outputs_actual?: number | null;
+    drops?: number;
+    latency_ms?: number;
+  }>;
 }
 
 export interface LineageTraceEvent {

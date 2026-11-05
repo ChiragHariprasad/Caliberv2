@@ -83,8 +83,9 @@ async def lifespan(app: FastAPI):
         if canonical_env and target_topic:
             await bus.publish(target_topic, key, canonical_env)
 
-    for raw_topic in RAW_TOPICS.values():
-        bus.subscribe(raw_topic, raw_event_handler)
+    if mode != "KAFKA":
+        for raw_topic in RAW_TOPICS.values():
+            bus.subscribe(raw_topic, raw_event_handler)
 
     # 4. Normalized topic subscribers: route canonical events to agents and StateStore
     async def normalized_race_events_handler(topic: str, key: str, value: Any) -> None:
@@ -130,11 +131,12 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error("Error in normalized tyre stints pipeline: %s", e)
 
-    bus.subscribe(NORMALISED_TOPICS["race_events"], normalized_race_events_handler)
-    bus.subscribe(NORMALISED_TOPICS["driver_laps"], normalized_driver_laps_handler)
-    bus.subscribe(NORMALISED_TOPICS["driver_state"], normalized_driver_state_handler)
-    bus.subscribe(NORMALISED_TOPICS["track_segments"], normalized_track_handler)
-    bus.subscribe(NORMALISED_TOPICS["tyre_stints"], normalized_tyre_stints_handler)
+    if mode != "KAFKA":
+        bus.subscribe(NORMALISED_TOPICS["race_events"], normalized_race_events_handler)
+        bus.subscribe(NORMALISED_TOPICS["driver_laps"], normalized_driver_laps_handler)
+        bus.subscribe(NORMALISED_TOPICS["driver_state"], normalized_driver_state_handler)
+        bus.subscribe(NORMALISED_TOPICS["track_segments"], normalized_track_handler)
+        bus.subscribe(NORMALISED_TOPICS["tyre_stints"], normalized_tyre_stints_handler)
 
     # 5. Agent findings subscribers: route findings to Fusion Engine (Agent 5) and StateStore
     async def agent_finding_handler(topic: str, key: str, value: Any) -> None:

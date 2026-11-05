@@ -274,7 +274,9 @@ export function connectEventStream(
       const url = `${API_ROOT}/stream`;
       eventSource = new EventSource(url);
 
-      cbs.onConnectionChange?.('CONNECTED');
+      eventSource.onopen = () => {
+        cbs.onConnectionChange?.('CONNECTED');
+      };
 
       eventSource.addEventListener('snapshot', (e: MessageEvent) => {
         try {

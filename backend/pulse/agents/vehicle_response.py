@@ -131,6 +131,12 @@ class VehicleResponseAgent(BaseAgent):
                     reason = "PACE_MONITORING_NOMINAL"
                     classification = "NOMINAL_PACING"
 
+                interpretation_val = (
+                    Interpretation.INFERRED
+                    if classification == "DIRTY_AIR_IMPEDED"
+                    else Interpretation.DERIVED
+                )
+
                 finding = Finding(
                     finding_id=f"finding-veh-{event.event_id}-{dn}",
                     agent_id=self.agent_id,
@@ -140,7 +146,7 @@ class VehicleResponseAgent(BaseAgent):
                     subject=Subject(driver_number=dn),
                     trigger_event_id=event.event_id,
                     as_of_event_time=event.time.event_time_utc,
-                    interpretation=Interpretation.DERIVED,
+                    interpretation=interpretation_val,
                     result={
                         "driver_number": dn,
                         "pace_delta_sec": effective_pace_delta,

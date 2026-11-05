@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-11-04T20:46:52.852023+00:00",
+    "timestamp": "2026-11-05T02:29:14.753649+00:00",
     "stage": "MANIFEST_VALIDATION",
     "event": "CAPTURE_VERIFIED",
     "payload": {
@@ -13,7 +13,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:53.960593+00:00",
+    "timestamp": "2026-11-05T02:29:15.770815+00:00",
     "stage": "PREFLIGHT",
     "event": "CLUSTER_ONLINE",
     "payload": {
@@ -21,53 +21,53 @@
       "flink_job_id": "4ac2d03605f6993dfba914eadc3faec8",
       "flink_job_name": "pulse-canonical-normalizer-v2",
       "flink_job_state": "RUNNING",
-      "checkpoints_completed": 1623
+      "checkpoints_completed": 5731
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:54.094528+00:00",
+    "timestamp": "2026-11-05T02:29:15.940945+00:00",
     "stage": "HISTORICAL_INGEST",
     "event": "ALL_ENVELOPES_PUBLISHED",
     "payload": {
       "events_published_count": 943,
       "topics_used": [
-        "pulse.raw.pit.events.v1",
-        "pulse.raw.weather.v1",
         "pulse.raw.race_control.v1",
+        "pulse.raw.weather.v1",
+        "pulse.raw.pit.events.v1",
         "pulse.raw.timing.laps.v1"
       ],
       "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:54.527539+00:00",
+    "timestamp": "2026-11-05T02:29:16.351041+00:00",
     "stage": "FLINK_NORMALIZATION",
     "event": "ALL_CANONICAL_CONFIRMED",
     "payload": {
       "canonical_events_normalized": 943,
-      "flink_read_records": 7949,
-      "flink_write_records": 7949,
-      "flink_checkpoints": 1623,
+      "flink_read_records": 12782,
+      "flink_write_records": 12782,
+      "flink_checkpoints": 5731,
       "stream_parallelism": 14
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:54.553111+00:00",
+    "timestamp": "2026-11-05T02:29:16.373832+00:00",
     "stage": "AGENT_1",
     "event": "HISTORICAL_FINDINGS_CONFIRMED",
     "payload": {
       "count": 20,
       "types": [
-        "DRIVER_EVENT_EXPOSURE",
-        "STEWARD_ACTION",
-        "INCIDENT_TRACK_HAZARD",
         "DRIVER_RETIREMENT",
-        "RACE_EVENT_LIFECYCLE"
+        "DRIVER_EVENT_EXPOSURE",
+        "RACE_EVENT_LIFECYCLE",
+        "STEWARD_ACTION",
+        "INCIDENT_TRACK_HAZARD"
       ]
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:54.559156+00:00",
+    "timestamp": "2026-11-05T02:29:16.379194+00:00",
     "stage": "AGENT_2",
     "event": "FINDINGS_VERIFIED",
     "payload": {
@@ -75,7 +75,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:55.537686+00:00",
+    "timestamp": "2026-11-05T02:29:17.286889+00:00",
     "stage": "AGENT_3",
     "event": "LAP_INTELLIGENCE_PROCESSED",
     "payload": {
@@ -84,7 +84,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:55.543785+00:00",
+    "timestamp": "2026-11-05T02:29:17.291336+00:00",
     "stage": "AGENT_4",
     "event": "STRATEGY_FINDINGS_VERIFIED",
     "payload": {
@@ -92,7 +92,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:56.680641+00:00",
+    "timestamp": "2026-11-05T02:29:18.477183+00:00",
     "stage": "AGENT_5",
     "event": "REVISION_CHAIN_CONFIRMED",
     "payload": {
@@ -123,7 +123,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:56.683485+00:00",
+    "timestamp": "2026-11-05T02:29:18.479740+00:00",
     "stage": "FAULT_HANDLING",
     "event": "QUALITY_SCENARIOS_VERIFIED",
     "payload": {
@@ -134,7 +134,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:56.683877+00:00",
+    "timestamp": "2026-11-05T02:29:18.480227+00:00",
     "stage": "EVALUATION",
     "event": "METRICS_COMPUTED",
     "payload": {
@@ -149,7 +149,7 @@
     }
   },
   {
-    "timestamp": "2026-11-04T20:46:56.906051+00:00",
+    "timestamp": "2026-11-05T02:29:18.673637+00:00",
     "stage": "PERSISTENCE",
     "event": "LINEAGE_VERIFIED",
     "payload": {
