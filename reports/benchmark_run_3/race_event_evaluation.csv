@@ -1,0 +1,11 @@
+Event ID,Lap,Category,Official Title,Official Detail,Detected By Agent,Finding Type,Latency (ms),Precision,Recall,Status
+RC-SILV-001,1,FLAG,RACE START — GREEN FLAG,Standing start completed. Green flag racing underway across all sectors.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-002,9,RETIREMENT,CAR 31 (OCON) RETIRED IN PIT LANE,Car 31 entered pit lane with hydraulic leak. Confirmed retirement.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-003,33,INCIDENT,CAR 20 (MAGNUSSEN) STOPPED — WELLINGTON STRAIGHT,Car 20 stopped on track with power unit smoke and fire. Marshals deployed with extinguishers.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-004,33,SAFETY_CAR,VIRTUAL SAFETY CAR DEPLOYED,Virtual Safety Car deployed to allow recovery vehicle entry for Car 20. Delta time enforced.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-005,33,SAFETY_CAR,SAFETY CAR DEPLOYED,Physical Safety Car deployed due to track contamination and heavy recovery crane on Wellington Straight.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-006,39,SAFETY_CAR,SAFETY CAR IN THIS LAP,"Track clear. All debris recovered. Safety Car lights out, entering pit lane at end of lap 39.",agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-007,40,FLAG,TRACK CLEAR — GREEN FLAG RESUMED,Green flag racing resumed at start/finish line. DRS enabled on lap 42.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-008,46,INCIDENT,CAR 10 (GASLY) RETIRED — SUSPENSION DAMAGE,Car 10 suffered right rear suspension failure following turn 16 contact with Car 18. Pitted and retired.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-009,50,STEWARDS,STEWARDS DECISION DOC 49: 5-SECOND PENALTY CAR 18,Car 18 (Stroll) penalized 5 seconds added to elapsed race time for causing a collision with Car 10 at Turn 16.,agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED
+RC-SILV-010,52,FLAG,CHEQUERED FLAG — RACE FINISH,"52 laps completed. Winner: Car 1 (Verstappen), P2: Car 4 (Norris), P3: Car 44 (Hamilton).",agent-01-event-control,RACE_EVENT_LIFECYCLE,1.25,1.00,1.00,VERIFIED

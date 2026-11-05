@@ -1,6 +1,6 @@
 Agent ID,Agent Name,Model Version,Inputs Received,Eligible Inputs,Successfully Processed,Findings Emitted,Valid No-Finding Outcomes,Insufficient Data Outcomes,Filtered Inputs,Failures,Retries,Processing Latency (ms),Last Outcome,Status
-agent-01-event-control,Race Event & Control Intelligence,1.0.0,13,13,13,17,0,0,0,0,0,1.44,FINDING_EMITTED,VERIFIED
-agent-02-track-state,Track-State Intelligence,1.0.0,8,8,8,8,0,0,0,0,0,1.09,FINDING_EMITTED,VERIFIED
+agent-01-event-control,Race Event & Control Intelligence,1.0.0,13,13,13,17,0,0,0,0,0,1.05,FINDING_EMITTED,VERIFIED
+agent-02-track-state,Track-State Intelligence,1.0.0,8,8,8,8,0,0,0,0,0,0.83,FINDING_EMITTED,VERIFIED
 agent-03-vehicle-response,Vehicle-Response Intelligence,1.0.0,601,601,600,600,0,1,0,0,0,0.01,INSUFFICIENT_DATA,VERIFIED
 agent-04-tyre-strategy,Tyre & Strategy Intelligence,1.2.0,22,22,22,2,20,0,0,0,0,0.00,NO_FINDING,VERIFIED
-agent-05-fusion,Race Consequence & Forecast Intelligence,2.0.0,628,628,628,605,21,0,0,0,0,3.51,FINDING_EMITTED,VERIFIED
+agent-05-fusion,Race Consequence & Forecast Intelligence,2.0.0,628,628,628,605,21,0,0,0,0,2.86,FINDING_EMITTED,VERIFIED

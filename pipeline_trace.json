@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-11-05T04:42:49.999585+00:00",
+    "timestamp": "2026-11-05T09:12:01.577587+00:00",
     "stage": "MANIFEST_VALIDATION",
     "event": "CAPTURE_VERIFIED",
     "payload": {
@@ -13,7 +13,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:42:51.344788+00:00",
+    "timestamp": "2026-11-05T09:12:02.594049+00:00",
     "stage": "PREFLIGHT",
     "event": "CLUSTER_ONLINE",
     "payload": {
@@ -21,55 +21,55 @@
       "flink_job_id": "4467980eb2b8d7f98439cf94226fbba6",
       "flink_job_name": "pulse-canonical-normalizer-v2",
       "flink_job_state": "RUNNING",
-      "checkpoints_completed": 14
+      "checkpoints_completed": 1981
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:04.609073+00:00",
+    "timestamp": "2026-11-05T09:12:13.872580+00:00",
     "stage": "HISTORICAL_INGEST",
     "event": "ALL_ENVELOPES_PUBLISHED",
     "payload": {
       "events_published_count": 72642,
       "topics_used": [
-        "pulse.raw.tyres.stints.v1",
-        "pulse.raw.race_control.v1",
-        "pulse.raw.timing.laps.v1",
         "pulse.raw.weather.v1",
         "pulse.raw.telemetry.car.v1",
-        "pulse.raw.pit.events.v1"
+        "pulse.raw.tyres.stints.v1",
+        "pulse.raw.pit.events.v1",
+        "pulse.raw.race_control.v1",
+        "pulse.raw.timing.laps.v1"
       ],
       "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:05.130219+00:00",
+    "timestamp": "2026-11-05T09:12:14.299595+00:00",
     "stage": "FLINK_NORMALIZATION",
     "event": "ALL_CANONICAL_CONFIRMED",
     "payload": {
       "canonical_events_normalized": 72642,
-      "flink_read_records": 87544,
-      "flink_write_records": 87545,
-      "flink_checkpoints": 17,
+      "flink_read_records": 109749,
+      "flink_write_records": 109749,
+      "flink_checkpoints": 1984,
       "stream_parallelism": 14
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:05.173907+00:00",
+    "timestamp": "2026-11-05T09:12:14.337331+00:00",
     "stage": "AGENT_1",
     "event": "HISTORICAL_FINDINGS_CONFIRMED",
     "payload": {
       "count": 17,
       "types": [
-        "STEWARD_ACTION",
         "RACE_EVENT_LIFECYCLE",
-        "DRIVER_RETIREMENT",
         "DRIVER_EVENT_EXPOSURE",
+        "STEWARD_ACTION",
+        "DRIVER_RETIREMENT",
         "INCIDENT_TRACK_HAZARD"
       ]
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:05.199722+00:00",
+    "timestamp": "2026-11-05T09:12:14.362021+00:00",
     "stage": "AGENT_2",
     "event": "FINDINGS_VERIFIED",
     "payload": {
@@ -77,7 +77,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:05.979276+00:00",
+    "timestamp": "2026-11-05T09:12:15.091069+00:00",
     "stage": "AGENT_3",
     "event": "LAP_INTELLIGENCE_PROCESSED",
     "payload": {
@@ -86,7 +86,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:06.002099+00:00",
+    "timestamp": "2026-11-05T09:12:15.110304+00:00",
     "stage": "AGENT_4",
     "event": "STRATEGY_FINDINGS_VERIFIED",
     "payload": {
@@ -94,7 +94,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:06.889893+00:00",
+    "timestamp": "2026-11-05T09:12:15.947151+00:00",
     "stage": "AGENT_5",
     "event": "REVISION_CHAIN_CONFIRMED",
     "payload": {
@@ -125,7 +125,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:06.894031+00:00",
+    "timestamp": "2026-11-05T09:12:15.950537+00:00",
     "stage": "FAULT_HANDLING",
     "event": "QUALITY_SCENARIOS_VERIFIED",
     "payload": {
@@ -136,7 +136,7 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:06.896431+00:00",
+    "timestamp": "2026-11-05T09:12:15.950896+00:00",
     "stage": "EVALUATION",
     "event": "METRICS_COMPUTED",
     "payload": {
@@ -151,14 +151,14 @@
     }
   },
   {
-    "timestamp": "2026-11-05T04:43:07.961921+00:00",
+    "timestamp": "2026-11-05T09:12:17.646461+00:00",
     "stage": "PERSISTENCE",
     "event": "LINEAGE_VERIFIED",
     "payload": {
       "statestore_findings_count": 628,
       "statestore_assessments_count": 605,
       "agents_registered_count": 5,
-      "api_endpoint_verified": true
+      "api_endpoint_verified": false
     }
   }
 ]

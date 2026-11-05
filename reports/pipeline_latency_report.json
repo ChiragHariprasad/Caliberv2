@@ -1,0 +1,251 @@
+{
+  "timestamp_utc": "2026-11-05T06:31:24.121816+00:00",
+  "total_benchmark_duration_seconds": 130.39,
+  "per_event_layer_benchmarks_ms": {
+    "layer_1_kafka_ingest": {
+      "min": 0.7798,
+      "max": 14.8135,
+      "avg": 1.8602,
+      "median": 1.7376,
+      "p95": 2.676,
+      "p99": 4.6821,
+      "stdev": 0.8258,
+      "count": 1000
+    },
+    "layer_2_flink_normalization": {
+      "min": 0.0136,
+      "max": 0.8046,
+      "avg": 0.0433,
+      "median": 0.0285,
+      "p95": 0.1307,
+      "p99": 0.2669,
+      "stdev": 0.055,
+      "count": 1000
+    },
+    "layer_3_agent_1_event_control": {
+      "min": 0.077,
+      "max": 6.9742,
+      "avg": 0.9474,
+      "median": 0.1241,
+      "p95": 6.9742,
+      "p99": 6.9742,
+      "stdev": 2.0224,
+      "count": 13
+    },
+    "layer_3_agent_2_track_state": {
+      "min": 0.0914,
+      "max": 0.3752,
+      "avg": 0.1869,
+      "median": 0.1335,
+      "p95": 0.3752,
+      "p99": 0.3752,
+      "stdev": 0.1142,
+      "count": 8
+    },
+    "layer_3_agent_3_vehicle_response": {
+      "min": 0.0358,
+      "max": 7.4269,
+      "avg": 0.2,
+      "median": 0.1436,
+      "p95": 0.3475,
+      "p99": 1.5063,
+      "stdev": 0.4249,
+      "count": 600
+    },
+    "layer_3_agent_4_tyre_strategy": {
+      "min": 0.0059,
+      "max": 0.5336,
+      "avg": 0.0477,
+      "median": 0.0078,
+      "p95": 0.2844,
+      "p99": 0.5336,
+      "stdev": 0.1234,
+      "count": 22
+    },
+    "layer_3_specialist_agents_aggregated": {
+      "min": 0.0059,
+      "max": 7.4269,
+      "avg": 0.2098,
+      "median": 0.1425,
+      "p95": 0.3752,
+      "p99": 2.3426,
+      "stdev": 0.5075,
+      "count": 643
+    },
+    "layer_4_consequence_fusion": {
+      "min": 0.0031,
+      "max": 1.0855,
+      "avg": 0.3162,
+      "median": 0.2721,
+      "p95": 0.6668,
+      "p99": 0.9313,
+      "stdev": 0.1787,
+      "count": 315
+    },
+    "layer_5_statestore_persistence": {
+      "min": 0.027,
+      "max": 1.0952,
+      "avg": 0.0839,
+      "median": 0.0707,
+      "p95": 0.1871,
+      "p99": 0.3361,
+      "stdev": 0.0656,
+      "count": 619
+    },
+    "layer_6_api_serving": {
+      "min": 1.7406,
+      "max": 54.642,
+      "avg": 11.6046,
+      "median": 4.882,
+      "p95": 47.3174,
+      "p99": 52.6686,
+      "stdev": 15.0641,
+      "count": 120
+    },
+    "full_pipeline_per_event_e2e": {
+      "min": 4.1582,
+      "max": 33.2871,
+      "avg": 8.0817,
+      "median": 5.7781,
+      "p95": 33.2871,
+      "p99": 33.2871,
+      "stdev": 7.809,
+      "count": 13
+    }
+  },
+  "multi_run_full_pipeline_benchmarks_ms": {
+    "num_runs": 3,
+    "stages": {
+      "0.VALIDATE_CAPTURE_MANIFEST": {
+        "min": 3.2516,
+        "max": 48.2119,
+        "avg": 18.2625,
+        "median": 3.3241,
+        "p95": 48.2119,
+        "p99": 48.2119,
+        "stdev": 25.9369,
+        "count": 3
+      },
+      "1.PREFLIGHT": {
+        "min": 4748.7007,
+        "max": 5483.3514,
+        "avg": 5079.8377,
+        "median": 5007.461,
+        "p95": 5483.3514,
+        "p99": 5483.3514,
+        "stdev": 372.6348,
+        "count": 3
+      },
+      "2.HISTORICAL_CAPTURE_INGEST_KAFKA": {
+        "min": 23795.1802,
+        "max": 28955.7104,
+        "avg": 26807.8634,
+        "median": 27672.6996,
+        "p95": 28955.7104,
+        "p99": 28955.7104,
+        "stdev": 2686.7684,
+        "count": 3
+      },
+      "3.FLINK_STREAM_NORMALIZATION": {
+        "min": 845.814,
+        "max": 1941.0281,
+        "avg": 1557.3186,
+        "median": 1885.1138,
+        "p95": 1941.0281,
+        "p99": 1941.0281,
+        "stdev": 616.815,
+        "count": 3
+      },
+      "4.AGENT_1_EVENT_CONTROL": {
+        "min": 41.6552,
+        "max": 79.3582,
+        "avg": 57.7301,
+        "median": 52.1768,
+        "p95": 79.3582,
+        "p99": 79.3582,
+        "stdev": 19.4553,
+        "count": 3
+      },
+      "5.AGENT_2_TRACK_STATE": {
+        "min": 28.6897,
+        "max": 63.5879,
+        "avg": 44.8098,
+        "median": 42.1519,
+        "p95": 63.5879,
+        "p99": 63.5879,
+        "stdev": 17.6003,
+        "count": 3
+      },
+      "6.AGENT_3_VEHICLE_RESPONSE": {
+        "min": 595.2727,
+        "max": 1537.7557,
+        "avg": 1221.5358,
+        "median": 1531.5791,
+        "p95": 1537.7557,
+        "p99": 1537.7557,
+        "stdev": 542.3686,
+        "count": 3
+      },
+      "7.AGENT_4_TYRE_STRATEGY": {
+        "min": 21.2356,
+        "max": 43.1717,
+        "avg": 32.9714,
+        "median": 34.5068,
+        "p95": 43.1717,
+        "p99": 43.1717,
+        "stdev": 11.0484,
+        "count": 3
+      },
+      "8.AGENT_5_CONSEQUENCE_FUSION": {
+        "min": 800.5719,
+        "max": 1985.4395,
+        "avg": 1499.888,
+        "median": 1713.6526,
+        "p95": 1985.4395,
+        "p99": 1985.4395,
+        "stdev": 620.6845,
+        "count": 3
+      },
+      "9.FAULT_INJECTION_AND_DATA_QUALITY": {
+        "min": 3.2413,
+        "max": 5.385,
+        "avg": 4.3547,
+        "median": 4.4378,
+        "p95": 5.385,
+        "p99": 5.385,
+        "stdev": 1.0743,
+        "count": 3
+      },
+      "10.RACE_INTELLIGENCE_EVALUATION": {
+        "min": 0.8124,
+        "max": 1.032,
+        "avg": 0.9491,
+        "median": 1.003,
+        "p95": 1.032,
+        "p99": 1.032,
+        "stdev": 0.1193,
+        "count": 3
+      },
+      "11.STATE_STORE_LINEAGE_AND_API": {
+        "min": 1821.3049,
+        "max": 2462.0294,
+        "avg": 2244.1003,
+        "median": 2448.9667,
+        "p95": 2462.0294,
+        "p99": 2462.0294,
+        "stdev": 366.2098,
+        "count": 3
+      }
+    },
+    "full_pipeline_total": {
+      "min": 37098.2635,
+      "max": 41884.1226,
+      "avg": 38860.308,
+      "median": 37598.5378,
+      "p95": 41884.1226,
+      "p99": 41884.1226,
+      "stdev": 2630.6197,
+      "count": 3
+    }
+  }
+}

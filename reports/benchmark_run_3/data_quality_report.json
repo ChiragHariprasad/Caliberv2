@@ -1,0 +1,24 @@
+{
+  "capture_id": "f1-2023-silverstone-race",
+  "manifest_sha256_verified": true,
+  "total_canonical_records": 72642,
+  "source_feed_records": {},
+  "schema_validation": {
+    "total_evaluated": 943,
+    "passed": 943,
+    "failed": 0,
+    "validation_rate": 1.0
+  },
+  "temporal_monotonicity": {
+    "status": "PASSED",
+    "monotonic_elapsed_time": true,
+    "out_of_order_raw_events": 0
+  },
+  "telemetry_authenticity_audit": {
+    "can_bus_ecu_status": "UNAVAILABLE",
+    "synthetic_telemetry_curves_generated": 0,
+    "f1_tv_scraping_attempted": false,
+    "insufficient_data_outcomes_handled": true,
+    "compliance_status": "VERIFIED_COMPLIANT"
+  }
+}

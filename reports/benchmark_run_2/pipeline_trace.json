@@ -1,0 +1,164 @@
+[
+  {
+    "timestamp": "2026-11-05T06:30:05.176709+00:00",
+    "stage": "MANIFEST_VALIDATION",
+    "event": "CAPTURE_VERIFIED",
+    "payload": {
+      "capture_id": "f1-2023-silverstone-race",
+      "meeting_id": null,
+      "verified_files_count": 0,
+      "drivers_registered": 20,
+      "manifest_sha256_status": "ALL_HASHES_MATCH",
+      "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:10.184511+00:00",
+    "stage": "PREFLIGHT",
+    "event": "CLUSTER_ONLINE",
+    "payload": {
+      "kafka_broker": "127.0.0.1:9092",
+      "flink_job_id": "4467980eb2b8d7f98439cf94226fbba6",
+      "flink_job_name": "pulse-canonical-normalizer-v2",
+      "flink_job_state": "RUNNING",
+      "checkpoints_completed": 1302
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:33.988924+00:00",
+    "stage": "HISTORICAL_INGEST",
+    "event": "ALL_ENVELOPES_PUBLISHED",
+    "payload": {
+      "events_published_count": 72642,
+      "topics_used": [
+        "pulse.raw.race_control.v1",
+        "pulse.raw.weather.v1",
+        "pulse.raw.telemetry.car.v1",
+        "pulse.raw.pit.events.v1",
+        "pulse.raw.timing.laps.v1",
+        "pulse.raw.tyres.stints.v1"
+      ],
+      "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:35.874446+00:00",
+    "stage": "FLINK_NORMALIZATION",
+    "event": "ALL_CANONICAL_CONFIRMED",
+    "payload": {
+      "canonical_events_normalized": 72642,
+      "flink_read_records": 100175,
+      "flink_write_records": 100175,
+      "flink_checkpoints": 1307,
+      "stream_parallelism": 14
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:35.926902+00:00",
+    "stage": "AGENT_1",
+    "event": "HISTORICAL_FINDINGS_CONFIRMED",
+    "payload": {
+      "count": 17,
+      "types": [
+        "INCIDENT_TRACK_HAZARD",
+        "RACE_EVENT_LIFECYCLE",
+        "DRIVER_EVENT_EXPOSURE",
+        "STEWARD_ACTION",
+        "DRIVER_RETIREMENT"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:35.969270+00:00",
+    "stage": "AGENT_2",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 8
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:37.507265+00:00",
+    "stage": "AGENT_3",
+    "event": "LAP_INTELLIGENCE_PROCESSED",
+    "payload": {
+      "laps_processed": 600,
+      "findings_count": 600
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:37.542049+00:00",
+    "stage": "AGENT_4",
+    "event": "STRATEGY_FINDINGS_VERIFIED",
+    "payload": {
+      "count": 2
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:39.527764+00:00",
+    "stage": "AGENT_5",
+    "event": "REVISION_CHAIN_CONFIRMED",
+    "payload": {
+      "assessments_produced": 604,
+      "drivers_evaluated": [
+        16,
+        4,
+        1,
+        44,
+        81,
+        63,
+        55,
+        11,
+        23,
+        10,
+        14,
+        18,
+        31,
+        22,
+        20,
+        27,
+        77,
+        24,
+        2,
+        21
+      ],
+      "revision_history_depth": 604
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:39.532533+00:00",
+    "stage": "FAULT_HANDLING",
+    "event": "QUALITY_SCENARIOS_VERIFIED",
+    "payload": {
+      "missing_telemetry_handled": true,
+      "insufficient_data_outcomes_agent_3": 1,
+      "late_finding_revision_applied": true,
+      "zero_synthetic_curves_verified": true
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:39.533941+00:00",
+    "stage": "EVALUATION",
+    "event": "METRICS_COMPUTED",
+    "payload": {
+      "total_official_notices": 10,
+      "detected_notices": 10,
+      "event_detection_precision": 1.0,
+      "event_detection_recall": 1.0,
+      "pit_window_predicted_saving_sec": 10.5,
+      "pit_window_observed_saving_sec": 10.4,
+      "pit_window_error_sec": 0.1,
+      "telemetry_policy_compliance": "VERIFIED_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-05T06:30:41.983191+00:00",
+    "stage": "PERSISTENCE",
+    "event": "LINEAGE_VERIFIED",
+    "payload": {
+      "statestore_findings_count": 628,
+      "statestore_assessments_count": 605,
+      "agents_registered_count": 5,
+      "api_endpoint_verified": false
+    }
+  }
+]

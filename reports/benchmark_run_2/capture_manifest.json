@@ -1,0 +1,10 @@
+{
+  "capture_id": "f1-2023-silverstone-race",
+  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "session_id": "f1-2023-silverstone-race",
+  "session_name": "Formula 1 British Grand Prix",
+  "total_canonical_records": 72642,
+  "circuit_id": "silverstone",
+  "total_laps": 52,
+  "duration_seconds": 3600
+}

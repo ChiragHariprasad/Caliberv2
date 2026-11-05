@@ -75,17 +75,17 @@
 | Stage Name | Status | In | Out | Drop | Latency (ms) | Reconciliation |
 |---|---|---|---|---|---|---|
 | `0.VALIDATE_CAPTURE_MANIFEST` | **`PASSED`** | 0 | 0 | 0 | 0.79 | **`100.0%`** |
-| `1.PREFLIGHT` | **`PASSED`** | 0 | 1 | 0 | 1345.16 | **`100.0%`** |
-| `2.HISTORICAL_CAPTURE_INGEST_KAFKA` | **`PASSED`** | 72642 | 72642 | 0 | 13257.80 | **`100.0%`** |
-| `3.FLINK_STREAM_NORMALIZATION` | **`PASSED`** | 72642 | 72642 | 0 | 521.06 | **`100.0%`** |
-| `4.AGENT_1_EVENT_CONTROL` | **`PASSED`** | 13 | 17 | 0 | 43.64 | **`100.0%`** |
-| `5.AGENT_2_TRACK_STATE` | **`PASSED`** | 8 | 8 | 0 | 25.77 | **`100.0%`** |
-| `6.AGENT_3_VEHICLE_RESPONSE` | **`PASSED`** | 600 | 600 | 0 | 779.48 | **`100.0%`** |
-| `7.AGENT_4_TYRE_STRATEGY` | **`PASSED`** | 22 | 2 | 0 | 22.76 | **`100.0%`** |
-| `8.AGENT_5_CONSEQUENCE_FUSION` | **`PASSED`** | 627 | 604 | 0 | 887.73 | **`100.0%`** |
-| `9.FAULT_INJECTION_AND_DATA_QUALITY` | **`PASSED`** | 2 | 2 | 0 | 4.07 | **`100.0%`** |
-| `10.RACE_INTELLIGENCE_EVALUATION` | **`PASSED`** | 10 | 10 | 0 | 2.34 | **`100.0%`** |
-| `11.STATE_STORE_LINEAGE_AND_API` | **`PASSED`** | 1231 | 1231 | 0 | 1065.42 | **`100.0%`** |
+| `1.PREFLIGHT` | **`PASSED`** | 0 | 1 | 0 | 1016.41 | **`100.0%`** |
+| `2.HISTORICAL_CAPTURE_INGEST_KAFKA` | **`PASSED`** | 72642 | 72642 | 0 | 11272.23 | **`100.0%`** |
+| `3.FLINK_STREAM_NORMALIZATION` | **`PASSED`** | 72642 | 72642 | 0 | 426.90 | **`100.0%`** |
+| `4.AGENT_1_EVENT_CONTROL` | **`PASSED`** | 13 | 17 | 0 | 37.68 | **`100.0%`** |
+| `5.AGENT_2_TRACK_STATE` | **`PASSED`** | 8 | 8 | 0 | 24.64 | **`100.0%`** |
+| `6.AGENT_3_VEHICLE_RESPONSE` | **`PASSED`** | 600 | 600 | 0 | 728.97 | **`100.0%`** |
+| `7.AGENT_4_TYRE_STRATEGY` | **`PASSED`** | 22 | 2 | 0 | 19.17 | **`100.0%`** |
+| `8.AGENT_5_CONSEQUENCE_FUSION` | **`PASSED`** | 627 | 604 | 0 | 836.78 | **`100.0%`** |
+| `9.FAULT_INJECTION_AND_DATA_QUALITY` | **`PASSED`** | 2 | 2 | 0 | 3.31 | **`100.0%`** |
+| `10.RACE_INTELLIGENCE_EVALUATION` | **`PASSED`** | 10 | 10 | 0 | 0.33 | **`100.0%`** |
+| `11.STATE_STORE_LINEAGE_AND_API` | **`PASSED`** | 1231 | 1231 | 0 | 1695.51 | **`100.0%`** |
 
 ---
 
@@ -93,11 +93,11 @@
 
 | Agent Name | Inputs | Processed | Findings Emitted | Valid No-Finding | Insufficient Data | Latency | Status |
 |---|---|---|---|---|---|---|---|
-| **Race Event & Control Intelligence** | 13 | 13 | 17 | 0 | 0 | 1.44 ms | **`VERIFIED`** |
-| **Track-State Intelligence** | 8 | 8 | 8 | 0 | 0 | 1.09 ms | **`VERIFIED`** |
+| **Race Event & Control Intelligence** | 13 | 13 | 17 | 0 | 0 | 1.05 ms | **`VERIFIED`** |
+| **Track-State Intelligence** | 8 | 8 | 8 | 0 | 0 | 0.83 ms | **`VERIFIED`** |
 | **Vehicle-Response Intelligence** | 601 | 600 | 600 | 0 | 1 | 0.01 ms | **`VERIFIED`** |
 | **Tyre & Strategy Intelligence** | 22 | 22 | 2 | 20 | 0 | 0.00 ms | **`VERIFIED`** |
-| **Race Consequence & Forecast Intelligence** | 628 | 628 | 605 | 21 | 0 | 3.51 ms | **`VERIFIED`** |
+| **Race Consequence & Forecast Intelligence** | 628 | 628 | 605 | 21 | 0 | 2.86 ms | **`VERIFIED`** |
 
 ---
 
