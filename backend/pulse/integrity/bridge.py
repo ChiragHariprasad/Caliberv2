@@ -174,7 +174,7 @@ def extract_scope(envelope: EventEnvelope) -> dict[str, str]:
     # Session
     sid = envelope.session.session_id or envelope.run.session_instance_id
     if sid:
-        scope["session_id"] = str(sid)
+        scope["session_id"] = sid
 
     # Driver
     dn = envelope.subject.driver_number
@@ -300,7 +300,7 @@ def finding_to_atom(finding: Finding, role_id: str):
 
     scope: dict[str, str] = {}
     if finding.session_id:
-        scope["session_id"] = str(finding.session_id)
+        scope["session_id"] = finding.session_id
     if finding.subject.driver_number is not None:
         scope["driver_id"] = str(finding.subject.driver_number)
 

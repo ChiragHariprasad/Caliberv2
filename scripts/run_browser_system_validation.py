@@ -13,7 +13,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
-SCREENSHOTS_DIR = WORKSPACE_ROOT / "docs" / "screenshots"
+SCREENSHOTS_DIR = WORKSPACE_ROOT / "reports" / "browser-validation" / "screenshots"
 FRONTEND_URL = "http://localhost:5173"
 BACKEND_URL = "http://127.0.0.1:8000"
 

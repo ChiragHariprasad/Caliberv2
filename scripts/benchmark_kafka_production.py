@@ -153,7 +153,7 @@ def main():
     bootstrap = settings.kafka_bootstrap_servers
     admin = AdminClient({"bootstrap.servers": bootstrap})
     capture_dir = Path("captures/f1-2023-silverstone-race")
-    results_dir = Path("docs/kafka/results")
+    results_dir = Path("reports/benchmarks/kafka")
     results_dir.mkdir(parents=True, exist_ok=True)
 
     print("=" * 80)

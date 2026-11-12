@@ -21,6 +21,9 @@ wheels/
 .installed.cfg
 *.egg
 .pytest_cache/
+.pytest-*/
+.docx-qa/
+.superpowers/
 .coverage
 htmlcov/
 .env
