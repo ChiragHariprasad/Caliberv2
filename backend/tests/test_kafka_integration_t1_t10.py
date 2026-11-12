@@ -52,6 +52,25 @@ from pulse.stream.kafka_io import (
 )
 
 
+def _cluster_available() -> bool:
+    import socket
+    settings = get_settings()
+    for endpoint in settings.kafka_bootstrap_servers.split(","):
+        try:
+            h, p = endpoint.strip().split(":")
+            with socket.create_connection((h, int(p)), timeout=0.2):
+                return True
+        except Exception:
+            continue
+    return False
+
+
+@pytest.fixture(scope="module", autouse=True)
+def require_kafka_cluster():
+    if not _cluster_available():
+        pytest.skip("KRaft 3-broker cluster is offline (Docker offline)")
+
+
 @pytest.fixture(scope="module")
 def admin_client():
     settings = get_settings()

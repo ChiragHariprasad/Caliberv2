@@ -84,6 +84,13 @@ class StateStore:
         """Registers a specialist agent to track durable execution metrics."""
         self.agents[agent.agent_id] = agent
 
+    def begin_run(self, run_id: str) -> None:
+        """Associate subsequent projection and SSE state with one replay run."""
+        self.current_run_id = run_id
+        for agent in self.agents.values():
+            if hasattr(agent, "run_id"):
+                agent.run_id = run_id
+
     def get_agent_metrics(self) -> dict[str, Any]:
         """Returns execution transparency metrics across all registered agents."""
         return {
@@ -453,8 +460,8 @@ class StateStore:
         if ia and hasattr(ia, "get_summary"):
             try:
                 integrity_summary = ia.get_summary()
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to retrieve integrity summary for snapshot: %s", e)
 
         return {
             "mode": sess["mode"],

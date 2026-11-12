@@ -1,6 +1,9 @@
 {
   "capture_id": "f1-2023-silverstone-race",
-  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "data_regime": "LAB",
+  "regime": "LAB",
+  "provenance_status": "LAB_HISTORICAL_CAPTURE",
+  "provider": "JOLPICA_F1_AND_FIA_OFFICIAL",
   "session_id": "f1-2023-silverstone-race",
   "session_name": "Formula 1 British Grand Prix",
   "total_canonical_records": 72642,

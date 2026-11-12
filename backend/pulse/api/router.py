@@ -21,6 +21,9 @@ api_router = APIRouter(prefix="/api", tags=["PULSE Race Intelligence API"])
 class ControlPayload(BaseModel):
     action: str | None = None
     speed: float | None = None
+    target_lap: int | None = None
+    target_index: int | None = None
+    target_elapsed_ms: int | None = None
 
 
 class SessionSelectPayload(BaseModel):
@@ -312,8 +315,8 @@ async def get_verification_runs() -> list[dict[str, Any]]:
                     "report_file": str(rep),
                     "stages": stages,
                 })
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to parse verification run report from %s: %s", rep, e)
     return runs
 
 
@@ -325,8 +328,8 @@ async def get_verification_run_detail(run_id: str) -> dict[str, Any]:
                 data = json.loads(p.read_text(encoding="utf-8"))
                 if data.get("run_id") == run_id or run_id in {"latest", "run-latest"}:
                     return data
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Failed to parse report file %s: %s", p, e)
     # If not matched by ID, return first available
     for p in [Path("reports/full_race/e2e_report.json"), Path("reports/e2e_report.json")]:
         if p.exists():
@@ -451,6 +454,12 @@ async def handle_replay_action(action: str, payload: ControlPayload | None = Non
     elif act in {"speed", "set_speed"}:
         spd = payload.speed if payload and payload.speed is not None else 1.0
         res = controller.set_speed(spd)
+    elif act in {"seek", "scrub"}:
+        res = await controller.seek(
+            target_lap=payload.target_lap if payload else None,
+            target_index=payload.target_index if payload else None,
+            target_elapsed_ms=payload.target_elapsed_ms if payload else None,
+        )
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported replay action: {action}")
 

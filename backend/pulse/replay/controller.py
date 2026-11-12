@@ -6,6 +6,7 @@ import logging
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
+from collections.abc import Awaitable, Callable
 from typing import Any
 from uuid import uuid4
 
@@ -51,9 +52,44 @@ class ReplayController:
         self.envelopes: list[EventEnvelope] = []
         self._task: asyncio.Task[None] | None = None
         self._lock = asyncio.Lock()
+        self._event_processor: Callable[..., Awaitable[None]] | None = None
 
         # Load initial default session envelopes
         self._load_session_envelopes(self.session_id)
+
+    def set_event_processor(self, processor: Callable[..., Awaitable[None]] | None) -> None:
+        """Install the canonical processing path used by playback and seek rebuilds.
+
+        A processor receives an envelope and a ``publish`` keyword.  Normal
+        playback uses ``publish=True``; seek reconstruction uses
+        ``publish=False`` so rebuilding a run cannot duplicate source events
+        on the transport.
+        """
+        self._event_processor = processor
+
+    def _for_current_run(self, envelope: EventEnvelope) -> EventEnvelope:
+        """Copy a source envelope into the active replay-run namespace."""
+        replayed = envelope.model_copy(deep=True)
+        replayed.run.run_id = self.run_id
+        replayed.run.session_instance_id = self.session_id
+        replayed.run.mode = RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED
+        replayed.event_id = f"{envelope.event_id}-{self.run_id}"
+        return replayed
+
+    async def _process(self, envelope: EventEnvelope, *, publish: bool) -> None:
+        if self._event_processor is not None:
+            await self._event_processor(envelope, publish=publish)
+            return
+
+        if publish:
+            topic = raw_topic_for_event(envelope.event_type)
+            key = routing_key(self.session_id, envelope.subject.driver_number, envelope.subject.segment_id)
+            await self.bus.publish(topic, key, envelope)
+        else:
+            # Compatibility fallback for callers that construct a controller
+            # outside the application lifespan. The application installs a
+            # processor, which also rebuilds agents and fusion state.
+            get_state_store().record_canonical_event(envelope)
 
     def _load_session_envelopes(self, session_id: str) -> bool:
         """Loads canonical envelopes for the chosen session into memory."""
@@ -139,6 +175,7 @@ class ReplayController:
             store.switch_session(session_id)
             self._load_session_envelopes(session_id)
             self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
+            store.begin_run(self.run_id)
             self.status = ReplayStatus.READY
 
             status_payload = self.get_status()
@@ -203,10 +240,13 @@ class ReplayController:
             self.current_index = 0
             self.published_count = 0
             self.elapsed_ms = 0
+            self.last_event_time_utc = None
+            self.drop_count = 0
             self.run_id = f"run-{uuid4().hex[:8]}"
 
             store = get_state_store()
             store.switch_session(self.session_id)
+            store.begin_run(self.run_id)
             self.status = ReplayStatus.READY
 
             status_payload = self.get_status()
@@ -248,7 +288,8 @@ class ReplayController:
             elif target_lap is not None:
                 # Find index where lap completes or starts
                 for idx, env in enumerate(self.envelopes):
-                    if env.payload.get("lap", 1) >= target_lap:
+                    cur_lap = env.payload.get("lap") or env.payload.get("lap_number") or 1
+                    if cur_lap >= target_lap:
                         target_idx = idx
                         break
                 else:
@@ -261,13 +302,29 @@ class ReplayController:
                 else:
                     target_idx = len(self.envelopes)
 
-            # Rebuild state from index 0 up to target_idx
+            # A seek creates a new execution lineage. Any delayed Kafka
+            # records from the abandoned cursor can therefore be identified
+            # and ignored by the active-run consumer instead of mutating the
+            # reconstructed state.
+            self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
+
+            # Rebuild state from index 0 up to target_idx through the exact
+            # same canonical processor as normal playback. This deliberately
+            # avoids republishing raw source records while reconstructing.
             store = get_state_store()
             store.switch_session(self.session_id)
-
-            for i in range(target_idx):
-                env = self.envelopes[i]
-                store.record_canonical_event(env)
+            store.begin_run(self.run_id)
+            self.last_event_time_utc = None
+            self.elapsed_ms = 0
+            self.drop_count = 0
+            try:
+                for i in range(target_idx):
+                    await self._process(self._for_current_run(self.envelopes[i]), publish=False)
+            except Exception:
+                self.status = ReplayStatus.FAILED
+                store.notify_replay_status(self.get_status())
+                logger.exception("Replay seek reconstruction failed at index %d", self.current_index)
+                raise
 
             self.current_index = target_idx
             self.published_count = target_idx
@@ -282,6 +339,8 @@ class ReplayController:
 
             status_payload = self.get_status()
             store.notify_replay_status(status_payload)
+            store.notify_session_state()
+            store.notify_driver_state()
             logger.info("Replay seek completed: target_index=%d / %d", self.current_index, len(self.envelopes))
             return status_payload
 
@@ -299,23 +358,18 @@ class ReplayController:
                 if self.status in {ReplayStatus.RESETTING, ReplayStatus.FAILED, ReplayStatus.COMPLETED}:
                     break
 
-                env = self.envelopes[self.current_index].model_copy(deep=True)
-                env.run.run_id = self.run_id
-                env.run.session_instance_id = self.session_id
-                env.run.mode = RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED
-                # Suffix event_id with run_id so Flink watermarking & deduplication treats each replay execution as fresh
-                env.event_id = f"{env.event_id}-{self.run_id}"
+                env = self._for_current_run(self.envelopes[self.current_index])
 
-                topic = raw_topic_for_event(env.event_type)
-                key = routing_key(self.session_id, env.subject.driver_number, env.subject.segment_id)
-
-                # Publish event to event bus & Kafka broker
+                # Send normal playback through the shared processor. A
+                # processing failure is terminal for this run: advancing the
+                # cursor would silently skip evidence and corrupt replay
+                # state.
                 try:
-                    await self.bus.publish(topic, key, env)
+                    await self._process(env, publish=True)
                     self.published_count += 1
                 except Exception as e:
                     self.drop_count += 1
-                    logger.warning("Replay failed to publish event %s: %s", env.event_id, e)
+                    raise RuntimeError(f"Replay failed to process event {env.event_id}") from e
 
                 self.last_event_time_utc = env.time.event_time_utc
                 self.elapsed_ms = env.time.session_elapsed_ms or 0

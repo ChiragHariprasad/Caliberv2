@@ -116,8 +116,8 @@ class BaseAgent(ABC):
         try:
             from pulse.state.store import get_state_store
             get_state_store().record_finding(finding)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to record finding %s in state store: %s", finding.finding_id, e)
         logger.debug(
             "Agent [%s] emitted finding [%s] of type %s",
             self.agent_id,
@@ -146,6 +146,10 @@ class BaseAgent(ABC):
             last_outcome=self.last_outcome,
             output_finding_ids=list(self.output_finding_ids),
         )
+
+    def reset(self) -> None:
+        """Resets run-scoped domain state and metrics."""
+        self.reset_metrics()
 
     def reset_metrics(self) -> None:
         """Resets run-scoped metrics."""

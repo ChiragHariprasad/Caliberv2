@@ -523,6 +523,8 @@ def main():
 
     manifest = {
         "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
+        "data_regime": "LAB",
+        "regime": "LAB",
         "provider": "JOLPICA_F1_AND_FIA_OFFICIAL",
         "session_id": "f1-2023-r10-race",
         "meeting_id": "silverstone-2023",
@@ -558,7 +560,7 @@ def main():
             "telemetry_compliance": "Fully compliant with F1 TV Terms of Service: no scraping, no credential harvesting, no reverse-engineering",
         },
         "source_file_inventory": file_inventory,
-        "provenance_status": "VERIFIED_HISTORICAL_CAPTURE",
+        "provenance_status": "LAB_HISTORICAL_CAPTURE",
     }
 
     manifest_path = CAPTURE_DIR / "capture_manifest.json"

@@ -38,6 +38,13 @@ class VehicleResponseAgent(BaseAgent):
         self.driver_stint_laps: dict[int, int] = {}
         self.vsc_active = False
 
+    def reset(self) -> None:
+        """Reset agent domain state and metrics for a fresh run."""
+        super().reset()
+        self.driver_intervals.clear()
+        self.driver_stint_laps.clear()
+        self.vsc_active = False
+
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
         if isinstance(event, dict):

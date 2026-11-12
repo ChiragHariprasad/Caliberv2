@@ -1,18 +1,17 @@
-# PULSE
+# CALIBRE
 
-**Multi-Agent Real-Time Race Intelligence & Consequence Analytics**
+**Durable evidence verification platform with the PULSE Formula 1 reference application**
 
-PULSE is a Formula 1 stream-analytics platform. It turns asynchronous race-control, timing, weather, tyre, track, and optional telemetry data into evidence-linked, driver-specific impact assessments for the next one to three laps.
+CALIBRE is being evolved from the implemented PULSE Formula 1 stream-analytics application into a durable evidence-verification platform. PULSE turns asynchronous race-control, timing, weather, tyre, track, and optional telemetry data into evidence-linked, driver-specific impact assessments for the next one to three laps. The embedded SIA core evaluates the integrity of selected evidence chains.
 
-> Current status: **documentation baseline complete; implementation intentionally begins after the data-feasibility gate.** The `backend/` and `frontend/` directories are reserved for the implementation and currently contain no application code.
+> Current status: **PULSE and the SIA integration are implemented.** CALIBRE v4 migration work is under way. It adds durable archives, tagged hashes, explicit time-scale declarations, domain packs, effective-dated references, and a standalone verifier. It does not claim to replace an official measurement system or make sporting decisions.
 
-## What this repository will contain
+## What this repository contains
 
-- A Kafka event backbone and Flink event-time processing jobs.
-- Five independently deployable specialist analytics agents.
-- A deterministic fusion service that emits explainable `RaceImpactAssessment` revisions.
-- Simulation, historical replay, and future authorised live-ingestion modes.
-- A FastAPI service and React dashboard for race, strategy, track, impact, and operations views.
+- A Kafka event backbone and Flink event-time processing integration.
+- PULSE specialist analytics agents, deterministic fusion, simulation, replay, FastAPI service, and React dashboard.
+- SIA v3 deterministic integrity engine integration.
+- CALIBRE v4 durable archive, reference, time-scale, uncertainty-witness, and verifier foundations.
 
 PULSE is decision support. It does not issue race-control actions, prescribe pit stops, determine FIA penalties, diagnose mechanical failures, or use generic LLM commentary to decide outcomes.
 
@@ -20,7 +19,8 @@ PULSE is decision support. It does not issue race-control actions, prescribe pit
 
 | Document | Purpose |
 | --- | --- |
-| [Project charter](docs/00-project-charter.md) | Product intent, scope, frozen decisions, and success conditions. |
+| [CALIBRE v4 plan](docs/12-calibre-v4-implementation-plan.md) | Current migration plan, implementation status, issues, fixes, and gates. |
+| [Project charter](docs/00-project-charter.md) | Historical PULSE product intent, scope, frozen decisions, and success conditions. |
 | [System architecture](docs/01-system-architecture.md) | Components, Kafka topics, deployment boundaries, and data flow. |
 | [Data feasibility](docs/02-data-provenance-and-feasibility.md) | The mandatory source-provenance gate and the three-race coverage audit. |
 | [Contracts](docs/03-event-and-finding-contracts.md) | Canonical event, finding, assessment, topic, and delivery contracts. |
@@ -35,15 +35,17 @@ PULSE is decision support. It does not issue race-control actions, prescribe pit
 
 ## Recovery instruction for a future session
 
-Read [the continuation brief](docs/08-continuation-brief.md), then complete Phase 0 in [the implementation checklist](docs/06-implementation-plan-and-checklist.md). Do not begin a real-data replay build until the coverage audit identifies at least one provenance-approved historical capture. The simulator can be built before that gate passes.
+Start with [the CALIBRE v4 plan](docs/12-calibre-v4-implementation-plan.md). The earlier PULSE documents remain useful implementation history but are not the current platform plan. Do not promote a public-feed replay into an independent-evidence claim; follow the v4 source, archive, and regime gates first.
 
 ## Repository layout
 
 ```text
 .
-├── backend/                 # Reserved for FastAPI, replay orchestration, and agents
-├── frontend/                # Reserved for the React dashboard
-├── docs/                    # Durable architecture and delivery documentation
+├── backend/                 # FastAPI, replay orchestration, PULSE agents, SIA bridge
+├── frontend/                # React dashboard
+├── calibre_core/            # CALIBRE v4 durable platform primitives
+├── sia_core_v3/             # Existing deterministic integrity reference engine
+├── docs/                    # PULSE history and current CALIBRE v4 plan
 └── README.md
 ```
 

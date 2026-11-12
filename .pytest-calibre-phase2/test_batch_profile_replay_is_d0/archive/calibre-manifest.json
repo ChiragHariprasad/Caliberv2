@@ -1,0 +1,41 @@
+{
+  "archive_id": "lab-replay-001",
+  "canonicalization": "jcs-rfc8785-subset/1",
+  "created_at": "2026-11-12T18:48:43.990593Z",
+  "data_regime": "LAB",
+  "entries": [
+    {
+      "digest": "sha256:4e3246e1cc7d907b670c00a84f1bc7d0a2c3d1ce7eeeb1972fcaf6a8f395df2a",
+      "media_type": "application/x-ndjson",
+      "path": "raw/events.jsonl",
+      "size_bytes": 56
+    }
+  ],
+  "evaluator_capsule": "python-stdlib-verifier/1",
+  "execution_profile": "batch-v1",
+  "manifest_digest": "sha256:300323ce4427777f2bed13e78edb05a37be7a9a65cf8671870b3e81c8acea149",
+  "pack": {
+    "pack_id": "f1-reference",
+    "scope_levels": [
+      "event",
+      "session",
+      "asset",
+      "segment"
+    ],
+    "supported_regimes": [
+      "PUBLIC",
+      "LAB",
+      "INSTITUTIONAL"
+    ],
+    "version": "1.0.0"
+  },
+  "reference_bindings": [
+    "rules-2026.1"
+  ],
+  "schema": "calibre.archive.manifest/1.0",
+  "time_scale": {
+    "leap_second_table_id": "ietf-leap-seconds",
+    "leap_second_table_version": "2026-01",
+    "scale": "UTC"
+  }
+}

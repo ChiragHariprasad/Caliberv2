@@ -8,6 +8,23 @@ from pulse.main import app
 client = TestClient(app)
 
 
+@pytest.fixture(autouse=True)
+def reset_simulation_state():
+    from pulse.state.store import get_state_store
+    store = get_state_store()
+    store.projector.drivers = store.projector._init_full_grid()
+    store.projector.official_notices = store.projector._init_official_notices()
+    store.projector.data_mode = "SIMULATED"
+    store.projector.status = "Green Flag"
+    store.projector.active_event_display = "Green Flag"
+    store.findings.clear()
+    store.latest_assessments.clear()
+    store.assessment_history.clear()
+    yield
+
+
+
+
 def test_circuits_catalogue_catalogue_and_provenance():
     circuits = list_circuits()
     assert len(circuits) >= 3

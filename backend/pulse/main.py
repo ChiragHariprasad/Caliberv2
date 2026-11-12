@@ -18,6 +18,7 @@ from pulse.api.router import api_router
 from pulse.integrity.router import integrity_router
 from pulse.config import get_settings
 from pulse.contracts import Assessment, EventEnvelope, Finding, RunStatus
+from pulse.replay.processor import ReplayEventProcessor
 from pulse.simulator.runner import get_scenario_runner
 from pulse.state.store import get_state_store
 from pulse.stream.bus import get_event_bus
@@ -28,6 +29,8 @@ from pulse.topics import (
     INTELLIGENCE_TOPICS,
     NORMALISED_TOPICS,
     RAW_TOPICS,
+    raw_topic_for_event,
+    routing_key,
 )
 
 # Configure logging
@@ -59,6 +62,12 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error("FATAL: KAFKA transport mode required but connection failed at %s: %s", broker.bootstrap_servers, e)
             raise RuntimeError(f"KAFKA transport mode required but connection failed at {broker.bootstrap_servers}: {e}") from e
+
+        from pulse.stream.flink.manager import get_flink_manager
+        flink_mgr = get_flink_manager()
+        if not flink_mgr.client.is_cluster_online():
+            logger.error("FATAL: KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at %s", flink_mgr.client.rest_url)
+            raise RuntimeError(f"KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at {flink_mgr.client.rest_url}")
     elif mode == "MEMORY":
         logger.info("Operating in MEMORY transport mode (unit tests). In-memory event bus active.")
     elif mode == "SIMULATOR":
@@ -140,6 +149,20 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error("Error in normalized tyre stints pipeline: %s", e)
 
+    async def dispatch_normalized(topic: str, key: str, envelope: EventEnvelope) -> None:
+        """Send a canonical envelope through the same handlers used at runtime."""
+        handlers = {
+            NORMALISED_TOPICS["race_events"]: normalized_race_events_handler,
+            NORMALISED_TOPICS["driver_laps"]: normalized_driver_laps_handler,
+            NORMALISED_TOPICS["driver_state"]: normalized_driver_state_handler,
+            NORMALISED_TOPICS["track_segments"]: normalized_track_handler,
+            NORMALISED_TOPICS["tyre_stints"]: normalized_tyre_stints_handler,
+        }
+        handler = handlers.get(topic)
+        if handler is None:
+            raise ValueError(f"No normalized handler registered for topic {topic}")
+        await handler(topic, key, envelope)
+
     if mode != "KAFKA":
         bus.subscribe(NORMALISED_TOPICS["race_events"], normalized_race_events_handler)
         bus.subscribe(NORMALISED_TOPICS["driver_laps"], normalized_driver_laps_handler)
@@ -168,6 +191,32 @@ async def lifespan(app: FastAPI):
             logger.error("Error recording intelligence assessment: %s", e)
 
     bus.subscribe(INTELLIGENCE_TOPICS["driver_impact"], intelligence_handler)
+
+    async def publish_raw(topic: str, key: str, envelope: EventEnvelope) -> None:
+        await bus.publish(topic, key, envelope)
+
+    processor = ReplayEventProcessor(normalizer, dispatch_normalized, publish_raw if mode == "KAFKA" else None)
+
+    async def process_replay_event(envelope: EventEnvelope, *, publish: bool) -> None:
+        # KAFKA playback is normalized by its dedicated external Flink job.
+        # A seek rebuild is local-only so agent/fusion state is reconstructed
+        # without producing duplicate raw or finding records.
+        if mode == "KAFKA" and publish:
+            await publish_raw(
+                raw_topic_for_event(envelope.event_type),
+                routing_key(
+                    envelope.run.session_instance_id,
+                    envelope.subject.driver_number,
+                    envelope.subject.segment_id,
+                ),
+                envelope,
+            )
+            return
+        if not publish:
+            async with bus.local_only():
+                await processor.process(envelope, publish=False)
+            return
+        await processor.process(envelope, publish=True)
 
     # 7. In KAFKA transport mode, consume all Flink-normalized streams from Kafka
     kafka_consumer_task: asyncio.Task | None = None
@@ -210,12 +259,14 @@ async def lifespan(app: FastAPI):
     # 8. Initialize backend ReplayController
     from pulse.replay.controller import get_replay_controller
     replay_controller = get_replay_controller()
+    replay_controller.set_event_processor(process_replay_event)
     logger.info("Backend ReplayController initialized in READY state (session: %s).", replay_controller.session_id)
 
     yield
 
     # Teardown
     logger.info("Shutting down PULSE Race Intelligence Engine...")
+    replay_controller.set_event_processor(None)
     if kafka_consumer_task:
         kafka_consumer_task.cancel()
         try:

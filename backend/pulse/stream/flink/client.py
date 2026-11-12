@@ -100,8 +100,8 @@ class FlinkClient:
                     counts = cp_data.get("counts", {})
                     checkpoints_completed = counts.get("completed", 0)
                     checkpoints_failed = counts.get("failed", 0)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Could not fetch Flink checkpoints for job %s: %s", job_id, e)
 
         return FlinkJobMetrics(
             job_id=job_id,
@@ -181,8 +181,8 @@ class FlinkClient:
             if os.path.exists(tmp_local_path):
                 try:
                     os.remove(tmp_local_path)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug("Failed to remove temporary SQL file %s: %s", tmp_local_path, e)
 
 
 _client: FlinkClient | None = None

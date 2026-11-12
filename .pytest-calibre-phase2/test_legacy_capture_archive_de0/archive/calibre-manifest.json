@@ -1,0 +1,59 @@
+{
+  "archive_id": "legacy-demo-capture",
+  "canonicalization": "jcs-rfc8785-subset/1",
+  "created_at": "2026-11-12T18:48:44.030834Z",
+  "data_regime": "LAB",
+  "entries": [
+    {
+      "digest": "sha256:cd88ac51a274e76437eae1dba1ab6d0f276333e6707dc4424c6402e98a1e7817",
+      "media_type": "application/json",
+      "path": "legacy/capture_manifest.json",
+      "size_bytes": 31
+    },
+    {
+      "digest": "sha256:b317006a79479d2c7d462fd2109dbac76f13206a012817c6716dda4d55cd0ae3",
+      "media_type": "application/json",
+      "path": "pack/source-pack.json",
+      "size_bytes": 1318
+    },
+    {
+      "digest": "sha256:3ba3c3ed2beebcc2fb1230812fc5e7b35a162c2c3db8add824304eccebe8a344",
+      "media_type": "application/x-ndjson",
+      "path": "raw/envelopes.jsonl",
+      "size_bytes": 30
+    },
+    {
+      "digest": "sha256:a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+      "media_type": "application/json",
+      "path": "references/effective-references.json",
+      "size_bytes": 4
+    }
+  ],
+  "evaluator_capsule": "python-stdlib-verifier/1",
+  "execution_profile": "batch-v1",
+  "manifest_digest": "sha256:4bd10fb8f962b69956529f2efea251b899d580151724e49dd2a6b3d132a2e5f9",
+  "pack": {
+    "pack_id": "f1-reference",
+    "scope_levels": [
+      "event",
+      "session",
+      "asset",
+      "lap",
+      "segment"
+    ],
+    "supported_regimes": [
+      "PUBLIC",
+      "LICENSED",
+      "INSTITUTIONAL",
+      "LAB"
+    ],
+    "version": "1.0.0"
+  },
+  "reference_bindings": [],
+  "schema": "calibre.archive.manifest/1.0",
+  "time_scale": {
+    "leap_second_table_id": "ietf-leap-seconds",
+    "leap_second_table_version": "2026-01",
+    "scale": "UTC"
+  }
+}

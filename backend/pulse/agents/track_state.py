@@ -40,6 +40,23 @@ class TrackStateAgent(BaseAgent):
         }
         self.last_transition: dict[str, Any] | None = None
 
+    def reset(self) -> None:
+        """Reset agent domain state and metrics for a fresh run."""
+        super().reset()
+        self.sector_states = {
+            "sector-1": {"condition": "DRY", "status": "CLEAR", "water_film_mm": 0.0},
+            "sector-2": {"condition": "DRY", "status": "CLEAR", "water_film_mm": 0.0},
+            "sector-3": {"condition": "DRY", "status": "CLEAR", "water_film_mm": 0.0},
+        }
+        self.current_weather = {
+            "air_temp_c": 24.2,
+            "track_temp_c": 34.5,
+            "humidity_pct": 52.0,
+            "rain_intensity_mm_h": 0.0,
+            "rain_risk_percent": 0.0,
+        }
+        self.last_transition = None
+
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
         if isinstance(event, dict):

@@ -36,6 +36,19 @@ class EventControlAgent(BaseAgent):
             "FAILED": 0,
         }
 
+    def reset(self) -> None:
+        """Reset agent domain state and metrics for a fresh run."""
+        super().reset()
+        self.active_lifecycle = "NONE"
+        self.active_event_type = None
+        self.active_session_id = None
+        self.outcomes_count = {
+            "FINDING_EMITTED": 0,
+            "NO_FINDING": 0,
+            "FILTERED": 0,
+            "FAILED": 0,
+        }
+
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
         if isinstance(event, dict):

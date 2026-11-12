@@ -98,7 +98,21 @@ def test_api_replay_controls():
     assert speed_res.status_code == 200
     assert speed_res.json()["speed"] == 2.0
 
-    cleanup_res = client.post("/api/replay/pause")
+    # Direct seek endpoint test
+    seek_res = client.post("/api/replay/seek", json={"target_index": 2})
+    assert seek_res.status_code == 200
+    assert seek_res.json()["currentIndex"] == 2
+
+    # Action-based seek endpoint test
+    action_seek_res = client.post("/api/replay/seek", json={"action": "seek", "target_index": 1})
+    assert action_seek_res.status_code == 200
+
+    # Run controls seek endpoint test
+    run_seek_res = client.post("/api/runs/test-run-123/controls", json={"action": "seek", "target_index": 3})
+    assert run_seek_res.status_code == 200
+    assert run_seek_res.json()["status"] == "success"
+
+    cleanup_res = client.post("/api/replay/reset")
     assert cleanup_res.status_code == 200
 
 

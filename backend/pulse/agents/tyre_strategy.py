@@ -42,6 +42,17 @@ class TyreStrategyAgent(BaseAgent):
         }
         self.active_neutralisation: str | None = None
 
+    def reset(self) -> None:
+        """Reset agent domain state and metrics for a fresh run."""
+        super().reset()
+        self.driver_stints = {
+            16: {"compound": "M", "stint_age": 23, "gap_to_p2": 2.481, "position": 1},
+            4: {"compound": "H", "stint_age": 23, "gap_to_p2": 1.586, "position": 2},
+            1: {"compound": "H", "stint_age": 23, "gap_to_p2": 4.675, "position": 3},
+            44: {"compound": "M", "stint_age": 23, "gap_to_p2": 1.294, "position": 4},
+        }
+        self.active_neutralisation = None
+
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
         if isinstance(event, dict):

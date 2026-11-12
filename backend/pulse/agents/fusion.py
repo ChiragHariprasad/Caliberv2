@@ -186,8 +186,8 @@ class ConsequenceFusionEngine(BaseAgent):
         try:
             from pulse.state.store import get_state_store
             get_state_store().record_assessment(assessment)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to record assessment %s in state store: %s", assessment.assessment_id, e)
 
     async def _publish_provisional_v1(self, driver_number: int, finding: Finding) -> None:
         """Publishes provisional Assessment v1."""

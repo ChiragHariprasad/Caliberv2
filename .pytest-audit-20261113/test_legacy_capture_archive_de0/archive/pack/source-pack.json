@@ -1,0 +1,65 @@
+{
+  "origins": [
+    {
+      "approved_regimes": [],
+      "licence_reference": null,
+      "origin_id": "F1_FOM_TIMING",
+      "upstreams": []
+    },
+    {
+      "approved_regimes": [
+        "INSTITUTIONAL"
+      ],
+      "licence_reference": "institutional-agreement-required",
+      "origin_id": "INSTITUTIONAL_LOOP_A",
+      "upstreams": []
+    },
+    {
+      "approved_regimes": [
+        "INSTITUTIONAL"
+      ],
+      "licence_reference": "institutional-agreement-required",
+      "origin_id": "INSTITUTIONAL_LOOP_B",
+      "upstreams": []
+    },
+    {
+      "approved_regimes": [
+        "PUBLIC",
+        "LICENSED"
+      ],
+      "licence_reference": null,
+      "origin_id": "PITWALL",
+      "upstreams": [
+        "F1_FOM_TIMING"
+      ]
+    },
+    {
+      "approved_regimes": [
+        "PUBLIC",
+        "LICENSED"
+      ],
+      "licence_reference": null,
+      "origin_id": "TRACINGINSIGHTS",
+      "upstreams": [
+        "F1_FOM_TIMING"
+      ]
+    }
+  ],
+  "pack": {
+    "pack_id": "f1-reference",
+    "scope_levels": [
+      "event",
+      "session",
+      "asset",
+      "lap",
+      "segment"
+    ],
+    "supported_regimes": [
+      "PUBLIC",
+      "LICENSED",
+      "INSTITUTIONAL",
+      "LAB"
+    ],
+    "version": "1.0.0"
+  }
+}
