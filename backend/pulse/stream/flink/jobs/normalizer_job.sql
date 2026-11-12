@@ -16,7 +16,7 @@ CREATE TABLE kafka_raw_race_control (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.race_control.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-race-control-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -29,7 +29,7 @@ CREATE TABLE kafka_norm_race_events (
 ) WITH (
     'connector' = 'upsert-kafka',
     'topic' = 'pulse.norm.race_events.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'key.format' = 'raw',
     'value.format' = 'raw',
     'value.fields-include' = 'EXCEPT_KEY'
@@ -48,7 +48,7 @@ CREATE TABLE kafka_raw_track_status (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.track_status.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-track-status-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -64,7 +64,7 @@ CREATE TABLE kafka_raw_weather (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.weather.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-weather-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -77,7 +77,7 @@ CREATE TABLE kafka_norm_track_segments (
 ) WITH (
     'connector' = 'upsert-kafka',
     'topic' = 'pulse.norm.track_segments.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'key.format' = 'raw',
     'value.format' = 'raw',
     'value.fields-include' = 'EXCEPT_KEY'
@@ -96,7 +96,7 @@ CREATE TABLE kafka_raw_timing_laps (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.timing.laps.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-timing-laps-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -109,7 +109,7 @@ CREATE TABLE kafka_norm_driver_laps (
 ) WITH (
     'connector' = 'upsert-kafka',
     'topic' = 'pulse.norm.driver_laps.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'key.format' = 'raw',
     'value.format' = 'raw',
     'value.fields-include' = 'EXCEPT_KEY'
@@ -128,7 +128,7 @@ CREATE TABLE kafka_raw_timing_positions (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.timing.positions.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-positions-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -141,7 +141,7 @@ CREATE TABLE kafka_norm_driver_state (
 ) WITH (
     'connector' = 'upsert-kafka',
     'topic' = 'pulse.norm.driver_state.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'key.format' = 'raw',
     'value.format' = 'raw',
     'value.fields-include' = 'EXCEPT_KEY'
@@ -160,7 +160,7 @@ CREATE TABLE kafka_raw_tyres_stints (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.tyres.stints.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-tyres-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -176,7 +176,7 @@ CREATE TABLE kafka_raw_pit_events (
 ) WITH (
     'connector' = 'kafka',
     'topic' = 'pulse.raw.pit.events.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'properties.group.id' = 'pulse-flink-pit-events-v2',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'raw'
@@ -189,7 +189,7 @@ CREATE TABLE kafka_norm_tyre_stints (
 ) WITH (
     'connector' = 'upsert-kafka',
     'topic' = 'pulse.norm.tyre_stints.v1',
-    'properties.bootstrap.servers' = 'kafka:29092',
+    'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',
     'key.format' = 'raw',
     'value.format' = 'raw',
     'value.fields-include' = 'EXCEPT_KEY'

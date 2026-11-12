@@ -21,10 +21,25 @@ class Settings(BaseSettings):
         description="Transport mode: KAFKA (fail-fast if broker unavailable), MEMORY (unit tests), SIMULATOR",
         validation_alias=AliasChoices("PULSE_TRANSPORT_MODE", "TRANSPORT_MODE"),
     )
-    kafka_bootstrap_servers: str = "127.0.0.1:9092"
+    kafka_bootstrap_servers: str = Field(
+        default="localhost:19092,localhost:19093,localhost:19094",
+        validation_alias=AliasChoices("CALIBRE_KAFKA_BOOTSTRAP", "PULSE_KAFKA_BOOTSTRAP_SERVERS", "KAFKA_BOOTSTRAP_SERVERS")
+    )
     kafka_group_id: str = "pulse-api-v1"
     kafka_required: bool = True
-    kafka_auto_create_topics: bool = True
+    kafka_auto_create_topics: bool = False
+    driver_partitions: int = Field(
+        default=11,
+        validation_alias=AliasChoices("CALIBRE_DRIVER_PARTITIONS", "DRIVER_PARTITIONS")
+    )
+    kafka_eos: int = Field(
+        default=1,
+        validation_alias=AliasChoices("CALIBRE_KAFKA_EOS", "KAFKA_EOS")
+    )
+    instance_id: str = Field(
+        default="calibre-core-1",
+        validation_alias=AliasChoices("CALIBRE_INSTANCE_ID", "INSTANCE_ID")
+    )
     flink_rest_url: str = Field(
         default="http://127.0.0.1:8081",
         validation_alias=AliasChoices("PULSE_FLINK_REST_URL", "FLINK_REST_URL"),

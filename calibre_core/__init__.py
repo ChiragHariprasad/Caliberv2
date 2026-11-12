@@ -1,0 +1,2 @@
+# CALIBRE Core package
+

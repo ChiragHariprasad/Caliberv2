@@ -38,7 +38,7 @@ class ReplaySpeedPayload(BaseModel):
 
 
 @api_router.get("/health")
-async def get_health() -> dict[str, Any]:
+async def get_health() -> dict[str, Any]    :
     store = get_state_store()
     return store.get_health()
 

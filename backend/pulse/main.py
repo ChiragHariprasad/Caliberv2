@@ -13,7 +13,9 @@ from pulse.agents.fusion import ConsequenceFusionEngine
 from pulse.agents.track_state import TrackStateAgent
 from pulse.agents.tyre_strategy import TyreStrategyAgent
 from pulse.agents.vehicle_response import VehicleResponseAgent
+from pulse.integrity.agent import IntegrityAgent
 from pulse.api.router import api_router
+from pulse.integrity.router import integrity_router
 from pulse.config import get_settings
 from pulse.contracts import Assessment, EventEnvelope, Finding, RunStatus
 from pulse.simulator.runner import get_scenario_runner
@@ -64,18 +66,20 @@ async def lifespan(app: FastAPI):
     else:
         raise ValueError(f"Unsupported transport_mode: {settings.transport_mode}")
 
-    # 2. Instantiate all 5 agents and register for execution transparency
+    # 2. Instantiate all 6 agents and register for execution transparency
     agent_ec = EventControlAgent(bus=bus)
     agent_ts = TrackStateAgent(bus=bus)
     agent_vr = VehicleResponseAgent(bus=bus)
     agent_ty = TyreStrategyAgent(bus=bus)
     agent_fu = ConsequenceFusionEngine(bus=bus)
+    agent_ia = IntegrityAgent(bus=bus)
 
     store.register_agent(agent_ec)
     store.register_agent(agent_ts)
     store.register_agent(agent_vr)
     store.register_agent(agent_ty)
     store.register_agent(agent_fu)
+    store.register_agent(agent_ia)
 
     # 3. Normalizer subscriber: routes raw telemetry/events to canonical streams
     async def raw_event_handler(topic: str, key: str, value: Any) -> None:
@@ -95,6 +99,7 @@ async def lifespan(app: FastAPI):
             await agent_ec.on_event(topic, key, env)
             await agent_ts.on_event(topic, key, env)
             await agent_ty.on_event(topic, key, env)
+            await agent_ia.on_event(topic, key, env)
         except Exception as e:
             logger.error("Error in normalized race events pipeline: %s", e)
 
@@ -103,6 +108,7 @@ async def lifespan(app: FastAPI):
             env = value if isinstance(value, EventEnvelope) else EventEnvelope.model_validate(value)
             store.record_canonical_event(env)
             await agent_vr.on_event(topic, key, env)
+            await agent_ia.on_event(topic, key, env)
         except Exception as e:
             logger.error("Error in normalized driver laps pipeline: %s", e)
 
@@ -112,6 +118,7 @@ async def lifespan(app: FastAPI):
             store.record_canonical_event(env)
             await agent_vr.on_event(topic, key, env)
             await agent_ty.on_event(topic, key, env)
+            await agent_ia.on_event(topic, key, env)
         except Exception as e:
             logger.error("Error in normalized driver state pipeline: %s", e)
 
@@ -120,6 +127,7 @@ async def lifespan(app: FastAPI):
             env = value if isinstance(value, EventEnvelope) else EventEnvelope.model_validate(value)
             store.record_canonical_event(env)
             await agent_ts.on_event(topic, key, env)
+            await agent_ia.on_event(topic, key, env)
         except Exception as e:
             logger.error("Error in normalized track pipeline: %s", e)
 
@@ -128,6 +136,7 @@ async def lifespan(app: FastAPI):
             env = value if isinstance(value, EventEnvelope) else EventEnvelope.model_validate(value)
             store.record_canonical_event(env)
             await agent_ty.on_event(topic, key, env)
+            await agent_ia.on_event(topic, key, env)
         except Exception as e:
             logger.error("Error in normalized tyre stints pipeline: %s", e)
 
@@ -225,7 +234,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
         title="PULSE Race Intelligence API",
-        description="F1 Event Consequence Engine with Specialist Agents & Groq Tactical Synthesis",
+        description="F1 Event Consequence Engine with Specialist Agents, SIA Integrity Engine & Groq Tactical Synthesis",
         version="0.1.0",
         lifespan=lifespan,
     )
@@ -239,6 +248,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(api_router)
+    app.include_router(integrity_router)
 
     @app.get("/")
     async def root():

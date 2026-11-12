@@ -1,15 +1,15 @@
 {
   "title": "PULSE Phase 4 Qualification and Full-Race Replay Report",
-  "session_id": "e2e-session-008902",
-  "run_id": "run-591acc50",
+  "session_id": "e2e-session-fab274",
+  "run_id": "run-66e2deb4",
   "status": "QUALIFIED_VERIFIED",
   "capture_id": "f1-2023-silverstone-race",
   "meeting_id": null,
   "season": null,
   "round": null,
-  "timestamp_utc": "2026-11-05T09:12:01.576693+00:00",
+  "timestamp_utc": "2026-11-05T09:48:14.432007+00:00",
   "reconciliation_summary": {
-    "total_latency_ms": 16070.48,
+    "total_latency_ms": 94019.39,
     "stages_count": 12,
     "stages_passed": 12,
     "drop_count_total": 0,
@@ -40,7 +40,7 @@
       "input_count": 0,
       "output_count": 0,
       "drop_count": 0,
-      "latency_ms": 0.7946999976411462,
+      "latency_ms": 4.9168000114150345,
       "status": "PASSED",
       "details": {
         "capture_id": "f1-2023-silverstone-race",
@@ -56,14 +56,14 @@
       "input_count": 0,
       "output_count": 1,
       "drop_count": 0,
-      "latency_ms": 1016.410199998063,
+      "latency_ms": 4910.235399991507,
       "status": "PASSED",
       "details": {
-        "kafka_broker": "127.0.0.1:9092",
-        "flink_job_id": "4467980eb2b8d7f98439cf94226fbba6",
+        "kafka_broker": "localhost:19092,localhost:19093,localhost:19094",
+        "flink_job_id": "0a964c1d6b61adfbaa6f823260c1e86f",
         "flink_job_name": "pulse-canonical-normalizer-v2",
         "flink_job_state": "RUNNING",
-        "checkpoints_completed": 1981
+        "checkpoints_completed": 116
       }
     },
     {
@@ -71,17 +71,17 @@
       "input_count": 72642,
       "output_count": 72642,
       "drop_count": 0,
-      "latency_ms": 11272.22780000011,
+      "latency_ms": 82937.56620000931,
       "status": "PASSED",
       "details": {
         "events_published_count": 72642,
         "topics_used": [
-          "pulse.raw.weather.v1",
           "pulse.raw.telemetry.car.v1",
-          "pulse.raw.tyres.stints.v1",
           "pulse.raw.pit.events.v1",
-          "pulse.raw.race_control.v1",
-          "pulse.raw.timing.laps.v1"
+          "pulse.raw.tyres.stints.v1",
+          "pulse.raw.timing.laps.v1",
+          "pulse.raw.weather.v1",
+          "pulse.raw.race_control.v1"
         ],
         "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
       }
@@ -91,13 +91,13 @@
       "input_count": 72642,
       "output_count": 72642,
       "drop_count": 0,
-      "latency_ms": 426.9000999920536,
+      "latency_ms": 406.2715999898501,
       "status": "PASSED",
       "details": {
         "canonical_events_normalized": 72642,
-        "flink_read_records": 109749,
-        "flink_write_records": 109749,
-        "flink_checkpoints": 1984,
+        "flink_read_records": 13,
+        "flink_write_records": 13,
+        "flink_checkpoints": 132,
         "stream_parallelism": 14
       }
     },
@@ -106,13 +106,13 @@
       "input_count": 13,
       "output_count": 17,
       "drop_count": 0,
-      "latency_ms": 37.680099994759075,
+      "latency_ms": 65.66839999868535,
       "status": "PASSED",
       "details": {
         "agent_id": "agent-01-event-control",
         "name": "Race Event & Control Intelligence",
         "model_version": "1.0.0",
-        "run_id": "run-591acc50",
+        "run_id": "run-66e2deb4",
         "inputs_received": 13,
         "eligible_inputs": 13,
         "successfully_processed": 13,
@@ -122,7 +122,7 @@
         "filtered_inputs": 0,
         "failures": 0,
         "retries": 0,
-        "processing_latency_ms": 1.0496000031707808,
+        "processing_latency_ms": 2.586900009191595,
         "last_processed_event_id": "evt-silv-0072622",
         "last_outcome": "FINDING_EMITTED",
         "output_finding_ids": [
@@ -151,13 +151,13 @@
       "input_count": 8,
       "output_count": 8,
       "drop_count": 0,
-      "latency_ms": 24.64230000623502,
+      "latency_ms": 56.62810000649188,
       "status": "PASSED",
       "details": {
         "agent_id": "agent-02-track-state",
         "name": "Track-State Intelligence",
         "model_version": "1.0.0",
-        "run_id": "run-591acc50",
+        "run_id": "run-66e2deb4",
         "inputs_received": 8,
         "eligible_inputs": 8,
         "successfully_processed": 8,
@@ -167,7 +167,7 @@
         "filtered_inputs": 0,
         "failures": 0,
         "retries": 0,
-        "processing_latency_ms": 0.8320999913848937,
+        "processing_latency_ms": 2.8442999901017174,
         "last_processed_event_id": "evt-silv-0070625",
         "last_outcome": "FINDING_EMITTED",
         "output_finding_ids": [
@@ -187,13 +187,13 @@
       "input_count": 600,
       "output_count": 600,
       "drop_count": 0,
-      "latency_ms": 728.96700000274,
+      "latency_ms": 1946.6400000092108,
       "status": "PASSED",
       "details": {
         "agent_id": "agent-03-vehicle-response",
         "name": "Vehicle-Response Intelligence",
         "model_version": "1.0.0",
-        "run_id": "run-591acc50",
+        "run_id": "run-66e2deb4",
         "inputs_received": 600,
         "eligible_inputs": 600,
         "successfully_processed": 600,
@@ -203,7 +203,7 @@
         "filtered_inputs": 0,
         "failures": 0,
         "retries": 0,
-        "processing_latency_ms": 0.7788999937474728,
+        "processing_latency_ms": 2.049400005489588,
         "last_processed_event_id": "evt-silv-0071881",
         "last_outcome": "FINDING_EMITTED",
         "output_finding_ids": [
@@ -815,13 +815,13 @@
       "input_count": 22,
       "output_count": 2,
       "drop_count": 0,
-      "latency_ms": 19.16539999365341,
+      "latency_ms": 78.3575999957975,
       "status": "PASSED",
       "details": {
         "agent_id": "agent-04-tyre-strategy",
         "name": "Tyre & Strategy Intelligence",
         "model_version": "1.2.0",
-        "run_id": "run-591acc50",
+        "run_id": "run-66e2deb4",
         "inputs_received": 22,
         "eligible_inputs": 22,
         "successfully_processed": 22,
@@ -831,7 +831,7 @@
         "filtered_inputs": 0,
         "failures": 0,
         "retries": 0,
-        "processing_latency_ms": 0.0015999976312741637,
+        "processing_latency_ms": 0.0017999991541728377,
         "last_processed_event_id": "evt-silv-0067097",
         "last_outcome": "NO_FINDING",
         "output_finding_ids": [
@@ -845,7 +845,7 @@
       "input_count": 627,
       "output_count": 604,
       "drop_count": 0,
-      "latency_ms": 836.784599989187,
+      "latency_ms": 1869.8791000060737,
       "status": "PASSED",
       "details": {
         "assessments_produced": 604,
@@ -879,7 +879,7 @@
       "input_count": 2,
       "output_count": 2,
       "drop_count": 0,
-      "latency_ms": 3.31140001071617,
+      "latency_ms": 3.9058999973349273,
       "status": "PASSED",
       "details": {
         "missing_telemetry_handled": true,
@@ -893,7 +893,7 @@
       "input_count": 10,
       "output_count": 10,
       "drop_count": 0,
-      "latency_ms": 0.3262000100221485,
+      "latency_ms": 1.956599997356534,
       "status": "PASSED",
       "details": {
         "total_official_notices": 10,
@@ -911,7 +911,7 @@
       "input_count": 1231,
       "output_count": 1231,
       "drop_count": 0,
-      "latency_ms": 1695.5142999941017,
+      "latency_ms": 1731.2313000002177,
       "status": "PASSED",
       "details": {
         "statestore_findings_count": 628,
@@ -926,7 +926,7 @@
       "agent_id": "agent-01-event-control",
       "name": "Race Event & Control Intelligence",
       "model_version": "1.0.0",
-      "run_id": "run-591acc50",
+      "run_id": "run-66e2deb4",
       "inputs_received": 13,
       "eligible_inputs": 13,
       "successfully_processed": 13,
@@ -936,7 +936,7 @@
       "filtered_inputs": 0,
       "failures": 0,
       "retries": 0,
-      "processing_latency_ms": 1.0496000031707808,
+      "processing_latency_ms": 2.586900009191595,
       "last_processed_event_id": "evt-silv-0072622",
       "last_outcome": "FINDING_EMITTED",
       "output_finding_ids": [
@@ -963,7 +963,7 @@
       "agent_id": "agent-02-track-state",
       "name": "Track-State Intelligence",
       "model_version": "1.0.0",
-      "run_id": "run-591acc50",
+      "run_id": "run-66e2deb4",
       "inputs_received": 8,
       "eligible_inputs": 8,
       "successfully_processed": 8,
@@ -973,7 +973,7 @@
       "filtered_inputs": 0,
       "failures": 0,
       "retries": 0,
-      "processing_latency_ms": 0.8320999913848937,
+      "processing_latency_ms": 2.8442999901017174,
       "last_processed_event_id": "evt-silv-0070625",
       "last_outcome": "FINDING_EMITTED",
       "output_finding_ids": [
@@ -991,7 +991,7 @@
       "agent_id": "agent-03-vehicle-response",
       "name": "Vehicle-Response Intelligence",
       "model_version": "1.0.0",
-      "run_id": "run-591acc50",
+      "run_id": "run-66e2deb4",
       "inputs_received": 601,
       "eligible_inputs": 601,
       "successfully_processed": 600,
@@ -1001,8 +1001,8 @@
       "filtered_inputs": 0,
       "failures": 0,
       "retries": 0,
-      "processing_latency_ms": 0.006200003554113209,
-      "last_processed_event_id": "evt-fault-missing-bd1864",
+      "processing_latency_ms": 0.0047000066842883825,
+      "last_processed_event_id": "evt-fault-missing-b4723b",
       "last_outcome": "INSUFFICIENT_DATA",
       "output_finding_ids": [
         "finding-veh-evt-silv-0002165-1",
@@ -1611,7 +1611,7 @@
       "agent_id": "agent-04-tyre-strategy",
       "name": "Tyre & Strategy Intelligence",
       "model_version": "1.2.0",
-      "run_id": "run-591acc50",
+      "run_id": "run-66e2deb4",
       "inputs_received": 22,
       "eligible_inputs": 22,
       "successfully_processed": 22,
@@ -1621,7 +1621,7 @@
       "filtered_inputs": 0,
       "failures": 0,
       "retries": 0,
-      "processing_latency_ms": 0.0015999976312741637,
+      "processing_latency_ms": 0.0017999991541728377,
       "last_processed_event_id": "evt-silv-0067097",
       "last_outcome": "NO_FINDING",
       "output_finding_ids": [
@@ -1633,7 +1633,7 @@
       "agent_id": "agent-05-fusion",
       "name": "Race Consequence & Forecast Intelligence",
       "model_version": "2.0.0",
-      "run_id": "run-591acc50",
+      "run_id": "run-66e2deb4",
       "inputs_received": 628,
       "eligible_inputs": 628,
       "successfully_processed": 628,
@@ -1643,8 +1643,8 @@
       "filtered_inputs": 0,
       "failures": 0,
       "retries": 0,
-      "processing_latency_ms": 2.861100001609884,
-      "last_processed_event_id": "finding-late-87e32d",
+      "processing_latency_ms": 3.4604000102262944,
+      "last_processed_event_id": "finding-late-44c7c2",
       "last_outcome": "FINDING_EMITTED",
       "output_finding_ids": [
         "impact-f1-2023-silverstone-race-16-v1",
@@ -2251,7 +2251,7 @@
         "impact-f1-2023-silverstone-race-24-v30",
         "impact-f1-2023-silverstone-race-2-v30",
         "impact-f1-2023-silverstone-race-21-v30",
-        "impact-e2e-session-008902-44-v32"
+        "impact-e2e-session-fab274-44-v32"
       ]
     }
   ]

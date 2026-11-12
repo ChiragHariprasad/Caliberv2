@@ -4,6 +4,7 @@ from pulse.agents.fusion import ConsequenceFusionEngine
 from pulse.agents.track_state import TrackStateAgent
 from pulse.agents.tyre_strategy import TyreStrategyAgent
 from pulse.agents.vehicle_response import VehicleResponseAgent
+from pulse.integrity.agent import IntegrityAgent
 
 __all__ = [
     "BaseAgent",
@@ -12,5 +13,5 @@ __all__ = [
     "VehicleResponseAgent",
     "TyreStrategyAgent",
     "ConsequenceFusionEngine",
+    "IntegrityAgent",
 ]
-

@@ -1,0 +1,119 @@
+
+====================================================================================================
+1. MONACO-STYLE: wrong configured loop distance (2692 cm vs 2615 cm surveyed) + 2.9% speed inflation
+====================================================================================================
+DECISION pit_speed@S1|44|12  ->  SUSPECT   (as of 2026-06-07T13:00:07.000000Z)
+  contract pit_speed v1.0.0 epoch 1  |  maturity=OPEN  finality=OPEN  revision=1 (INITIAL)
+  why: CONSTRAINT_VIOLATION: abs_diff: |2692.0 - 2615.0| = 77.0 (tol 5)
+  roles:
+    - calibration_bias_ref [reference]: HEALTHY  source_depth=0 processing_depth=0
+    - configured_distance [evidence]: HEALTHY  source_depth=0 processing_depth=0
+    - geometry_distance_ref [reference]: HEALTHY  source_depth=0 processing_depth=0
+    - timing_speed [evidence]: HEALTHY  source_depth=0 processing_depth=0
+    - vehicle_speed [evidence]: HEALTHY  source_depth=0 processing_depth=0
+  constraints:
+    - distance_vs_geometry: SUSPECT
+    - speed_vs_vehicle: SUSPECT
+  diagnosis: FAULT_BUDGET_EXCEEDED excluded_items=[] minimal=[]
+  witnesses:
+    * CONSTRAINT_VIOLATION [distance_vs_geometry]: abs_diff: |2692.0 - 2615.0| = 77.0 (tol 5)
+    * CONSTRAINT_VIOLATION [speed_vs_vehicle]: ratio: 62.9/61.1 = 1.029460, |ratio-1| = 0.029460 (tol 0.015)
+    * FAULT_BUDGET_EXCEEDED: conflicts=2, diagnosis_budget=0
+  limitations:
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=configured_distance has no independent source corroboration
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=timing_speed has no independent source corroboration
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=vehicle_speed has no independent source corroboration
+  envelope: lower=SUSPECT upper=HEALTHY alternatives=['HEALTHY', 'SUSPECT']
+
+====================================================================================================
+2. SYSTEMIC FAULT: this passage looks fine, but the session-wide population shows a +2.9% bias (423 passages)
+====================================================================================================
+population fact: median measured/reference=1.029000 bias=+2.9000% n=423 flagged=423
+DECISION pit_speed@S1|44|12  ->  SUSPECT   (as of 2026-06-07T13:00:07.000000Z)
+  contract pit_speed v1.0.0 epoch 1  |  maturity=OPEN  finality=OPEN  revision=1 (INITIAL)
+  why: REFERENCE_FACT_GRADE: reference graded SUSPECT: median measured/reference=1.029000 bias=+2.9000% n=423 flagged=423
+  roles:
+    - calibration_bias_ref [reference]: SUSPECT  source_depth=0 processing_depth=0
+    - configured_distance [evidence]: HEALTHY  source_depth=0 processing_depth=0
+    - geometry_distance_ref [reference]: HEALTHY  source_depth=0 processing_depth=0
+    - timing_speed [evidence]: HEALTHY  source_depth=0 processing_depth=0
+    - vehicle_speed [evidence]: HEALTHY  source_depth=0 processing_depth=0
+  constraints:
+    - distance_vs_geometry: HEALTHY
+    - speed_vs_vehicle: HEALTHY
+  witnesses:
+    * REFERENCE_FACT_GRADE [calibration_bias_ref]: reference graded SUSPECT: median measured/reference=1.029000 bias=+2.9000% n=423 flagged=423
+  limitations:
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=configured_distance has no independent source corroboration
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=timing_speed has no independent source corroboration
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=vehicle_speed has no independent source corroboration
+  envelope: lower=SUSPECT upper=HEALTHY alternatives=['HEALTHY', 'SUSPECT']
+
+====================================================================================================
+3. COMMON CAUSE: Pitwall + TracingInsights 'agree' but share the F1 timing upstream (resilience requirement k=1)
+====================================================================================================
+DECISION lap_time@S1|44|12  ->  SUSPECT   (as of 2026-06-07T13:00:07.000000Z)
+  contract lap_time v1.0.0 epoch 1  |  maturity=OPEN  finality=OPEN  revision=1 (INITIAL)
+  why: INSUFFICIENT_RESILIENCE: requires HEALTHY after loss of any 1 origin(s); worst case is UNKNOWN
+  roles:
+    - lap_record [evidence]: HEALTHY  source_depth=0 processing_depth=1
+  resilience: profile={'1': 'UNKNOWN'} critical_origins=['S:F1_FOM_TIMING'] (required k=1)
+  witnesses:
+    * COMMON_CAUSE_EXPOSURE: single points of failure: ['S:F1_FOM_TIMING']
+    * INSUFFICIENT_RESILIENCE: requires HEALTHY after loss of any 1 origin(s); worst case is UNKNOWN
+  limitations:
+    ! INFORMATIONAL_CORROBORATION_ONLY: role=lap_record has no independent source corroboration
+    ! UNMODELLED_COMMON_CAUSE: shared dependency ['S:F1_FOM_TIMING']
+  envelope: lower=SUSPECT upper=HEALTHY alternatives=['HEALTHY', 'SUSPECT']
+
+====================================================================================================
+4. CONFLICT DIAGNOSIS: three independent sources, one outlier, diagnosis budget f=1
+====================================================================================================
+DECISION speed@S1|44|12  ->  HEALTHY   (as of 2026-06-07T13:00:07.000000Z)
+  contract speed v1.0.0 epoch 1  |  maturity=OPEN  finality=OPEN  revision=1 (INITIAL)
+  why: MUTUAL_AGREEMENT_VALIDATED: roles=[v]
+  roles:
+    - v [evidence]: HEALTHY  source_depth=1 processing_depth=1
+  diagnosis: EXCLUDED_FAULTS excluded_items=['a89a90263e'] minimal=[['P:adapter:B'], ['S:B']]
+  resilience: profile={'1': 'HEALTHY'} critical_origins=[] (required k=0)
+  witnesses:
+    * EXCLUDED_FAULTY_ORIGIN: observations=['a89a90263e'] minimal_diagnoses=[{P:adapter:B}, {S:B}]
+  envelope: lower=SUSPECT upper=HEALTHY alternatives=['HEALTHY', 'SUSPECT']
+
+====================================================================================================
+5. SILENT FEED + LATE EVIDENCE + BITEMPORAL HISTORY
+====================================================================================================
+K=+10s  state=UNKNOWN  (rev 1)
+K=+35s  state=DEGRADED  (rev 1)
+K=+55s  state=HEALTHY  (rev 2, reason=LATE_EVIDENCE)
+K=+200s state=HEALTHY  finality=FINAL  (rev 3)
+as known at +40s, state for valid time +40s : DEGRADED
+as known at +60s, state for valid time +40s : HEALTHY  <- corrected retroactively, old belief preserved
+chain verification: {'lap_time@S1|44|12': 'OK'}
+post-finality evidence quarantined: [{'decision_instance_id': 'lap_time@S1|44|12', 'kind': 'atom', 'item_id': '1c7f77c9d03eb1530b7f330a76eade02a902778d8c3990a8bc05ddee181d6d26', 'knowledge_time': '2026-06-07T13:05:00.000000Z', 'code': 'POST_FINALITY_QUARANTINED'}]
+
+final verdict (compat dict, truncated):
+{
+  "decision_instance_id": "lap_time@S1|44|12",
+  "integrity_state": "HEALTHY",
+  "resolution_maturity": "TUPLE_RESOLVED",
+  "finality_status": "FINAL",
+  "decision_maturity": "FINAL",
+  "primary_binding_witness": "MUTUAL_AGREEMENT_VALIDATED: roles=[lap_record]",
+  "verdict_hash": "d8ad6b14ea79f2d5f4252ce5629ad046bc4c2b4311f80ee24ad02a3fd4c91234",
+  "record_hash": "2a69ae62c45de5f90c0e1213f6dda32f4a608af404b618d0e92e264b51f44d5d",
+  "previous_record_hash": "439d41d003739a5e3b32e27bbfd6ea19017beee920dd4b6875d76286a004d94b"
+}
+
+====================================================================================================
+6. TYPED TIME: lap-relative sample needs lap_start; wrong-lap reference is refused; LAP_DURATION is never a timestamp
+====================================================================================================
+DECISION aligned_lap@S1|44|12  ->  DEGRADED   (as of 2026-06-07T13:00:35.000000Z)
+  contract aligned_lap v1.0.0 epoch 1  |  maturity=OPEN  finality=OPEN  revision=1 (INITIAL)
+  why: MISSING_REFERENCE_FACT: cannot align time: missing ['lap_start'] for scope [('driver_id', '44'), ('lap_number', '12'), ('session_id', 'S1')]
+  roles:
+    - lap_sample [evidence]: DEGRADED  source_depth=0 processing_depth=0 - slot deadline passed with no usable evidence
+  witnesses:
+    * ILLEGAL_TIME_CLASS [lap_sample]: atom=c350a60566 LAP_DURATION->SESSION_ELAPSED is not a legal conversion
+    * MISSING_REFERENCE_FACT [lap_sample]: cannot align time: missing ['lap_start'] for scope [('driver_id', '44'), ('lap_number', '12'), ('session_id', 'S1')]
+  envelope: lower=DEGRADED upper=HEALTHY alternatives=['DEGRADED', 'HEALTHY', 'SUSPECT', 'UNKNOWN']

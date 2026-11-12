@@ -32,6 +32,7 @@ AGENT_TOPICS = {
     "vehicle_response": "pulse.agent.vehicle_response.findings.v1",
     "tyre_strategy": "pulse.agent.tyre_strategy.findings.v1",
     "race_impact": "pulse.agent.race_impact.findings.v1",
+    "integrity": "pulse.agent.integrity.findings.v1",
 }
 
 INTELLIGENCE_TOPICS = {
