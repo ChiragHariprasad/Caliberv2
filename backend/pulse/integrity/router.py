@@ -24,7 +24,8 @@ def _get_agent():
     store = get_state_store()
     agent = store.agents.get("agent-06-integrity")
     if agent is None or not isinstance(agent, IntegrityAgent):
-        raise HTTPException(status_code=503, detail="IntegrityAgent not available")
+        agent = IntegrityAgent()
+        store.register_agent(agent)
     return agent
 
 

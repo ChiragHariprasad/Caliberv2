@@ -230,6 +230,8 @@ class StateStore:
             self.findings.append(finding)
         if finding.finding_type == "PIT_WINDOW_OPPORTUNITY" and "scenarios" in finding.result:
             self.default_strategies = finding.result["scenarios"]
+        if finding.finding_type == "INTEGRITY_ASSESSMENT":
+            self.notify_integrity_state(finding.result)
 
         self._notify_listeners("finding", finding.model_dump(mode="json"))
         self._notify_listeners("AGENT_FINDING_UPDATED", finding.model_dump(mode="json"))
@@ -279,6 +281,10 @@ class StateStore:
 
     def notify_pipeline_metrics(self, metrics_payload: dict[str, Any]) -> None:
         self._notify_listeners("PIPELINE_METRICS_UPDATED", metrics_payload)
+
+    def notify_integrity_state(self, integrity_payload: dict[str, Any]) -> None:
+        """Push integrity assessment updates to SSE listeners."""
+        self._notify_listeners("INTEGRITY_STATE_UPDATED", integrity_payload)
 
     # --- SSE Subscription & Event Delivery ---
 
@@ -433,12 +439,23 @@ class StateStore:
                 "agent-03-vehicle-response",
                 "agent-04-tyre-strategy",
                 "agent-05-fusion",
+                "agent-06-integrity",
             ],
         }
 
     def get_snapshot(self) -> dict[str, Any]:
         """Provides full consumer-facing snapshot matching PulseSnapshot interface."""
         sess = self.get_session()
+
+        # Integrity summary (if agent is registered)
+        integrity_summary = None
+        ia = self.agents.get("agent-06-integrity")
+        if ia and hasattr(ia, "get_summary"):
+            try:
+                integrity_summary = ia.get_summary()
+            except Exception:
+                pass
+
         return {
             "mode": sess["mode"],
             "pipelineStatus": sess.get("pipelineStatus", "CONNECTED"),
@@ -459,6 +476,7 @@ class StateStore:
             "strategies": self.get_strategy(),
             "sectors": self.get_track(),
             "officialNotices": self.get_official_notices(),
+            "integrity": integrity_summary,
         }
 
 

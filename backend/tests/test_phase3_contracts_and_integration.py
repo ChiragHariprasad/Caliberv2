@@ -146,18 +146,19 @@ def test_09_official_versus_pulse_event_separation():
 
 
 def test_10_all_five_agent_operational_cards():
-    """Verify that all five specialist agents expose runtime metrics via API."""
+    """Verify that all specialist agents expose runtime metrics via API."""
     with TestClient(app) as c:
       res = c.get("/api/agents/metrics")
       assert res.status_code == 200
       metrics = res.json()
-      assert len(metrics) == 5
+      assert len(metrics) == 6
       expected_agents = {
           "agent-01-event-control",
           "agent-02-track-state",
           "agent-03-vehicle-response",
           "agent-04-tyre-strategy",
           "agent-05-fusion",
+          "agent-06-integrity",
       }
       assert set(metrics.keys()) == expected_agents
 

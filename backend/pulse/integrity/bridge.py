@@ -160,6 +160,9 @@ def _quality_grade(envelope: EventEnvelope) -> IntegrityState:
     return min(g1, g2)  # pessimistic: take the worst
 
 
+quality_grade = _quality_grade
+
+
 # ---------------------------------------------------------------------------
 # Scope extraction
 # ---------------------------------------------------------------------------

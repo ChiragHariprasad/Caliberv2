@@ -19,7 +19,7 @@ def test_api_health():
     data = response.json()
     assert data["status"] == "HEALTHY"
     assert "active_agents" in data
-    assert len(data["active_agents"]) == 5
+    assert len(data["active_agents"]) == 6
 
 
 def test_api_session():

@@ -24,9 +24,12 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+pythonpath = [".", "../sia_core_v3"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.pyright]
+extraPaths = ["../sia_core_v3"]
 
 [tool.ruff]
 line-length = 100

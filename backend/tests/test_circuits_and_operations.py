@@ -133,4 +133,4 @@ def test_api_pipeline_status():
         assert "kafka" in data
         assert "flink" in data
         assert "agents" in data
-        assert data["agents"]["total_registered"] == 5
+        assert data["agents"]["total_registered"] == 6
