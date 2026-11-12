@@ -37,6 +37,8 @@ class VehicleResponseAgent(BaseAgent):
         self.driver_intervals: dict[int, float] = {}
         self.driver_stint_laps: dict[int, int] = {}
         self.vsc_active = False
+        self._driver_last_classification: dict[int, str] = {}
+        self._driver_event_count: dict[int, int] = {}
 
     def reset(self) -> None:
         """Reset agent domain state and metrics for a fresh run."""
@@ -44,6 +46,8 @@ class VehicleResponseAgent(BaseAgent):
         self.driver_intervals.clear()
         self.driver_stint_laps.clear()
         self.vsc_active = False
+        self._driver_last_classification.clear()
+        self._driver_event_count.clear()
 
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
@@ -114,7 +118,7 @@ class VehicleResponseAgent(BaseAgent):
                     pace_delta = round(lap_seconds - baseline, 3)
 
                 # If still no timing data available in sample, mark insufficient data
-                if pace_delta is None and "speed_kmh" not in payload and "pace_loss_sec" not in payload:
+                if pace_delta is None and "speed_kmh" not in payload and "speed" not in payload and "pace_loss_sec" not in payload:
                     latency = (time.perf_counter() - t0) * 1000.0
                     self.record_outcome("INSUFFICIENT_DATA", latency_ms=latency)
                     return
@@ -137,6 +141,21 @@ class VehicleResponseAgent(BaseAgent):
                 else:
                     reason = "PACE_MONITORING_NOMINAL"
                     classification = "NOMINAL_PACING"
+
+                # Filter out purely nominal pacing so finding streams reflect genuine anomalies/events
+                if classification == "NOMINAL_PACING":
+                    latency = (time.perf_counter() - t0) * 1000.0
+                    self.record_outcome("NO_FINDING", latency_ms=latency)
+                    return
+
+                last_cls = self._driver_last_classification.get(dn)
+                count = self._driver_event_count.get(dn, 0) + 1
+                self._driver_event_count[dn] = count
+                if last_cls == classification and event_type != "LAP_COMPLETED" and (count % 25 != 0):
+                    latency = (time.perf_counter() - t0) * 1000.0
+                    self.record_outcome("NO_FINDING", latency_ms=latency)
+                    return
+                self._driver_last_classification[dn] = classification
 
                 interpretation_val = (
                     Interpretation.INFERRED

@@ -53,6 +53,7 @@ class ReplayController:
         self._task: asyncio.Task[None] | None = None
         self._lock = asyncio.Lock()
         self._event_processor: Callable[..., Awaitable[None]] | None = None
+        self._reset_hook: Callable[[], None] | None = None
 
         # Load initial default session envelopes
         self._load_session_envelopes(self.session_id)
@@ -66,6 +67,10 @@ class ReplayController:
         on the transport.
         """
         self._event_processor = processor
+
+    def set_reset_hook(self, hook: Callable[[], None] | None) -> None:
+        """Register a callback to be invoked whenever replay state is reset or seeked."""
+        self._reset_hook = hook
 
     def _for_current_run(self, envelope: EventEnvelope) -> EventEnvelope:
         """Copy a source envelope into the active replay-run namespace."""
@@ -171,6 +176,8 @@ class ReplayController:
                     pass
 
             self.status = ReplayStatus.RESETTING
+            if self._reset_hook is not None:
+                self._reset_hook()
             store = get_state_store()
             store.switch_session(session_id)
             self._load_session_envelopes(session_id)
@@ -237,6 +244,8 @@ class ReplayController:
                     pass
 
             self.status = ReplayStatus.RESETTING
+            if self._reset_hook is not None:
+                self._reset_hook()
             self.current_index = 0
             self.published_count = 0
             self.elapsed_ms = 0
@@ -306,6 +315,8 @@ class ReplayController:
             # records from the abandoned cursor can therefore be identified
             # and ignored by the active-run consumer instead of mutating the
             # reconstructed state.
+            if self._reset_hook is not None:
+                self._reset_hook()
             self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
 
             # Rebuild state from index 0 up to target_idx through the exact

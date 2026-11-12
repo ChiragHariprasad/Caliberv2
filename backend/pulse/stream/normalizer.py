@@ -18,6 +18,13 @@ class StreamNormalizer:
         self.duplicate_count = 0
         self.invalid_count = 0
 
+    def reset(self) -> None:
+        """Clears seen events and resets processing counters for fresh playback/seek."""
+        self._seen_events.clear()
+        self.processed_count = 0
+        self.duplicate_count = 0
+        self.invalid_count = 0
+
     def process(self, raw_data: dict[str, Any] | EventEnvelope) -> tuple[EventEnvelope | None, str | None]:
         """Validates envelope and returns (canonical_envelope, target_topic).
 
