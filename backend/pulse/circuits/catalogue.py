@@ -26,6 +26,8 @@ def load_all_circuits() -> dict[str, CircuitGeometry]:
         return {}
 
     for file in _DATA_DIR.glob("*.json"):
+        if file.name == "geometry_audit.json":
+            continue
         try:
             content = file.read_text(encoding="utf-8")
             data = json.loads(content)

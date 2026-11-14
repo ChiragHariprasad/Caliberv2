@@ -56,6 +56,7 @@ export interface Corner {
   y: number;
   sector: number;
   apex_speed_kmh?: number | null;
+  track_progress?: number;
 }
 
 export interface DRSZone {
@@ -66,10 +67,10 @@ export interface DRSZone {
 }
 
 export interface PitLaneGeometry {
-  entry_point: [number, number];
-  exit_point: [number, number];
-  path: [number, number][];
-  speed_limit_kmh: number;
+  entry_point?: [number, number] | null;
+  exit_point?: [number, number] | null;
+  path?: [number, number][];
+  speed_limit_kmh?: number;
 }
 
 export interface SectorBoundary {
@@ -87,7 +88,7 @@ export interface CircuitGeometry {
   layout_id: string;
   layout_version: string;
   length_meters: number;
-  track_direction: 'CLOCKWISE' | 'COUNTER_CLOCKWISE' | 'FIGURE_EIGHT';
+  track_direction: 'CLOCKWISE' | 'COUNTER_CLOCKWISE' | 'FIGURE_EIGHT' | string;
   coordinate_reference_system: string;
   source_attribution: string;
   checksum_sha256: string;
@@ -105,6 +106,8 @@ export interface CircuitGeometry {
     width: number;
     height: number;
   };
+  geometry_source?: any;
+  geometry_notes?: string[];
 }
 
 export interface OfficialNotice {
@@ -314,3 +317,7 @@ export interface SessionInfo {
   capture_id?: string;
   events_count: number;
 }
+
+// Re-export formal CALIBRE & SIA Core v3 specifications
+export * from './types/calibre';
+

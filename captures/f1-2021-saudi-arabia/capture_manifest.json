@@ -1,0 +1,12 @@
+{
+  "capture_id": "f1-2021-saudi-arabia",
+  "data_regime": "PUBLIC",
+  "regime": "PUBLIC",
+  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
+  "provider": "FIA_OFFICIAL_TIMING",
+  "session_id": "f1-2021-saudi-arabia",
+  "session_name": "Saudi Arabian Grand Prix 2021",
+  "circuit_id": "jeddah",
+  "total_laps": 50,
+  "duration_seconds": 1800
+}

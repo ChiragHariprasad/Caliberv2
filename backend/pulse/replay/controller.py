@@ -82,6 +82,9 @@ class ReplayController:
         return replayed
 
     async def _process(self, envelope: EventEnvelope, *, publish: bool) -> None:
+        # Guarantee state store projection is immediately updated on every event
+        get_state_store().record_canonical_event(envelope)
+
         if self._event_processor is not None:
             await self._event_processor(envelope, publish=publish)
             return
@@ -90,11 +93,6 @@ class ReplayController:
             topic = raw_topic_for_event(envelope.event_type)
             key = routing_key(self.session_id, envelope.subject.driver_number, envelope.subject.segment_id)
             await self.bus.publish(topic, key, envelope)
-        else:
-            # Compatibility fallback for callers that construct a controller
-            # outside the application lifespan. The application installs a
-            # processor, which also rebuilds agents and fusion state.
-            get_state_store().record_canonical_event(envelope)
 
     def _load_session_envelopes(self, session_id: str) -> bool:
         """Loads canonical envelopes for the chosen session into memory."""
@@ -110,15 +108,31 @@ class ReplayController:
             return False
 
         self.session_id = session_id
-        self.capture_id = meta.capture_id or ""
+        self.capture_id = meta.capture_id or session_id
         self.mode = "REPLAY" if meta.availability_status == "AVAILABLE_HISTORICAL" else "SIMULATED"
 
-        capture_dir = Path("captures") / self.capture_id
-        if not capture_dir.exists():
-            capture_dir = Path("captures") / self.session_id
-        env_file = capture_dir / "envelopes.jsonl"
+        # Search multiple candidate locations for the captures directory to support
+        # running from repo root, backend subdirectory, WSL mounts, or test runners.
+        repo_root = Path(__file__).resolve().parents[3]
+        candidate_dirs = [
+            repo_root / "captures" / self.capture_id,
+            repo_root / "captures" / self.session_id,
+            Path("captures") / self.capture_id,
+            Path("captures") / self.session_id,
+            Path("../captures") / self.capture_id,
+            Path("../captures") / self.session_id,
+            Path("../../captures") / self.capture_id,
+            Path("../../captures") / self.session_id,
+        ]
 
-        if env_file.exists():
+        env_file: Path | None = None
+        for cdir in candidate_dirs:
+            candidate_file = cdir / "envelopes.jsonl"
+            if candidate_file.exists():
+                env_file = candidate_file
+                break
+
+        if env_file is not None and env_file.exists():
             with open(env_file, "r", encoding="utf-8") as f:
                 for line in f:
                     if line.strip():
@@ -129,12 +143,13 @@ class ReplayController:
 
         self.status = ReplayStatus.READY
         logger.info(
-            "ReplayController loaded %d envelopes for session [%s] (mode: %s)",
+            "ReplayController loaded %d envelopes for session [%s] (mode: %s, file: %s)",
             len(self.envelopes),
             self.session_id,
             self.mode,
+            str(env_file) if env_file else "none",
         )
-        return True
+        return len(self.envelopes) > 0
 
     def get_status(self) -> dict[str, Any]:
         """Provides current playback state and progress metrics."""
@@ -165,35 +180,73 @@ class ReplayController:
             "progressPercent": round((self.current_index / max(1, len(self.envelopes))) * 100, 1),
         }
 
+    async def _switch_session_internal(self, session_id: str) -> dict[str, Any]:
+        """Internal session switch helper without acquiring lock (caller must hold lock or be un-locked)."""
+        if self._task and not self._task.done():
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
+
+        self.status = ReplayStatus.RESETTING
+        if self._reset_hook is not None:
+            self._reset_hook()
+        store = get_state_store()
+        store.switch_session(session_id)
+        self._load_session_envelopes(session_id)
+        self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
+        store.begin_run(self.run_id)
+        self.status = ReplayStatus.READY
+
+        status_payload = self.get_status()
+        store.notify_replay_status(status_payload)
+        return status_payload
+
     async def switch_session(self, session_id: str) -> dict[str, Any]:
         """Switches active playback session and reinitializes state."""
         async with self._lock:
-            if self._task and not self._task.done():
-                self._task.cancel()
-                try:
-                    await self._task
-                except asyncio.CancelledError:
-                    pass
+            return await self._switch_session_internal(session_id)
 
-            self.status = ReplayStatus.RESETTING
-            if self._reset_hook is not None:
-                self._reset_hook()
-            store = get_state_store()
-            store.switch_session(session_id)
-            self._load_session_envelopes(session_id)
-            self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
-            store.begin_run(self.run_id)
-            self.status = ReplayStatus.READY
+    async def _reset_internal(self) -> dict[str, Any]:
+        """Internal reset helper without acquiring lock (caller must hold lock or be un-locked)."""
+        if self._task and not self._task.done():
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
 
-            status_payload = self.get_status()
-            store.notify_replay_status(status_payload)
-            return status_payload
+        self.status = ReplayStatus.RESETTING
+        if self._reset_hook is not None:
+            self._reset_hook()
+        self.current_index = 0
+        self.published_count = 0
+        self.elapsed_ms = 0
+        self.last_event_time_utc = None
+        self.drop_count = 0
+        self.run_id = f"run-{uuid4().hex[:8]}"
+
+        store = get_state_store()
+        store.switch_session(self.session_id)
+        store.begin_run(self.run_id)
+        self.status = ReplayStatus.READY
+
+        status_payload = self.get_status()
+        store.notify_replay_status(status_payload)
+        logger.info("Replay reset completed: new run_id=%s", self.run_id)
+        return status_payload
+
+    async def reset(self) -> dict[str, Any]:
+        """Resets replay cursor to beginning under a fresh run ID."""
+        async with self._lock:
+            return await self._reset_internal()
 
     async def start(self, session_id: str | None = None, speed: float | None = None) -> dict[str, Any]:
         """Starts or unpauses replay playback."""
         async with self._lock:
             if session_id and session_id != self.session_id:
-                await self.switch_session(session_id)
+                await self._switch_session_internal(session_id)
 
             if speed is not None:
                 self.set_speed(speed)
@@ -201,8 +254,15 @@ class ReplayController:
             if self.status == ReplayStatus.PAUSED:
                 return self.resume()
 
-            if self.status == ReplayStatus.COMPLETED or self.current_index >= len(self.envelopes):
-                await self.reset()
+            if self.status == ReplayStatus.COMPLETED or (len(self.envelopes) > 0 and self.current_index >= len(self.envelopes)):
+                await self._reset_internal()
+
+            if len(self.envelopes) == 0:
+                logger.warning("Replay start requested but 0 envelopes available for session [%s]", self.session_id)
+                self.status = ReplayStatus.READY
+                status_payload = self.get_status()
+                get_state_store().notify_replay_status(status_payload)
+                return status_payload
 
             self.status = ReplayStatus.RUNNING
             if self._task is None or self._task.done():
@@ -232,36 +292,6 @@ class ReplayController:
             logger.info("Replay resumed from index %d", self.current_index)
             return status_payload
         return self.get_status()
-
-    async def reset(self) -> dict[str, Any]:
-        """Resets replay cursor to beginning under a fresh run ID."""
-        async with self._lock:
-            if self._task and not self._task.done():
-                self._task.cancel()
-                try:
-                    await self._task
-                except asyncio.CancelledError:
-                    pass
-
-            self.status = ReplayStatus.RESETTING
-            if self._reset_hook is not None:
-                self._reset_hook()
-            self.current_index = 0
-            self.published_count = 0
-            self.elapsed_ms = 0
-            self.last_event_time_utc = None
-            self.drop_count = 0
-            self.run_id = f"run-{uuid4().hex[:8]}"
-
-            store = get_state_store()
-            store.switch_session(self.session_id)
-            store.begin_run(self.run_id)
-            self.status = ReplayStatus.READY
-
-            status_payload = self.get_status()
-            store.notify_replay_status(status_payload)
-            logger.info("Replay reset completed: new run_id=%s", self.run_id)
-            return status_payload
 
     def set_speed(self, speed: float) -> dict[str, Any]:
         """Adjusts playback acceleration factor."""

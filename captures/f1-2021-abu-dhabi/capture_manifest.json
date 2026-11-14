@@ -1,0 +1,12 @@
+{
+  "capture_id": "f1-2021-abu-dhabi",
+  "data_regime": "PUBLIC",
+  "regime": "PUBLIC",
+  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
+  "provider": "FIA_OFFICIAL_TIMING",
+  "session_id": "f1-2021-abu-dhabi",
+  "session_name": "Abu Dhabi Grand Prix 2021",
+  "circuit_id": "yas_marina",
+  "total_laps": 58,
+  "duration_seconds": 1800
+}

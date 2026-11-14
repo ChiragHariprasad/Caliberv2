@@ -59,7 +59,10 @@ class StreamNormalizer:
             target_topic = NORMALISED_TOPICS["race_events"]
         elif event_type in {"LAP_COMPLETED", "SECTOR_COMPLETED"}:
             target_topic = NORMALISED_TOPICS["driver_laps"]
-        elif event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE", "TYRE_FITTED", "PIT_STOP"}:
+        elif event_type in {
+            "POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY",
+            "CAR_TELEMETRY_SAMPLE", "INTERVAL_UPDATE", "TYRE_FITTED", "PIT_STOP"
+        }:
             target_topic = NORMALISED_TOPICS["driver_state"]
         elif event_type in {"TRACK_STATUS_UPDATE", "WEATHER_OBSERVATION"}:
             target_topic = NORMALISED_TOPICS["track_segments"]

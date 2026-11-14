@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { CircuitGeometry, Driver, TrackSector } from '../types';
 import { BarChartIcon } from './icons';
 
@@ -10,30 +10,79 @@ interface TrackMapProps {
   selectedDriverNumber?: number | null;
   onSelectDriver?: (driverNumber: number) => void;
   onInspectTelemetry?: (driverNumber: number) => void;
+  onSelectGate?: (gateId: string, sectorNumber: number) => void;
 }
 
-// Fallback Monaco centreline waypoints if circuit asset is loading
+// Fallback Monaco centreline waypoints aligned with homologated GeoJSON coordinates
 const FALLBACK_CENTRELINE: [number, number][] = [
-  [440, 560], [540, 550], [640, 520], [630, 420], [590, 310], [530, 260],
-  [460, 290], [390, 275], [430, 340], [490, 370], [550, 395], [610, 430],
-  [520, 465], [420, 485], [360, 500], [310, 515], [240, 525], [260, 580], [330, 575]
+  [500.68, 291.58], [552.64, 210.95], [570.61, 219.56], [582.83, 245.69],
+  [593.17, 245.69], [576.76, 221.61], [614.14, 208.85], [609.62, 274.46],
+  [590.42, 323.81], [530.07, 373.50], [463.58, 396.82], [354.27, 479.52],
+  [296.88, 597.51], [305.53, 642.49], [339.46, 626.83], [361.34, 550.95],
+  [380.05, 529.83], [428.18, 484.09], [468.96, 401.59], [500.68, 291.58]
 ];
 
-function interpolateAlongPoints(points: [number, number][], progress: number): [number, number] {
+interface SplineDistanceIndex {
+  points: [number, number][];
+  distances: number[];
+  cumulative: number[];
+  totalLength: number;
+}
+
+function buildSplineDistanceIndex(points: [number, number][]): SplineDistanceIndex {
+  const n = points.length;
+  if (n === 0) {
+    return { points: [], distances: [], cumulative: [], totalLength: 0 };
+  }
+  const distances: number[] = new Array(n);
+  const cumulative: number[] = new Array(n);
+  let total = 0;
+  for (let i = 0; i < n; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % n];
+    const d = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]);
+    distances[i] = d;
+    cumulative[i] = total;
+    total += d;
+  }
+  return { points, distances, cumulative, totalLength: total };
+}
+
+function interpolatePositionFromIndex(index: SplineDistanceIndex, progress: number): [number, number] {
+  const { points, distances, cumulative, totalLength } = index;
   const n = points.length;
   if (n === 0) return [0, 0];
-  if (n === 1) return points[0];
+  if (n === 1 || totalLength === 0) return points[0];
 
-  const p = Math.max(0, Math.min(0.9999, progress % 1.0));
-  const totalSegments = n;
-  const floatIdx = p * totalSegments;
-  const idx = Math.floor(floatIdx);
-  const nextIdx = (idx + 1) % n;
-  const frac = floatIdx - idx;
+  let p = progress % 1.0;
+  if (p < 0) p += 1.0;
 
-  const [x1, y1] = points[idx];
-  const [x2, y2] = points[nextIdx];
-  return [x1 + frac * (x2 - x1), y1 + frac * (y2 - y1)];
+  const targetDist = p * totalLength;
+
+  // Binary search for cumulative segment index
+  let low = 0;
+  let high = n - 1;
+  let idx = 0;
+
+  while (low <= high) {
+    const mid = (low + high) >> 1;
+    if (cumulative[mid] <= targetDist) {
+      idx = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  const segLen = distances[idx];
+  const frac = segLen > 0 ? Math.max(0, Math.min(1, (targetDist - cumulative[idx]) / segLen)) : 0;
+  const p1 = points[idx];
+  const p2 = points[(idx + 1) % n];
+
+  return [
+    p1[0] + frac * (p2[0] - p1[0]),
+    p1[1] + frac * (p2[1] - p1[1]),
+  ];
 }
 
 export function TrackMap({
@@ -44,12 +93,18 @@ export function TrackMap({
   selectedDriverNumber,
   onSelectDriver,
   onInspectTelemetry,
+  onSelectGate,
 }: TrackMapProps) {
   const [hoveredDriver, setHoveredDriver] = useState<Driver | null>(null);
   const [hoveredCorner, setHoveredCorner] = useState<any | null>(null);
 
   const centreline = circuit?.centreline ?? FALLBACK_CENTRELINE;
-  const viewBox = circuit?.view_box ?? { min_x: 180, min_y: 190, width: 540, height: 460 };
+  const viewBox = circuit?.view_box ?? { min_x: 180, min_y: 200, width: 540, height: 450 };
+
+  // Precompute distance-weighted spline arc length index for smooth 60fps interpolation
+  const splineIndex = useMemo(() => {
+    return buildSplineDistanceIndex(centreline);
+  }, [centreline]);
 
   const centrelinePath = `M ${centreline.map((pt) => `${pt[0]},${pt[1]}`).join(' L ')} Z`;
   const outerPath = circuit?.outer_boundary?.length
@@ -70,7 +125,7 @@ export function TrackMap({
             <p className="eyebrow">Circuit Geometry & Live Grid</p>
             {circuit && (
               <span className="circuit-provenance-tag" title={`Source: ${circuit.source_attribution} · Checksum: ${circuit.checksum_sha256}`}>
-                {circuit.name} · {circuit.layout_version} ({(circuit.length_meters / 1000).toFixed(3)} km)
+                {circuit.name} · v{circuit.layout_version} ({(circuit.length_meters / 1000).toFixed(3)} km)
               </span>
             )}
           </div>
@@ -103,12 +158,43 @@ export function TrackMap({
             </linearGradient>
           </defs>
 
-          {/* Track Surface & Boundaries */}
+          {/* Explicit Boundary Polygons (if supplied by dataset) */}
           {outerPath && <path d={outerPath} className="track-boundary outer" />}
           {innerPath && <path d={innerPath} className="track-boundary inner" />}
 
-          {/* Centreline Racing Line */}
-          <path d={centrelinePath} className="track-line track-line--base" />
+          {/* Underlay Roadbed Layer (ensures solid asphalt corridor on all tracks) */}
+          <path
+            d={centrelinePath}
+            className="track-surface-bed"
+            fill="none"
+            stroke="#1b2533"
+            strokeWidth="14"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Main Racing Line Corridor */}
+          <path
+            d={centrelinePath}
+            className="track-line track-line--base"
+            fill="none"
+            stroke="#3b4b61"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Telemetry Tracking Groove */}
+          <path
+            d={centrelinePath}
+            className="track-racing-line"
+            fill="none"
+            stroke="rgba(56, 189, 248, 0.4)"
+            strokeWidth="1.5"
+            strokeDasharray="6 4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
 
           {/* Pit Lane Geometry */}
           {pitPath && <path d={pitPath} className="pit-lane-path" strokeDasharray="4 3" />}
@@ -124,7 +210,40 @@ export function TrackMap({
             />
           )}
 
-          {/* DRS Zones */}
+          {/* Timing Gates / Micro-Sector Boundaries (Clickable) */}
+          {circuit?.sectors?.map((sec) => (
+            <g
+              key={sec.sector_number}
+              className="timing-gate-group"
+              onClick={() => onSelectGate?.(`G0${sec.sector_number}`, sec.sector_number)}
+              style={{ cursor: 'pointer' }}
+              role="button"
+              tabIndex={0}
+              aria-label={`Timing Gate G0${sec.sector_number} Sector ${sec.sector_number}`}
+            >
+              <circle
+                cx={sec.checkpoint[0]}
+                cy={sec.checkpoint[1]}
+                r="4.5"
+                fill="#ffd000"
+                stroke="#0d1117"
+                strokeWidth="1.5"
+              />
+              <text
+                x={sec.checkpoint[0] + 6}
+                y={sec.checkpoint[1] + 3}
+                className="timing-gate-label"
+                fill="#ffd000"
+                fontSize="8.5"
+                fontFamily="ui-monospace, monospace"
+                fontWeight="bold"
+              >
+                G0{sec.sector_number}
+              </text>
+            </g>
+          ))}
+
+          {/* DRS Zones (when mapped) */}
           {circuit?.drs_zones?.map((drs) => (
             <g key={drs.zone_id} className="drs-zone-marker">
               <circle cx={drs.activation_point[0]} cy={drs.activation_point[1]} r="4" fill="#00ff88" />
@@ -142,8 +261,8 @@ export function TrackMap({
               onMouseEnter={() => setHoveredCorner(c)}
               onMouseLeave={() => setHoveredCorner(null)}
             >
-              <circle cx={c.x} cy={c.y} r="3" className="corner-dot" />
-              <text x={c.x} y={c.y - 5} className="corner-number-text">
+              <circle cx={c.x} cy={c.y} r="2.8" className="corner-dot" />
+              <text x={c.x} y={c.y - 4} className="corner-number-text">
                 {c.number}
               </text>
             </g>
@@ -165,13 +284,25 @@ export function TrackMap({
                 const pt = circuit.pit_lane.path[idx];
                 x = pt[0];
                 y = pt[1];
+              } else if (inPit) {
+                // If explicit pit-lane geometry is not supplied, offset car near the start/finish straight
+                const sf = circuit?.start_finish_line;
+                if (sf) {
+                  const dx = sf[1][0] - sf[0][0];
+                  const dy = sf[1][1] - sf[0][1];
+                  const pitOffsetRatio = 0.8;
+                  x = sf[0][0] + dx * pitOffsetRatio;
+                  y = sf[0][1] + dy * pitOffsetRatio + (driver.position % 5) * 8;
+                } else {
+                  [x, y] = interpolatePositionFromIndex(splineIndex, driver.progress ?? 0.0);
+                }
               } else if (isRetired) {
-                // Retired car parked off track or at start/finish
-                x = (circuit?.view_box.min_x ?? 180) + 40;
-                y = (circuit?.view_box.min_y ?? 190) + 40 + (driver.position % 5) * 15;
+                // Retired car parked in collection paddock
+                x = viewBox.min_x + 30;
+                y = viewBox.min_y + 30 + (driver.position % 6) * 16;
               } else {
                 const p = driver.progress ?? (1.0 - (driver.position - 1) * 0.045);
-                [x, y] = interpolateAlongPoints(centreline, p);
+                [x, y] = interpolatePositionFromIndex(splineIndex, p);
               }
 
               const teamColor = driver.teamColor || '#FFFFFF';
@@ -215,8 +346,18 @@ export function TrackMap({
                     {driver.number}
                   </text>
 
-                  {/* Position Tag for Top 5 */}
-                  {driver.position <= 5 && !isRetired && (
+                  {/* Position Tag for Top 5 or Pit Badge */}
+                  {inPit ? (
+                    <text
+                      x="0"
+                      y={-12}
+                      textAnchor="middle"
+                      className="car-pos-tag car-pos-tag--pit"
+                      style={{ fill: '#ffd000' }}
+                    >
+                      PIT
+                    </text>
+                  ) : driver.position <= 5 && !isRetired ? (
                     <text
                       x="0"
                       y={-12}
@@ -226,7 +367,7 @@ export function TrackMap({
                     >
                       P{driver.position}
                     </text>
-                  )}
+                  ) : null}
                 </g>
               );
             })}

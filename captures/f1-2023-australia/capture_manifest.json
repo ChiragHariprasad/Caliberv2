@@ -1,0 +1,12 @@
+{
+  "capture_id": "f1-2023-australia",
+  "data_regime": "PUBLIC",
+  "regime": "PUBLIC",
+  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
+  "provider": "FIA_OFFICIAL_TIMING",
+  "session_id": "f1-2023-australia",
+  "session_name": "Australian Grand Prix 2023",
+  "circuit_id": "albert_park",
+  "total_laps": 58,
+  "duration_seconds": 1800
+}

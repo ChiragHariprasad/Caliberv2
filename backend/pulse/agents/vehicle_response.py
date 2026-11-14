@@ -95,8 +95,8 @@ class VehicleResponseAgent(BaseAgent):
                 except ValueError:
                     pass
 
-            # Handle Lap Completion or Position update with timing data
-            if event_type in {"LAP_COMPLETED", "POSITION_UPDATE", "CAR_TELEMETRY_SAMPLE"}:
+            # Handle Lap Completion, Position update, or Driver Telemetry with timing data
+            if event_type in {"LAP_COMPLETED", "POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
                 if not dn:
                     latency = (time.perf_counter() - t0) * 1000.0
                     self.record_outcome("NO_FINDING", latency_ms=latency)
@@ -124,9 +124,10 @@ class VehicleResponseAgent(BaseAgent):
                     return
 
                 # Evaluate contextual factors: traffic vs degradation vs neutralisation
-                interval = self.driver_intervals.get(dn, payload.get("interval_seconds", 3.0))
-                in_traffic = interval < 1.5 and not self.vsc_active
-                effective_pace_delta = pace_delta if pace_delta is not None else float(payload.get("pace_loss_sec", 0.46))
+                pos = payload.get("position", 1)
+                interval = self.driver_intervals.get(dn, payload.get("interval_seconds", 1.2 if 2 <= pos <= 12 else 3.0))
+                in_traffic = (interval < 1.8 or (2 <= pos <= 10)) and not self.vsc_active
+                effective_pace_delta = pace_delta if pace_delta is not None else (0.42 if in_traffic else float(payload.get("pace_loss_sec", 0.15)))
 
                 # Determine reason code and classification without alleging mechanical failure
                 if self.vsc_active:
@@ -135,7 +136,7 @@ class VehicleResponseAgent(BaseAgent):
                 elif in_traffic and effective_pace_delta > 0.2:
                     reason = "TRAFFIC_CONGESTION_PACE_LOSS"
                     classification = "DIRTY_AIR_IMPEDED"
-                elif stint_age > 20 and effective_pace_delta > 0.3:
+                elif stint_age > 15 and effective_pace_delta > 0.3:
                     reason = "TYRE_DEGRADATION_PACE_LOSS"
                     classification = "TYRE_THERMAL_DEGRADATION"
                 else:

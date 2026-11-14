@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2023-las-vegas",
+  "meeting_id": "f1-2023-las-vegas",
+  "session_name": "Las Vegas Grand Prix 2023",
+  "circuit_id": "las_vegas",
+  "total_laps": 50,
+  "total_drivers": 20,
+  "duration_seconds": 1800,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

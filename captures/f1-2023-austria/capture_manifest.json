@@ -1,0 +1,12 @@
+{
+  "capture_id": "f1-2023-austria",
+  "data_regime": "PUBLIC",
+  "regime": "PUBLIC",
+  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
+  "provider": "FIA_OFFICIAL_TIMING",
+  "session_id": "f1-2023-austria",
+  "session_name": "Austrian Grand Prix 2023",
+  "circuit_id": "red_bull_ring",
+  "total_laps": 71,
+  "duration_seconds": 1800
+}

@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2021-belgium",
+  "meeting_id": "f1-2021-belgium",
+  "session_name": "Belgian Grand Prix 2021",
+  "circuit_id": "spa",
+  "total_laps": 44,
+  "total_drivers": 20,
+  "duration_seconds": 1800,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

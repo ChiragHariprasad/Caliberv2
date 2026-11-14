@@ -1,0 +1,461 @@
+{
+  "circuit_id": "red_bull_ring",
+  "name": "Red Bull Ring",
+  "country": "Austria",
+  "city": "Spielberg",
+  "layout_id": "red_bull_ring-homologated-v1",
+  "layout_version": "2024.1",
+  "length_meters": 4318.0,
+  "track_direction": "CLOCKWISE",
+  "coordinate_reference_system": "LOCAL_NORMALIZED_1000",
+  "source_attribution": "bacinger/f1-circuits, circuits/at-1969.geojson (OpenStreetMap-derived geometry; MIT License)",
+  "centreline": [
+    [
+      477.925,
+      506.922
+    ],
+    [
+      445.688,
+      515.485
+    ],
+    [
+      365.829,
+      537.223
+    ],
+    [
+      360.325,
+      537.639
+    ],
+    [
+      356.655,
+      534.314
+    ],
+    [
+      350.473,
+      522.343
+    ],
+    [
+      330.911,
+      495.908
+    ],
+    [
+      309.683,
+      465.731
+    ],
+    [
+      293.0,
+      439.088
+    ],
+    [
+      277.785,
+      412.819
+    ],
+    [
+      252.887,
+      358.535
+    ],
+    [
+      246.028,
+      344.071
+    ],
+    [
+      235.499,
+      327.029
+    ],
+    [
+      219.295,
+      307.203
+    ],
+    [
+      192.394,
+      280.185
+    ],
+    [
+      167.496,
+      255.288
+    ],
+    [
+      166.0,
+      251.963
+    ],
+    [
+      166.169,
+      248.43
+    ],
+    [
+      169.02,
+      246.684
+    ],
+    [
+      175.541,
+      245.52
+    ],
+    [
+      195.922,
+      243.151
+    ],
+    [
+      216.303,
+      242.361
+    ],
+    [
+      237.362,
+      242.569
+    ],
+    [
+      257.404,
+      244.523
+    ],
+    [
+      280.636,
+      248.264
+    ],
+    [
+      351.63,
+      261.98
+    ],
+    [
+      384.037,
+      266.261
+    ],
+    [
+      454.043,
+      269.212
+    ],
+    [
+      459.746,
+      271.166
+    ],
+    [
+      463.246,
+      275.073
+    ],
+    [
+      464.573,
+      279.396
+    ],
+    [
+      464.234,
+      283.926
+    ],
+    [
+      462.399,
+      288.207
+    ],
+    [
+      455.398,
+      298.225
+    ],
+    [
+      449.866,
+      304.875
+    ],
+    [
+      439.675,
+      313.895
+    ],
+    [
+      428.497,
+      319.963
+    ],
+    [
+      414.947,
+      324.452
+    ],
+    [
+      400.24,
+      326.821
+    ],
+    [
+      384.884,
+      325.824
+    ],
+    [
+      325.237,
+      316.222
+    ],
+    [
+      317.22,
+      317.22
+    ],
+    [
+      310.699,
+      319.547
+    ],
+    [
+      305.025,
+      323.496
+    ],
+    [
+      300.001,
+      328.775
+    ],
+    [
+      296.839,
+      335.051
+    ],
+    [
+      295.145,
+      341.909
+    ],
+    [
+      294.835,
+      348.186
+    ],
+    [
+      295.823,
+      355.044
+    ],
+    [
+      297.658,
+      360.115
+    ],
+    [
+      326.564,
+      410.658
+    ],
+    [
+      331.419,
+      415.978
+    ],
+    [
+      339.097,
+      420.841
+    ],
+    [
+      347.961,
+      422.836
+    ],
+    [
+      356.486,
+      422.047
+    ],
+    [
+      365.491,
+      418.306
+    ],
+    [
+      371.023,
+      413.817
+    ],
+    [
+      376.697,
+      406.751
+    ],
+    [
+      382.033,
+      399.892
+    ],
+    [
+      387.735,
+      394.032
+    ],
+    [
+      394.566,
+      389.335
+    ],
+    [
+      402.583,
+      384.597
+    ],
+    [
+      413.79,
+      380.482
+    ],
+    [
+      425.476,
+      377.946
+    ],
+    [
+      518.037,
+      375.993
+    ],
+    [
+      589.23,
+      374.247
+    ],
+    [
+      596.738,
+      374.413
+    ],
+    [
+      604.078,
+      376.99
+    ],
+    [
+      610.119,
+      381.479
+    ],
+    [
+      614.946,
+      387.548
+    ],
+    [
+      618.615,
+      395.57
+    ],
+    [
+      633.153,
+      444.575
+    ],
+    [
+      634.0,
+      449.064
+    ],
+    [
+      633.153,
+      452.389
+    ],
+    [
+      631.488,
+      454.966
+    ],
+    [
+      625.814,
+      459.455
+    ],
+    [
+      618.305,
+      463.944
+    ],
+    [
+      608.594,
+      468.849
+    ],
+    [
+      597.585,
+      473.546
+    ],
+    [
+      584.544,
+      477.868
+    ]
+  ],
+  "inner_boundary": [],
+  "outer_boundary": [],
+  "corners": [
+    {
+      "number": 1,
+      "name": "Niki Lauda Kurve",
+      "x": 265.348,
+      "y": 385.704,
+      "sector": 1,
+      "apex_speed_kmh": 140.0,
+      "track_progress": 0.20129
+    },
+    {
+      "number": 3,
+      "name": "Remus",
+      "x": 172.064,
+      "y": 246.141,
+      "sector": 1,
+      "apex_speed_kmh": 70.0,
+      "track_progress": 0.32047
+    },
+    {
+      "number": 4,
+      "name": "Schlossgold",
+      "x": 363.366,
+      "y": 263.53,
+      "sector": 2,
+      "apex_speed_kmh": 120.0,
+      "track_progress": 0.44955
+    },
+    {
+      "number": 6,
+      "name": "Gerhard Berger Kurve",
+      "x": 311.754,
+      "y": 384.763,
+      "sector": 2,
+      "apex_speed_kmh": 185.0,
+      "track_progress": 0.68884
+    },
+    {
+      "number": 9,
+      "name": "Jochen Rindt",
+      "x": 566.329,
+      "y": 374.808,
+      "sector": 3,
+      "apex_speed_kmh": 215.0,
+      "track_progress": 0.88178
+    },
+    {
+      "number": 10,
+      "name": "Red Bull Mobile",
+      "x": 628.853,
+      "y": 457.051,
+      "sector": 3,
+      "apex_speed_kmh": 190.0,
+      "track_progress": 0.96714
+    }
+  ],
+  "sectors": [
+    {
+      "sector_number": 1,
+      "start_progress": 0.0,
+      "end_progress": 0.33,
+      "checkpoint": [
+        186.211,
+        244.28
+      ]
+    },
+    {
+      "sector_number": 2,
+      "start_progress": 0.33,
+      "end_progress": 0.66,
+      "checkpoint": [
+        294.957,
+        345.708
+      ]
+    },
+    {
+      "sector_number": 3,
+      "start_progress": 0.66,
+      "end_progress": 1.0,
+      "checkpoint": [
+        584.544,
+        477.868
+      ]
+    }
+  ],
+  "pit_lane": {
+    "entry_point": null,
+    "exit_point": null,
+    "path": [],
+    "speed_limit_kmh": 80
+  },
+  "start_finish_line": [
+    [
+      481.004,
+      518.517
+    ],
+    [
+      474.845,
+      495.328
+    ]
+  ],
+  "drs_zones": [],
+  "view_box": {
+    "min_x": 160.0,
+    "min_y": 210.0,
+    "width": 480.0,
+    "height": 360.0
+  },
+  "geometry_source": {
+    "repository": "https://github.com/bacinger/f1-circuits",
+    "source_file": "circuits/at-1969.geojson",
+    "source_id": "at-1969",
+    "geometry_type": "LineString",
+    "underlying_map_data": "OpenStreetMap-derived",
+    "license": "MIT",
+    "coordinate_operation": "Local equirectangular projection, uniformly scaled into the existing view_box; no non-uniform stretching",
+    "source_vertex_count": 80
+  },
+  "geometry_notes": [
+    "The centreline is reprojected from the source GeoJSON vertices; the existing normalized coordinate system and view_box are retained.",
+    "The source repository supplies a centreline only. It does not supply surveyed inner/outer track boundaries, pit-lane geometry, DRS zones, or corner-name/apex metadata.",
+    "Existing named corner labels and apex-speed metadata are preserved; their marker positions are remapped by their previous along-track progress and are not independently verified against an official FIA corner map.",
+    "Pit-lane paths, DRS zones, and track-edge boundaries are left empty rather than retaining misaligned or unverified legacy geometry."
+  ],
+  "checksum_sha256": "e15d5f49231bfb8d080165b40fdecc5db6ec0d1dd28e66e58ebff0dc7c9bb42e"
+}

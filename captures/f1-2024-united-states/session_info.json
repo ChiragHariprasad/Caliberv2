@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2024-united-states",
+  "meeting_id": "f1-2024-united-states",
+  "session_name": "United States Grand Prix 2024",
+  "circuit_id": "cota",
+  "total_laps": 56,
+  "total_drivers": 20,
+  "duration_seconds": 1800,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

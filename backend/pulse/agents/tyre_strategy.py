@@ -94,7 +94,7 @@ class TyreStrategyAgent(BaseAgent):
             # Strategy triggers: VSC deployment, pit entry, or driver position update
             should_emit = (
                 event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_ENTRY"}
-                or (event_type == "POSITION_UPDATE" and (payload.get("pit_lane_entry_distance_m") is not None or self.active_neutralisation))
+                or (event_type in {"POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY"} and (payload.get("pit_lane_entry_distance_m") is not None or self.active_neutralisation))
             )
 
             if should_emit:

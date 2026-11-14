@@ -1,0 +1,528 @@
+{
+  "circuit_id": "las_vegas",
+  "name": "Las Vegas Strip Circuit",
+  "country": "United States",
+  "city": "Las Vegas",
+  "layout_id": "las_vegas-homologated-v1",
+  "layout_version": "2024.1",
+  "length_meters": 6201.0,
+  "track_direction": "COUNTER_CLOCKWISE",
+  "coordinate_reference_system": "LOCAL_NORMALIZED_1000",
+  "source_attribution": "bacinger/f1-circuits, circuits/us-2023.geojson (OpenStreetMap-derived geometry; MIT License)",
+  "centreline": [
+    [
+      531.841,
+      538.224
+    ],
+    [
+      543.313,
+      525.32
+    ],
+    [
+      545.746,
+      522.61
+    ],
+    [
+      547.486,
+      519.668
+    ],
+    [
+      548.067,
+      516.17
+    ],
+    [
+      546.588,
+      513.019
+    ],
+    [
+      544.174,
+      511.004
+    ],
+    [
+      539.832,
+      509.359
+    ],
+    [
+      535.697,
+      508.687
+    ],
+    [
+      531.71,
+      508.919
+    ],
+    [
+      527.986,
+      510.031
+    ],
+    [
+      519.827,
+      514.942
+    ],
+    [
+      512.285,
+      522.425
+    ],
+    [
+      509.385,
+      524.347
+    ],
+    [
+      503.041,
+      525.761
+    ],
+    [
+      499.616,
+      525.691
+    ],
+    [
+      493.422,
+      523.606
+    ],
+    [
+      489.997,
+      521.707
+    ],
+    [
+      486.816,
+      518.996
+    ],
+    [
+      481.538,
+      511.861
+    ],
+    [
+      479.405,
+      505.815
+    ],
+    [
+      477.945,
+      326.695
+    ],
+    [
+      479.049,
+      323.985
+    ],
+    [
+      481.201,
+      322.618
+    ],
+    [
+      518.143,
+      323.313
+    ],
+    [
+      529.222,
+      323.243
+    ],
+    [
+      535.004,
+      321.9
+    ],
+    [
+      537.343,
+      319.884
+    ],
+    [
+      543.875,
+      313.514
+    ],
+    [
+      546.813,
+      309.367
+    ],
+    [
+      549.058,
+      304.896
+    ],
+    [
+      550.686,
+      300.981
+    ],
+    [
+      551.66,
+      295.884
+    ],
+    [
+      552.333,
+      289.815
+    ],
+    [
+      552.146,
+      286.247
+    ],
+    [
+      550.125,
+      284.973
+    ],
+    [
+      544.773,
+      284.371
+    ],
+    [
+      542.901,
+      283.189
+    ],
+    [
+      541.292,
+      280.71
+    ],
+    [
+      540.656,
+      276.842
+    ],
+    [
+      540.955,
+      274.015
+    ],
+    [
+      546.139,
+      265.05
+    ],
+    [
+      547.037,
+      262.664
+    ],
+    [
+      549.208,
+      258.541
+    ],
+    [
+      548.422,
+      254.208
+    ],
+    [
+      544.211,
+      251.429
+    ],
+    [
+      536.389,
+      250.548
+    ],
+    [
+      477.814,
+      249.066
+    ],
+    [
+      456.181,
+      245.915
+    ],
+    [
+      449.032,
+      242.463
+    ],
+    [
+      441.135,
+      234.332
+    ],
+    [
+      434.36,
+      220.78
+    ],
+    [
+      423.993,
+      196.409
+    ],
+    [
+      417.331,
+      189.39
+    ],
+    [
+      410.425,
+      184.641
+    ],
+    [
+      403.407,
+      182.046
+    ],
+    [
+      392.422,
+      178.502
+    ],
+    [
+      379.959,
+      176.0
+    ],
+    [
+      378.256,
+      176.417
+    ],
+    [
+      376.628,
+      177.668
+    ],
+    [
+      375.355,
+      181.931
+    ],
+    [
+      374.064,
+      184.849
+    ],
+    [
+      361.133,
+      210.124
+    ],
+    [
+      353.086,
+      225.158
+    ],
+    [
+      348.894,
+      232.78
+    ],
+    [
+      344.589,
+      240.124
+    ],
+    [
+      337.16,
+      253.027
+    ],
+    [
+      329.525,
+      270.378
+    ],
+    [
+      325.482,
+      283.49
+    ],
+    [
+      321.047,
+      298.571
+    ],
+    [
+      318.072,
+      309.367
+    ],
+    [
+      315.845,
+      320.116
+    ],
+    [
+      314.067,
+      331.004
+    ],
+    [
+      312.177,
+      346.965
+    ],
+    [
+      311.709,
+      356.278
+    ],
+    [
+      311.222,
+      367.375
+    ],
+    [
+      311.428,
+      397.421
+    ],
+    [
+      311.54,
+      414.587
+    ],
+    [
+      311.597,
+      427.606
+    ],
+    [
+      309.108,
+      495.645
+    ],
+    [
+      308.359,
+      530.556
+    ],
+    [
+      308.34,
+      547.977
+    ],
+    [
+      307.667,
+      568.965
+    ],
+    [
+      308.846,
+      570.656
+    ],
+    [
+      310.455,
+      571.212
+    ],
+    [
+      314.31,
+      571.143
+    ],
+    [
+      317.155,
+      572.232
+    ],
+    [
+      323.555,
+      578.649
+    ],
+    [
+      329.15,
+      581.846
+    ],
+    [
+      336.599,
+      583.305
+    ],
+    [
+      369.03,
+      584.0
+    ],
+    [
+      411.454,
+      583.49
+    ],
+    [
+      446.356,
+      583.699
+    ],
+    [
+      463.404,
+      583.467
+    ],
+    [
+      477.365,
+      581.521
+    ],
+    [
+      491.962,
+      578.741
+    ],
+    [
+      495.761,
+      577.004
+    ],
+    [
+      498.83,
+      575.081
+    ],
+    [
+      501.282,
+      572.764
+    ]
+  ],
+  "inner_boundary": [],
+  "outer_boundary": [],
+  "corners": [
+    {
+      "number": 1,
+      "name": "Turn 1 Chicane",
+      "x": 480.674,
+      "y": 509.411,
+      "sector": 1,
+      "apex_speed_kmh": 95.0,
+      "track_progress": 0.0887
+    },
+    {
+      "number": 5,
+      "name": "Sphere Complex",
+      "x": 551.194,
+      "y": 298.325,
+      "sector": 1,
+      "apex_speed_kmh": 115.0,
+      "track_progress": 0.30602
+    },
+    {
+      "number": 12,
+      "name": "Turn 12 onto The Strip",
+      "x": 375.432,
+      "y": 181.674,
+      "sector": 2,
+      "apex_speed_kmh": 260.0,
+      "track_progress": 0.51877
+    },
+    {
+      "number": 14,
+      "name": "Harmon Ave Chicane",
+      "x": 311.412,
+      "y": 395.079,
+      "sector": 3,
+      "apex_speed_kmh": 110.0,
+      "track_progress": 0.70024
+    },
+    {
+      "number": 17,
+      "name": "Main Straight Entry",
+      "x": 444.386,
+      "y": 583.687,
+      "sector": 3,
+      "apex_speed_kmh": 185.0,
+      "track_progress": 0.95268
+    }
+  ],
+  "sectors": [
+    {
+      "sector_number": 1,
+      "start_progress": 0.0,
+      "end_progress": 0.33,
+      "checkpoint": [
+        540.755,
+        275.905
+      ]
+    },
+    {
+      "sector_number": 2,
+      "start_progress": 0.33,
+      "end_progress": 0.66,
+      "checkpoint": [
+        312.43,
+        344.823
+      ]
+    },
+    {
+      "sector_number": 3,
+      "start_progress": 0.66,
+      "end_progress": 1.0,
+      "checkpoint": [
+        501.282,
+        572.764
+      ]
+    }
+  ],
+  "pit_lane": {
+    "entry_point": null,
+    "exit_point": null,
+    "path": [],
+    "speed_limit_kmh": 80
+  },
+  "start_finish_line": [
+    [
+      522.872,
+      530.25
+    ],
+    [
+      540.811,
+      546.198
+    ]
+  ],
+  "drs_zones": [],
+  "view_box": {
+    "min_x": 200.0,
+    "min_y": 170.0,
+    "width": 460.0,
+    "height": 420.0
+  },
+  "geometry_source": {
+    "repository": "https://github.com/bacinger/f1-circuits",
+    "source_file": "circuits/us-2023.geojson",
+    "source_id": "us-2023",
+    "geometry_type": "LineString",
+    "underlying_map_data": "OpenStreetMap-derived",
+    "license": "MIT",
+    "coordinate_operation": "Local equirectangular projection, uniformly scaled into the existing view_box; no non-uniform stretching",
+    "source_vertex_count": 99
+  },
+  "geometry_notes": [
+    "The centreline is reprojected from the source GeoJSON vertices; the existing normalized coordinate system and view_box are retained.",
+    "The source repository supplies a centreline only. It does not supply surveyed inner/outer track boundaries, pit-lane geometry, DRS zones, or corner-name/apex metadata.",
+    "Existing named corner labels and apex-speed metadata are preserved; their marker positions are remapped by their previous along-track progress and are not independently verified against an official FIA corner map.",
+    "Pit-lane paths, DRS zones, and track-edge boundaries are left empty rather than retaining misaligned or unverified legacy geometry."
+  ],
+  "checksum_sha256": "6348b9fe0e3a1e3726b95bf85fc9759540fd575f32bb828ab37e619681041f57"
+}

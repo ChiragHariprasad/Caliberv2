@@ -78,6 +78,7 @@ _EVENT_ROLE_MAP: dict[str, list[str]] = {
     # Telemetry → vehicle speed
     "CAR_TELEMETRY": ["vehicle_speed"],
     "CAR_TELEMETRY_SAMPLE": ["vehicle_speed"],
+    "DRIVER_TELEMETRY": ["vehicle_speed", "position_report"],
     # Position
     "POSITION_UPDATE": ["position_report"],
     "INTERVAL_UPDATE": ["position_report"],

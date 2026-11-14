@@ -415,8 +415,8 @@ class RaceStateProjector:
                 "FIA F1 Sporting Regulations Art 55",
             )
 
-        elif event_type == "POSITION_UPDATE":
-            dn = envelope.subject.driver_number
+        elif event_type in {"POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
+            dn = envelope.subject.driver_number or p.get("driver_number")
             if dn:
                 self._ensure_driver(dn)
                 if "position" in p:
@@ -446,10 +446,16 @@ class RaceStateProjector:
                     self.drivers[dn]["telemetry"]["brake"]["value"] = p["brake"]
                 if "gear" in p and "gear" in self.drivers[dn].get("telemetry", {}):
                     self.drivers[dn]["telemetry"]["gear"]["value"] = p["gear"]
-                if "rpm" in p and "engine_rpm" in self.drivers[dn].get("telemetry", {}):
-                    self.drivers[dn]["telemetry"]["engine_rpm"]["value"] = p["rpm"]
-                if "drs" in p and "drs_status" in self.drivers[dn].get("telemetry", {}):
-                    self.drivers[dn]["telemetry"]["drs_status"]["value"] = p["drs"]
+                if "rpm" in p:
+                    if "rpm" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["rpm"]["value"] = p["rpm"]
+                    if "engine_rpm" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["engine_rpm"]["value"] = p["rpm"]
+                if "drs" in p:
+                    if "drs" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["drs"]["value"] = p["drs"]
+                    if "drs_status" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["drs_status"]["value"] = p["drs"]
 
                 # Append to history point for telemetry modal charts
                 if "speed" in p:

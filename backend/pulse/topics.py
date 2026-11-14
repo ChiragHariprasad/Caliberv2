@@ -63,7 +63,7 @@ def raw_topic_for_event(event_type: str) -> str:
         return RAW_TOPICS["track_status"]
     if event_type in {"LAP_COMPLETED", "SECTOR_COMPLETED"}:
         return RAW_TOPICS["timing_laps"]
-    if event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE"}:
+    if event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE", "DRIVER_TELEMETRY"}:
         return RAW_TOPICS["timing_positions"]
     if event_type in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
         return RAW_TOPICS["telemetry_car"]

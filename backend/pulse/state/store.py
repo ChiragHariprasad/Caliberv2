@@ -154,15 +154,28 @@ class StateStore:
 
             # Load entry list dynamically from capture directory
             capture_id = meta.capture_id or session_id
-            entry_file = Path("captures") / capture_id / "entry_list.json"
-            if not entry_file.exists():
-                entry_file = Path("captures") / session_id / "entry_list.json"
-            if not entry_file.exists():
-                entry_file = Path("captures/f1-2023-silverstone-race/entry_list.json")
-            if entry_file.exists():
+            repo_root = Path(__file__).resolve().parents[3]
+            candidate_dirs = [
+                repo_root / "captures" / capture_id,
+                repo_root / "captures" / session_id,
+                Path("captures") / capture_id,
+                Path("captures") / session_id,
+                Path("../captures") / capture_id,
+                Path("../captures") / session_id,
+                Path("../../captures") / capture_id,
+                Path("../../captures") / session_id,
+            ]
+            entry_file: Path | None = None
+            for cd in candidate_dirs:
+                ef = cd / "entry_list.json"
+                if ef.exists():
+                    entry_file = ef
+                    break
+
+            if entry_file is not None and entry_file.exists():
                 entries = json.loads(entry_file.read_text(encoding="utf-8"))
                 self.projector.load_session_entry_list(entries)
-            logger.info("Session switched to HISTORICAL [%s] (%d drivers)", session_id, len(self.projector.drivers))
+            logger.info("Session switched to HISTORICAL [%s] (%d drivers, file: %s)", session_id, len(self.projector.drivers), str(entry_file))
             self.notify_session_state()
             self.notify_driver_state()
             return
@@ -211,8 +224,8 @@ class StateStore:
             self.notify_session_state()
             self.notify_driver_state(envelope.subject.driver_number)
 
-        if et in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
-            dn = envelope.subject.driver_number
+        if et in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE", "DRIVER_TELEMETRY", "POSITION_UPDATE"}:
+            dn = envelope.subject.driver_number or p.get("driver_number")
             if dn:
                 self.notify_telemetry(dn, self.projector.get_driver_telemetry(dn) or p)
 
@@ -249,6 +262,12 @@ class StateStore:
         dn = assessment.subject.driver_number
         if dn:
             self.latest_assessments[dn] = assessment
+            if dn in self.projector.drivers:
+                tone = "negative" if ("congestion" in assessment.impact.summary.lower() or "loss" in assessment.impact.summary.lower()) else "positive"
+                self.projector.drivers[dn]["impact"] = {
+                    "tone": tone,
+                    "label": assessment.impact.summary[:30],
+                }
         if not any(a.assessment_id == assessment.assessment_id for a in self.assessment_history):
             self.assessment_history.append(assessment)
 
@@ -261,7 +280,7 @@ class StateStore:
         self._notify_listeners("SESSION_STATE_UPDATED", self.get_session())
 
     def notify_driver_state(self, driver_number: int | None = None) -> None:
-        payload = {"drivers": self.get_drivers()}
+        payload: dict[str, Any] = {"drivers": self.get_drivers()}
         if driver_number is not None:
             payload["updatedDriverNumber"] = driver_number
         self._notify_listeners("DRIVER_STATE_UPDATED", payload)
@@ -392,7 +411,7 @@ class StateStore:
             if a.impact.inferred_effects:
                 narrative = a.impact.inferred_effects[0]
 
-            tone = "positive" if dn == 16 else ("negative" if dn == 44 else "neutral")
+            tone = "negative" if ("congestion" in narrative.lower() or "loss" in narrative.lower() or "deficit" in narrative.lower()) else ("positive" if dn == 1 else "neutral")
 
             formatted.append({
                 "id": a.assessment_id,

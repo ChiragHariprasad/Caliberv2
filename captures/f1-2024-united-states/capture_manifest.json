@@ -1,0 +1,12 @@
+{
+  "capture_id": "f1-2024-united-states",
+  "data_regime": "PUBLIC",
+  "regime": "PUBLIC",
+  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
+  "provider": "FIA_OFFICIAL_TIMING",
+  "session_id": "f1-2024-united-states",
+  "session_name": "United States Grand Prix 2024",
+  "circuit_id": "cota",
+  "total_laps": 56,
+  "duration_seconds": 1800
+}
