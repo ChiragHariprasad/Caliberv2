@@ -44,6 +44,11 @@ class Settings(BaseSettings):
         default="http://127.0.0.1:8081",
         validation_alias=AliasChoices("PULSE_FLINK_REST_URL", "FLINK_REST_URL"),
     )
+    flink_required: bool = Field(
+        default=False,
+        description="Whether a running Flink cluster is strictly required in KAFKA mode",
+        validation_alias=AliasChoices("PULSE_FLINK_REQUIRED", "FLINK_REQUIRED"),
+    )
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
     default_replay_speed: float = Field(default=1.0, gt=0, le=32)
     groq_enabled: bool = True

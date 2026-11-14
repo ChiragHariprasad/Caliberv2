@@ -55,6 +55,7 @@ async def lifespan(app: FastAPI):
 
     # 1. Connect Kafka broker according to transport_mode
     mode = settings.transport_mode.upper()
+    flink_online = False
     if mode == "KAFKA":
         try:
             await broker.start()
@@ -65,9 +66,15 @@ async def lifespan(app: FastAPI):
 
         from pulse.stream.flink.manager import get_flink_manager
         flink_mgr = get_flink_manager()
-        if not flink_mgr.client.is_cluster_online():
-            logger.error("FATAL: KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at %s", flink_mgr.client.rest_url)
-            raise RuntimeError(f"KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at {flink_mgr.client.rest_url}")
+        flink_online = flink_mgr.client.is_cluster_online()
+        if not flink_online:
+            if settings.flink_required:
+                logger.error("FATAL: KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at %s", flink_mgr.client.rest_url)
+                raise RuntimeError(f"KAFKA transport mode requires Flink stream normalizer, but Flink cluster is offline at {flink_mgr.client.rest_url}")
+            else:
+                logger.warning("Flink cluster is offline at %s. Operating in KAFKA mode with Python in-process stream normalizer fallback.", flink_mgr.client.rest_url)
+        else:
+            logger.info("Flink cluster online at %s. Flink streaming normalizer active.", flink_mgr.client.rest_url)
     elif mode == "MEMORY":
         logger.info("Operating in MEMORY transport mode (unit tests). In-memory event bus active.")
     elif mode == "SIMULATOR":
@@ -96,7 +103,7 @@ async def lifespan(app: FastAPI):
         if canonical_env and target_topic:
             await bus.publish(target_topic, key, canonical_env)
 
-    if mode != "KAFKA":
+    if mode != "KAFKA" or not flink_online:
         for raw_topic in RAW_TOPICS.values():
             bus.subscribe(raw_topic, raw_event_handler)
 
