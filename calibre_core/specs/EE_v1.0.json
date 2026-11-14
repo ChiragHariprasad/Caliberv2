@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Evidence Event Specification (EE v1.0)",
+  "description": "Content-addressed evidence atom envelope with typed time, two-axis origin lineage, and stated uncertainty.",
+  "type": "object",
+  "required": [
+    "atom_id",
+    "role_id",
+    "scope",
+    "time",
+    "observed_at",
+    "source_origins",
+    "processing_origins",
+    "processor_id",
+    "processor_version",
+    "value",
+    "unit",
+    "stated_uncertainty",
+    "quality_grade"
+  ],
+  "properties": {
+    "atom_id": {
+      "type": "string",
+      "pattern": "^(sha256:)?[0-9a-f]{64}$",
+      "description": "Content-addressed SHA-256 digest over canonical JSON."
+    },
+    "role_id": {
+      "type": "string",
+      "description": "Evidence role name matching contract declaration."
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Normalized key-value pairs defining spatial/temporal scope."
+    },
+    "time": {
+      "type": "object",
+      "required": ["value", "time_class"],
+      "properties": {
+        "value": { "type": "integer" },
+        "time_class": {
+          "type": "string",
+          "enum": ["LAP_RELATIVE", "SESSION_ELAPSED", "ABSOLUTE_UTC", "LAP_DURATION", "RECEIPT_ONLY"]
+        },
+        "uncertainty_us": { "type": "integer", "default": 0 }
+      }
+    },
+    "observed_at": {
+      "type": "integer",
+      "description": "Integer microsecond instant in valid time."
+    },
+    "source_origins": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "processing_origins": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "processor_id": { "type": "string" },
+    "processor_version": { "type": "string" },
+    "value": {},
+    "unit": { "type": "string" },
+    "stated_uncertainty": { "type": "number", "minimum": 0 },
+    "quality_grade": {
+      "type": "string",
+      "enum": ["HEALTHY", "SUSPECT", "UNKNOWN", "DEGRADED"]
+    },
+    "supersedes": {
+      "type": ["string", "null"]
+    },
+    "raw_span_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["topic", "partition", "offset_start", "content_hash"],
+        "properties": {
+          "topic": { "type": "string" },
+          "partition": { "type": "integer" },
+          "offset_start": { "type": "integer" },
+          "offset_end": { "type": "integer" },
+          "content_hash": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+

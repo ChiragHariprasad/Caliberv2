@@ -1,0 +1,6762 @@
+[
+  {
+    "driver_number": "10",
+    "lap_number": 1,
+    "lap_time_seconds": 101.926,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 2,
+    "lap_time_seconds": 96.492,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 3,
+    "lap_time_seconds": 95.872,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 4,
+    "lap_time_seconds": 95.49,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 5,
+    "lap_time_seconds": 95.431,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 6,
+    "lap_time_seconds": 95.276,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 7,
+    "lap_time_seconds": 95.806,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 8,
+    "lap_time_seconds": 96.809,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 9,
+    "lap_time_seconds": 95.257,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 10,
+    "lap_time_seconds": 124.284,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 11,
+    "lap_time_seconds": 163.696,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 12,
+    "lap_time_seconds": 166.749,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 13,
+    "lap_time_seconds": 179.573,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:37.838000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:19.510000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 15,
+    "lap_time_seconds": 207.223,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:02.264000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:14.752000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 17,
+    "lap_time_seconds": 145.672,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 18,
+    "lap_time_seconds": 95.689,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 19,
+    "lap_time_seconds": 94.498,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 20,
+    "lap_time_seconds": 94.262,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 21,
+    "lap_time_seconds": 94.087,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 22,
+    "lap_time_seconds": 94.132,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 23,
+    "lap_time_seconds": 108.505,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 24,
+    "lap_time_seconds": 110.008,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 25,
+    "lap_time_seconds": 94.188,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 26,
+    "lap_time_seconds": 93.957,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 27,
+    "lap_time_seconds": 103.051,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 28,
+    "lap_time_seconds": 98.034,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 29,
+    "lap_time_seconds": 114.524,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 30,
+    "lap_time_seconds": 127.164,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 31,
+    "lap_time_seconds": 127.307,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 32,
+    "lap_time_seconds": 125.168,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 33,
+    "lap_time_seconds": 94.34,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 34,
+    "lap_time_seconds": 93.488,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 35,
+    "lap_time_seconds": 101.734,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 36,
+    "lap_time_seconds": 96.762,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 37,
+    "lap_time_seconds": 92.881,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 38,
+    "lap_time_seconds": 93.204,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 39,
+    "lap_time_seconds": 92.765,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 40,
+    "lap_time_seconds": 92.82,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 41,
+    "lap_time_seconds": 92.822,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 42,
+    "lap_time_seconds": 92.549,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 43,
+    "lap_time_seconds": 92.858,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 44,
+    "lap_time_seconds": 92.467,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 45,
+    "lap_time_seconds": 92.383,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 46,
+    "lap_time_seconds": 92.297,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 47,
+    "lap_time_seconds": 92.423,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 48,
+    "lap_time_seconds": 92.511,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 49,
+    "lap_time_seconds": 92.982,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "10",
+    "lap_number": 50,
+    "lap_time_seconds": 93.008,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 1,
+    "lap_time_seconds": 99.056,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 2,
+    "lap_time_seconds": 95.303,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 3,
+    "lap_time_seconds": 94.461,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 4,
+    "lap_time_seconds": 94.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 5,
+    "lap_time_seconds": 94.356,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 6,
+    "lap_time_seconds": 94.171,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 7,
+    "lap_time_seconds": 95.151,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 8,
+    "lap_time_seconds": 94.421,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 9,
+    "lap_time_seconds": 94.138,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 10,
+    "lap_time_seconds": 125.84,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:17:58.059000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 11,
+    "lap_time_seconds": 176.055,
+    "pit_out_time": "0 days 01:18:18.765000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 12,
+    "lap_time_seconds": 166.473,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 13,
+    "lap_time_seconds": 180.851,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:39.647000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:22.230000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "11",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 1,
+    "lap_time_seconds": 103.891,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 2,
+    "lap_time_seconds": 96.375,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 3,
+    "lap_time_seconds": 96.275,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 4,
+    "lap_time_seconds": 95.464,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 5,
+    "lap_time_seconds": 95.748,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 6,
+    "lap_time_seconds": 95.849,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 7,
+    "lap_time_seconds": 96.974,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 8,
+    "lap_time_seconds": 97.134,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 9,
+    "lap_time_seconds": 95.601,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 10,
+    "lap_time_seconds": 130.761,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:18:21.808000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 11,
+    "lap_time_seconds": 166.293,
+    "pit_out_time": "0 days 01:18:41.167000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 12,
+    "lap_time_seconds": 163.853,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 13,
+    "lap_time_seconds": 188.223,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:54.477000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:54.362000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 15,
+    "lap_time_seconds": 205.227,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:24.964000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:46.491000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 17,
+    "lap_time_seconds": 129.426,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 18,
+    "lap_time_seconds": 97.425,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 19,
+    "lap_time_seconds": 95.602,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 20,
+    "lap_time_seconds": 95.325,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 21,
+    "lap_time_seconds": 95.306,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 22,
+    "lap_time_seconds": 94.145,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 23,
+    "lap_time_seconds": 117.64,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 24,
+    "lap_time_seconds": 107.176,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 25,
+    "lap_time_seconds": 107.635,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 26,
+    "lap_time_seconds": 95.879,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 27,
+    "lap_time_seconds": 112.289,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 28,
+    "lap_time_seconds": 94.184,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 29,
+    "lap_time_seconds": 126.437,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 30,
+    "lap_time_seconds": 126.321,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 31,
+    "lap_time_seconds": 127.02,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 32,
+    "lap_time_seconds": 109.941,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 33,
+    "lap_time_seconds": 93.813,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 34,
+    "lap_time_seconds": 93.954,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 35,
+    "lap_time_seconds": 109.736,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 36,
+    "lap_time_seconds": 93.673,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 37,
+    "lap_time_seconds": 93.77,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 38,
+    "lap_time_seconds": 93.652,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 39,
+    "lap_time_seconds": 94.054,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 40,
+    "lap_time_seconds": 93.693,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 41,
+    "lap_time_seconds": 94.246,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 42,
+    "lap_time_seconds": 94.117,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 43,
+    "lap_time_seconds": 94.417,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 44,
+    "lap_time_seconds": 97.519,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 03:00:07.985000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 45,
+    "lap_time_seconds": 112.878,
+    "pit_out_time": "0 days 03:00:29.075000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 46,
+    "lap_time_seconds": 91.633,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 47,
+    "lap_time_seconds": 93.4,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 48,
+    "lap_time_seconds": 95.982,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "14",
+    "lap_number": 49,
+    "lap_time_seconds": 93.542,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 1,
+    "lap_time_seconds": 98.491,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 2,
+    "lap_time_seconds": 95.006,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 3,
+    "lap_time_seconds": 94.497,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 4,
+    "lap_time_seconds": 94.414,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 5,
+    "lap_time_seconds": 94.15,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 6,
+    "lap_time_seconds": 94.186,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 7,
+    "lap_time_seconds": 94.155,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 8,
+    "lap_time_seconds": 93.976,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 9,
+    "lap_time_seconds": 93.963,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 10,
+    "lap_time_seconds": 125.296,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:17:54.817000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 11,
+    "lap_time_seconds": 174.515,
+    "pit_out_time": "0 days 01:18:15.369000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 12,
+    "lap_time_seconds": 168.391,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 13,
+    "lap_time_seconds": 179.19,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:36.039000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:15.445000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 15,
+    "lap_time_seconds": 213.042,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:03.945000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:19.199000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 17,
+    "lap_time_seconds": 145.319,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 18,
+    "lap_time_seconds": 96.483,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 19,
+    "lap_time_seconds": 95.072,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 20,
+    "lap_time_seconds": 94.841,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 21,
+    "lap_time_seconds": 94.571,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 22,
+    "lap_time_seconds": 94.605,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 23,
+    "lap_time_seconds": 113.316,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 24,
+    "lap_time_seconds": 113.089,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 25,
+    "lap_time_seconds": 93.642,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 26,
+    "lap_time_seconds": 93.086,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 27,
+    "lap_time_seconds": 107.933,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 28,
+    "lap_time_seconds": 94.874,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 29,
+    "lap_time_seconds": 119.441,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 30,
+    "lap_time_seconds": 127.797,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 31,
+    "lap_time_seconds": 127.664,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 32,
+    "lap_time_seconds": 118.029,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 33,
+    "lap_time_seconds": 92.704,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 34,
+    "lap_time_seconds": 92.257,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 35,
+    "lap_time_seconds": 106.036,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 36,
+    "lap_time_seconds": 93.209,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 37,
+    "lap_time_seconds": 92.066,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 38,
+    "lap_time_seconds": 92.745,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 39,
+    "lap_time_seconds": 92.028,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 40,
+    "lap_time_seconds": 92.145,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 41,
+    "lap_time_seconds": 91.883,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 42,
+    "lap_time_seconds": 92.094,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 43,
+    "lap_time_seconds": 92.395,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 44,
+    "lap_time_seconds": 91.71,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 45,
+    "lap_time_seconds": 91.745,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 46,
+    "lap_time_seconds": 91.601,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 47,
+    "lap_time_seconds": 92.251,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 48,
+    "lap_time_seconds": 92.716,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 49,
+    "lap_time_seconds": 91.992,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "16",
+    "lap_number": 50,
+    "lap_time_seconds": 93.431,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 1,
+    "lap_time_seconds": 106.177,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 2,
+    "lap_time_seconds": 99.25,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 3,
+    "lap_time_seconds": 99.266,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 4,
+    "lap_time_seconds": 95.852,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 5,
+    "lap_time_seconds": 96.551,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 6,
+    "lap_time_seconds": 95.825,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 7,
+    "lap_time_seconds": 95.818,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 8,
+    "lap_time_seconds": 95.907,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 9,
+    "lap_time_seconds": 102.354,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:16:23.683000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 10,
+    "lap_time_seconds": 147.675,
+    "pit_out_time": "0 days 01:16:50.848000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 11,
+    "lap_time_seconds": 142.383,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 12,
+    "lap_time_seconds": 164.326,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 13,
+    "lap_time_seconds": 204.891,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:27:05.820000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:44:06.511000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 15,
+    "lap_time_seconds": 199.187,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:28.648000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:49.334000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 17,
+    "lap_time_seconds": 125.491,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 18,
+    "lap_time_seconds": 97.049,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 19,
+    "lap_time_seconds": 95.575,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 20,
+    "lap_time_seconds": 95.12,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 21,
+    "lap_time_seconds": 94.766,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 22,
+    "lap_time_seconds": 94.699,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 23,
+    "lap_time_seconds": 115.617,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 24,
+    "lap_time_seconds": 109.205,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 25,
+    "lap_time_seconds": 94.708,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 26,
+    "lap_time_seconds": 94.727,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 27,
+    "lap_time_seconds": 110.281,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 28,
+    "lap_time_seconds": 95.382,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 29,
+    "lap_time_seconds": 123.542,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 30,
+    "lap_time_seconds": 124.984,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 31,
+    "lap_time_seconds": 126.64,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 32,
+    "lap_time_seconds": 118.181,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 33,
+    "lap_time_seconds": 94.041,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 34,
+    "lap_time_seconds": 93.569,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 35,
+    "lap_time_seconds": 110.932,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 36,
+    "lap_time_seconds": 93.966,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 37,
+    "lap_time_seconds": 95.178,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 38,
+    "lap_time_seconds": 93.365,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 39,
+    "lap_time_seconds": 93.65,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 40,
+    "lap_time_seconds": 93.381,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 41,
+    "lap_time_seconds": 93.329,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 42,
+    "lap_time_seconds": 93.223,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 43,
+    "lap_time_seconds": 93.075,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 44,
+    "lap_time_seconds": 93.704,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 45,
+    "lap_time_seconds": 92.804,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 46,
+    "lap_time_seconds": 93.359,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 47,
+    "lap_time_seconds": 93.483,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 48,
+    "lap_time_seconds": 93.018,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 49,
+    "lap_time_seconds": 92.844,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "18",
+    "lap_number": 50,
+    "lap_time_seconds": 93.565,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 1,
+    "lap_time_seconds": 104.425,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 2,
+    "lap_time_seconds": 97.397,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 3,
+    "lap_time_seconds": 96.504,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 4,
+    "lap_time_seconds": 97.094,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 5,
+    "lap_time_seconds": 95.827,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 6,
+    "lap_time_seconds": 95.405,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 7,
+    "lap_time_seconds": 95.847,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 8,
+    "lap_time_seconds": 95.72,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 9,
+    "lap_time_seconds": 95.805,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 10,
+    "lap_time_seconds": 128.549,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 11,
+    "lap_time_seconds": 159.7,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 12,
+    "lap_time_seconds": 165.032,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 13,
+    "lap_time_seconds": 182.949,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:45.138000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:31.509000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 15,
+    "lap_time_seconds": 216.141,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:19.317000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:39.936000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 17,
+    "lap_time_seconds": 129.43,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 18,
+    "lap_time_seconds": 96.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 19,
+    "lap_time_seconds": 95.041,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 20,
+    "lap_time_seconds": 94.744,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 21,
+    "lap_time_seconds": 94.592,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 22,
+    "lap_time_seconds": 93.928,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 23,
+    "lap_time_seconds": 166.858,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 02:24:57.995000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 24,
+    "lap_time_seconds": 121.649,
+    "pit_out_time": "0 days 02:25:25.815000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 25,
+    "lap_time_seconds": 94.173,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 26,
+    "lap_time_seconds": 100.268,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 27,
+    "lap_time_seconds": 104.139,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 28,
+    "lap_time_seconds": 107.75,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 29,
+    "lap_time_seconds": 126.496,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 30,
+    "lap_time_seconds": 127.974,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 31,
+    "lap_time_seconds": 125.914,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 32,
+    "lap_time_seconds": 97.981,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 33,
+    "lap_time_seconds": 93.208,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 34,
+    "lap_time_seconds": 93.095,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 35,
+    "lap_time_seconds": 104.602,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 36,
+    "lap_time_seconds": 92.542,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 37,
+    "lap_time_seconds": 92.869,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 38,
+    "lap_time_seconds": 92.814,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 39,
+    "lap_time_seconds": 92.964,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 40,
+    "lap_time_seconds": 92.955,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 41,
+    "lap_time_seconds": 92.843,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 42,
+    "lap_time_seconds": 92.633,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 43,
+    "lap_time_seconds": 92.93,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 44,
+    "lap_time_seconds": 92.506,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 45,
+    "lap_time_seconds": 93.021,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 46,
+    "lap_time_seconds": 92.676,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 47,
+    "lap_time_seconds": 92.593,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 48,
+    "lap_time_seconds": 93.621,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "22",
+    "lap_number": 49,
+    "lap_time_seconds": 92.93,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 1,
+    "lap_time_seconds": 102.224,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 2,
+    "lap_time_seconds": 97.187,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 3,
+    "lap_time_seconds": 95.879,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 4,
+    "lap_time_seconds": 95.324,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 5,
+    "lap_time_seconds": 95.382,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 6,
+    "lap_time_seconds": 94.918,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 7,
+    "lap_time_seconds": 95.553,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 8,
+    "lap_time_seconds": 95.081,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 9,
+    "lap_time_seconds": 94.915,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 10,
+    "lap_time_seconds": 124.764,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 11,
+    "lap_time_seconds": 159.35,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 12,
+    "lap_time_seconds": 168.915,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 13,
+    "lap_time_seconds": 179.302,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:34.790000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:11.693000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 15,
+    "lap_time_seconds": 210.743,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:49:59.087000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:06.365000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 17,
+    "lap_time_seconds": 150.837,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 18,
+    "lap_time_seconds": 94.564,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 19,
+    "lap_time_seconds": 93.987,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 20,
+    "lap_time_seconds": 93.589,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 21,
+    "lap_time_seconds": 93.964,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 22,
+    "lap_time_seconds": 93.505,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 23,
+    "lap_time_seconds": 105.604,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 24,
+    "lap_time_seconds": 113.522,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 25,
+    "lap_time_seconds": 93.484,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 26,
+    "lap_time_seconds": 93.496,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 27,
+    "lap_time_seconds": 100.828,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 28,
+    "lap_time_seconds": 97.306,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 29,
+    "lap_time_seconds": 112.454,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 30,
+    "lap_time_seconds": 127.251,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 31,
+    "lap_time_seconds": 126.995,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 32,
+    "lap_time_seconds": 126.925,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 33,
+    "lap_time_seconds": 93.471,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 34,
+    "lap_time_seconds": 93.443,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 35,
+    "lap_time_seconds": 99.221,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 36,
+    "lap_time_seconds": 97.947,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 37,
+    "lap_time_seconds": 93.337,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 38,
+    "lap_time_seconds": 94.017,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 39,
+    "lap_time_seconds": 94.68,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 40,
+    "lap_time_seconds": 94.573,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 41,
+    "lap_time_seconds": 93.247,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 42,
+    "lap_time_seconds": 93.124,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 43,
+    "lap_time_seconds": 92.716,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 44,
+    "lap_time_seconds": 92.978,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 45,
+    "lap_time_seconds": 92.957,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 46,
+    "lap_time_seconds": 92.788,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 47,
+    "lap_time_seconds": 92.777,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 48,
+    "lap_time_seconds": 92.892,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 49,
+    "lap_time_seconds": 93.1,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "3",
+    "lap_number": 50,
+    "lap_time_seconds": 94.15,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 1,
+    "lap_time_seconds": 101.17,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 2,
+    "lap_time_seconds": 96.208,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 3,
+    "lap_time_seconds": 95.655,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 4,
+    "lap_time_seconds": 95.587,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 5,
+    "lap_time_seconds": 95.327,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 6,
+    "lap_time_seconds": 95.374,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 7,
+    "lap_time_seconds": 95.468,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 8,
+    "lap_time_seconds": 95.277,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 9,
+    "lap_time_seconds": 95.242,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 10,
+    "lap_time_seconds": 125.014,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 11,
+    "lap_time_seconds": 158.831,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 12,
+    "lap_time_seconds": 168.154,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 13,
+    "lap_time_seconds": 176.663,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:30.286000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:07.423000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 15,
+    "lap_time_seconds": 206.892,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:49:52.247000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:00.072000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 17,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 18,
+    "lap_time_seconds": 95.131,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 19,
+    "lap_time_seconds": 93.886,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 20,
+    "lap_time_seconds": 93.702,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 21,
+    "lap_time_seconds": 93.58,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 22,
+    "lap_time_seconds": 93.649,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 23,
+    "lap_time_seconds": 106.41,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 24,
+    "lap_time_seconds": 113.191,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 25,
+    "lap_time_seconds": 93.097,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 26,
+    "lap_time_seconds": 93.117,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 27,
+    "lap_time_seconds": 98.862,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 28,
+    "lap_time_seconds": 99.141,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 29,
+    "lap_time_seconds": 111.215,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 30,
+    "lap_time_seconds": 127.399,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 31,
+    "lap_time_seconds": 127.097,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 32,
+    "lap_time_seconds": 126.209,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 33,
+    "lap_time_seconds": 94.864,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 34,
+    "lap_time_seconds": 93.659,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 35,
+    "lap_time_seconds": 100.211,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 36,
+    "lap_time_seconds": 98.191,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 37,
+    "lap_time_seconds": 92.6,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 38,
+    "lap_time_seconds": 92.667,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 39,
+    "lap_time_seconds": 92.526,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 40,
+    "lap_time_seconds": 92.838,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 41,
+    "lap_time_seconds": 92.598,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 42,
+    "lap_time_seconds": 92.555,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 43,
+    "lap_time_seconds": 92.547,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 44,
+    "lap_time_seconds": 92.562,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 45,
+    "lap_time_seconds": 92.243,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 46,
+    "lap_time_seconds": 92.412,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 47,
+    "lap_time_seconds": 91.797,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 48,
+    "lap_time_seconds": 92.534,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 49,
+    "lap_time_seconds": 92.487,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "31",
+    "lap_number": 50,
+    "lap_time_seconds": 93.223,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 1,
+    "lap_time_seconds": 96.916,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 2,
+    "lap_time_seconds": 94.338,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 3,
+    "lap_time_seconds": 94.383,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 4,
+    "lap_time_seconds": 93.654,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 5,
+    "lap_time_seconds": 93.723,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 6,
+    "lap_time_seconds": 93.678,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 7,
+    "lap_time_seconds": 93.6,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 8,
+    "lap_time_seconds": 93.603,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 9,
+    "lap_time_seconds": 93.573,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 10,
+    "lap_time_seconds": 124.23,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 11,
+    "lap_time_seconds": 172.037,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 12,
+    "lap_time_seconds": 167.282,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 13,
+    "lap_time_seconds": 174.881,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:22.085000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:42:58.565000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:49:49.788000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:07:57.413000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 17,
+    "lap_time_seconds": 152.203,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 18,
+    "lap_time_seconds": 93.425,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 19,
+    "lap_time_seconds": 92.712,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 20,
+    "lap_time_seconds": 92.764,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 21,
+    "lap_time_seconds": 92.488,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 22,
+    "lap_time_seconds": 92.204,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 23,
+    "lap_time_seconds": 98.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 24,
+    "lap_time_seconds": 118.848,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 25,
+    "lap_time_seconds": 91.785,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 26,
+    "lap_time_seconds": 92.179,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 27,
+    "lap_time_seconds": 91.883,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 28,
+    "lap_time_seconds": 104.699,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 29,
+    "lap_time_seconds": 101.727,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 30,
+    "lap_time_seconds": 127.686,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 31,
+    "lap_time_seconds": 128.261,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 32,
+    "lap_time_seconds": 124.976,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 33,
+    "lap_time_seconds": 98.172,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 34,
+    "lap_time_seconds": 91.491,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 35,
+    "lap_time_seconds": 91.488,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 36,
+    "lap_time_seconds": 103.722,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 37,
+    "lap_time_seconds": 95.677,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 38,
+    "lap_time_seconds": 91.683,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 39,
+    "lap_time_seconds": 91.556,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 40,
+    "lap_time_seconds": 91.567,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 41,
+    "lap_time_seconds": 91.584,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 42,
+    "lap_time_seconds": 93.091,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 43,
+    "lap_time_seconds": 93.003,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 44,
+    "lap_time_seconds": 92.706,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 45,
+    "lap_time_seconds": 92.743,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 46,
+    "lap_time_seconds": 92.313,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 47,
+    "lap_time_seconds": 92.766,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 48,
+    "lap_time_seconds": 92.829,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 49,
+    "lap_time_seconds": 94.158,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "33",
+    "lap_number": 50,
+    "lap_time_seconds": 94.032,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 1,
+    "lap_time_seconds": 100.157,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 2,
+    "lap_time_seconds": 95.867,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 3,
+    "lap_time_seconds": 95.6,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 4,
+    "lap_time_seconds": 95.385,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 5,
+    "lap_time_seconds": 95.346,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 6,
+    "lap_time_seconds": 95.333,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 7,
+    "lap_time_seconds": 95.547,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 8,
+    "lap_time_seconds": 95.314,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 9,
+    "lap_time_seconds": 95.794,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 10,
+    "lap_time_seconds": 126.861,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:18:07.910000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 11,
+    "lap_time_seconds": 177.625,
+    "pit_out_time": "0 days 01:18:28.873000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 12,
+    "lap_time_seconds": 164.073,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 13,
+    "lap_time_seconds": 186.378,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:51.397000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:48.441000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 15,
+    "lap_time_seconds": 214.915,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:29.874000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:09:06.467000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 17,
+    "lap_time_seconds": 121.196,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 18,
+    "lap_time_seconds": 97.185,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 19,
+    "lap_time_seconds": 96.056,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 20,
+    "lap_time_seconds": 95.193,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 21,
+    "lap_time_seconds": 95.504,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 22,
+    "lap_time_seconds": 94.775,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 23,
+    "lap_time_seconds": 117.055,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 24,
+    "lap_time_seconds": 107.08,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 25,
+    "lap_time_seconds": 96.035,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 26,
+    "lap_time_seconds": 96.317,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 27,
+    "lap_time_seconds": 110.818,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 28,
+    "lap_time_seconds": 92.998,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 29,
+    "lap_time_seconds": 122.122,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 30,
+    "lap_time_seconds": 127.591,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 31,
+    "lap_time_seconds": 127.594,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 32,
+    "lap_time_seconds": 114.679,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 33,
+    "lap_time_seconds": 92.933,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 34,
+    "lap_time_seconds": 92.828,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 35,
+    "lap_time_seconds": 110.999,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 36,
+    "lap_time_seconds": 93.675,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 37,
+    "lap_time_seconds": 93.149,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 38,
+    "lap_time_seconds": 92.502,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 39,
+    "lap_time_seconds": 92.305,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 40,
+    "lap_time_seconds": 92.135,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 41,
+    "lap_time_seconds": 92.443,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 42,
+    "lap_time_seconds": 92.602,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 43,
+    "lap_time_seconds": 92.002,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 44,
+    "lap_time_seconds": 92.345,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 45,
+    "lap_time_seconds": 92.198,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 46,
+    "lap_time_seconds": 92.035,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 47,
+    "lap_time_seconds": 92.028,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 48,
+    "lap_time_seconds": 92.263,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 49,
+    "lap_time_seconds": 91.914,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "4",
+    "lap_number": 50,
+    "lap_time_seconds": 91.974,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 1,
+    "lap_time_seconds": 95.234,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 2,
+    "lap_time_seconds": 94.02,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 3,
+    "lap_time_seconds": 93.782,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 4,
+    "lap_time_seconds": 93.792,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 5,
+    "lap_time_seconds": 93.397,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 6,
+    "lap_time_seconds": 93.26,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 7,
+    "lap_time_seconds": 93.72,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 8,
+    "lap_time_seconds": 93.214,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 9,
+    "lap_time_seconds": 93.15,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 10,
+    "lap_time_seconds": 122.043,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:17:42.299000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 11,
+    "lap_time_seconds": 180.569,
+    "pit_out_time": "0 days 01:18:02.875000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 12,
+    "lap_time_seconds": 168.065,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 13,
+    "lap_time_seconds": 175.505,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:26.010000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:01.830000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:49:56.060000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:02.849000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 17,
+    "lap_time_seconds": 157.547,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 18,
+    "lap_time_seconds": 93.056,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 19,
+    "lap_time_seconds": 92.974,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 20,
+    "lap_time_seconds": 92.532,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 21,
+    "lap_time_seconds": 92.13,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 22,
+    "lap_time_seconds": 92.674,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 23,
+    "lap_time_seconds": 100.67,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 24,
+    "lap_time_seconds": 116.641,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 25,
+    "lap_time_seconds": 91.502,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 26,
+    "lap_time_seconds": 91.809,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 27,
+    "lap_time_seconds": 92.669,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 28,
+    "lap_time_seconds": 104.229,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 29,
+    "lap_time_seconds": 103.184,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 30,
+    "lap_time_seconds": 127.028,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 31,
+    "lap_time_seconds": 127.402,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 32,
+    "lap_time_seconds": 126.321,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 33,
+    "lap_time_seconds": 97.237,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 34,
+    "lap_time_seconds": 91.411,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 35,
+    "lap_time_seconds": 91.199,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 36,
+    "lap_time_seconds": 103.095,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 37,
+    "lap_time_seconds": 97.056,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 38,
+    "lap_time_seconds": 92.069,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 39,
+    "lap_time_seconds": 91.549,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 40,
+    "lap_time_seconds": 91.536,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 41,
+    "lap_time_seconds": 91.089,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 42,
+    "lap_time_seconds": 91.964,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 43,
+    "lap_time_seconds": 91.896,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 44,
+    "lap_time_seconds": 91.338,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 45,
+    "lap_time_seconds": 90.854,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 46,
+    "lap_time_seconds": 91.61,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 47,
+    "lap_time_seconds": 90.734,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 48,
+    "lap_time_seconds": 91.588,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 49,
+    "lap_time_seconds": 93.707,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "44",
+    "lap_number": 50,
+    "lap_time_seconds": 95.604,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 1,
+    "lap_time_seconds": 107.17,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 2,
+    "lap_time_seconds": 100.173,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 3,
+    "lap_time_seconds": 97.879,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 4,
+    "lap_time_seconds": 97.254,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 5,
+    "lap_time_seconds": 96.539,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 6,
+    "lap_time_seconds": 96.364,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 7,
+    "lap_time_seconds": 96.922,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 8,
+    "lap_time_seconds": 96.043,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "47",
+    "lap_number": 9,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 1,
+    "lap_time_seconds": 105.422,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 2,
+    "lap_time_seconds": 99.283,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 3,
+    "lap_time_seconds": 96.568,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 4,
+    "lap_time_seconds": 96.236,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 5,
+    "lap_time_seconds": 96.005,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 6,
+    "lap_time_seconds": 96.067,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 7,
+    "lap_time_seconds": 95.685,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 8,
+    "lap_time_seconds": 95.665,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 9,
+    "lap_time_seconds": 97.402,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 10,
+    "lap_time_seconds": 127.238,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 11,
+    "lap_time_seconds": 161.126,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 12,
+    "lap_time_seconds": 164.852,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 13,
+    "lap_time_seconds": 184.929,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:49.921000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:42.244000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 15,
+    "lap_time_seconds": 200.719,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:13.967000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:32.466000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 17,
+    "lap_time_seconds": 136.045,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 18,
+    "lap_time_seconds": 95.872,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 19,
+    "lap_time_seconds": 95.046,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 20,
+    "lap_time_seconds": 94.457,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 21,
+    "lap_time_seconds": 94.592,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 22,
+    "lap_time_seconds": 94.389,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 23,
+    "lap_time_seconds": 122.002,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 24,
+    "lap_time_seconds": 107.953,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 25,
+    "lap_time_seconds": 95.286,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 26,
+    "lap_time_seconds": 103.635,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 27,
+    "lap_time_seconds": 114.364,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 28,
+    "lap_time_seconds": 95.397,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 29,
+    "lap_time_seconds": 125.773,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 30,
+    "lap_time_seconds": 126.515,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 31,
+    "lap_time_seconds": 127.101,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 32,
+    "lap_time_seconds": 111.3,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 33,
+    "lap_time_seconds": 94.903,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 34,
+    "lap_time_seconds": 95.678,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 35,
+    "lap_time_seconds": 109.652,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 36,
+    "lap_time_seconds": 94.37,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 37,
+    "lap_time_seconds": 94.426,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 38,
+    "lap_time_seconds": 94.189,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 39,
+    "lap_time_seconds": 94.205,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 40,
+    "lap_time_seconds": 94.445,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 41,
+    "lap_time_seconds": 94.03,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 42,
+    "lap_time_seconds": 94.18,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 43,
+    "lap_time_seconds": 94.954,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "5",
+    "lap_number": 44,
+    "lap_time_seconds": 101.485,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 03:00:16.466000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 1,
+    "lap_time_seconds": 104.856,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 2,
+    "lap_time_seconds": 97.854,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 3,
+    "lap_time_seconds": 96.003,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 4,
+    "lap_time_seconds": 95.619,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 5,
+    "lap_time_seconds": 95.145,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 6,
+    "lap_time_seconds": 95.029,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 7,
+    "lap_time_seconds": 96.543,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 8,
+    "lap_time_seconds": 95.355,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 9,
+    "lap_time_seconds": 94.932,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 10,
+    "lap_time_seconds": 126.526,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 11,
+    "lap_time_seconds": 160.983,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 12,
+    "lap_time_seconds": 166.182,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 13,
+    "lap_time_seconds": 180.919,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:41.415000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:25.744000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 15,
+    "lap_time_seconds": 208.704,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:08.341000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:25.640000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 17,
+    "lap_time_seconds": 142.9,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 18,
+    "lap_time_seconds": 96.253,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 19,
+    "lap_time_seconds": 95.356,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 20,
+    "lap_time_seconds": 94.916,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 21,
+    "lap_time_seconds": 94.493,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 22,
+    "lap_time_seconds": 93.969,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 23,
+    "lap_time_seconds": 114.738,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 24,
+    "lap_time_seconds": 111.082,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 25,
+    "lap_time_seconds": 93.311,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 26,
+    "lap_time_seconds": 93.014,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 27,
+    "lap_time_seconds": 108.286,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 28,
+    "lap_time_seconds": 93.043,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 29,
+    "lap_time_seconds": 118.045,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 30,
+    "lap_time_seconds": 128.736,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 31,
+    "lap_time_seconds": 128.169,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 32,
+    "lap_time_seconds": 118.478,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 33,
+    "lap_time_seconds": 92.814,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 34,
+    "lap_time_seconds": 92.292,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 35,
+    "lap_time_seconds": 106.186,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 36,
+    "lap_time_seconds": 93.549,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 37,
+    "lap_time_seconds": 91.851,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 38,
+    "lap_time_seconds": 92.194,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 39,
+    "lap_time_seconds": 92.209,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 40,
+    "lap_time_seconds": 92.348,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 41,
+    "lap_time_seconds": 92.086,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 42,
+    "lap_time_seconds": 92.287,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 43,
+    "lap_time_seconds": 92.125,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 44,
+    "lap_time_seconds": 92.012,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 45,
+    "lap_time_seconds": 92.041,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 46,
+    "lap_time_seconds": 91.935,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 47,
+    "lap_time_seconds": 92.313,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 48,
+    "lap_time_seconds": 92.411,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 49,
+    "lap_time_seconds": 92.896,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "55",
+    "lap_number": 50,
+    "lap_time_seconds": 95.424,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 1,
+    "lap_time_seconds": 107.622,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 2,
+    "lap_time_seconds": 100.248,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 3,
+    "lap_time_seconds": 97.64,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 4,
+    "lap_time_seconds": 97.821,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 5,
+    "lap_time_seconds": 97.461,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 6,
+    "lap_time_seconds": 96.869,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 7,
+    "lap_time_seconds": 96.466,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 8,
+    "lap_time_seconds": 96.115,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 9,
+    "lap_time_seconds": 103.3,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 10,
+    "lap_time_seconds": 126.447,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:18:36.709000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 11,
+    "lap_time_seconds": 158.468,
+    "pit_out_time": "0 days 01:19:00.907000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 12,
+    "lap_time_seconds": 164.949,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 13,
+    "lap_time_seconds": 205.747,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:27:13.787000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:44:10.831000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 15,
+    "lap_time_seconds": 196.49,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:27.848000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:55.108000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 17,
+    "lap_time_seconds": 125.773,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 18,
+    "lap_time_seconds": 97.314,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 19,
+    "lap_time_seconds": 97.025,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 20,
+    "lap_time_seconds": 95.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 21,
+    "lap_time_seconds": 95.424,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 22,
+    "lap_time_seconds": 94.923,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 23,
+    "lap_time_seconds": 116.207,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 24,
+    "lap_time_seconds": 106.615,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 25,
+    "lap_time_seconds": 96.996,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 26,
+    "lap_time_seconds": 96.619,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 27,
+    "lap_time_seconds": 111.958,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 28,
+    "lap_time_seconds": 94.667,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 29,
+    "lap_time_seconds": 123.337,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 30,
+    "lap_time_seconds": 126.275,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 31,
+    "lap_time_seconds": 127.087,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 32,
+    "lap_time_seconds": 114.422,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 33,
+    "lap_time_seconds": 94.183,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 34,
+    "lap_time_seconds": 93.597,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 35,
+    "lap_time_seconds": 110.752,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 36,
+    "lap_time_seconds": 93.916,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 37,
+    "lap_time_seconds": 93.631,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 38,
+    "lap_time_seconds": 94.03,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 39,
+    "lap_time_seconds": 93.618,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 40,
+    "lap_time_seconds": 93.824,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 41,
+    "lap_time_seconds": 93.422,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 42,
+    "lap_time_seconds": 93.291,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 43,
+    "lap_time_seconds": 93.399,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 44,
+    "lap_time_seconds": 93.396,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 45,
+    "lap_time_seconds": 93.282,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 46,
+    "lap_time_seconds": 93.341,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 47,
+    "lap_time_seconds": 93.373,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 48,
+    "lap_time_seconds": 93.042,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 49,
+    "lap_time_seconds": 92.751,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "6",
+    "lap_number": 50,
+    "lap_time_seconds": 93.083,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 1,
+    "lap_time_seconds": 106.8,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 2,
+    "lap_time_seconds": 99.616,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 3,
+    "lap_time_seconds": 97.844,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 4,
+    "lap_time_seconds": 97.524,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 5,
+    "lap_time_seconds": 96.668,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 6,
+    "lap_time_seconds": 96.152,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 7,
+    "lap_time_seconds": 96.13,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 8,
+    "lap_time_seconds": 96.16,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 9,
+    "lap_time_seconds": 102.388,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:16:25.972000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 10,
+    "lap_time_seconds": 140.006,
+    "pit_out_time": "0 days 01:16:46.529000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 11,
+    "lap_time_seconds": 146.698,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 12,
+    "lap_time_seconds": 163.823,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 13,
+    "lap_time_seconds": 194.01,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:27:01.541000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:44:02.840000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "63",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 1,
+    "lap_time_seconds": 104.906,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 2,
+    "lap_time_seconds": 98.815,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 3,
+    "lap_time_seconds": 96.194,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 4,
+    "lap_time_seconds": 96.074,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 5,
+    "lap_time_seconds": 96.009,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 6,
+    "lap_time_seconds": 96.009,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 7,
+    "lap_time_seconds": 95.535,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 8,
+    "lap_time_seconds": 96.066,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 9,
+    "lap_time_seconds": 95.288,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 10,
+    "lap_time_seconds": 129.976,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 11,
+    "lap_time_seconds": 159.099,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 12,
+    "lap_time_seconds": 166.631,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 13,
+    "lap_time_seconds": 183.504,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:47.985000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:36.223000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 15,
+    "lap_time_seconds": 208.633,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:18.107000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:37.135000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 17,
+    "lap_time_seconds": 133.924,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 18,
+    "lap_time_seconds": 97.081,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 19,
+    "lap_time_seconds": 95.674,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 20,
+    "lap_time_seconds": 95.361,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 21,
+    "lap_time_seconds": 94.936,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 22,
+    "lap_time_seconds": 94.281,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 23,
+    "lap_time_seconds": 117.41,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 24,
+    "lap_time_seconds": 107.877,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 25,
+    "lap_time_seconds": 95.026,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 26,
+    "lap_time_seconds": 111.33,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 02:29:27.684000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 27,
+    "lap_time_seconds": 139.182,
+    "pit_out_time": "0 days 02:30:02.064000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 28,
+    "lap_time_seconds": 105.064,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 29,
+    "lap_time_seconds": 126.89,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 30,
+    "lap_time_seconds": 127.224,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 31,
+    "lap_time_seconds": 125.72,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 32,
+    "lap_time_seconds": 104.66,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 33,
+    "lap_time_seconds": 93.988,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 34,
+    "lap_time_seconds": 93.559,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 35,
+    "lap_time_seconds": 106.273,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 36,
+    "lap_time_seconds": 93.082,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 37,
+    "lap_time_seconds": 94.075,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 38,
+    "lap_time_seconds": 93.511,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 39,
+    "lap_time_seconds": 94.042,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 40,
+    "lap_time_seconds": 94.309,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 41,
+    "lap_time_seconds": 95.527,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 42,
+    "lap_time_seconds": 93.597,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 43,
+    "lap_time_seconds": 94.183,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 44,
+    "lap_time_seconds": 92.892,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 45,
+    "lap_time_seconds": 92.778,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 46,
+    "lap_time_seconds": 97.705,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 47,
+    "lap_time_seconds": 94.67,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 48,
+    "lap_time_seconds": 95.53,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "7",
+    "lap_number": 49,
+    "lap_time_seconds": 94.075,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 1,
+    "lap_time_seconds": 96.272,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 2,
+    "lap_time_seconds": 94.048,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 3,
+    "lap_time_seconds": 94.138,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 4,
+    "lap_time_seconds": 93.585,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 5,
+    "lap_time_seconds": 93.676,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 6,
+    "lap_time_seconds": 93.465,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 7,
+    "lap_time_seconds": 93.639,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 8,
+    "lap_time_seconds": 93.655,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 9,
+    "lap_time_seconds": 93.701,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 10,
+    "lap_time_seconds": 127.44,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:17:51.117000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 11,
+    "lap_time_seconds": 173.975,
+    "pit_out_time": "0 days 01:18:11.967000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 12,
+    "lap_time_seconds": 167.772,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 13,
+    "lap_time_seconds": 176.937,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:28.617000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:04.644000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:00.735000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:10.284000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 17,
+    "lap_time_seconds": 148.734,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 18,
+    "lap_time_seconds": 94.794,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 19,
+    "lap_time_seconds": 94.141,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 20,
+    "lap_time_seconds": 93.489,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 21,
+    "lap_time_seconds": 93.908,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 22,
+    "lap_time_seconds": 93.288,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 23,
+    "lap_time_seconds": 107.025,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 24,
+    "lap_time_seconds": 112.013,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 25,
+    "lap_time_seconds": 93.299,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 26,
+    "lap_time_seconds": 94.453,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 27,
+    "lap_time_seconds": 102.212,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 28,
+    "lap_time_seconds": 97.37,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 29,
+    "lap_time_seconds": 113.111,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 30,
+    "lap_time_seconds": 126.597,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 31,
+    "lap_time_seconds": 126.933,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 32,
+    "lap_time_seconds": 126.307,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 33,
+    "lap_time_seconds": 93.124,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 34,
+    "lap_time_seconds": 92.602,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 35,
+    "lap_time_seconds": 99.304,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 36,
+    "lap_time_seconds": 97.318,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 37,
+    "lap_time_seconds": 93.439,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 38,
+    "lap_time_seconds": 93.522,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 39,
+    "lap_time_seconds": 94.887,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 40,
+    "lap_time_seconds": 92.726,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 41,
+    "lap_time_seconds": 92.108,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 42,
+    "lap_time_seconds": 91.825,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 43,
+    "lap_time_seconds": 91.677,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 44,
+    "lap_time_seconds": 91.593,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 45,
+    "lap_time_seconds": 91.734,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 46,
+    "lap_time_seconds": 91.797,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 47,
+    "lap_time_seconds": 91.408,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 48,
+    "lap_time_seconds": 92.505,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 49,
+    "lap_time_seconds": 92.47,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "77",
+    "lap_number": 50,
+    "lap_time_seconds": 92.647,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 1,
+    "lap_time_seconds": 108.604,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 2,
+    "lap_time_seconds": 100.056,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 3,
+    "lap_time_seconds": 98.699,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 4,
+    "lap_time_seconds": 97.631,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 5,
+    "lap_time_seconds": 97.228,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 6,
+    "lap_time_seconds": 97.671,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 7,
+    "lap_time_seconds": 97.043,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 8,
+    "lap_time_seconds": 97.558,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 9,
+    "lap_time_seconds": 109.829,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 10,
+    "lap_time_seconds": 122.903,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 11,
+    "lap_time_seconds": 146.74,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 12,
+    "lap_time_seconds": 163.497,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 13,
+    "lap_time_seconds": 190.385,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:58.793000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:57.782000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "9",
+    "lap_number": 15,
+    "lap_time_seconds": null,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 1,
+    "lap_time_seconds": 103.867,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 2,
+    "lap_time_seconds": 97.348,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 3,
+    "lap_time_seconds": 95.939,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 4,
+    "lap_time_seconds": 95.637,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 5,
+    "lap_time_seconds": 95.444,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 6,
+    "lap_time_seconds": 95.811,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 7,
+    "lap_time_seconds": 96.069,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 8,
+    "lap_time_seconds": 95.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 9,
+    "lap_time_seconds": 95.673,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 10,
+    "lap_time_seconds": 127.135,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 11,
+    "lap_time_seconds": 161.962,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 12,
+    "lap_time_seconds": 165.622,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 13,
+    "lap_time_seconds": 182.13,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:26:43.385000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 14,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 01:43:27.961000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 15,
+    "lap_time_seconds": 205.815,
+    "pit_out_time": "NaT",
+    "pit_in_time": "0 days 01:50:07.470000",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 16,
+    "lap_time_seconds": null,
+    "pit_out_time": "0 days 02:08:22.221000",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 17,
+    "lap_time_seconds": 142.68,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 18,
+    "lap_time_seconds": 95.474,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 19,
+    "lap_time_seconds": 94.91,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 20,
+    "lap_time_seconds": 94.262,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 21,
+    "lap_time_seconds": 94.316,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 22,
+    "lap_time_seconds": 94.316,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 23,
+    "lap_time_seconds": 109.974,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 24,
+    "lap_time_seconds": 109.615,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 25,
+    "lap_time_seconds": 93.648,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 26,
+    "lap_time_seconds": 94.26,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 27,
+    "lap_time_seconds": 105.85,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 28,
+    "lap_time_seconds": 97.857,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 29,
+    "lap_time_seconds": 116.632,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 30,
+    "lap_time_seconds": 126.539,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 31,
+    "lap_time_seconds": 127.199,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 32,
+    "lap_time_seconds": 125.121,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 33,
+    "lap_time_seconds": 93.769,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 34,
+    "lap_time_seconds": 93.357,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 35,
+    "lap_time_seconds": 104.409,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 36,
+    "lap_time_seconds": 95.92,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 0
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 37,
+    "lap_time_seconds": 92.865,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 38,
+    "lap_time_seconds": 94.255,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 39,
+    "lap_time_seconds": 94.318,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 40,
+    "lap_time_seconds": 93.375,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 41,
+    "lap_time_seconds": 93.137,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 42,
+    "lap_time_seconds": 93.133,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 43,
+    "lap_time_seconds": 93.231,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 44,
+    "lap_time_seconds": 93.312,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 45,
+    "lap_time_seconds": 93.348,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 46,
+    "lap_time_seconds": 93.269,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 47,
+    "lap_time_seconds": 93.347,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 48,
+    "lap_time_seconds": 92.885,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 49,
+    "lap_time_seconds": 93.167,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  },
+  {
+    "driver_number": "99",
+    "lap_number": 50,
+    "lap_time_seconds": 93.604,
+    "pit_out_time": "NaT",
+    "pit_in_time": "NaT",
+    "is_accurate": 1
+  }
+]

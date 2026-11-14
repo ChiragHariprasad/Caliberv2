@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Domain Pack Specification (PACK v1.0)",
+  "description": "Schema for domain-specific vocabulary, scope hierarchies, contracts, and reference definitions.",
+  "type": "object",
+  "required": [
+    "pack_id",
+    "version",
+    "scope_levels",
+    "supported_regimes"
+  ],
+  "properties": {
+    "pack_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique domain pack identifier (e.g. 'f1-reference-pack')."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?(-[a-zA-Z0-9.]+)?$",
+      "description": "Immutable semantic version of the domain pack."
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable name of the domain pack."
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the domain scope and operational purpose."
+    },
+    "scope_levels": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" },
+      "description": "Ordered hierarchy of scope identifiers from coarsest to finest (e.g. session, participant, segment, zone)."
+    },
+    "supported_regimes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["PUBLIC", "LICENSED", "INSTITUTIONAL", "LAB"]
+      },
+      "description": "Data governance regimes supported by this domain pack."
+    },
+    "reference_definitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["reference_type", "description", "scope_level"],
+        "properties": {
+          "reference_type": { "type": "string" },
+          "description": { "type": "string" },
+          "scope_level": { "type": "string" }
+        }
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract_id", "title", "version"],
+        "properties": {
+          "contract_id": { "type": "string" },
+          "title": { "type": "string" },
+          "version": { "type": "string" },
+          "decision_kind": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+

@@ -104,6 +104,54 @@ class IntegrityEngine:
                                                  "knowledge_time": fmt_instant(kt), "code": "POST_FINALITY_QUARANTINED"})
 
     # ------------------------------------------------------------------ evaluation
+    def void_decision(self, instance_id: str, K, *, reason: str = "SESSION_EVENT", witness_code: str = "VOIDED", detail: str = "") -> Assessment:
+        """Legitimately voids a scheduled decision instance (CR-1).
+
+        Finalizes the decision as UNKNOWN with finality FINAL and a named VOIDED witness,
+        preventing false-alarm DEGRADED states for retired participants or red-flagged sessions.
+        """
+        K = parse_instant(K)
+        if instance_id not in self.instances:
+            raise KeyError(f"unknown decision instance: {instance_id}")
+        if instance_id in self._sealed:
+            return self._sealed[instance_id]
+        inst = self.instances[instance_id]
+        self.ledger.advance_clock(K)
+        head = self.index.head(instance_id)
+        rev = 1 if head is None else head.revision_number + 1
+        prev = GENESIS if head is None else head.record_hash
+        kt = max(K, head.knowledge_time) if head is not None else K
+
+        c = self.contracts[inst.contract_id]
+        from .algebra import Timeline
+        void_timeline = Timeline([(inst.opens_at, S.UNKNOWN)])
+        witness_entry = {
+            "code": witness_code,
+            "role": "decision",
+            "detail": detail or f"Legitimately voided due to {reason}",
+        }
+        content = {
+            "contract": c.ref,
+            "decision_instance_id": instance_id,
+            "scope": dict(inst.scope_dict),
+            "state": S.UNKNOWN.value,
+            "validity_timeline": void_timeline.to_list(),
+            "maturity_status": "TUPLE_RESOLVED",
+            "finality_status": "FINAL",
+            "witnesses": [witness_entry],
+            "limitations": ["DECISION_VOIDED"],
+            "roles": {},
+            "constraints": {},
+            "corroboration": {},
+            "resilience": {},
+            "envelope": {"lower": S.UNKNOWN.value, "upper": S.UNKNOWN.value, "resolved": True},
+        }
+        ch, rh = make_record(content, rev, prev, kt, "VOIDED")
+        rec = Assessment(content, ch, rev, prev, kt, "VOIDED", rh, K, void_timeline)
+        self.index.append(rec)
+        self._sealed[instance_id] = rec
+        return rec
+
     def evaluate(self, instance_id: str, K) -> Assessment:
         K = parse_instant(K)
         inst = self.instances[instance_id]

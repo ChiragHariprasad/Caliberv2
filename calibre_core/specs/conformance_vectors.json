@@ -1,0 +1,108 @@
+{
+  "conformance_version": "1.0.0",
+  "generated_at": "2026-11-13T00:00:00Z",
+  "canonicalization": "jcs-rfc8785-subset/1",
+  "hash_algorithm": "sha256",
+  "vectors": {
+    "canonical_json_hashing": [
+      {
+        "description": "Empty dictionary canonicalization",
+        "input": {},
+        "expected_canonical_bytes": "{}",
+        "expected_digest": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "description": "Alphabetical key sorting and no whitespace",
+        "input": {"z": 1, "a": "test", "m": [3, 2, 1]},
+        "expected_canonical_bytes": "{\"a\":\"test\",\"m\":[3,2,1],\"z\":1}",
+        "expected_digest": "sha256:6e26778f6a394ec6b4d53a48e77c8e9c60e0a5eb578a9c2980fa27f4d547f480"
+      },
+      {
+        "description": "Unicode characters handled without escape escaping",
+        "input": {"circuit": "Sakhir", "corner": "Turn 1", "driver": "Verstappen", "flag": "🏁"},
+        "expected_canonical_bytes": "{\"circuit\":\"Sakhir\",\"corner\":\"Turn 1\",\"driver\":\"Verstappen\",\"flag\":\"🏁\"}",
+        "expected_digest": "sha256:3ea1ca2114ef067ba4f3d4ef6331901cb009dc4be1dcbaeb2d56e6dcf4547fbc"
+      }
+    ],
+    "state_lattice": {
+      "hierarchy": ["DEGRADED", "UNKNOWN", "SUSPECT", "HEALTHY"],
+      "comparisons": [
+        {"a": "DEGRADED", "op": "<", "b": "UNKNOWN", "expected": true},
+        {"a": "UNKNOWN", "op": "<", "b": "SUSPECT", "expected": true},
+        {"a": "SUSPECT", "op": "<", "b": "HEALTHY", "expected": true},
+        {"a": "DEGRADED", "op": "<", "b": "HEALTHY", "expected": true},
+        {"a": "HEALTHY", "op": ">", "b": "SUSPECT", "expected": true}
+      ],
+      "lattice_joins": [
+        {"inputs": ["HEALTHY", "HEALTHY"], "expected": "HEALTHY"},
+        {"inputs": ["HEALTHY", "SUSPECT"], "expected": "SUSPECT"},
+        {"inputs": ["HEALTHY", "UNKNOWN"], "expected": "UNKNOWN"},
+        {"inputs": ["HEALTHY", "DEGRADED"], "expected": "DEGRADED"},
+        {"inputs": ["SUSPECT", "UNKNOWN"], "expected": "DEGRADED_OR_UNKNOWN_POLICY"}
+      ]
+    },
+    "threshold_witness": [
+      {
+        "description": "Clear exceedance well outside uncertainty margin",
+        "observed": 81.5,
+        "threshold": 80.0,
+        "observed_uncertainty": 0.2,
+        "threshold_uncertainty": 0.1,
+        "expected_margin": 1.5,
+        "expected_combined_uncertainty": 0.22360679774997896,
+        "expected_classification": "ABOVE_THRESHOLD"
+      },
+      {
+        "description": "Monaco pit-lane 0.1 km/h exceedance inside combined survey uncertainty (Pattern P3)",
+        "observed": 60.08,
+        "threshold": 60.0,
+        "observed_uncertainty": 0.15,
+        "threshold_uncertainty": 0.1,
+        "expected_margin": 0.08,
+        "expected_combined_uncertainty": 0.18027756377319946,
+        "expected_classification": "INDETERMINATE"
+      },
+      {
+        "description": "Clear compliance below threshold",
+        "observed": 59.2,
+        "threshold": 60.0,
+        "observed_uncertainty": 0.1,
+        "threshold_uncertainty": 0.1,
+        "expected_margin": -0.8,
+        "expected_combined_uncertainty": 0.1414213562373095,
+        "expected_classification": "BELOW_THRESHOLD"
+      }
+    ],
+    "witness_registry_conformance": [
+      {"code": "VOIDED", "severity": "INFO", "description": "Decision legitimately voided by context (e.g. retirement or red flag)"},
+      {"code": "LATE_REFERENCE_FACT", "severity": "WARNING", "description": "Reference fact arrived after nominal observation deadline"},
+      {"code": "WITHIN_UNCERTAINTY", "severity": "WARNING", "description": "Observed margin is within combined measurement uncertainty"},
+      {"code": "MISSING_MANDATORY_ROLE", "severity": "DEFECT", "description": "Mandatory evidence atom role absent at maturity deadline"},
+      {"code": "COMMON_CAUSE_EXPOSURE", "severity": "WARNING", "description": "Corroborating feeds share upstream acquisition origin"},
+      {"code": "KINEMATIC_INCONSISTENCY", "severity": "DEFECT", "description": "Physical acceleration exceeds kinematic envelope limits"}
+    ],
+    "origin_independence": [
+      {
+        "description": "Single feed re-parsed by two parsers: source depth 1, processing depth 2",
+        "feed_a": {"sources": ["f1_live_timing_telemetry"], "processors": ["agent_telemetry_v1"]},
+        "feed_b": {"sources": ["f1_live_timing_telemetry"], "processors": ["fastf1_parser_v2"]},
+        "source_independent": false,
+        "processing_independent": true,
+        "effective_source_depth": 1,
+        "effective_processing_depth": 2,
+        "emits_witness": "COMMON_CAUSE_EXPOSURE"
+      },
+      {
+        "description": "Physical timing loop vs onboard ECU wheel speed: fully independent",
+        "feed_a": {"sources": ["pit_loop_transponder_gate"], "processors": ["agent_timing_v1"]},
+        "feed_b": {"sources": ["ecu_wheel_speed_telemetry"], "processors": ["agent_telemetry_v1"]},
+        "source_independent": true,
+        "processing_independent": true,
+        "effective_source_depth": 2,
+        "effective_processing_depth": 2,
+        "emits_witness": null
+      }
+    ]
+  }
+}
+

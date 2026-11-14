@@ -1,0 +1,19 @@
+{
+  "race_id": "2024_united_states",
+  "year": 2024,
+  "round": 19,
+  "official_event_name": "United States Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "cota",
+  "circuit_key": "cota_2024",
+  "session_date_utc": "2024-10-20T19:00:00Z",
+  "primary_controversy": "Lap 52 Turn 12 apex ownership & driving standards guidelines penalty",
+  "key_drivers": [
+    "4",
+    "33"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "JOLPICA_F1_ERGAST",
+  "acquired_at_utc": "2026-11-13T18:19:29.120450+00:00",
+  "provider": "JOLPICA_F1_OPEN_DATA"
+}

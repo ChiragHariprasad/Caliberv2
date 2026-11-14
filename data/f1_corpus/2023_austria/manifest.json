@@ -1,0 +1,17 @@
+{
+  "race_id": "2023_austria",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:78f3781086e7ee0e2ea9c2acf5b1c93825e37bcc29a5ff63ac63fec5fe405504",
+    "entry_list.json": "sha256:540dd87ede3c37653bb48d478e4753bdd02e17ac2e8e9c3ccfd99c6c71dd2264",
+    "laps.json": "sha256:fd3d4223c1a49f3186b3c473ab80cfbc2e92bec032361331588204d7e4e710d9",
+    "race_control_log.json": "sha256:025c92b16cee6a858a6c223de332884e36b0c1dd0429f2f77c29830452be8501",
+    "weather.json": "sha256:4c14d3efc6b5b1e6c0f4db3f40481dd17a1e7aa7010fcf997fa4051ed3a82be9"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 83,
+    "race_control_count": 2,
+    "weather_sample_count": 1
+  }
+}

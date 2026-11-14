@@ -1,59 +1,86 @@
 # CALIBRE / PULSE
 
-> **Durable Evidence Verification Platform & Formula 1 Real-Time Streaming Intelligence**
+> **Independent Evidence-Integrity Platform for Timing and Telemetry Decisions, built on SIA (Scoped Integrity Algebra)**
 
-CALIBRE is a high-assurance evidence verification platform. PULSE is its reference application: a deterministic Formula 1 race intelligence engine that turns asynchronous telemetry, timing transponders, track state, weather, and race-control feeds into evidence-linked tactical consequence assessments with deterministic integrity verification.
+CALIBRE is an independent, deterministic evidence-integrity platform. It continuously evaluates the adequacy, provenance, physical plausibility, and independence of measurements and references before decisions are made. PULSE is its real-time tactical streaming reference application for Formula 1.
 
-PULSE provides tactical decision support. It does not issue official sporting penalties, manufacture race control rulings, diagnose mechanical breakdowns, or use generic LLM commentary to decide outcomes.
+CALIBRE asks one question for every decision:
+> **Is the evidence available right now adequate for this particular decision, and how do we know?**
+
+CALIBRE never decides sporting penalties and never computes "the right value". It decides whether evidence **may legitimately be used** for an evaluation, leaving sporting authority to human officials.
 
 ---
 
 ## Key Capabilities
 
-- **6 Specialist Intelligence Agents:** Decoupled single-concern agents for Race Control (`agent-01`), Vehicle Response & Dirty Air (`agent-02`), Track State (`agent-03`), Tyre Strategy (`agent-04`), Consequence Fusion (`agent-05`), and SIA Integrity Verification (`agent-06`).
-- **Deterministic Consequence Fusion:** Multi-agent revision DAG supporting immediate provisional alerts (`v1`) and superseding confirmed assessments (`v2`) with out-of-order arrival resilience.
-- **Dual-Transport Architecture:** Identical execution across a distributed **Apache Kafka / Flink** cluster and a zero-dependency high-speed **Local In-Memory Bus** (`SIMULATOR`).
-- **Deterministic Historical Replay & Seeking:** Rebuilds active state instantaneously via canonical pipelines without publishing duplicate records to external brokers.
-- **CALIBRE v4 Durable Evidence Core:** Domain-separated cryptographic hashes (`BLAKE3`/`SHA-256`), effective-dated reference registries, continuous uncertainty witnesses with guard bands, portable archive bundles (`.tar.zst`), and a standalone offline verifier CLI.
-- **Real-Time Tactical Cockpit:** React 18 / Vite interface featuring live SVG track maps, multi-channel CAN-bus telemetry meters, race control notices, agent transparency metrics, and cryptographic evidence audit drawers.
+- **SIA Core v3 (Scoped Integrity Algebra):** Pure standard-library deterministic reasoning kernel with total order `DEGRADED < UNKNOWN < SUSPECT < HEALTHY`, 4-state validity timelines, named witnesses, and hash-chained bitemporal records.
+- **5 Specialist Agent Archetypes (A1–A5):** Decoupled evidence producers enforcing rules AR-1 through AR-10:
+  - **A1 Measurement (Timing Agent):** Official transponder loops, speed traps, sector times, numbering regression detection.
+  - **A2 Asset Telemetry (Vehicle Telemetry Agent):** High-frequency ECU speed, throttle/brake pedal exclusivity, kinematic anomaly detection (>2.0g deceleration check).
+  - **A3 Spatial & Geometry (Spatial Agent):** Gate crossing interpolation, path length integration, effective-dated circuit geometry references.
+  - **A4 Context (Session Context Agent):** Race control flag lifecycles (Green, Yellow, VSC, SC, Red), driver retirement tracking, rule limits.
+  - **A5 Feed Supervisor (Independent Path):** Monotonic clock ticks, `STALLED` and `RESUMED` guards, stream cadence heartbeat analysis.
+- **Complete F1 Contract Catalogue (C01–C13):** Formal contracts covering lap times, sector sums, pit-lane speed (flagship with Pattern P3 margin check), vehicle kinematics, position/track boundaries, session status, and rule regimes.
+- **10-Race Historical F1 Controversy Corpus (2021+):** Comprehensive research and automated acquisition across the 10 most controversial Grands Prix from 2021 onwards (Abu Dhabi 2021 mandatory, Monaco, Saudi Arabia, Belgium, Austria, Great Britain, Japan, Australia, COTA, Las Vegas) with automated Jolpica-F1 open Ergast fallback.
+- **Formal Specification Suite:** JSON schemas for Evidence Events (`EE v1.0`), Decision Contracts (`DEC v1.0`), Integrity Assessments (`IA v1.0`), Admission Logs (`LOG v1.0`), Portable Bundles (`BUN v1.0`), Domain Packs (`PACK v1.0`), and language-neutral Conformance Vectors.
+- **Content-Addressed Admission Log Engine:** Monotonic sequencing, hash chaining, and deterministic replay bridge to SIA Core.
+- **Four Data Governance Regimes:** Radical provenance honesty distinguishing `PUBLIC` (source depth 1, `COMMON_CAUSE_EXPOSURE`), `LICENSED`, `INSTITUTIONAL`, and `LAB` (synthetic twins).
+- **Portable Evidence Bundles & Standalone Verifier:** Self-verifying offline archive bundles verifiable on a clean machine using Python standard library only.
 
 ---
 
 ## High-Level Architecture
 
 ```text
-[Telemetry / Transponders / Race Control]
-                   │
-                   ▼
-       [Stream Normalizer Gate]
-                   │
-       ┌───────────┴───────────┐
-       ▼                       ▼
-[Apache Kafka / Flink]   [Local Memory Bus]
-       │                       │
-       └───────────┬───────────┘
-                   ▼
-     [6 Specialist Agents (01-06)]
-                   │
-                   ▼
-     [Agent 05: Consequence Fusion] ──► [v1 Provisional -> v2 Confirmed DAG]
-                   │
-                   ▼
-          [Active StateStore] ─────────► [CALIBRE v4 Offline Verifier]
-                   │
-       ┌───────────┴───────────┐
-       ▼                       ▼
-[FastAPI REST / SSE API]   [React 18 Cockpit UI]
+ EXTERNAL WORLD (untrusted): FOM timing, telemetry, race control, survey registries
+        │
+ SOURCE PACKS: adapters + raw recorder (sanitized RFC 8785 canonical JSON, sha256)
+        │
+ KAFKA RAW / LOCAL MEMORY BUS: calibre.<pack>.raw.<provider>.<stream>
+        │
+ AGENT ARCHETYPES (evidence producers only; never grade, never declare health)
+   A1 Measurement   A2 Telemetry   A3 Spatial   A4 Context  ──► calibre.<pack>.evidence.*
+   A5 Supervisor (independent failure domain)               ──► calibre.<pack>.guard.*
+        │
+ ADMISSION LOG ENGINE (J1 Sequencer): monotonic seq, knowledge time ──► core.admission_log
+        │
+ SIA KERNEL EVALUATOR (J2 Evaluator): bitemporal index, voiding, P3 margin ──► core.verdicts
+        │
+ SERVING & ARCHIVE: FastAPI REST / SSE, React 18 UI, portable bundles, standalone verifier
 ```
 
 ---
 
-## Prerequisites
+## Test Execution & Verification
 
-- **Python:** 3.11, 3.12, or 3.13 (64-bit)
-- **Node.js:** 18.x or 20.x LTS with npm
-- **OS:** Windows 10/11, Linux, or macOS
-- **Optional:** Docker Desktop 4.28+ (only required for clustered Kafka mode)
+### Automated Test Suite
+Run the entire comprehensive test suite across `calibre_core`, `sia_core_v3`, and `backend`:
+```powershell
+pytest calibre_core/tests sia_core_v3/tests backend/tests
+```
+*Current test suite status:* **395 passed**, 17 skipped (Docker integration tests skipped when container engine is offline), 0 failed in ~90s.
+
+### Run Specialized Test Suites
+```powershell
+# 1. Agent archetypes & Contract catalogue conformance (AR-1..AR-10, C01..C13)
+pytest calibre_core/tests/test_agents_and_contracts.py -v
+
+# 2. Historical controversy scenarios (Abu Dhabi, Monaco, Saudi Arabia, Austria, Belgium)
+pytest calibre_core/tests/test_historical_scenarios.py -v
+
+# 3. SIA reasoning kernel property and mutation tests (259 tests, 0 dependencies)
+pytest sia_core_v3/tests -v
+
+# 4. Durable bundles and standalone offline verifier
+pytest calibre_core/tests/test_durable_platform.py -v
+```
+
+### Acquire Historical Race Corpus
+Acquire or re-index the 10-race controversy corpus (with automatic Jolpica-F1 fallback):
+```powershell
+python scripts/acquire_f1_corpus.py
+```
+Master corpus manifest is written to `data/f1_corpus/corpus_manifest.json`.
 
 ---
 
@@ -63,11 +90,9 @@ The recommended local execution mode requires zero external broker or database d
 
 ### 1. Start Backend API Server
 ```powershell
-# Set Python path to include all core modules
 $env:PYTHONPATH="E:\Caliberv2;E:\Caliberv2\backend;E:\Caliberv2\sia_core_v3"
 $env:PULSE_TRANSPORT_MODE="SIMULATOR"
 
-# Launch Uvicorn ASGI server
 python -m uvicorn pulse.main:app --host 127.0.0.1 --port 8000 --log-level info
 ```
 - API Root & Health: `http://127.0.0.1:8000/api/health`
@@ -83,40 +108,14 @@ npm run preview
 ```
 - Tactical Cockpit UI: `http://localhost:5173/`
 
-### 3. Distributed Kafka Mode (Optional)
-To run with an external Kafka cluster:
-```powershell
-docker compose -f docker-compose.kafka.yml up -d
-$env:PULSE_TRANSPORT_MODE="KAFKA"
-$env:KAFKA_BOOTSTRAP_SERVERS="localhost:9092"
-python -m uvicorn pulse.main:app --host 127.0.0.1 --port 8000
-```
-
 ---
 
-## Test Execution & Validation
+## Canonical Documentation Index
 
-### Automated Unit, Property & Integration Tests
-```powershell
-pytest calibre_core/tests sia_core_v3/tests backend/tests
-```
-*Current test suite status:* **380 passed**, 17 skipped (Docker integration tests skipped when container engine is offline), 0 failed.
-
-### Browser System Validation
-Execute the automated 12-journey Playwright Chromium test suite:
-```powershell
-python scripts/run_browser_system_validation.py
-```
-Validation captures are written to `reports/browser-validation/screenshots/`.
-
-### Offline Evidence Bundle Verification
-```powershell
-python -m calibre_core.verifier.cli verify --bundle ./captures/monaco_audit_bundle.tar.zst --strict
-```
-
----
-
-## Canonical Documentation
-
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md):** Detailed technical architecture, stream topologies, agent specifications, epistemic contracts, and CALIBRE v4 durable archive specification.
-- **[docs/HISTORY.md](docs/HISTORY.md):** Chronological project evolution from `E:\CALIBER` (SIA v2.2) to PULSE and CALIBRE v4, including 20 Architecture Decision Records (ADRs).
+- **[docs/AUDIT.md](docs/AUDIT.md):** Complete line-by-line implementation audit of the repository against the CALIBRE idea documentation.
+- **[docs/ROADMAP.md](docs/ROADMAP.md):** 15-area dependency-aware engineering roadmap with Mermaid dependency graphs.
+- **[docs/IMPLEMENTATION_CHECKLIST.md](docs/IMPLEMENTATION_CHECKLIST.md):** 49 master implementation tasks with status tracking and acceptance criteria.
+- **[docs/F1_CONTROVERSY_CORPUS.md](docs/F1_CONTROVERSY_CORPUS.md):** In-depth research of the 10 most controversial F1 races (2021+) citing official FIA Stewards decisions and sporting regulations.
+- **[docs/DATA_SOURCING_ASSESSMENT.md](docs/DATA_SOURCING_ASSESSMENT.md):** Data sourcing, legal regimes (PUBLIC, LICENSED, INSTITUTIONAL, LAB), and channel coverage matrix.
+- **[docs/DECISION_LOG.md](docs/DECISION_LOG.md):** Architecture Decision Records (ADR-01 through ADR-12) documenting trade-offs and rationale.
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md):** Technical architecture, stream topologies, agent specifications, and epistemic contracts.

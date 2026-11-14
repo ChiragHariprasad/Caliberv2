@@ -417,6 +417,8 @@ def _eval_reference(ctx: _Ctx, role: RoleSpec) -> RoleResult:
     if state < S.HEALTHY and not edges:
         notes = "; ".join(sorted({r.fact.note for r, _ in valid if r.fact.note}))
         wit.append(("REFERENCE_FACT_GRADE", role.name, f"reference graded {state.name}" + (f": {notes}" if notes else "")))
+    if any(r.kt > deadline for r, _ in valid):
+        wit.append(("LATE_REFERENCE_FACT", role.name, "Reference fact arrived after slot deadline"))
     f0 = valid[-1][0].fact
     start = max(inst.opens_at, f0.valid_from if f0.valid_from is not None else inst.opens_at)
     tl = _leaf_timeline(inst.opens_at, deadline, start, state, None, role, None, valid_to=f0.valid_to)
@@ -476,6 +478,11 @@ def _eval_constraint(ctx: _Ctx, cs: ConstraintSpec, roles: Dict[str, RoleResult]
             v, lo, hi = vals[0], p.get("lo"), p.get("hi")
             ok = (lo is None or v >= lo) and (hi is None or v <= hi)
             detail = f"value {v} outside [{lo}, {hi}]" if not ok else f"value {v} within [{lo}, {hi}]"
+            unc = p.get("uncertainty")
+            if unc is not None and unc > 0:
+                if (lo is not None and abs(v - lo) <= unc) or (hi is not None and abs(v - hi) <= unc):
+                    thresh = lo if (lo is not None and abs(v - lo) <= unc) else hi
+                    wit.append(("WITHIN_UNCERTAINTY", cs.id, f"value {v} is within uncertainty ±{unc} of threshold {thresh}"))
         elif k == "abs_diff":
             d = abs(vals[0] - vals[1])
             ok, detail = d <= p["tolerance"], f"|{vals[0]} - {vals[1]}| = {d} (tol {p['tolerance']})"

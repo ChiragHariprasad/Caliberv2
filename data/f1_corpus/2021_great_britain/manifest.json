@@ -1,0 +1,17 @@
+{
+  "race_id": "2021_great_britain",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:22da4efb1b1bda5da34f8244aad72bc3fac14901dc43efc3f852883dc04bc03b",
+    "entry_list.json": "sha256:c698f39f2fbfd479c24b627a19e40d3a36f326a480ba1947e754787fd7890eb2",
+    "laps.json": "sha256:63824a7627cfe545308e9e6a8b458d27787c5003c83585c4611d9074c095c115",
+    "race_control_log.json": "sha256:baade6a182a6c0f5a5e865916871397ed91f60019feaea5c90ad92914d3e0b7d",
+    "weather.json": "sha256:8a0f0108a1391c6be9f57d7895759a0775424c6921554846b8d5888eb7bc1a57"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 970,
+    "race_control_count": 66,
+    "weather_sample_count": 184
+  }
+}

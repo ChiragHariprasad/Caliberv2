@@ -1,0 +1,20 @@
+{
+  "race_id": "2023_austria",
+  "year": 2023,
+  "round": 9,
+  "official_event_name": "Austrian Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "red_bull_ring",
+  "circuit_key": "red_bull_ring_2023",
+  "session_date_utc": "2023-07-02T13:00:00Z",
+  "primary_controversy": "1,200+ track limit violations; post-finality amended classification",
+  "key_drivers": [
+    "55",
+    "44",
+    "31"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "JOLPICA_F1_ERGAST",
+  "acquired_at_utc": "2026-11-13T18:18:51.525816+00:00",
+  "provider": "JOLPICA_F1_OPEN_DATA"
+}

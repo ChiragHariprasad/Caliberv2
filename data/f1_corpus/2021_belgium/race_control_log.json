@@ -1,0 +1,233 @@
+[
+  {
+    "utc_timestamp": "2021-08-29T12:14:52",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "LIGHT BLUE HEAD PADDING MATERIAL MUST BE USED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:14:56",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "LOW GRIP CONDITIONS"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:20:00",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:26:27",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:26:35",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:30:00",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "PIT EXIT CLOSED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:33:19",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:45:05",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RISK OF RAIN FOR F1 RACE IS 100%"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:50:01",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL BE STARTED BEHIND THE SAFETY CAR"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:57:09",
+    "lap": 1,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS DISABLED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:58:33",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DELAYED START"
+  },
+  {
+    "utc_timestamp": "2021-08-29T12:59:53",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:10"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:04:42",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DELAYED START"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:05:03",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:15"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:07:40",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DELAYED START"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:07:59",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:20"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:14:35",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DELAYED START"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:14:52",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:25"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:30:31",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "START PROCEDURE SUSPENDED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T13:30:42",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2021-08-29T15:28:57",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "A WEATHER UPDATE WILL BE PROVIDED AT 17:45"
+  },
+  {
+    "utc_timestamp": "2021-08-29T15:45:05",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "NEXT WEATHER UPDATE WILL BE PROVIDED AT 17:55"
+  },
+  {
+    "utc_timestamp": "2021-08-29T15:55:02",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "NEXT WEATHER UPDATE WILL BE PROVIDED AT 18:00"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:00:02",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "NEXT WEATHER UPDATE WILL BE PROVIDED AT 18:05"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:06:45",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL RESUME AT 18:17"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:07:14",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "EXTREME TIRES MUST BE FITTED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:11:21",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:17:00",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:25:36",
+    "lap": 3,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:44:04",
+    "lap": 4,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL NOT RESUME"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:45:14",
+    "lap": 4,
+    "category": "Other",
+    "flag": "None",
+    "message": "ALL CARS TO PARC FERME"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:45:43",
+    "lap": 4,
+    "category": "Other",
+    "flag": "None",
+    "message": "ALL DRIVERS TO FIA GARAGE TO BE WEIGHED"
+  },
+  {
+    "utc_timestamp": "2021-08-29T16:54:55",
+    "lap": 4,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  }
+]

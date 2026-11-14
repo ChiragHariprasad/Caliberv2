@@ -1,0 +1,17 @@
+{
+  "race_id": "2023_australia",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:19f2e09d9b24909c4b2008d45dc2ca41ae66fd2139f3108e4f89127a2bf47fb6",
+    "entry_list.json": "sha256:bf30e7c9b1c5e194e56bdf564b523b261882fa145f4240191e496734cc627940",
+    "laps.json": "sha256:8cf65e77bdb6ae21d886e683e826abc08ce072baaa95f445b20c13729016e5a9",
+    "race_control_log.json": "sha256:ca72e5c3511127797586995a90f704fbc6394bd82d4d228f4820e848153734a8",
+    "weather.json": "sha256:384543a35b8976e179a3d432a8306092313d8dd2ee8e52d86a840ce927ec4eda"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 85,
+    "race_control_count": 2,
+    "weather_sample_count": 1
+  }
+}

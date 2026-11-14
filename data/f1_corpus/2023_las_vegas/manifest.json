@@ -1,0 +1,17 @@
+{
+  "race_id": "2023_las_vegas",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:e23016982096d28f9a215ae458a2642b8cc74116131ca6015c9e26f998303434",
+    "entry_list.json": "sha256:05138a1d9aa0444b8bd29906282449a35dd50160208885e5276d50d8c39006b7",
+    "laps.json": "sha256:396c68db689df37044166dbadf24328c1889af0a59d9e5e6df4faab5999e1eac",
+    "race_control_log.json": "sha256:46c24e060e7924381661924a10f47730bc85df79fc31b3bec98e8d0123aa9232",
+    "weather.json": "sha256:679bdda5ad5bcda5cfc8b2657b1448409a8966b534e5c9c92f5779b7caf70806"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 51,
+    "race_control_count": 2,
+    "weather_sample_count": 1
+  }
+}

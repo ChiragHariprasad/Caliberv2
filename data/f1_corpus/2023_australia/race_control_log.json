@@ -1,0 +1,16 @@
+[
+  {
+    "utc_timestamp": "2023-04-02T05:00:00Z",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "SESSION STARTED"
+  },
+  {
+    "utc_timestamp": "2023-04-02T05:00:00Z",
+    "lap": null,
+    "category": "Notice",
+    "flag": "CLEAR",
+    "message": "Controversy Focus: 3 red flags, chaotic late standing restart & countback grid order"
+  }
+]

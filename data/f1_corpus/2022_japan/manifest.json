@@ -1,0 +1,17 @@
+{
+  "race_id": "2022_japan",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:c8d069ca545af3dfe95ee0327eee6b7598c9035bd43eec7026fbf3b86b13a774",
+    "entry_list.json": "sha256:749559c8cbd34e2ba438e518f690258adf88ce0c80412a1aa6aef9aea37ffcf5",
+    "laps.json": "sha256:fb3b82300cc50891d113b4a3d2cfa086704e59af1b55c0abe8a494b88413637a",
+    "race_control_log.json": "sha256:54d4836e9c6d27b62c58441b0845374f9113873c3bba2db56fc7dcb6f77c5cc3",
+    "weather.json": "sha256:49cd12ea725e4d84585f6a60014d1a9dcc85ee45d9b2a9adca5352afbb7e367f"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 507,
+    "race_control_count": 41,
+    "weather_sample_count": 255
+  }
+}

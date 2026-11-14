@@ -1,0 +1,17 @@
+{
+  "race_id": "2021_belgium",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:8ca8a133b53a56f8e786e65247a0bd90011976db72a4c86b6bfcf4a76f40e41e",
+    "entry_list.json": "sha256:2fd20553250559b29b69e9b2313d0fe36c38c2a904620c6d36fe764fcb49b440",
+    "laps.json": "sha256:ff30017bf1982b316874de51c54f9f4cbe2484688ddeda6f31b882e7e302b358",
+    "race_control_log.json": "sha256:c8aecf2d543264b98f66fb896b99ba83644b835754cd4fd650ee1a063e9e49ca",
+    "weather.json": "sha256:ccbee3e39b405f52bd62b3c679e0883de0a538486ea4724741a1ca6a2279f3b2"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 60,
+    "race_control_count": 33,
+    "weather_sample_count": 290
+  }
+}

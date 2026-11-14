@@ -1,0 +1,17 @@
+{
+  "race_id": "2021_abu_dhabi",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:b47e72135530eb6be65b05b58b39fb68444d47395830657017c5784b27ce6b14",
+    "entry_list.json": "sha256:6bff8b950775736e3fee7172f23ca12579741e22d44ad17f69fa2d7cbf675443",
+    "laps.json": "sha256:0b0acce0a4dc89626cceec1269e386c99203f07613bb63d0bce90683321ca11e",
+    "race_control_log.json": "sha256:7de63736645a2a6246d1571bae7535635c0626176c47d2727271be7c7d1ad277",
+    "weather.json": "sha256:463ef6829619cdeef57dd6076eafcb86e3355db4643075a933aab4b7bc4b523b"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 1000,
+    "race_control_count": 74,
+    "weather_sample_count": 157
+  }
+}

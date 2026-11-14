@@ -1,0 +1,234 @@
+{
+  "corpus_id": "calibre-10-race-controversy-corpus-v1",
+  "description": "10 Most Significant Controversial Formula 1 Races from 2021 onwards",
+  "generation_time_utc": "2026-11-13T18:20:28.754803+00:00",
+  "total_races": 10,
+  "races": {
+    "2021_abu_dhabi": {
+      "config": {
+        "year": 2021,
+        "round": 22,
+        "name": "Abu Dhabi Grand Prix",
+        "circuit_id": "yas_marina",
+        "circuit_key": "yas_marina_2021",
+        "date": "2021-12-12",
+        "primary_controversy": "Safety Car unlapping procedure & premature restart (Art 48.12)",
+        "key_drivers": [
+          "33",
+          "44"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 1000,
+        "race_control_count": 74,
+        "weather_sample_count": 157
+      },
+      "manifest_checksum": "sha256:a0f60263a324857e9c59cd1058a2a38c993316393fcd89a5130d76722e0f04bb"
+    },
+    "2021_belgium": {
+      "config": {
+        "year": 2021,
+        "round": 12,
+        "name": "Belgian Grand Prix",
+        "circuit_id": "spa",
+        "circuit_key": "spa_2021",
+        "date": "2021-08-29",
+        "primary_controversy": "2-lap safety car procession in heavy rain to award half points",
+        "key_drivers": [
+          "33",
+          "63",
+          "44"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 60,
+        "race_control_count": 33,
+        "weather_sample_count": 290
+      },
+      "manifest_checksum": "sha256:a8890634bfe265c0d303e01195f4c73efcb73e4c07468e3f9448b08d1d2adf4a"
+    },
+    "2021_saudi_arabia": {
+      "config": {
+        "year": 2021,
+        "round": 21,
+        "name": "Saudi Arabian Grand Prix",
+        "circuit_id": "jeddah",
+        "circuit_key": "jeddah_2021",
+        "date": "2021-12-05",
+        "primary_controversy": "Lap 37 69-bar / 2.4g brake-test telemetry collision dispute",
+        "key_drivers": [
+          "33",
+          "44"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 845,
+        "race_control_count": 98,
+        "weather_sample_count": 193
+      },
+      "manifest_checksum": "sha256:93e7a365039b34cb6f47398dc7b1cbc939362100d73522865c1dd7d3c1be138f"
+    },
+    "2021_great_britain": {
+      "config": {
+        "year": 2021,
+        "round": 10,
+        "name": "British Grand Prix",
+        "circuit_id": "silverstone",
+        "circuit_key": "silverstone_2021",
+        "date": "2021-07-18",
+        "primary_controversy": "Copse 51G collision; GPS simulation petition for right of review",
+        "key_drivers": [
+          "44",
+          "33"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 970,
+        "race_control_count": 66,
+        "weather_sample_count": 184
+      },
+      "manifest_checksum": "sha256:3311037849a09e484e75a81955bf9927e193a7277a71089293f20c2b01395b54"
+    },
+    "2023_austria": {
+      "config": {
+        "year": 2023,
+        "round": 9,
+        "name": "Austrian Grand Prix",
+        "circuit_id": "red_bull_ring",
+        "circuit_key": "red_bull_ring_2023",
+        "date": "2023-07-02",
+        "primary_controversy": "1,200+ track limit violations; post-finality amended classification",
+        "key_drivers": [
+          "55",
+          "44",
+          "31"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 83,
+        "race_control_count": 2,
+        "weather_sample_count": 1
+      },
+      "manifest_checksum": "sha256:d5861d3fb852f163bd7ae5c864dfdbb5ac577481590ef5f600b66eac2a6532c6"
+    },
+    "2023_australia": {
+      "config": {
+        "year": 2023,
+        "round": 3,
+        "name": "Australian Grand Prix",
+        "circuit_id": "albert_park",
+        "circuit_key": "albert_park_2023",
+        "date": "2023-04-02",
+        "primary_controversy": "3 red flags, chaotic late standing restart & countback grid order",
+        "key_drivers": [
+          "55",
+          "14",
+          "10",
+          "31"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 85,
+        "race_control_count": 2,
+        "weather_sample_count": 1
+      },
+      "manifest_checksum": "sha256:651964cfc39cad7ad91916a866631f54e040e8dc4057e0a7489175fcd67297ca"
+    },
+    "2022_japan": {
+      "config": {
+        "year": 2022,
+        "round": 18,
+        "name": "Japanese Grand Prix",
+        "circuit_id": "suzuka",
+        "circuit_key": "suzuka_2022",
+        "date": "2022-10-09",
+        "primary_controversy": "Recovery tractor on live wet track & shortened race full points confusion",
+        "key_drivers": [
+          "10",
+          "33",
+          "16"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 507,
+        "race_control_count": 41,
+        "weather_sample_count": 255
+      },
+      "manifest_checksum": "sha256:36ecf16cf1a6328f4e40336d7659189cfb831242158b156babcbb0e5584cbb71"
+    },
+    "2022_monaco": {
+      "config": {
+        "year": 2022,
+        "round": 7,
+        "name": "Monaco Grand Prix",
+        "circuit_id": "monaco",
+        "circuit_key": "monaco_2022",
+        "date": "2022-05-29",
+        "primary_controversy": "Pit exit line touching vs crossing; start system electrical outage",
+        "key_drivers": [
+          "11",
+          "33",
+          "16",
+          "55"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 1179,
+        "race_control_count": 168,
+        "weather_sample_count": 245
+      },
+      "manifest_checksum": "sha256:a578534143bb7e7527731bcbe79c716c783b4b9f176ebc41c1c293fdae0c1afc"
+    },
+    "2024_united_states": {
+      "config": {
+        "year": 2024,
+        "round": 19,
+        "name": "United States Grand Prix",
+        "circuit_id": "cota",
+        "circuit_key": "cota_2024",
+        "date": "2024-10-20",
+        "primary_controversy": "Lap 52 Turn 12 apex ownership & driving standards guidelines penalty",
+        "key_drivers": [
+          "4",
+          "33"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 43,
+        "race_control_count": 2,
+        "weather_sample_count": 1
+      },
+      "manifest_checksum": "sha256:bd528504405da234053bd9185e247c2ed6f29939c456c0cf93da77abd43d40f5"
+    },
+    "2023_las_vegas": {
+      "config": {
+        "year": 2023,
+        "round": 21,
+        "name": "Las Vegas Grand Prix",
+        "circuit_id": "las_vegas",
+        "circuit_key": "las_vegas_2023",
+        "date": "2023-11-16",
+        "primary_controversy": "FP1 water valve cover track failure; lack of regulatory penalty discretion",
+        "key_drivers": [
+          "55"
+        ]
+      },
+      "stats": {
+        "driver_count": 20,
+        "lap_count": 51,
+        "race_control_count": 2,
+        "weather_sample_count": 1
+      },
+      "manifest_checksum": "sha256:8f86b76199f10d2a1dfb37fd4caa9d98ee3c610eb2f42603e5689a5db6b9fed5"
+    }
+  }
+}

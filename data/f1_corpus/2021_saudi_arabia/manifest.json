@@ -1,0 +1,17 @@
+{
+  "race_id": "2021_saudi_arabia",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:123668d7d3770d1a7a0c29f7fe9a9fc89a4e850f9c443c4ebff948e05b554121",
+    "entry_list.json": "sha256:71cfd1120560840104e801aa726b3670bc4dc380ef933cb0744149eb1301ff70",
+    "laps.json": "sha256:315ee2b0dd4cc6d5ba5881d783b9163170b73b7b14450ff7aee9a20f1170fc19",
+    "race_control_log.json": "sha256:3bbb7110c8f87c86c4d50bd75b4336b710ba47bde14d8b9831ca6a84f3d3bbb5",
+    "weather.json": "sha256:62504090be5f46090a614aa759aff23f3fa762d5446f35bfdb9382d723badcea"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 845,
+    "race_control_count": 98,
+    "weather_sample_count": 193
+  }
+}

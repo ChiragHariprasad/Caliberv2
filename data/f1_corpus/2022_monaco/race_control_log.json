@@ -1,0 +1,1178 @@
+[
+  {
+    "utc_timestamp": "2022-05-29T12:07:41",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "PINK HEAD PADDING MATERIAL MUST BE USED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:20:01",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:26:31",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:26:33",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:26:38",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:26:38",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:30:01",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "PIT EXIT CLOSED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:39:03",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:39:11",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:39:25",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:39:27",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:39:47",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:40:04",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 5"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:40:09",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 5"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:40:11",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:45:03",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RISK OF RAIN FOR F1 RACE IS 80%"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:48:31",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 14"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:48:33",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 14"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:49:48",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:49:56",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:49:58",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:49:59",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:52:03",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:52:13",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:55:17",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "START PROCEDURE SUSPENDED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:56:09",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "CHANGE IN CLIMATIC CONDITIONS"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:56:15",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "LOW GRIP CONDITIONS"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:58:32",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:09"
+  },
+  {
+    "utc_timestamp": "2022-05-29T12:59:50",
+    "lap": 1,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS DISABLED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:00:12",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL BE STARTED BEHIND THE SAFETY CAR"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:03:30",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DELAYED START"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:06:00",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:16 BEHIND SAFETY CAR"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:08:47",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "FORMATION LAP WILL START AT 15:16 BEHIND SAFETY CAR ON EXTREME WET TYRES"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:14:11",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:14:21",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:15:26",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:16:31",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:20:22",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:21:21",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "EZ UP TENTS MAY BE USED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T13:54:21",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "10 MIN SIGNAL WILL BE SHOWN AT 15:55"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:00:15",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL RESUME AT 16:05 BEHIND SAFETY CAR"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:03:18",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:04:07",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:04:10",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:05:00",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:06:59",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:07:03",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:07:07",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:07:15",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:08:06",
+    "lap": 2,
+    "category": "Other",
+    "flag": "None",
+    "message": "SAFETY CAR WILL ENTER PITS: ROLLING START"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:09:15",
+    "lap": 2,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS DISABLED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:13:41",
+    "lap": 5,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 10 (GAS) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:14:29",
+    "lap": 5,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 10 (GAS) TIME 1:42.417 DELETED - TRACK LIMITS AT TURN 10 LAP 4 16:13:24"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:15:27",
+    "lap": 6,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:15:30",
+    "lap": 6,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:19:51",
+    "lap": 8,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 63 (RUS) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:20:14",
+    "lap": 9,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 63 (RUS) TIME 1:38.944 DELETED - TRACK LIMITS AT TURN 10 LAP 8 16:19:31"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:22:45",
+    "lap": 10,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:22:52",
+    "lap": 10,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:23:59",
+    "lap": 11,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:24:07",
+    "lap": 11,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:25:09",
+    "lap": 12,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 24 (ZHO) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:25:22",
+    "lap": 12,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 18 (STR) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:25:37",
+    "lap": 12,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 24 (ZHO) TIME 1:38.623 DELETED - TRACK LIMITS AT TURN 10 LAP 11 16:24:56"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:25:55",
+    "lap": 12,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 18 (STR) TIME 1:36.129 DELETED - TRACK LIMITS AT TURN 10 LAP 11 16:25:09"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:26:13",
+    "lap": 12,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 63 (RUS) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:26:41",
+    "lap": 13,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 63 (RUS) TIME 1:36.456 DELETED - TRACK LIMITS AT TURN 10 LAP 12 16:26:00"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:27:52",
+    "lap": 14,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 44 (HAM) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:28:34",
+    "lap": 14,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 44 (HAM) TIME 1:36.750 DELETED - TRACK LIMITS AT TURN 10 LAP 13 16:27:43"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:31:45",
+    "lap": 16,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 23 (ALB) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:32:44",
+    "lap": 17,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 23 (ALB) TIME 1:36.171 DELETED - TRACK LIMITS AT TURN 10 LAP 15 16:31:33"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:33:09",
+    "lap": 17,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 10 INCIDENT INVOLVING CARS 23 (ALB) AND 47 (MSC) NOTED - LEAVING THE TRACK AND GAINING AN ADVANTAGE"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:34:16",
+    "lap": 18,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:34:19",
+    "lap": 18,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:35:45",
+    "lap": 19,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 23 (ALB) TIME 1:35.701 DELETED - TRACK LIMITS AT TURN 10 LAP 17 16:34:45"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:36:09",
+    "lap": 19,
+    "category": "Flag",
+    "flag": "BLACK AND WHITE",
+    "message": "BLACK AND WHITE FLAG FOR CAR 63 (RUS) - TRACK LIMITS"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:36:15",
+    "lap": 19,
+    "category": "Flag",
+    "flag": "BLACK AND WHITE",
+    "message": "BLACK AND WHITE FLAG FOR CAR 23 (ALB) - TRACK LIMITS"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:37:04",
+    "lap": 19,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 16:37:04"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:37:34",
+    "lap": 20,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 16:37:34"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:37:57",
+    "lap": 20,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 20 (MAG) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:38:55",
+    "lap": 21,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:39:01",
+    "lap": 21,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:39:03",
+    "lap": 21,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 3 (RIC) TIMED AT 16:39:03"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:39:34",
+    "lap": 21,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 20 (MAG) TIME 1:37.629 DELETED - TRACK LIMITS AT TURN 11 LAP 19 16:37:40"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:40:09",
+    "lap": 21,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 1 INCIDENT INVOLVING CARS 44 (HAM) AND 31 (OCO) NOTED - CAUSING A COLLISION"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:40:20",
+    "lap": 22,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 14 (ALO) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:40:44",
+    "lap": 22,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 16:40:44"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:40:57",
+    "lap": 22,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 14 (ALO) LAP DELETED - TRACK LIMITS AT TURN 10 LAP 21 16:40:05 (PIT)"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:41:27",
+    "lap": 22,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 16:41:27"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:41:40",
+    "lap": 22,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 16:41:40"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:42:52",
+    "lap": 23,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 16:42:52"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:43:12",
+    "lap": 23,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 16:43:11"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:43:23",
+    "lap": 23,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 16:43:23"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:43:31",
+    "lap": 23,
+    "category": "Other",
+    "flag": "None",
+    "message": "PIT EXIT INCIDENT INVOLVING CAR 11 (PER) NOTED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:44:07",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 16:44:06"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:44:23",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 16:44:23"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:44:34",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 16:44:33"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:44:50",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 16:44:49"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:45:07",
+    "lap": 25,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 16:45:06"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:45:38",
+    "lap": 25,
+    "category": "Other",
+    "flag": "None",
+    "message": "FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 23 (ALB) - LEAVING THE TRACK AND GAINING AN ADVANTAGE"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:45:58",
+    "lap": 25,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 23 (ALB) TIME 2:10.065 DELETED - TRACK LIMITS AT TURN 10 LAP 22 16:43:00"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:46:59",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 16:46:59"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:18",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 16:47:17"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:19",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 16:47:18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:33",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 15"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:34",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 15"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:36",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:37",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 16:47:37"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:47:46",
+    "lap": 27,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:49:34",
+    "lap": 27,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:55:03",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:55:03",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 15"
+  },
+  {
+    "utc_timestamp": "2022-05-29T14:55:03",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:03:56",
+    "lap": 30,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL RESUME AT 17:15 - ROLLING START"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:08:46",
+    "lap": 30,
+    "category": "Other",
+    "flag": "None",
+    "message": "LAPPED CARS MAY OVERTAKE ONCE THE RACE HAS RESUMED - CARS 18 (STR) 22 24 6 23"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:11:09",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:40",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 17:15:39"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:43",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 17:15:42"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:43",
+    "lap": 31,
+    "category": "Other",
+    "flag": "None",
+    "message": "LAPPED CARS MAY NOW OVERTAKE"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:51",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 17:15:50"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:51",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 17:15:51"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:15:53",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 17:15:53"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:06",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:05"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:10",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:09"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:11",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:11"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:12",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:16:12"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:12",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:12"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:14",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:16:13"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:14",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:13"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:14",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:16:14"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:15",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:14"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:16",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:15"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:16",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:16:16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:16",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:16"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:17",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:16:17"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:16:54",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:16:54"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:17:40",
+    "lap": 31,
+    "category": "Other",
+    "flag": "None",
+    "message": "NORMAL GRIP CONDITIONS"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:18:27",
+    "lap": 32,
+    "category": "Other",
+    "flag": "None",
+    "message": "SAFETY CAR WILL ENTER PITS: ROLLING START"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:23:19",
+    "lap": 35,
+    "category": "Other",
+    "flag": "None",
+    "message": "FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 31 (OCO) - CAUSING A COLLISION"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:28:22",
+    "lap": 39,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:28:40",
+    "lap": 39,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:36:07",
+    "lap": 45,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 22 (TSU) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:36:26",
+    "lap": 45,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 22 (TSU) TIME 1:19.880 DELETED - TRACK LIMITS AT TURN 10 LAP 44 17:35:53"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:40:23",
+    "lap": 48,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 55 (SAI) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:40:44",
+    "lap": 49,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 55 (SAI) TIME 1:17.439 DELETED - TRACK LIMITS AT TURN 10 LAP 48 17:40:12"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:42:42",
+    "lap": 50,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 24 (ZHO) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:42:46",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:42:46"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:42:52",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:42:51"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:43:12",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 23 (ALB) TIMED AT 17:43:11"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:43:22",
+    "lap": 51,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 24 (ZHO) TIME 1:24.257 DELETED - TRACK LIMITS AT TURN 11 LAP 49 17:42:31"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:43:27",
+    "lap": 51,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 23 (ALB) MISSED THE APEX OF TURN 10"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:51:03",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:51:04",
+    "lap": 57,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:51:11",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:51:11",
+    "lap": 57,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:52:23",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 17:52:23"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:53:07",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 17:53:06"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:55:35",
+    "lap": 60,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:55:36",
+    "lap": 60,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:55:43",
+    "lap": 60,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:55:43",
+    "lap": 60,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:56:05",
+    "lap": 60,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 17:56:04"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:56:20",
+    "lap": 61,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 17:56:19"
+  },
+  {
+    "utc_timestamp": "2022-05-29T15:57:19",
+    "lap": 61,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 17:57:18"
+  },
+  {
+    "utc_timestamp": "2022-05-29T16:01:09",
+    "lap": 64,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 10 (GAS) TIME 1:18.478 DELETED - TRACK LIMITS AT TURN 10 LAP 63 18:00:37"
+  },
+  {
+    "utc_timestamp": "2022-05-29T16:01:24",
+    "lap": 64,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 24 (ZHO) TIMED AT 18:01:24"
+  },
+  {
+    "utc_timestamp": "2022-05-29T16:01:28",
+    "lap": 64,
+    "category": "Flag",
+    "flag": "CHEQUERED",
+    "message": "CHEQUERED FLAG"
+  },
+  {
+    "utc_timestamp": "2022-05-29T16:05:21",
+    "lap": 65,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 16"
+  }
+]

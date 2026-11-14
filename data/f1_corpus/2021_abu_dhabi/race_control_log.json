@@ -1,0 +1,520 @@
+[
+  {
+    "utc_timestamp": "2021-12-12T12:20:01",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-12-12T12:30:01",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "PIT EXIT CLOSED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T12:47:17",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RISK OF RAIN FOR F1 RACE IS 0%"
+  },
+  {
+    "utc_timestamp": "2021-12-12T12:57:06",
+    "lap": 1,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS DISABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:03:22",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:04:33",
+    "lap": 1,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 44 (HAM) MISSED THE APEX OF TURN 7"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:06:19",
+    "lap": 2,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 7 INCIDENT INVOLVING CARS 33 (VER) AND 44 (HAM) NO INVESTIGATION NECESSARY"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:06:35",
+    "lap": 3,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:08:19",
+    "lap": 4,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 47 (MSC) TIME 1:33.612 DELETED - TRACK LIMITS AT TURN 7"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:09:53",
+    "lap": 5,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 18 (STR) TIME 1:31.871 DELETED - TRACK LIMITS AT TURN 15"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:23:39",
+    "lap": 14,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 16 (LEC) OFF TRACK AND CONTINUED AT TURN 4"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:27:47",
+    "lap": 17,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 33 (VER) TIME 1:29.006 DELETED - TRACK LIMITS AT TURN 15"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:30:03",
+    "lap": 18,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 5 (VET) TIME 1:30.310 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:31:30",
+    "lap": 19,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 5 (VET) TIME 1:30.160 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:06",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:07",
+    "lap": 26,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:30",
+    "lap": 26,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 7 (RAI) STOPPED AT TURN 6"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:41",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:47",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:47",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:41:47",
+    "lap": 26,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:42:13",
+    "lap": 27,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 7 (RAI) TIMED AT 17:42:12"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:44:11",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 63 (RUS) TIMED AT 17:44:11"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:44:19",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 63 (RUS) TIMED AT 17:44:19"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:44:27",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 63 (RUS) TIMED AT 17:44:26"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:48:35",
+    "lap": 31,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 17:48:34"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:49:34",
+    "lap": 32,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 5 (VET) TIME 1:29.596 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:50:10",
+    "lap": 32,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 17:50:10"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:50:48",
+    "lap": 32,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 5 (VET) TIME 1:29.471 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:55:00",
+    "lap": 35,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 99 (GIO) MISSED THE APEX OF TURN 7"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:56:03",
+    "lap": 36,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:56:05",
+    "lap": 36,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 13"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:58:53",
+    "lap": 37,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR ENDING"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:59:00",
+    "lap": 38,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 13"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:59:06",
+    "lap": 38,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:59:09",
+    "lap": 38,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T13:59:13",
+    "lap": 38,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 17:59:12"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:00:41",
+    "lap": 39,
+    "category": "Other",
+    "flag": "None",
+    "message": " INCIDENT INVOLVING CARS 22 (TSU) AND 14 (ALO) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:01:11",
+    "lap": 39,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 18:01:11"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:01:58",
+    "lap": 40,
+    "category": "Other",
+    "flag": "None",
+    "message": " INCIDENT INVOLVING CARS 22 (TSU) AND 14 (ALO) NO INVESTIGATION NECESSARY"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:02:46",
+    "lap": 40,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 5 (VET) TIMED AT 18:02:45"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:06:38",
+    "lap": 43,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 16 (LEC) TIME 1:28.338 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:07:54",
+    "lap": 44,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 16 (LEC) TIME 1:28.729 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:09:41",
+    "lap": 45,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 18:09:41"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:11:04",
+    "lap": 46,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 6 (LAT) TIMED AT 18:11:03"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:11:20",
+    "lap": 46,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 16 (LEC) TIMED AT 18:11:19"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:11:51",
+    "lap": 46,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 18:11:50"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:11:52",
+    "lap": 46,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 3 (RIC) TIMED AT 18:11:51"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:12:28",
+    "lap": 47,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 5 (VET) TIMED AT 18:12:28"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:12:36",
+    "lap": 47,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 18 (STR) TIME 1:28.776 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:13:03",
+    "lap": 47,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 31 (OCO) TIMED AT 18:13:03"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:13:50",
+    "lap": 48,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 18 (STR) TIME 1:28.789 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:14:15",
+    "lap": 48,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 14 (ALO) TIMED AT 18:14:14"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:19:22",
+    "lap": 52,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 16 (LEC) TIMED AT 18:19:21"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:20:43",
+    "lap": 52,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 3 (RIC) TIMED AT 18:20:43"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:20:58",
+    "lap": 53,
+    "category": "Other",
+    "flag": "None",
+    "message": "CAR 6 (LAT) TIME 1:29.752 DELETED - TRACK LIMITS AT TURN 16"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:21:38",
+    "lap": 53,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:21:51",
+    "lap": 53,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 17"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:21:51",
+    "lap": 53,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 31 (OCO) TIMED AT 18:21:51"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:21:54",
+    "lap": 53,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:23:16",
+    "lap": 54,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 15"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:27:55",
+    "lap": 56,
+    "category": "Other",
+    "flag": "None",
+    "message": "LAPPED CARS WILL NOT BE ALLOWED TO OVERTAKE"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:31:01",
+    "lap": 57,
+    "category": "Other",
+    "flag": "None",
+    "message": "LAPPED CARS 4 (NOR) - 14 - 31 - 16 - 5 TO OVERTAKE SAFETY CAR"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:31:19",
+    "lap": 57,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "SAFETY CAR IN THIS LAP"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:31:28",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 17"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:31:31",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 15"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:02",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:02",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 18"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:12",
+    "lap": 57,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 18:32:11"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:13",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 18:32:13"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:15",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 18:32:15"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:17",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 47 (MSC) TIMED AT 18:32:17"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:32:42",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 18 (STR) TIMED AT 18:32:41"
+  },
+  {
+    "utc_timestamp": "2021-12-12T14:33:38",
+    "lap": 58,
+    "category": "Flag",
+    "flag": "CHEQUERED",
+    "message": "CHEQUERED FLAG"
+  }
+]

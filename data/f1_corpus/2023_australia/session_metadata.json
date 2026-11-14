@@ -1,0 +1,21 @@
+{
+  "race_id": "2023_australia",
+  "year": 2023,
+  "round": 3,
+  "official_event_name": "Australian Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "albert_park",
+  "circuit_key": "albert_park_2023",
+  "session_date_utc": "2023-04-02T05:00:00Z",
+  "primary_controversy": "3 red flags, chaotic late standing restart & countback grid order",
+  "key_drivers": [
+    "55",
+    "14",
+    "10",
+    "31"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "JOLPICA_F1_ERGAST",
+  "acquired_at_utc": "2026-11-13T18:19:08.805114+00:00",
+  "provider": "JOLPICA_F1_OPEN_DATA"
+}

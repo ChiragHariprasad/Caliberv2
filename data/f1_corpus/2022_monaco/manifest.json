@@ -1,0 +1,17 @@
+{
+  "race_id": "2022_monaco",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:8aa4738a99ba46e64158bbdf27ef17e3c56d69bfac21eb9407327ae9e0d6e992",
+    "entry_list.json": "sha256:720b386ec5808f8318e708d4614cdd2039b7d584579f6c0a12eb261bace27eae",
+    "laps.json": "sha256:33bbdb8db87716dfa99372509270c59168f4f5baddd8dd179743645b87aa2687",
+    "race_control_log.json": "sha256:fa68df7f724b47fc6f83699f3d5afc62941433ed15c52c5a80f3afb73795ce26",
+    "weather.json": "sha256:dc4a3efa4db205793e84af88ac8e815601dec77b474a35b38edda6d3cd4b7355"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 1179,
+    "race_control_count": 168,
+    "weather_sample_count": 245
+  }
+}

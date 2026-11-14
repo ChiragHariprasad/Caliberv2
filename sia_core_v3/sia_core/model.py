@@ -23,6 +23,7 @@ class ScopeClass(str, Enum):
     DRIVER_SESSION = "DRIVER_SESSION"
     DRIVER_LAP = "DRIVER_LAP"
     SECTOR = "SECTOR"
+    ZONE = "ZONE"
 
 
 SCOPE_FIELDS: Dict[ScopeClass, Tuple[str, ...]] = {
@@ -30,10 +31,11 @@ SCOPE_FIELDS: Dict[ScopeClass, Tuple[str, ...]] = {
     ScopeClass.DRIVER_SESSION: ("session_id", "driver_id"),
     ScopeClass.DRIVER_LAP: ("session_id", "driver_id", "lap_number"),
     ScopeClass.SECTOR: ("session_id", "driver_id", "lap_number", "sector_number"),
+    ScopeClass.ZONE: ("session_id", "driver_id", "lap_number", "sector_number", "zone_id"),
 }
-SCOPE_RANK = {ScopeClass.SESSION: 0, ScopeClass.DRIVER_SESSION: 1, ScopeClass.DRIVER_LAP: 2, ScopeClass.SECTOR: 3}
+SCOPE_RANK = {ScopeClass.SESSION: 0, ScopeClass.DRIVER_SESSION: 1, ScopeClass.DRIVER_LAP: 2, ScopeClass.SECTOR: 3, ScopeClass.ZONE: 4}
 _ALIAS = {"session": "session_id", "driver": "driver_id", "driver_number": "driver_id",
-          "lap": "lap_number", "sector": "sector_number"}
+          "lap": "lap_number", "sector": "sector_number", "zone": "zone_id", "loop": "zone_id"}
 
 ScopeT = Tuple[Tuple[str, str], ...]
 

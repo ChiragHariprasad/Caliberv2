@@ -1,0 +1,17 @@
+{
+  "race_id": "2024_united_states",
+  "manifest_version": "calibre-corpus-manifest/1.0",
+  "checksums": {
+    "session_metadata.json": "sha256:acedb7e43825af652a12e3754348f0914b932f4fe3eb4b3465e349b569c12aec",
+    "entry_list.json": "sha256:1f47360a54c2e446ef41eec3691c96ee89a5f8ed091351f0ac6f6a008fd04cd8",
+    "laps.json": "sha256:21ae6c2933dc7a0901d447b8c06a5346c6e97c1060faad1805e1db78e25eba81",
+    "race_control_log.json": "sha256:88ba6224f96ac5835e30ac86b01c8f5680e19b1728c565367556fd6eee64e4c1",
+    "weather.json": "sha256:1f8ee4a24104db7935f978e1e6e54348626e90590703ad224bc0e18c24af9abf"
+  },
+  "stats": {
+    "driver_count": 20,
+    "lap_count": 43,
+    "race_control_count": 2,
+    "weather_sample_count": 1
+  }
+}
