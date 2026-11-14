@@ -175,6 +175,15 @@ class StateStore:
             if entry_file is not None and entry_file.exists():
                 entries = json.loads(entry_file.read_text(encoding="utf-8"))
                 self.projector.load_session_entry_list(entries)
+
+            if "agent-06-integrity" in self.agents:
+                try:
+                    self.agents["agent-06-integrity"].initialize_session_grid(
+                        session_id, list(self.projector.drivers.keys())
+                    )
+                except Exception as e:
+                    logger.debug("Failed initializing session grid on integrity agent: %s", e)
+
             logger.info("Session switched to HISTORICAL [%s] (%d drivers, file: %s)", session_id, len(self.projector.drivers), str(entry_file))
             self.notify_session_state()
             self.notify_driver_state()
@@ -194,6 +203,14 @@ class StateStore:
             self.findings.clear()
             self.latest_assessments.clear()
             self.assessment_history.clear()
+
+            if "agent-06-integrity" in self.agents:
+                try:
+                    self.agents["agent-06-integrity"].initialize_session_grid(
+                        session_id, list(self.projector.drivers.keys())
+                    )
+                except Exception as e:
+                    logger.debug("Failed initializing session grid on integrity agent: %s", e)
             logger.info("Session switched to SIMULATION [%s]", session_id)
             self.notify_session_state()
             self.notify_driver_state()

@@ -432,33 +432,47 @@ class RaceStateProjector:
                     self.current_lap = max(self.current_lap, p["lap"])
                 if "tyre" in p:
                     self.drivers[dn]["tyre"] = p["tyre"]
+                    if "tyre_compound" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["value"] = p["tyre"]
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["quality"] = "AVAILABLE"
                 if "tyre_age" in p:
                     self.drivers[dn]["tyreAge"] = p["tyre_age"]
+                    if "stint_age" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["stint_age"]["value"] = p["tyre_age"]
+                        self.drivers[dn]["telemetry"]["stint_age"]["quality"] = "AVAILABLE"
                 if "status" in p and p["status"]:
                     self.drivers[dn]["status"] = p["status"]
 
-                # Update CAN-bus telemetry channels
+                # Update CAN-bus telemetry channels with correct values and quality flags
                 if "speed" in p and "speed" in self.drivers[dn].get("telemetry", {}):
                     self.drivers[dn]["telemetry"]["speed"]["value"] = p["speed"]
+                    self.drivers[dn]["telemetry"]["speed"]["quality"] = "AVAILABLE" if p["speed"] is not None else "UNAVAILABLE"
                 if "throttle" in p and "throttle" in self.drivers[dn].get("telemetry", {}):
                     self.drivers[dn]["telemetry"]["throttle"]["value"] = p["throttle"]
+                    self.drivers[dn]["telemetry"]["throttle"]["quality"] = "AVAILABLE" if p["throttle"] is not None else "UNAVAILABLE"
                 if "brake" in p and "brake" in self.drivers[dn].get("telemetry", {}):
                     self.drivers[dn]["telemetry"]["brake"]["value"] = p["brake"]
+                    self.drivers[dn]["telemetry"]["brake"]["quality"] = "AVAILABLE" if p["brake"] is not None else "UNAVAILABLE"
                 if "gear" in p and "gear" in self.drivers[dn].get("telemetry", {}):
                     self.drivers[dn]["telemetry"]["gear"]["value"] = p["gear"]
+                    self.drivers[dn]["telemetry"]["gear"]["quality"] = "AVAILABLE" if p["gear"] is not None else "UNAVAILABLE"
                 if "rpm" in p:
                     if "rpm" in self.drivers[dn].get("telemetry", {}):
                         self.drivers[dn]["telemetry"]["rpm"]["value"] = p["rpm"]
+                        self.drivers[dn]["telemetry"]["rpm"]["quality"] = "AVAILABLE" if p["rpm"] is not None else "UNAVAILABLE"
                     if "engine_rpm" in self.drivers[dn].get("telemetry", {}):
                         self.drivers[dn]["telemetry"]["engine_rpm"]["value"] = p["rpm"]
+                        self.drivers[dn]["telemetry"]["engine_rpm"]["quality"] = "AVAILABLE" if p["rpm"] is not None else "UNAVAILABLE"
                 if "drs" in p:
                     if "drs" in self.drivers[dn].get("telemetry", {}):
                         self.drivers[dn]["telemetry"]["drs"]["value"] = p["drs"]
+                        self.drivers[dn]["telemetry"]["drs"]["quality"] = "AVAILABLE" if p["drs"] is not None else "UNAVAILABLE"
                     if "drs_status" in self.drivers[dn].get("telemetry", {}):
                         self.drivers[dn]["telemetry"]["drs_status"]["value"] = p["drs"]
+                        self.drivers[dn]["telemetry"]["drs_status"]["quality"] = "AVAILABLE" if p["drs"] is not None else "UNAVAILABLE"
 
                 # Append to history point for telemetry modal charts
-                if "speed" in p:
+                if "speed" in p and p["speed"] is not None:
                     if "history" not in self.drivers[dn]:
                         self.drivers[dn]["history"] = []
                     self.drivers[dn]["history"].append({
@@ -470,8 +484,11 @@ class RaceStateProjector:
                         "rpm": p.get("rpm", 0),
                         "drs": p.get("drs", 0),
                     })
-                    if len(self.drivers[dn]["history"]) > 25:
+                    if len(self.drivers[dn]["history"]) > 30:
                         self.drivers[dn]["history"].pop(0)
+                    hist_len = len(self.drivers[dn]["history"])
+                    for idx_h, pt in enumerate(self.drivers[dn]["history"]):
+                        pt["time_offset_s"] = round(-(hist_len - 1 - idx_h) * 0.5, 1)
 
         elif event_type == "LAP_COMPLETED":
             dn = envelope.subject.driver_number

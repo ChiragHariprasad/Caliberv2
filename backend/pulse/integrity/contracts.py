@@ -17,7 +17,7 @@ get_contract_by_id()          -> dict | None  single contract lookup
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 _VERSION = "1.0.0"
 _EPOCH = 1
@@ -234,7 +234,7 @@ def _weather_contract() -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
-_ALL_CONTRACTS: dict[str, callable] = {
+_ALL_CONTRACTS: dict[str, Callable[[], dict[str, Any]]] = {
     "lap_time": _lap_time_contract,
     "pit_speed": _pit_speed_contract,
     "sector_time": _sector_time_contract,

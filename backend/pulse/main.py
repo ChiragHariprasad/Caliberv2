@@ -268,6 +268,7 @@ async def lifespan(app: FastAPI):
     replay_controller = get_replay_controller()
     replay_controller.set_event_processor(process_replay_event)
     replay_controller.set_reset_hook(normalizer.reset)
+    store.switch_session(replay_controller.session_id)
     logger.info("Backend ReplayController initialized in READY state (session: %s).", replay_controller.session_id)
 
     yield

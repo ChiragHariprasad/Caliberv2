@@ -1,19 +1,42 @@
-"""Generates complete captures for all 7 landmark controversy F1 races.
+"""Generates complete high-frequency captures for all 7 landmark controversy F1 races.
 Produces entry_list.json, session_info.json, capture_manifest.json, and envelopes.jsonl.
+Features dynamic physical telemetry based on circuit geometry, cornering, braking, DRS,
+timing sector completions, and race control events.
 """
 from __future__ import annotations
 
 import json
 import math
 import os
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any, Dict, List, Optional, TypedDict
+
+try:
+    from datetime import UTC  # Python 3.11+
+except ImportError:
+    UTC = timezone.utc  # Fallback for Python 3.10 and earlier
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 CAPTURES_ROOT = WORKSPACE_ROOT / "captures"
 CORPUS_ROOT = WORKSPACE_ROOT / "data" / "f1_corpus"
+CIRCUITS_ROOT = WORKSPACE_ROOT / "backend" / "pulse" / "circuits" / "data"
 
-GRID_DRIVERS = [
+
+class DriverSpec(TypedDict):
+    number: int
+    driver_id: str
+    name: str
+    initials: str
+    team: str
+    teamColor: str
+    position: int
+    grid_position: int
+    pace: float
+    tyre: str
+
+
+GRID_DRIVERS: list[DriverSpec] = [
     {"number": 1, "driver_id": "max_verstappen", "name": "Max Verstappen", "initials": "MV", "team": "Red Bull Racing", "teamColor": "#3671C6", "position": 1, "grid_position": 1, "pace": 1.000, "tyre": "M"},
     {"number": 4, "driver_id": "lando_norris", "name": "Lando Norris", "initials": "LN", "team": "McLaren", "teamColor": "#FF8000", "position": 2, "grid_position": 2, "pace": 0.998, "tyre": "M"},
     {"number": 16, "driver_id": "charles_leclerc", "name": "Charles Leclerc", "initials": "CL", "team": "Ferrari", "teamColor": "#E80020", "position": 3, "grid_position": 3, "pace": 0.997, "tyre": "M"},
@@ -38,17 +61,45 @@ GRID_DRIVERS = [
 
 NEW_SESSIONS = [
     {
+        "session_id": "f1-2023-australia",
+        "grand_prix": "Australian Grand Prix 2023",
+        "circuit_id": "albert_park",
+        "circuit_length": 5278.0,
+        "total_laps": 58,
+        "start_time_iso": "2023-04-02T05:00:00Z",
+        "duration_seconds": 600,
+        "sc_start_s": 220,
+        "sc_end_s": 380,
+        "vsc_start_s": 460,
+        "vsc_end_s": 520,
+        "corpus_dir": "2023_australia",
+    },
+    {
+        "session_id": "f1-2023-austria",
+        "grand_prix": "Austrian Grand Prix 2023",
+        "circuit_id": "red_bull_ring",
+        "circuit_length": 4318.0,
+        "total_laps": 71,
+        "start_time_iso": "2023-07-02T13:00:00Z",
+        "duration_seconds": 600,
+        "sc_start_s": None,
+        "sc_end_s": None,
+        "vsc_start_s": 240,
+        "vsc_end_s": 350,
+        "corpus_dir": "2023_austria",
+    },
+    {
         "session_id": "f1-2021-abu-dhabi",
         "grand_prix": "Abu Dhabi Grand Prix 2021",
         "circuit_id": "yas_marina",
         "circuit_length": 5281.0,
         "total_laps": 58,
         "start_time_iso": "2021-12-12T13:00:00Z",
-        "duration_seconds": 1800,  # 30 mins stream capture
-        "sc_start_s": 1400,
-        "sc_end_s": 1700,
-        "vsc_start_s": 700,
-        "vsc_end_s": 850,
+        "duration_seconds": 600,
+        "sc_start_s": 350,
+        "sc_end_s": 520,
+        "vsc_start_s": 150,
+        "vsc_end_s": 210,
         "corpus_dir": "2021_abu_dhabi",
     },
     {
@@ -58,9 +109,9 @@ NEW_SESSIONS = [
         "circuit_length": 7004.0,
         "total_laps": 44,
         "start_time_iso": "2021-08-29T13:00:00Z",
-        "duration_seconds": 1800,
+        "duration_seconds": 600,
         "sc_start_s": 0,
-        "sc_end_s": 1800,
+        "sc_end_s": 600,
         "vsc_start_s": None,
         "vsc_end_s": None,
         "corpus_dir": "2021_belgium",
@@ -72,40 +123,12 @@ NEW_SESSIONS = [
         "circuit_length": 6174.0,
         "total_laps": 50,
         "start_time_iso": "2021-12-05T17:30:00Z",
-        "duration_seconds": 1800,
-        "sc_start_s": 400,
-        "sc_end_s": 650,
-        "vsc_start_s": 1100,
-        "vsc_end_s": 1300,
+        "duration_seconds": 600,
+        "sc_start_s": 200,
+        "sc_end_s": 340,
+        "vsc_start_s": 420,
+        "vsc_end_s": 480,
         "corpus_dir": "2021_saudi_arabia",
-    },
-    {
-        "session_id": "f1-2023-austria",
-        "grand_prix": "Austrian Grand Prix 2023",
-        "circuit_id": "red_bull_ring",
-        "circuit_length": 4318.0,
-        "total_laps": 71,
-        "start_time_iso": "2023-07-02T13:00:00Z",
-        "duration_seconds": 1800,
-        "sc_start_s": None,
-        "sc_end_s": None,
-        "vsc_start_s": 500,
-        "vsc_end_s": 700,
-        "corpus_dir": "2023_austria",
-    },
-    {
-        "session_id": "f1-2023-australia",
-        "grand_prix": "Australian Grand Prix 2023",
-        "circuit_id": "albert_park",
-        "circuit_length": 5278.0,
-        "total_laps": 58,
-        "start_time_iso": "2023-04-02T05:00:00Z",
-        "duration_seconds": 1800,
-        "sc_start_s": 300,
-        "sc_end_s": 550,
-        "vsc_start_s": 900,
-        "vsc_end_s": 1050,
-        "corpus_dir": "2023_australia",
     },
     {
         "session_id": "f1-2024-united-states",
@@ -114,11 +137,11 @@ NEW_SESSIONS = [
         "circuit_length": 5513.0,
         "total_laps": 56,
         "start_time_iso": "2024-10-20T19:00:00Z",
-        "duration_seconds": 1800,
-        "sc_start_s": 200,
-        "sc_end_s": 400,
-        "vsc_start_s": 1200,
-        "vsc_end_s": 1350,
+        "duration_seconds": 600,
+        "sc_start_s": 180,
+        "sc_end_s": 310,
+        "vsc_start_s": 450,
+        "vsc_end_s": 510,
         "corpus_dir": "2024_united_states",
     },
     {
@@ -128,16 +151,143 @@ NEW_SESSIONS = [
         "circuit_length": 6201.0,
         "total_laps": 50,
         "start_time_iso": "2023-11-19T06:00:00Z",
-        "duration_seconds": 1800,
-        "sc_start_s": 250,
-        "sc_end_s": 500,
-        "vsc_start_s": 1100,
-        "vsc_end_s": 1250,
+        "duration_seconds": 600,
+        "sc_start_s": 160,
+        "sc_end_s": 300,
+        "vsc_start_s": 420,
+        "vsc_end_s": 490,
         "corpus_dir": "2023_las_vegas",
     },
 ]
 
-def generate_session_capture(config):
+def load_circuit_corners(circuit_id: str) -> list[dict]:
+    circuit_file = CIRCUITS_ROOT / f"{circuit_id}.json"
+    if circuit_file.exists():
+        try:
+            data = json.loads(circuit_file.read_text(encoding="utf-8"))
+            corners = data.get("corners", [])
+            if corners:
+                return corners
+        except Exception:
+            pass
+    # Fallback generic corners along circuit
+    return [
+        {"number": 1, "track_progress": 0.12, "apex_speed_kmh": 120.0},
+        {"number": 4, "track_progress": 0.35, "apex_speed_kmh": 95.0},
+        {"number": 7, "track_progress": 0.58, "apex_speed_kmh": 140.0},
+        {"number": 10, "track_progress": 0.78, "apex_speed_kmh": 110.0},
+        {"number": 12, "track_progress": 0.92, "apex_speed_kmh": 180.0},
+    ]
+
+def compute_telemetry_physics(
+    prog: float,
+    pace: float,
+    driver_offset: float,
+    active_sc: bool,
+    active_vsc: bool,
+    corners: list[dict],
+) -> dict:
+    """Computes physically realistic vehicle telemetry based on track location and corners."""
+    if active_sc:
+        base_speed = 120.0 + math.sin(prog * 10) * 12.0
+        throttle = 42.0 + math.sin(prog * 15) * 8.0
+        brake = 0.0 if math.sin(prog * 8) > -0.7 else 25.0
+        gear = 4
+        rpm = 8800 + int(throttle * 20)
+        drs = 0
+        return {
+            "speed": round(base_speed, 1),
+            "throttle": round(throttle, 1),
+            "brake": round(brake, 1),
+            "gear": gear,
+            "rpm": rpm,
+            "drs": drs,
+        }
+
+    if active_vsc:
+        base_speed = 160.0 + math.sin(prog * 10) * 15.0
+        throttle = 55.0 + math.sin(prog * 15) * 10.0
+        brake = 0.0 if math.sin(prog * 8) > -0.6 else 30.0
+        gear = 5
+        rpm = 9400 + int(throttle * 25)
+        drs = 0
+        return {
+            "speed": round(base_speed, 1),
+            "throttle": round(throttle, 1),
+            "brake": round(brake, 1),
+            "gear": gear,
+            "rpm": rpm,
+            "drs": drs,
+        }
+
+    # Find the closest corner ahead
+    min_dist = 1.0
+    target_corner = None
+    for c in corners:
+        cp = c.get("track_progress", 0.5)
+        d = (cp - prog) % 1.0
+        if d < min_dist:
+            min_dist = d
+            target_corner = c
+
+    apex_speed = target_corner.get("apex_speed_kmh", 120.0) if target_corner else 120.0
+    apex_speed = apex_speed * (0.96 + 0.08 * driver_offset)
+
+    if min_dist < 0.045:
+        # Heavy braking zone approaching corner apex
+        braking_intensity = (1.0 - (min_dist / 0.045))
+        brake = min(100.0, 50.0 + braking_intensity * 50.0 + driver_offset * 5.0)
+        throttle = 0.0
+        speed = apex_speed + (310.0 * pace - apex_speed) * (1.0 - braking_intensity * 0.9)
+        drs = 0
+    elif min_dist > 0.975:
+        # Exit phase just past apex
+        exit_intensity = (min_dist - 0.975) / 0.025
+        brake = 0.0
+        throttle = 40.0 + exit_intensity * 55.0
+        speed = apex_speed + exit_intensity * 60.0
+        drs = 0
+    else:
+        # Straight / full acceleration
+        brake = 0.0
+        throttle = 100.0
+        # Speed builds up along the straight
+        straight_ratio = min(1.0, (min_dist - 0.045) / 0.20)
+        top_speed = (325.0 + driver_offset * 12.0) * pace
+        speed = apex_speed + 60.0 + (top_speed - (apex_speed + 60.0)) * (1.0 - straight_ratio)
+        speed = min(top_speed, max(apex_speed, speed))
+        drs = 1 if (speed > 270.0 and min_dist > 0.08) else 0
+
+    # Gear calculation from speed
+    if speed > 295.0:
+        gear = 8
+    elif speed > 255.0:
+        gear = 7
+    elif speed > 205.0:
+        gear = 6
+    elif speed > 155.0:
+        gear = 5
+    elif speed > 110.0:
+        gear = 4
+    elif speed > 75.0:
+        gear = 3
+    else:
+        gear = 2
+
+    # RPM based on speed within gear
+    rpm_base = 8600 + int(((speed % 45.0) / 45.0) * 3600.0) + int(throttle * 5.5)
+    rpm = min(12850, max(8400, rpm_base))
+
+    return {
+        "speed": round(speed, 1),
+        "throttle": round(throttle, 1),
+        "brake": round(brake, 1),
+        "gear": gear,
+        "rpm": rpm,
+        "drs": drs,
+    }
+
+def generate_session_capture(config: dict) -> None:
     session_id = config["session_id"]
     circuit_id = config["circuit_id"]
     grand_prix = config["grand_prix"]
@@ -147,6 +297,8 @@ def generate_session_capture(config):
     
     out_dir = CAPTURES_ROOT / session_id
     out_dir.mkdir(parents=True, exist_ok=True)
+    
+    corners = load_circuit_corners(circuit_id)
     
     # 1. Session Info
     session_info = {
@@ -192,19 +344,20 @@ def generate_session_capture(config):
             "tyre": d["tyre"],
             "stint": 1,
             "tyreAge": 0,
-            "speed": 280.0,
+            "speed": 285.0,
             "gear": 7,
-            "rpm": 11500,
+            "rpm": 11600,
         })
     (out_dir / "entry_list.json").write_text(json.dumps(entry_entries, indent=2), encoding="utf-8")
     
-    # 4. Envelopes Generator
+    # 4. Envelopes Generator (500ms cadence)
     event_seq = 1
-    prefix = session_id.split("-")[2][:4]
+    parts = session_id.split("-")
+    prefix = parts[2][:4] if len(parts) > 2 else session_id[:4]
+    season = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 2023
     
-    def make_envelope(evt_type: str, drv_num: int | None, t_s: float, payload: dict) -> dict:
+    def make_envelope(evt_type: str, drv_num: Optional[int], t_ms: int, payload: Dict[str, Any]) -> Dict[str, Any]:
         nonlocal event_seq
-        t_ms = int(t_s * 1000)
         evt_time = base_time + timedelta(milliseconds=t_ms)
         eid = f"evt-{prefix}-{event_seq:07d}"
         event_seq += 1
@@ -225,7 +378,7 @@ def generate_session_capture(config):
                 "mode": "REPLAY",
             },
             "session": {
-                "season": int(session_id.split("-")[1]),
+                "season": season,
                 "meeting_id": session_id,
                 "session_id": session_id,
                 "session_type": "RACE",
@@ -251,54 +404,73 @@ def generate_session_capture(config):
 
     env_path = out_dir / "envelopes.jsonl"
     with open(env_path, "w", encoding="utf-8") as f:
-        # Start events
+        # Start events at t=0
         f.write(json.dumps(make_envelope("SESSION_ENTRY_LIST", None, 0, {"entries": entry_entries, "total_drivers": 20})) + "\n")
         f.write(json.dumps(make_envelope("SESSION_STARTED", None, 0, {"session_name": grand_prix, "circuit_id": circuit_id, "total_laps": total_laps})) + "\n")
-        f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, 1, {"status": "GREEN", "message": "FORMATION LAP COMPLETE · RACE START"})) + "\n")
-        f.write(json.dumps(make_envelope("WEATHER_OBSERVATION", None, 1, {"air_temp_c": 24.5, "track_temp_c": 36.2, "humidity_percent": 50.0, "rain_risk_percent": 0.0})) + "\n")
+        f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, 500, {"status": "GREEN", "message": "FORMATION LAP COMPLETE · RACE START"})) + "\n")
+        f.write(json.dumps(make_envelope("WEATHER_OBSERVATION", None, 500, {"air_temp_c": 23.8, "track_temp_c": 35.4, "humidity_percent": 52.0, "rain_risk_percent": 0.0})) + "\n")
         
-        # Load any real historical race control notices from corpus
-        corpus_rc = CORPUS_ROOT / config["corpus_dir"] / "race_control_log.json"
+        # Load real historical race control notices
+        corpus_rc = CORPUS_ROOT / config.get("corpus_dir", "") / "race_control_log.json"
         notices_to_inject = []
         if corpus_rc.exists():
             try:
                 rc_data = json.loads(corpus_rc.read_text(encoding="utf-8"))
-                for idx, notice in enumerate(rc_data[:15]):
-                    notices_to_inject.append((30 + idx * 45, notice.get("message", "NOTICE"), notice.get("flag", "CLEAR")))
+                for idx, notice in enumerate(rc_data[:12]):
+                    notices_to_inject.append((25 + idx * 45, notice.get("message", "NOTICE"), notice.get("flag", "CLEAR")))
             except Exception:
                 pass
         
-        # Generate 1-second interval packets for cars
         active_sc = False
         active_vsc = False
-        lap_progress = {d["number"]: 0.0 for d in GRID_DRIVERS}
+        # Initialize lap progress with slight grid stagger
+        lap_progress = {d["number"]: max(0.0, 1.0 - (d["position"] - 1) * 0.018) for d in GRID_DRIVERS}
         current_lap = {d["number"]: 1 for d in GRID_DRIVERS}
+        sector_crossed = {d["number"]: 0 for d in GRID_DRIVERS}
+        tyre_age = {d["number"]: 0 for d in GRID_DRIVERS}
         
         sc_s = config.get("sc_start_s")
         sc_e = config.get("sc_end_s")
         vsc_s = config.get("vsc_start_s")
         vsc_e = config.get("vsc_end_s")
         
-        # Simulate every 2 seconds for high performance while keeping high temporal resolution
-        for t in range(2, duration, 2):
-            if sc_s is not None and t == sc_s:
+        # 500ms cadence: step = 0.5s = 500ms
+        steps = int(duration * 2)
+        circuit_length = config["circuit_length"]
+        
+        for step_idx in range(1, steps):
+            t_s = step_idx * 0.5
+            t_ms = int(t_s * 1000)
+            
+            # Safety car transitions
+            if sc_s is not None and t_s == sc_s:
                 active_sc = True
-                f.write(json.dumps(make_envelope("SAFETY_CAR_DEPLOYED", None, t, {"status": "SC", "message": "SAFETY CAR DEPLOYED"})) + "\n")
-            elif sc_e is not None and t == sc_e:
+                f.write(json.dumps(make_envelope("SAFETY_CAR_DEPLOYED", None, t_ms, {"status": "SC", "message": "SAFETY CAR DEPLOYED · ACCIDENT ON TRACK"})) + "\n")
+                f.write(json.dumps(make_envelope("TRACK_STATUS_UPDATE", None, t_ms, {"status": "YELLOW", "sector": 2, "message": "SECTOR 2 YELLOW FLAG"})) + "\n")
+            elif sc_e is not None and t_s == sc_e:
                 active_sc = False
-                f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, t, {"status": "GREEN", "message": "SAFETY CAR IN THIS LAP"})) + "\n")
+                f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, t_ms, {"status": "GREEN", "message": "SAFETY CAR IN THIS LAP"})) + "\n")
                 
-            if vsc_s is not None and t == vsc_s and not active_sc:
+            if vsc_s is not None and t_s == vsc_s and not active_sc:
                 active_vsc = True
-                f.write(json.dumps(make_envelope("VSC_DEPLOYED", None, t, {"status": "VSC", "message": "VIRTUAL SAFETY CAR DEPLOYED"})) + "\n")
-            elif vsc_e is not None and t == vsc_e and active_vsc:
+                f.write(json.dumps(make_envelope("VSC_DEPLOYED", None, t_ms, {"status": "VSC", "message": "VIRTUAL SAFETY CAR DEPLOYED"})) + "\n")
+            elif vsc_e is not None and t_s == vsc_e and active_vsc:
                 active_vsc = False
-                f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, t, {"status": "GREEN", "message": "VSC ENDING · GREEN FLAG"})) + "\n")
+                f.write(json.dumps(make_envelope("TRACK_STATUS_GREEN", None, t_ms, {"status": "GREEN", "message": "VSC ENDING · TRACK CLEAR"})) + "\n")
                 
-            # Inject historical notice if timestamp matches
+            # Periodic Weather update
+            if t_ms % 60000 == 0:
+                f.write(json.dumps(make_envelope("WEATHER_OBSERVATION", None, t_ms, {
+                    "air_temp_c": round(23.5 + math.sin(t_s / 300.0) * 1.5, 1),
+                    "track_temp_c": round(35.0 + math.cos(t_s / 300.0) * 2.0, 1),
+                    "humidity_percent": 52.0,
+                    "rain_risk_percent": 0.0,
+                })) + "\n")
+                
+            # Race control notices
             for n_t, n_msg, n_flag in notices_to_inject:
-                if t <= n_t < t + 2:
-                    f.write(json.dumps(make_envelope("RACE_CONTROL_NOTICE", None, t, {
+                if abs(t_s - n_t) < 0.26:
+                    f.write(json.dumps(make_envelope("RACE_CONTROL_NOTICE", None, t_ms, {
                         "title": "FIA RACE CONTROL NOTICE",
                         "category": "NOTICE",
                         "flag": n_flag,
@@ -306,39 +478,107 @@ def generate_session_capture(config):
                         "regulatory_reference": "FIA Sporting Regulations",
                     })) + "\n")
                     
-            # 20 Cars telemetry
+            # 20 Cars high-fidelity 500ms telemetry
             for d in GRID_DRIVERS:
                 num = d["number"]
-                speed_scale = 0.55 if active_sc else (0.65 if active_vsc else d["pace"])
-                base_speed = 220.0 * speed_scale
+                pace = d["pace"]
+                drv_offset = (num % 7) * 0.15 - 0.45
+                prog = lap_progress[num]
                 
-                # Progress along track
-                speed_m_s = (base_speed * 1000.0) / 3600.0
-                dist_traveled = speed_m_s * 2.0
-                lap_len = config["circuit_length"]
-                lap_progress[num] += (dist_traveled / lap_len)
-                if lap_progress[num] >= 1.0:
-                    lap_progress[num] -= 1.0
-                    current_lap[num] = min(total_laps, current_lap[num] + 1)
+                # Compute telemetry physics for this driver at this exact spot
+                phys = compute_telemetry_physics(
+                    prog=prog,
+                    pace=pace,
+                    driver_offset=drv_offset,
+                    active_sc=active_sc,
+                    active_vsc=active_vsc,
+                    corners=corners,
+                )
+                
+                # Progress along circuit for 0.5s dt
+                speed_m_s = (phys["speed"] * 1000.0) / 3600.0
+                dist_traveled = speed_m_s * 0.5
+                old_prog = prog
+                new_prog = prog + (dist_traveled / circuit_length)
+                
+                # Check Sector completions
+                if old_prog < 0.33 <= new_prog:
+                    sector_crossed[num] = 1
+                    s1_time = round(28.2 + (1.0 - pace) * 20.0 + drv_offset * 0.2, 3)
+                    f.write(json.dumps(make_envelope("SECTOR_COMPLETED", num, t_ms, {
+                        "driver_number": num,
+                        "sector_number": 1,
+                        "sector_time_seconds": s1_time,
+                        "lap": current_lap[num],
+                    })) + "\n")
+                elif old_prog < 0.66 <= new_prog:
+                    sector_crossed[num] = 2
+                    s2_time = round(31.4 + (1.0 - pace) * 22.0 + drv_offset * 0.2, 3)
+                    f.write(json.dumps(make_envelope("SECTOR_COMPLETED", num, t_ms, {
+                        "driver_number": num,
+                        "sector_number": 2,
+                        "sector_time_seconds": s2_time,
+                        "lap": current_lap[num],
+                    })) + "\n")
                     
+                # Check Lap completion
+                if new_prog >= 1.0:
+                    new_prog -= 1.0
+                    current_lap[num] = min(total_laps, current_lap[num] + 1)
+                    tyre_age[num] += 1
+                    lap_time = round(84.5 + (1.0 - pace) * 50.0 + drv_offset * 0.5, 3)
+                    f.write(json.dumps(make_envelope("LAP_COMPLETED", num, t_ms, {
+                        "driver_number": num,
+                        "lap": current_lap[num],
+                        "lap_time_seconds": lap_time,
+                        "tyre_compound": d["tyre"],
+                        "tyre_age": tyre_age[num],
+                    })) + "\n")
+                    
+                lap_progress[num] = new_prog
                 cur_lap = current_lap[num]
-                prog = round(lap_progress[num], 4)
                 
-                # Write driver telemetry envelope
-                f.write(json.dumps(make_envelope("DRIVER_TELEMETRY", num, t, {
+                # Emit high-speed trap
+                if old_prog < 0.88 <= new_prog and not active_sc and not active_vsc:
+                    f.write(json.dumps(make_envelope("SPEED_TRAP", num, t_ms, {
+                        "driver_number": num,
+                        "speed_kph": round(phys["speed"], 1),
+                        "trap_id": "ST01_MAIN_STRAIGHT",
+                    })) + "\n")
+                    
+                # Scheduled Pit Speed test at ~t=120s for car #1 and car #44
+                if 120 <= t_s < 122:
+                    if num == 1:
+                        # Max pit speed check
+                        f.write(json.dumps(make_envelope("PIT_SPEED", 1, t_ms, {
+                            "driver_number": 1,
+                            "speed_kph": 79.2,
+                            "pit_lane_limit_kph": 80.0,
+                            "location": "PIT_IN_GATE",
+                        })) + "\n")
+                    elif num == 44:
+                        f.write(json.dumps(make_envelope("PIT_SPEED", 44, t_ms, {
+                            "driver_number": 44,
+                            "speed_kph": 78.6,
+                            "pit_lane_limit_kph": 80.0,
+                            "location": "PIT_IN_GATE",
+                        })) + "\n")
+                        
+                # Driver Telemetry & Position Update (500ms cadence)
+                f.write(json.dumps(make_envelope("DRIVER_TELEMETRY", num, t_ms, {
                     "driver_number": num,
                     "driver_name": d["name"],
                     "position": d["position"],
                     "lap": cur_lap,
-                    "progress": prog,
-                    "speed": round(base_speed + math.sin(t + num) * 20.0, 1),
-                    "throttle": 85 if not active_sc else 45,
-                    "brake": 0 if not (t % 15 == 0) else 75,
-                    "gear": 7 if not active_sc else 4,
-                    "rpm": 11200 if not active_sc else 8500,
-                    "drs": 1 if (prog > 0.8 and not active_sc and not active_vsc) else 0,
+                    "progress": round(new_prog, 4),
+                    "speed": phys["speed"],
+                    "throttle": phys["throttle"],
+                    "brake": phys["brake"],
+                    "gear": phys["gear"],
+                    "rpm": phys["rpm"],
+                    "drs": phys["drs"],
                     "tyre": d["tyre"],
-                    "tyre_age": min(30, cur_lap),
+                    "tyre_age": tyre_age[num],
                     "status": "ACTIVE",
                 })) + "\n")
                 
@@ -347,4 +587,3 @@ def generate_session_capture(config):
 if __name__ == "__main__":
     for conf in NEW_SESSIONS:
         generate_session_capture(conf)
-

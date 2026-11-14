@@ -31,6 +31,7 @@ import { ParticipantShelf } from './components/trackside/ParticipantShelf';
 import { TacticalDrawer } from './components/trackside/TacticalDrawer';
 import { IntegrityMatrix } from './components/integrity/IntegrityMatrix';
 import { DecisionInspector } from './components/integrity/DecisionInspector';
+import { SiaLogicLabView } from './components/logic_lab/SiaLogicLabView';
 import { SuperpositionView } from './components/logic_lab/SuperpositionView';
 import { EntanglementGraph } from './components/logic_lab/EntanglementGraph';
 import { ContextualityDag } from './components/logic_lab/ContextualityDag';
@@ -316,8 +317,8 @@ export default function App() {
     const finalVerdict: SIAAssessment = v ?? {
       decision_instance_id: instanceId,
       revision_number: 1,
-      integrity_state: instanceId.includes('pit_speed') && instanceId.includes('d1') ? 'SUSPECT' : 'HEALTHY',
-      disposition: instanceId.includes('d44') && instanceId.includes('pit_speed') ? 'VOIDED' : 'NORMAL',
+      integrity_state: 'HEALTHY',
+      disposition: 'NORMAL',
       resolution_maturity: 'STATE_RESOLVED',
       finality_status: 'PROVISIONAL',
       verdict_hash: 'blake3:e9b17f8a3c4d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f',
@@ -553,31 +554,27 @@ export default function App() {
               verdicts={verdicts}
               onSelectDecision={handleSelectDecision}
               selectedInstanceId={selectedDecisionInstanceId}
+              sessionId={sessionId}
+              sessionName={snapshot.sessionName}
             />
           </div>
         )}
 
         {/* ============================================================ */}
-        {/* VIEW 3: SIA LOGIC LAB (Possible-world & origin entanglement)   */}
+        {/* VIEW 3: SIA LOGIC LAB (Deterministic formal workbench)        */}
         {/* ============================================================ */}
         {activeView === 'SIA_LOGIC_LAB' && (
-          <div className="sia-logic-lab-view">
-            <div className="grid-two-columns">
-              <SuperpositionView
-                decisionId="dec-pit_speed-d16"
-                contractId="pit_speed v1.0.0"
-                lowerBound="SUSPECT"
-                upperBound="HEALTHY"
-                currentState="SUSPECT"
-                maturity="OPEN"
-              />
-              <EntanglementGraph corroborationDepth={1} hasCommonCause={true} />
-            </div>
-
-            <div className="grid-two-columns">
-              <ContextualityDag atomId="atm-spd-88f2" roleId="timing_speed" />
-              <StateAlgebraTree />
-            </div>
+          <div className="sia-logic-lab-view-container">
+            <SiaLogicLabView
+              decisions={decisions}
+              verdicts={verdicts}
+              contracts={contracts}
+              drivers={snapshot.drivers}
+              sessionId={sessionId}
+              sessionName={snapshot.sessionName}
+              selectedDecisionId={selectedDecisionInstanceId}
+              onSelectDecision={handleSelectDecision}
+            />
           </div>
         )}
 
@@ -616,13 +613,20 @@ export default function App() {
       )}
 
       {/* 3-Click SIA Core v3 Decision Inspector Drawer */}
-      {inspectingAssessment && (
-        <DecisionInspector
-          assessment={inspectingAssessment}
-          explanation={inspectingExplanation}
-          onClose={() => setInspectingAssessment(null)}
-        />
-      )}
+      {inspectingAssessment && (() => {
+        const rawDriver = inspectingAssessment.scope?.driver || inspectingAssessment.scope?.driver_id;
+        const driverNum = rawDriver ? parseInt(String(rawDriver).replace('#', '').replace('d', ''), 10) : null;
+        const driverObj = snapshot.drivers.find((d) => d.number === driverNum);
+        return (
+          <DecisionInspector
+            assessment={inspectingAssessment}
+            explanation={inspectingExplanation}
+            driverName={driverObj?.name}
+            driverTeam={driverObj?.team}
+            onClose={() => setInspectingAssessment(null)}
+          />
+        );
+      })()}
 
       {/* Legacy Slide-over Evidence Drawer ("Why this?") */}
       <EvidenceDrawer

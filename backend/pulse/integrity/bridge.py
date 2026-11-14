@@ -27,7 +27,6 @@ from sia_core import (  # noqa: E402
     make_atom,
     make_fact,
     make_guard,
-    explain as sia_explain,
     fmt_instant,
     parse_instant,
     sec_to_us,

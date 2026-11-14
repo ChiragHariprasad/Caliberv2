@@ -350,6 +350,148 @@ class IntegrityAgent(BaseAgent):
 
         await self.emit_finding(finding)
 
+    def initialize_session_grid(self, session_id: str, drivers: list[Any]) -> None:
+        """Pre-opens decisions across active contracts for all drivers in the session grid."""
+        self._session_id = session_id
+        now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+        K = fmt_instant(now_us)
+
+        # Weather contract (SESSION scope)
+        if "weather_observation" in self._engine.contracts:
+            try:
+                self._engine.open_decision("weather_observation", {"session_id": session_id}, K, auto=True)
+            except Exception as e:
+                logger.debug("Failed opening weather decision: %s", e)
+
+        driver_nums = []
+        for d in drivers:
+            if isinstance(d, dict):
+                dn = d.get("number") or d.get("driver_number")
+            else:
+                dn = d
+            if dn is not None:
+                driver_nums.append(str(dn))
+
+        if not driver_nums:
+            driver_nums = [str(n) for n in [1, 4, 16, 44, 81, 63, 55, 11, 14, 23, 18, 10, 31, 22, 27, 20, 77, 24, 2, 21]]
+
+        for dn_str in driver_nums:
+            # lap_time contract (DRIVER_LAP scope)
+            if "lap_time" in self._engine.contracts:
+                try:
+                    self._engine.open_decision("lap_time", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1"}, K, auto=True)
+                except Exception as e:
+                    logger.debug("Failed opening lap_time for driver %s: %s", dn_str, e)
+
+            # driver_position contract (DRIVER_LAP scope)
+            if "driver_position" in self._engine.contracts:
+                try:
+                    self._engine.open_decision("driver_position", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1"}, K, auto=True)
+                except Exception as e:
+                    logger.debug("Failed opening driver_position for driver %s: %s", dn_str, e)
+
+            # sector_time contract (SECTOR scope)
+            if "sector_time" in self._engine.contracts:
+                try:
+                    self._engine.open_decision("sector_time", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1", "sector_number": "1"}, K, auto=True)
+                except Exception as e:
+                    logger.debug("Failed opening sector_time for driver %s: %s", dn_str, e)
+
+            # pit_speed contract (SECTOR scope)
+            if "pit_speed" in self._engine.contracts:
+                try:
+                    self._engine.open_decision("pit_speed", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1", "sector_number": "1"}, K, auto=True)
+                except Exception as e:
+                    logger.debug("Failed opening pit_speed for driver %s: %s", dn_str, e)
+
+        # Initial deterministic evaluation tick
+        try:
+            self._engine.tick(K)
+        except Exception as e:
+            logger.debug("Initial grid tick: %s", e)
+
+    def _find_instance_id(self, instance_id: str) -> str | None:
+        """Finds a matching decision instance ID, supporting aliases and prefix formats."""
+        if instance_id in self._engine.instances:
+            return instance_id
+
+        # Clean prefix and check direct match
+        clean = instance_id.replace("dec-", "").replace("dec_", "")
+        if clean in self._engine.instances:
+            return clean
+
+        # Attempt to match by contract and driver
+        matched_cid = None
+        for cid_candidate in self._engine.contracts:
+            if cid_candidate in clean or cid_candidate.replace("_", "-") in clean:
+                matched_cid = cid_candidate
+                break
+
+        parts = clean.split("-")
+        cid = matched_cid or parts[0]
+        dnum = None
+        for p in parts[1:]:
+            if p.startswith("d") and p[1:].isdigit():
+                dnum = p[1:]
+                break
+            elif p.isdigit():
+                dnum = p
+                break
+
+        for iid, inst in self._engine.instances.items():
+            scope_map = inst.scope_dict if hasattr(inst, "scope_dict") else dict(inst.scope)
+            if inst.contract_id == cid or cid in inst.contract_id:
+                if dnum is not None:
+                    if str(scope_map.get("driver_id")) == str(dnum):
+                        return iid
+                else:
+                    return iid
+        return None
+
+    def _ensure_decision_instance(self, instance_id: str) -> str | None:
+        """Dynamically ensures a decision instance exists for on-demand inspection."""
+        clean = instance_id.replace("dec-", "").replace("dec_", "")
+        matched_cid = None
+        for cid_candidate in self._engine.contracts:
+            if cid_candidate in clean or cid_candidate.replace("_", "-") in clean:
+                matched_cid = cid_candidate
+                break
+
+        parts = clean.split("-")
+        cid = matched_cid or parts[0]
+        dnum = "1"
+        for p in parts[1:]:
+            if p.startswith("d") and p[1:].isdigit():
+                dnum = p[1:]
+                break
+            elif p.isdigit():
+                dnum = p
+                break
+
+        sid = self._session_id or "f1-session"
+        now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+        K = fmt_instant(now_us)
+
+        for avail_cid in self._engine.contracts:
+            if avail_cid == cid or cid in avail_cid:
+                c = self._engine.contracts[avail_cid]
+                if c.scope_class == ScopeClass.SESSION:
+                    scope = {"session_id": sid}
+                elif c.scope_class in (ScopeClass.DRIVER_SESSION, ScopeClass.DRIVER_LAP):
+                    scope = {"session_id": sid, "driver_id": str(dnum), "lap_number": "1"}
+                else:
+                    scope = {"session_id": sid, "driver_id": str(dnum), "lap_number": "1", "sector_number": "1"}
+                try:
+                    iid = self._engine.open_decision(avail_cid, scope, K, auto=True)
+                    try:
+                        self._engine.evaluate(iid, K)
+                    except Exception:
+                        pass
+                    return iid
+                except Exception as e:
+                    logger.debug("Failed dynamic decision open: %s", e)
+        return None
+
     # ------------------------------------------------------------------
     # Public query API (used by the router)
     # ------------------------------------------------------------------
@@ -371,18 +513,65 @@ class IntegrityAgent(BaseAgent):
 
     def get_verdict(self, instance_id: str) -> dict[str, Any] | None:
         """Return the latest verdict for a specific decision instance."""
-        chain = self._engine.history(instance_id)
-        if not chain:
-            return None
-        return sia_assessment_to_dict(chain[-1])
+        real_iid = self._find_instance_id(instance_id)
+        if real_iid:
+            chain = self._engine.history(real_iid)
+            if chain:
+                return sia_assessment_to_dict(chain[-1])
+
+        opened_iid = self._ensure_decision_instance(instance_id)
+        if opened_iid:
+            K = fmt_instant(max(0, self._knowledge_time_us))
+            try:
+                self._engine.tick(K)
+            except Exception:
+                pass
+            chain = self._engine.history(opened_iid)
+            if chain:
+                return sia_assessment_to_dict(chain[-1])
+        return None
 
     def get_verdict_history(self, instance_id: str) -> list[dict[str, Any]]:
         """Return the full revision history for a decision instance."""
-        return [sia_assessment_to_dict(a) for a in self._engine.history(instance_id)]
+        real_iid = self._find_instance_id(instance_id)
+        if not real_iid:
+            real_iid = self._ensure_decision_instance(instance_id)
+        target_id = real_iid or instance_id
+        chain = self._engine.history(target_id)
+        if not chain:
+            now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+            K = fmt_instant(now_us)
+            try:
+                self._engine.evaluate(target_id, K)
+                chain = self._engine.history(target_id)
+            except Exception:
+                pass
+        return [sia_assessment_to_dict(a) for a in chain]
 
     def get_verdict_as_of(self, instance_id: str, knowledge_time: str) -> dict[str, Any] | None:
         """Bitemporal query: what did we conclude as known at K?"""
-        a = self._engine.as_of(instance_id, knowledge_time)
+        real_iid = self._find_instance_id(instance_id)
+        if not real_iid:
+            real_iid = self._ensure_decision_instance(instance_id)
+        target_id = real_iid or instance_id
+        try:
+            a = self._engine.as_of(target_id, knowledge_time)
+        except Exception:
+            chain = self._engine.history(target_id)
+            a = chain[-1] if chain else None
+        if a is None:
+            chain = self._engine.history(target_id)
+            if not chain:
+                now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+                K = fmt_instant(now_us)
+                try:
+                    self._engine.evaluate(target_id, K)
+                    chain = self._engine.history(target_id)
+                    a = chain[-1] if chain else None
+                except Exception:
+                    pass
+            else:
+                a = chain[-1]
         if a is None:
             return None
         return sia_assessment_to_dict(a)
@@ -393,7 +582,19 @@ class IntegrityAgent(BaseAgent):
 
     def explain_verdict(self, instance_id: str) -> str | None:
         """Generate a template-based explanation for the latest verdict."""
-        chain = self._engine.history(instance_id)
+        real_iid = self._find_instance_id(instance_id)
+        if not real_iid:
+            real_iid = self._ensure_decision_instance(instance_id)
+        target_id = real_iid or instance_id
+        chain = self._engine.history(target_id)
+        if not chain:
+            now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+            K = fmt_instant(now_us)
+            try:
+                self._engine.evaluate(target_id, K)
+                chain = self._engine.history(target_id)
+            except Exception:
+                pass
         if not chain:
             return None
         return sia_explain(chain[-1])
