@@ -1,4 +1,6 @@
-# CALIBRE — Engineering Decision Log
+# CALIBRE — Historical Engineering Decision Log
+
+> **Supersession notice (22 November 2026):** This record is retained for design traceability. It contains implementation-status claims that conflict with the current static code audit, including claims about end-to-end archetype wiring and digest unification. Do not use it as a current architecture or completion record; see [README.md](README.md), [ARCHITECTURE.md](ARCHITECTURE.md), [AUDIT.md](AUDIT.md), and [ROADMAP.md](ROADMAP.md).
 
 | Field | Value |
 |---|---|

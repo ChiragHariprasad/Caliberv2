@@ -1,7 +1,7 @@
 # CALIBRE — Data Sourcing, Licensing & Empirical Coverage Assessment
 
 **Date:** 13 November 2026  
-**Status:** Canonical Data Engineering Specification  
+**Status:** Research and target data-governance reference. Capture coverage and external-source assertions were not runtime- or externally validated by the 22 November 2026 static audit.
 **Regimes Governed:** PUBLIC, LICENSED, INSTITUTIONAL, LAB  
 
 ---

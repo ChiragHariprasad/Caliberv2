@@ -1,4 +1,6 @@
-# CALIBRE / PULSE: Project Evolution & Architectural Decision Record
+# CALIBRE / PULSE: Historical Project Evolution Record
+
+> **Supersession notice (22 November 2026):** This is an historical narrative. Runtime claims, test totals and architecture assertions must be checked against the current static audit and source before being used for engineering decisions. See [docs/README.md](README.md).
 
 This document provides the authoritative chronological history, architectural archaeology, and engineering rationale tracing the system from the original CALIBRE repository (`E:\CALIBER`) to the modern CALIBRE v4 durable evidence verification platform (`E:\Caliberv2`).
 
@@ -122,9 +124,11 @@ During the final codebase audit and validation phase, several concrete technical
 
 ---
 
-## 4. Current State & Platform Maturity
+## 4. Historical State Claim (superseded)
 
-The platform is fully integrated, operational, and validated:
-- **Zero Regressions:** 380 unit, property, and integration tests passing; 17 Docker-dependent tests gracefully skipped.
-- **Serving & Validated:** Backend (FastAPI) and frontend (React 18 / Vite) running locally with 12/12 automated Playwright browser journeys verified and recorded in `reports/browser-validation/screenshots/`.
-- **Repository Health:** Clean, minimal 3-file canonical documentation structure with all intermediate reports archived.
+The following paragraph records the prior report's claim; it is not endorsed as a current fact. The static audit found volatile runtime state, two divergent Kafka paths, and no fresh execution evidence.
+
+The prior report asserted the following, but it remains **Unverified — Requires Runtime Validation** and is superseded by the current audit:
+- A historical test total was reported as 380 passing with 17 Docker-dependent skips.
+- A local FastAPI/React run and browser journeys were reported as verified.
+- A minimal documentation structure was claimed, although the retained documents subsequently diverged.

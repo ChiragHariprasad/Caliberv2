@@ -1,186 +1,130 @@
-# CALIBRE — Implementation Roadmap & Architectural Evolution
+# CALIBRE V2 — Proposed Remediation Roadmap
 
-**Date:** 13 November 2026  
-**Horizon:** 5 to 10 Years  
-**Status:** Active Implementation Blueprint  
-**Guiding Principle:** The specification outlives the code. Zero dependencies in the reasoning kernel.
+**Status:** Proposal based on the 22 November 2026 static audit. Nothing in this file has been implemented or runtime-validated.
+**Approval required before implementation:** all phases.
 
----
+## Target architecture
 
-## 1. Architectural Principles & Invariants
-
-1. **Deterministic Reasoning Kernel:** SIA Core evaluates decisions as a pure function of `(contract, evidence visible at K, K)`. It never reads wall-clock time, generates random numbers, or executes I/O.
-2. **Standard-Library Only Core:** No external dependencies may ever be introduced into `sia_core_v3` or the formal verifier.
-3. **Evidence Producers, Not Adjudicators:** Specialist agents emit factual observations with stated uncertainties; they never output integrity grades, penalty recommendations, or fault verdicts.
-4. **Honest Origin Lineage:** Two feeds sharing an upstream platform carry a single source-origin token. Independent corroboration requires disjoint source and processing token closures.
-5. **Absence is a Verdict:** Decisions open by schedule, not by the arrival of evidence. Silence progresses from `UNKNOWN` to `DEGRADED` unless legitimately voided (`VOIDED` witness for retirements or red flags).
-6. **Immutable Bitemporal History:** Content hash commits to what was concluded; record hash links revisions chronologically. Knowledge time is strictly monotonic and non-regressive.
-7. **Transport vs Evaluation Mechanics:** Kafka and Flink provide execution scale and replay durability; they never define evaluation semantics or timestamps.
-
----
-
-## 2. Area-by-Area Implementation Plan
-
-### Area 1: SIA Specification & Kernel Evolution (CR-1, CR-2, CR-6, CR-10, CR-L2, CR-L6)
-- **What needs to change:**
-  1. *CR-1 (Decision Voiding):* Implement `void_decision(instance_id, reason, witness_code="VOIDED")` in `IntegrityEngine` and `evaluator.py`. Voided decisions transition directly to `UNKNOWN` with finality `FINAL` and emit a named `VOIDED` witness, preventing false alarms during retirements, session suspensions, or red flags.
-  2. *CR-2 (Lateness Witness):* When reference facts arrive after a contract's soft deadline, record a `LATE_REFERENCE_FACT` witness.
-  3. *CR-6 (Witness Code Registry):* Establish a standardized registry mapping witness codes to severity (`INFO`, `WARNING`, `DEFECT`), human-readable descriptions, and remedial hints.
-  4. *CR-10 (Zone Sub-Scope Key):* Add `ZONE` sub-scope under `SECTOR` in `ScopeClass` to support micro-sectors and pit-lane loop zones.
-  5. *CR-L2 (Algorithm-Tagged Digests):* Update `canon.py` so that all content and record digests carry the `sha256:` algorithm prefix, guaranteeing cryptographic agility.
-  6. *CR-L6 (Margin Report Witness):* Integrate policy-neutral threshold witnesses (Pattern P3) directly into the evaluator's assembly stage.
-- **Affected Files:** `sia_core_v3/sia_core/engine.py`, `sia_core_v3/sia_core/evaluator.py`, `sia_core_v3/sia_core/model.py`, `sia_core_v3/sia_core/canon.py`, `sia_core_v3/sia_core/verdict.py`.
-- **New Files:** `sia_core_v3/sia_core/witnesses.py` (registry of witness definitions).
-- **Dependencies:** None.
-- **Acceptance Criteria:** All existing 259 tests pass; new property tests verify that voiding stops further evaluation, tagged digests parse cleanly, and margin witnesses appear when measurements approach thresholds.
-
-### Area 2: Formal Specification Suite (EE, DEC, IA, LOG, SEM, BUN, PACK)
-- **What needs to change:** Extract formal, language-neutral JSON/Markdown specifications defining:
-  - `EE v1.0` (Evidence Event Envelope): content-addressed atom structure, typed time, origin tokens, uncertainty, raw span references.
-  - `DEC v1.0` (Decision Evidence Contract): schema for roles, scopes, formulas, constraints, tolerances, fault models, deadlines.
-  - `IA v1.0` (Integrity Assessment): verdict schema, 4-state validity timelines, witnesses, derived limitations, maturity, hash chain.
-  - `LOG v1.0` (Admission Log): immutable sequence of log entries, knowledge-time assignment rules, configuration epochs.
-  - `SEM v1.0` (Evaluation Semantics): normative reference prose and mathematical vector rules for the state algebra, diagnosis, resilience, and envelope collapse.
-  - `BUN v1.0` (Evidence Bundle): portable `.tar.zst` layout, manifests, root checksums, and offline verification protocol.
-  - `PACK v1.0` (Domain Pack Specification): requirements for source adapters, reference registries, and contracts.
-- **New Files:** `calibre_core/specs/EE_v1.0.json`, `calibre_core/specs/DEC_v1.0.json`, `calibre_core/specs/IA_v1.0.json`, `calibre_core/specs/LOG_v1.0.json`, `calibre_core/specs/BUN_v1.0.json`, `calibre_core/specs/conformance_vectors.json`.
-- **Dependencies:** Area 1.
-- **Acceptance Criteria:** Specification files validated against JSON Schema Draft-07; conformance runner tests vector equality against reference implementation.
-
-### Area 3: Integrity Assessment & Admission-Log Semantics
-- **What needs to change:** Formalize the Sequencer's admission log as the single source of truth. The evaluator must operate as a pure function of an ordered slice of this log.
-- **Affected Files:** `calibre_core/capture_archive.py`, `sia_core_v3/sia_core/ledger.py`.
-- **New Files:** `calibre_core/admission.py` (canonical admission log writer, reader, and iterator).
-- **Dependencies:** Area 1, Area 2.
-- **Acceptance Criteria:** Replaying an identical admission log yields identical `record_hash` chains across 100% of runs.
-
-### Area 4: Time Handling, Scope Management & Origin Lineage
-- **What needs to change:** Guarantee strict typed-time conversion (LAP_RELATIVE, SESSION_ELAPSED, ABSOLUTE_UTC) with reference-gated paths; enforce scope hierarchy (`SESSION` > `DRIVER_SESSION` > `DRIVER_LAP` > `SECTOR` > `ZONE`); ensure origin closures prevent fake corroboration when public feeds share upstreams.
-- **Affected Files:** `sia_core_v3/sia_core/timeclass.py`, `sia_core_v3/sia_core/model.py`, `calibre_core/source_pack.py`.
-- **Dependencies:** Area 1.
-- **Acceptance Criteria:** Conversions without in-scope references fail closed; shared platform upstreams yield `COMMON_CAUSE_EXPOSURE` on every assessment.
-
-### Area 5: Five Specialist Agent Archetypes (A1–A5)
-- **What needs to change:** Implement the five specialist agents as pure, deterministic evidence producers following rules AR-1 through AR-10:
-  - **A1 Timing Agent:** Parses raw timing streams, produces lap and sector records, derives lap-start and lap-end reference facts with cumulative uncertainty, and flags missing transponder gaps.
-  - **A2 Vehicle Telemetry Agent:** Processes car sensor streams (speed, RPM, gear, throttle, brake, DRS), computes windowed speeds with sample counts and resolution, integrates distance with uncertainty, and emits kinematic plausibility flags.
-  - **A3 Spatial & Geometry Agent:** Ingests GPS/position coordinates and surveyed circuit registry, detects gate crossings (finish line, sector lines, pit entry/exit), computes path lengths, and emits geometry reference facts with layout validity windows.
-  - **A4 Session Context Agent:** Ingests race control messages, track status, weather, and entry lists; maintains session intervals (green, yellow, VSC, SC, red, finish), and declares rule-regime facts (e.g. event-specific pit speed limits).
-  - **A5 Feed Supervisor Agent:** Runs in an isolated failure domain; monitors raw topic taps, consumer lag, and cadence baselines; emits monotonic clock ticks, `STALLED` / `RESUMED` guard facts, and feed-health metrics.
-- **New Files:**
-  - `calibre_core/agents/base.py` (AR-1..AR-10 archetype foundation)
-  - `calibre_core/agents/timing.py` (A1)
-  - `calibre_core/agents/telemetry.py` (A2)
-  - `calibre_core/agents/spatial.py` (A3)
-  - `calibre_core/agents/context.py` (A4)
-  - `calibre_core/agents/supervisor.py` (A5)
-- **Dependencies:** Area 1, Area 4.
-- **Acceptance Criteria:** Reprocessing the same raw inputs produces identical atom IDs (AR-2); agents never output integrity grades (AR-1); unit tests cover declared failure catalogues.
-
-### Area 6: 10-Race Controversy Corpus & Data Acquisition Pipeline
-- **What needs to change:** Curate the 10 most controversial F1 races from 2021 onwards (Abu Dhabi 2021 mandatory); implement a unified, repeatable data acquisition pipeline leveraging FastF1, Jolpica-F1, and official FIA documents.
-- **New Files:**
-  - `docs/F1_CONTROVERSY_CORPUS.md` (comprehensive research, facts vs disputes, FIA documents)
-  - `scripts/acquire_f1_corpus.py` (repeatable multi-session acquisition tool)
-  - `data/corpus_manifest.json` (canonical checksums and metadata for all 10 races)
-  - `calibre_core/circuits/geometry.py` (programmatic track geometry, gate positions, layout versions)
-- **Dependencies:** Area 4, Area 5.
-- **Acceptance Criteria:** Acquisition script successfully acquires and normalizes all 10 races with verified content checksums; data coverage matrix explicitly documents availability per category.
-
-### Area 7: F1 Contract Catalogue (C01–C13) & Failure Patterns (P1–P9)
-- **What needs to change:** Implement all 13 contracts with complete contract cards, detectability figures, and calibration records:
-  - C01: Lap-time consistency (P1, P6)
-  - C02: Sector-sum consistency (P1)
-  - C03: Pit-lane speed integrity (flagship: P1, P2, P3, P4, P8)
-  - C04: Vehicle kinematic plausibility (P1)
-  - C05: Telemetry time alignment (P6)
-  - C06: Position and track consistency (P1, P2, P6)
-  - C07: Session-status integrity (P1, P5)
-  - C08: Incident timing (P6)
-  - C09: Weather reporting (P5)
-  - C10: Weather-dependent advisory (P5)
-  - C11: Feed-source integrity (P5, P9)
-  - C12: Monitor health (P4, P9)
-  - C13: Rule-regime consistency (P8)
-- **New Files:** `calibre_core/contracts/catalogue.py`, `calibre_core/contracts/cards.py`.
-- **Dependencies:** Area 1, Area 2, Area 5.
-- **Acceptance Criteria:** Every contract validates against SIA rules V-01..V-12; each constraint has a defined detectability figure.
-
-### Area 8: Historical Event Scenarios & Benchmark Suite
-- **What needs to change:** Map the 10 controversial races to specific CALIBRE contracts and failure patterns. Build automated scenario tests that replay historical evidence through the pipeline and evaluate SIA's integrity assessments.
-- **New Files:** `calibre_core/tests/test_historical_scenarios.py`.
-- **Dependencies:** Area 5, Area 6, Area 7.
-- **Acceptance Criteria:** Abu Dhabi 2021 scenario evaluates safety car unlapping and restart status; Monaco geometry scenario evaluates expired reference and margin against uncertainty; all scenarios execute deterministically.
-
-### Area 9: Kafka & Stream Pipeline Topology
-- **What needs to change:** Standardize topic naming (`calibre.<pack>.<layer>.<name>`), partition keys, and serialization formats across local in-memory bus and clustered Kafka.
-- **Affected Files:** `calibre_core/kafka_io.py`, `backend/pulse/stream/bus.py`.
-- **Dependencies:** Area 2, Area 3.
-- **Acceptance Criteria:** Identical execution semantics across `SIMULATOR` and `KAFKA` transport modes.
-
-### Area 10: Flink Execution Architecture (J1–J4)
-- **What needs to change:** Formalize the 4 Flink jobs:
-  - J1 Sequencer: Envelope admission, deduplication, knowledge-time assignment.
-  - J2 Evaluator: Hosts SIA kernel, deterministic scheduling, and amendments.
-  - J3 Population Monitors: Calibration bias and drift sentinel.
-  - J4 Verifier: Batch replay equivalence and hash chain verification.
-- **Affected Files:** `backend/pulse/stream/flink/client.py`, `calibre_core/batch.py`.
-- **New Files:** `calibre_core/flink_pipeline.py` (Python stream-job wrappers and test harness).
-- **Dependencies:** Area 3, Area 7, Area 9.
-- **Acceptance Criteria:** Simulated stream engine executes J1..J4 with transactionally consistent state.
-
-### Area 11: Replay, Recovery & Hash-Chain Verification
-- **What needs to change:** Guarantee that replaying an admitted log produces 100% identical hash chains. Provide state reconstruction from log checkpoints without publishing duplicate downstream messages.
-- **Affected Files:** `calibre_core/standalone_verifier.py`, `pulse/replay/controller.py`.
-- **Dependencies:** Area 1, Area 3.
-- **Acceptance Criteria:** Verification CLI validates bundles offline without external dependencies.
-
-### Area 12: Population-Level Monitoring & Drift Sentinel
-- **What needs to change:** Surface systemic biases (e.g. 2.9% loop distance discrepancy) across populations; monitor schema and cadence drift without allowing monitor outputs to fabricate source independence.
-- **Affected Files:** `sia_core_v3/sia_core/calibration.py`, `calibre_core/contracts/catalogue.py`.
-- **Dependencies:** Area 1, Area 7.
-- **Acceptance Criteria:** Population bias fact expires when monitor stalls; dependent contracts degrade gracefully.
-
-### Area 13: Evidence Bundles & Standalone Verification
-- **What needs to change:** Implement `.tar.zst` portable bundles containing manifest, contract versions, reference facts, admission log slice, raw spans, and hash chain segments.
-- **Affected Files:** `calibre_core/archive.py`, `calibre_core/standalone_verifier.py`.
-- **Dependencies:** Area 2, Area 11.
-- **Acceptance Criteria:** `calibre_core.standalone_verifier` passes strict verification on all generated race bundles on a clean machine using standard library only.
-
-### Area 14: Serving Layer & Investigation Interface
-- **What needs to change:** Expose REST/SSE APIs for session boards, bitemporal decision history, lineage graphs, and evidence audit drawers; integrate with the tactical cockpit.
-- **Affected Files:** `backend/pulse/integrity/router.py`, `backend/pulse/main.py`.
-- **Dependencies:** Area 1, Area 7.
-- **Acceptance Criteria:** Any verdict is traceable to its raw supporting evidence in at most three UI steps.
-
-### Area 15: Testing, Property Verification & Chaos Validation
-- **What needs to change:** Add property tests for admission order invariance, duplicate idempotence, knowledge-time monotonicity, and envelope bounds; execute chaos drills (simulated broker disconnects, corrupt records, clock steps).
-- **New Files:** `calibre_core/tests/test_invariants.py`.
-- **Dependencies:** Areas 1 through 14.
-- **Acceptance Criteria:** 100% of invariants pass; zero regressions across the 380 existing tests.
-
----
-
-## 3. Dependency & Execution Graph
-
-```mermaid
-graph TD
-    A1["Area 1: SIA Kernel Evolution (CR-1..CR-L6)"] --> A2["Area 2: Formal Specifications (EE, DEC, IA, LOG, etc.)"]
-    A1 --> A4["Area 4: Time, Scope & Origin Lineage"]
-    A1 --> A3["Area 3: Admission Log Semantics"]
-    A2 --> A5["Area 5: Five Specialist Agents (A1..A5)"]
-    A4 --> A5
-    A5 --> A7["Area 7: Contract Catalogue (C01..C13)"]
-    A4 --> A6["Area 6: 10-Race Controversy Corpus"]
-    A6 --> A8["Area 8: Historical Event Scenarios"]
-    A7 --> A8
-    A3 --> A9["Area 9: Kafka Transport Topology"]
-    A9 --> A10["Area 10: Flink Execution Architecture"]
-    A3 --> A11["Area 11: Replay, Recovery & Hash Chains"]
-    A7 --> A12["Area 12: Population Monitors & Drift"]
-    A11 --> A13["Area 13: Evidence Bundles & Verifier"]
-    A7 --> A14["Area 14: Serving Layer & UI APIs"]
-    A8 --> A15["Area 15: Testing, Properties & Chaos"]
-    A13 --> A15
+```text
+Versioned raw capture -> validation/normalisation -> durable admission sequencer
+                                              |              |
+                                              |              +-> immutable admission log + checkpoints
+                                              v
+       deterministic evidence producers -> SIA evaluator -> versioned verdict history/read model
+                                              |
+                      deterministic tactical reducers/statistical models -> fusion policy -> API/SSE
+                                              |
+                              optional LLM explanation service (never a decision input)
 ```
 
+The sequencer is the sole writer of knowledge time and admission sequence. Kafka transports records; it is not the integrity ledger. SIA reads ordered admission-log slices, and recovery rebuilds state from those slices/checkpoints. Tactical intelligence consumes evidence/facts and emits separately versioned, evidence-backed predictions; it cannot alter SIA integrity states.
+
+## Architectural choices
+
+| Decision | Options | Recommendation and rationale |
+|---|---|---|
+| SIA state | Retain in memory; external DB; append-only log + materialised view | Append-only log plus rebuildable view. It preserves bitemporal auditability and separates write correctness from serving performance. |
+| Kafka delivery | At-least-once + idempotent sink; Kafka transactions; claimed EOS without sink transaction | Kafka transactions for Kafka-to-Kafka stages, idempotent outbox/sink for external storage. Never claim end-to-end EOS without a verified sink protocol. |
+| Partition key | Driver; session; composite by event type | Session-affine sequencer input; driver-affine downstream independent analytics. This makes decision order explicit before parallel work. |
+| Agent reasoning | LLM; ML; deterministic | Deterministic state/validation by default; calibrated statistical models for pace/tyre only; LLM only for non-authoritative explanation. |
+| Replay | Reset handlers; Kafka offset replay; admission log replay | Admission-log replay with checkpoints and an equivalence harness. Kafka offsets are transport coordinates, not sufficient decision history. |
+
+## Phase 0 — establish baselines and contracts
+
+**Objective:** prevent further divergence before any redesign.
+
+- Freeze and version the current PULSE envelope/finding/assessment schemas.
+- Create a source-to-contract matrix: each active SIA role must have a producer, scope fields, origin lineage, time basis, reference source and rejection route.
+- Mark unsupported contracts inactive; do not manufacture placeholder evidence.
+- Record current Kafka topology and consumer groups from configuration as a deployment manifest.
+
+**Dependencies:** none. **Migration/rollback:** additive documentation/schema registry only. **Acceptance:** every enabled contract has complete provenance; unsupported features return an explicit unavailable status. **Later validation:** schema compatibility and capture conformance tests.
+
+## Phase 1 — SIA integrity boundary
+
+**Objective:** make SIA’s lifecycle, schemas and correction semantics internally coherent.
+
+- Define a canonical `Assessment` envelope shared by normal and void decisions; include lifecycle, integrity state, finality, reason, evidence frontier and tagged hashes.
+- Replace ad-hoc supersession with a validated revision graph: immutable parent, monotonic revision sequence, cycle rejection, correction authority and reason.
+- Add a pre-admission finality gate and explicit `AMENDMENT` policy; never silently mix late material into a sealed decision’s normal ledger view.
+- Consolidate kernel and durable canonicalization/digest requirements, with a one-way legacy-read migration path.
+- Specify state ownership, legal transitions, transition guard and timeout semantics as executable contract tests.
+
+**Components:** `sia_core_v3/sia_core/{engine,ledger,evaluator,model,verdict,canon}.py`, SIA JSON schemas, bridge serializers. **Risk:** digest migration invalidates existing IDs; retain old IDs as immutable legacy references and issue new schema/version identifiers. **Acceptance:** exact state transition table, no schema branch for void, deterministic correction vectors, and chain verification across migration examples.
+
+## Phase 2 — durable admission and reconstruction
+
+**Objective:** make the ordered evidence record the system of record.
+
+- Promote `calibre_core/admission.py` into the only SIA input protocol; add raw-record digest/reference, schema/version, source lineage and partition/offset metadata.
+- Implement sequencer persistence with atomic append/checkpoint boundary and idempotency key `(source identity, canonical content digest, transform version)`.
+- Build deterministic state snapshots for evaluator/agent reducers, referenced by admission sequence and hash.
+- Make recovery load latest valid snapshot then replay the log; expose an immutable as-of query API.
+
+**Dependencies:** Phase 1. **Interface change:** PULSE bridge emits admission candidates, not direct engine mutation. **Rollback:** dual-write candidate log and compare only before cutover. **Acceptance:** interrupted run resumes to identical assessment hashes; duplicate/reordered candidates follow published policy; log verification detects deletion/reordering/tampering.
+
+## Phase 3 — ingestion and Kafka topology
+
+**Objective:** replace divergent Kafka code paths with one production topology.
+
+- Select one client abstraction and remove/deprecate unused parallel implementation after feature parity is proven.
+- Define topic catalogue by lifecycle: `raw`, `normalised`, `admission-candidate`, `admission-log`, `evidence`, `finding`, `verdict`, `dlq`; version schemas independently.
+- Configure retention, replication/min ISR, partition counts, producer idempotence, `read_committed`, retry/DLQ and consumer offset commits deliberately.
+- Use session key at candidate/sequencer boundary; permit driver keys only after ordering constraints are resolved. Include partition growth/migration policy.
+- Add a genuine normalizer deployment or explicitly remove Flink claims. Flink is justified only for sustained stateful throughput/windowing; a Kafka Streams/Python consumer topology is lower-operational-cost if volume is modest.
+
+**Dependencies:** Phase 2. **Migration:** mirror raw topics and compare canonical candidate digests before switching consumers. **Rollback:** keep old raw producers and read-only legacy consumers. **Acceptance:** chaos tests for broker loss, rebalance, poison records, duplication, retry and DLQ; end-to-end guarantees documented precisely.
+
+## Phase 4 — evidence producers and data quality
+
+**Objective:** make A1–A5 real bounded evidence producers and remove hidden defaults.
+
+- Wire A1 timing, A2 telemetry, A3 geometry, A4 context and A5 supervisor into the canonical input topology or retire them from the claimed architecture.
+- Remove wall-clock/default measurements from atom identity paths; require raw-span records and semantic time/scope resolution.
+- Model late/out-of-order watermarks, source schema changes, missing versus zero, and data-regime limitations explicitly.
+- Create an effective-dated reference registry for circuit/rule datasets and provenance metadata for captures.
+
+**Dependencies:** Phases 2–3. **Performance:** vectorise/offload only pure batch calculations; retain bounded buffers and explicit overflow results. **Acceptance:** live/replay byte-equivalent atom vectors, origin closure tests, and source coverage reports that distinguish public data from institutional claims.
+
+## Phase 5 — tactical intelligence and fusion
+
+**Objective:** replace demo heuristics with explainable, calibrated decision support.
+
+- Treat EventControl/TrackState as deterministic reducers over evidence facts.
+- Replace fixed VehicleResponse/TyreStrategy constants with versioned feature pipelines and calibrated baselines stratified by circuit, compound, weather and session context. Until validated, emit abstention rather than a recommendation.
+- Implement Fusion as immutable event-time joins with correlation IDs, bounded windows, late-event policy, disagreement status and explicit supersession links.
+- Store calibration datasets, training code/version/metrics separately from real-time execution. Require model registry, drift thresholds and deterministic fallback.
+- If approved, add an explanation-only LLM adapter with retrieval citations, JSON schema validation, timeout/circuit breaker, output redaction, cost ceiling and retained prompt/model version. It must never enter integrity or fusion computation.
+
+**Dependencies:** Phase 4. **Acceptance:** blind historical holdout tests, calibration/error metrics, permutation/order-invariance tests for fusion and fallback-latency SLOs. **Deferred:** autonomous strategy recommendations until calibrated performance and human-review workflow are accepted.
+
+## Phase 6 — API, serving and observability
+
+**Objective:** serve immutable audit facts and actionable operational health safely.
+
+- Split write-side logs from read models; rebuild read models from checkpoints/logs.
+- Expose verdict lineage, evidence references, finality/amendment state, data regime and model provenance; remove frontend placeholders that masquerade as measured values.
+- Add trace IDs from raw record to verdict, metrics for lag/retries/DLQ/finality violations/model abstention, structured logs and alert thresholds.
+- Add authentication/authorisation, restrictive CORS, request limits and SSE backpressure/reconnect semantics.
+
+**Dependencies:** Phases 2–5. **Acceptance:** a user can navigate verdict -> admission entries -> raw span without server memory; load/soak and access-control tests pass.
+
+## Phase 7 — integration and release gate
+
+**Objective:** establish evidence for production claims.
+
+- Unit/property tests: algebra laws, scope isolation, timeline/finality, revision graph, serialization and digest compatibility.
+- Integration tests: producer/consumer topology, sequencer, checkpoint restore, agent/fusion event-time joins and API projections.
+- Scenario tests: historical captures labelled by availability, fault injection, delayed reference, correction, poison record, broker interruption and agent restart.
+- Performance tests: measured throughput/lag/latency at stated hardware/configuration; publish methodology and bounds.
+- Live/replay equivalence: same immutable admission log must produce same verdict-history hashes and specified tactical outputs.
+
+**Definition of done:** every enabled feature has a versioned contract, source/data regime, deterministic or calibrated behaviour claim, failure policy, observability and reproducible verification evidence. Documentation is regenerated from the implemented topology and no proposal is represented as completed.
+
+## Approval decisions required
+
+1. Approve log-first architecture and admission sequencer as the source of truth.
+2. Approve replacement/consolidation of the active Kafka client path.
+3. Approve retiring or wiring the disconnected A1–A5 archetype implementation.
+4. Approve calibrated statistical models before any tactical recommendation; decide whether explanation-only LLM support is in scope.
+5. Approve migration tolerance for hash/schema identifiers and historical replay compatibility.

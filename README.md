@@ -1,8 +1,8 @@
 # CALIBRE / PULSE
 
-> **Independent Evidence-Integrity Platform for Timing and Telemetry Decisions, built on SIA (Scoped Integrity Algebra)**
+> **Evidence-integrity and tactical-streaming prototype for Formula 1, built around SIA (Scoped Integrity Algebra)**
 
-CALIBRE is an independent, deterministic evidence-integrity platform. It continuously evaluates the adequacy, provenance, physical plausibility, and independence of measurements and references before decisions are made. PULSE is its real-time tactical streaming reference application for Formula 1.
+CALIBRE contains a deterministic SIA kernel, reusable evidence and archival prototypes, and PULSE, a Formula 1 tactical-streaming reference application. The kernel is designed to evaluate evidence adequacy, provenance and consistency; the end-to-end application does not yet provide durable, production-grade integrity guarantees. See [docs/README.md](docs/README.md) for the static audit and proposed remediation.
 
 CALIBRE asks one question for every decision:
 > **Is the evidence available right now adequate for this particular decision, and how do we know?**
@@ -11,21 +11,17 @@ CALIBRE never decides sporting penalties and never computes "the right value". I
 
 ---
 
-## Key Capabilities
+## Implemented components (not a production claim)
 
-- **SIA Core v3 (Scoped Integrity Algebra):** Pure standard-library deterministic reasoning kernel with total order `DEGRADED < UNKNOWN < SUSPECT < HEALTHY`, 4-state validity timelines, named witnesses, and hash-chained bitemporal records.
-- **5 Specialist Agent Archetypes (A1–A5):** Decoupled evidence producers enforcing rules AR-1 through AR-10:
+- **SIA Core v3 (Scoped Integrity Algebra):** Standard-library deterministic evaluator with total order `DEGRADED < UNKNOWN < SUSPECT < HEALTHY`, validity timelines, witnesses and in-memory hash-chained revisions.
+- **5 Specialist Agent Archetype prototypes (A1–A5):** Evidence producer modules under `calibre_core/agents/`; these are separate from, and currently not wired into, the PULSE runtime:
   - **A1 Measurement (Timing Agent):** Official transponder loops, speed traps, sector times, numbering regression detection.
   - **A2 Asset Telemetry (Vehicle Telemetry Agent):** High-frequency ECU speed, throttle/brake pedal exclusivity, kinematic anomaly detection (>2.0g deceleration check).
   - **A3 Spatial & Geometry (Spatial Agent):** Gate crossing interpolation, path length integration, effective-dated circuit geometry references.
   - **A4 Context (Session Context Agent):** Race control flag lifecycles (Green, Yellow, VSC, SC, Red), driver retirement tracking, rule limits.
   - **A5 Feed Supervisor (Independent Path):** Monotonic clock ticks, `STALLED` and `RESUMED` guards, stream cadence heartbeat analysis.
-- **Complete F1 Contract Catalogue (C01–C13):** Formal contracts covering lap times, sector sums, pit-lane speed (flagship with Pattern P3 margin check), vehicle kinematics, position/track boundaries, session status, and rule regimes.
-- **10-Race Historical F1 Controversy Corpus (2021+):** Comprehensive research and automated acquisition across the 10 most controversial Grands Prix from 2021 onwards (Abu Dhabi 2021 mandatory, Monaco, Saudi Arabia, Belgium, Austria, Great Britain, Japan, Australia, COTA, Las Vegas) with automated Jolpica-F1 open Ergast fallback.
-- **Formal Specification Suite:** JSON schemas for Evidence Events (`EE v1.0`), Decision Contracts (`DEC v1.0`), Integrity Assessments (`IA v1.0`), Admission Logs (`LOG v1.0`), Portable Bundles (`BUN v1.0`), Domain Packs (`PACK v1.0`), and language-neutral Conformance Vectors.
-- **Content-Addressed Admission Log Engine:** Monotonic sequencing, hash chaining, and deterministic replay bridge to SIA Core.
-- **Four Data Governance Regimes:** Radical provenance honesty distinguishing `PUBLIC` (source depth 1, `COMMON_CAUSE_EXPOSURE`), `LICENSED`, `INSTITUTIONAL`, and `LAB` (synthetic twins).
-- **Portable Evidence Bundles & Standalone Verifier:** Self-verifying offline archive bundles verifiable on a clean machine using Python standard library only.
+- **Two contract catalogues:** a C01–C13 prototype catalogue in `calibre_core/contracts/` and five active PULSE contracts. They require consolidation before operational use.
+- **Corpus, specifications and archival utilities:** research/capture files, JSON schema artifacts, a standalone admission-log utility, data-regime types and archive/verifier prototypes. Their end-to-end integration and source coverage are unverified.
 
 ---
 
@@ -51,14 +47,14 @@ CALIBRE never decides sporting penalties and never computes "the right value". I
 
 ---
 
-## Test Execution & Verification
+## Test execution and verification
 
 ### Automated Test Suite
 Run the entire comprehensive test suite across `calibre_core`, `sia_core_v3`, and `backend`:
 ```powershell
 pytest calibre_core/tests sia_core_v3/tests backend/tests
 ```
-*Current test suite status:* **395 passed**, 17 skipped (Docker integration tests skipped when container engine is offline), 0 failed in ~90s.
+The audit intentionally did not execute these commands. Do not treat historical test counts in repository documents as current verification results.
 
 ### Run Specialized Test Suites
 ```powershell
@@ -110,12 +106,12 @@ npm run preview
 
 ---
 
-## Canonical Documentation Index
+## Documentation
 
-- **[docs/AUDIT.md](docs/AUDIT.md):** Complete line-by-line implementation audit of the repository against the CALIBRE idea documentation.
-- **[docs/ROADMAP.md](docs/ROADMAP.md):** 15-area dependency-aware engineering roadmap with Mermaid dependency graphs.
-- **[docs/IMPLEMENTATION_CHECKLIST.md](docs/IMPLEMENTATION_CHECKLIST.md):** 49 master implementation tasks with status tracking and acceptance criteria.
-- **[docs/F1_CONTROVERSY_CORPUS.md](docs/F1_CONTROVERSY_CORPUS.md):** In-depth research of the 10 most controversial F1 races (2021+) citing official FIA Stewards decisions and sporting regulations.
-- **[docs/DATA_SOURCING_ASSESSMENT.md](docs/DATA_SOURCING_ASSESSMENT.md):** Data sourcing, legal regimes (PUBLIC, LICENSED, INSTITUTIONAL, LAB), and channel coverage matrix.
-- **[docs/DECISION_LOG.md](docs/DECISION_LOG.md):** Architecture Decision Records (ADR-01 through ADR-12) documenting trade-offs and rationale.
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md):** Technical architecture, stream topologies, agent specifications, and epistemic contracts.
+See [docs/README.md](docs/README.md) for the current documentation hierarchy.
+
+- [Current-system architecture](docs/ARCHITECTURE.md)
+- [Static engineering audit and findings register](docs/AUDIT.md)
+- [Proposed remediation roadmap](docs/ROADMAP.md)
+
+Historical reports, corpus research and decision records remain in `docs/` for traceability. They are not evidence that a feature is currently implemented or runtime-verified.

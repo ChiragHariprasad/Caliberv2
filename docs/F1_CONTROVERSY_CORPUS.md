@@ -1,4 +1,6 @@
-# CALIBRE — Historical F1 Controversy Corpus (2021–2026)
+# CALIBRE — Historical F1 Controversy Corpus Research (2021–2026)
+
+> **Status note (22 November 2026):** This is scenario research, not proof that all listed source material has been acquired, normalised, or replayed through the current implementation. See [AUDIT.md](AUDIT.md) for the static inventory and [ROADMAP.md](ROADMAP.md) for proposed validation.
 
 **Document Type:** Formal Research Corpus & Empirical Verification Dataset  
 **Scope:** 10 Most Significant Controversial Formula 1 Grand Prix Races from 1 January 2021 Onwards  
