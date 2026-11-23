@@ -90,6 +90,17 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
     for (const v of verdicts) {
       const vId = v.decision_instance_id.toLowerCase();
       const matchContract = vId.includes(cid) || (v.contract?.id && v.contract.id.toLowerCase().includes(cid));
+      if (!matchContract) continue;
+
+      const isSessionScope =
+        (v.contract as any)?.decision_scope?.scope_class === 'SESSION' ||
+        (v.contract as any)?.scope_class === 'SESSION' ||
+        vId.includes('weather') ||
+        vId.includes('session');
+      if (isSessionScope) {
+        return v;
+      }
+
       const matchDriver =
         vId.includes(`d${driverNumber}`) ||
         vId.includes(`driver:${driverNumber}`) ||
@@ -97,7 +108,7 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
         v.scope?.driver === `#${driverNumber}` ||
         v.scope?.driver === String(driverNumber) ||
         v.scope?.driver_id === String(driverNumber);
-      if (matchContract && matchDriver) {
+      if (matchDriver) {
         return v;
       }
     }

@@ -12,6 +12,8 @@ Start here:
 
 Supporting material:
 
+- [Top 10 Report Screenshots](TOP10_REPORT_SCREENSHOTS.md) — curated selection of the 10 must-add UI screens for executive and technical reports.
+- [UI Visual Reference & Screenshots (Full 22)](UI_SCREENSHOTS.md) — comprehensive visual catalogue of all 22 operational cockpits, forensic inspection drawers, and epistemic workbenches.
 - [Data sourcing assessment](DATA_SOURCING_ASSESSMENT.md) — source capability and governance assumptions; coverage claims require runtime/data validation.
 - [Controversy corpus research](F1_CONTROVERSY_CORPUS.md) — research backlog and candidate scenarios, not an implementation conformance record.
 - [Decision log](DECISION_LOG.md) and [history](HISTORY.md) — retained historical records. Where they conflict with the three documents above or current source, they are superseded.

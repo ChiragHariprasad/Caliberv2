@@ -110,6 +110,7 @@ npm run preview
 
 See [docs/README.md](docs/README.md) for the current documentation hierarchy.
 
+- [UI Visual Reference & Screenshots Catalogue](screenshots/README.md) (`docs/UI_SCREENSHOTS.md`)
 - [Current-system architecture](docs/ARCHITECTURE.md)
 - [Static engineering audit and findings register](docs/AUDIT.md)
 - [Proposed remediation roadmap](docs/ROADMAP.md)

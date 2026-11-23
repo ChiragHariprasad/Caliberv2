@@ -50,8 +50,9 @@ DEFAULT_ORIGINS: dict[str, list[str]] = {
     "TIMING_CONFIG": ["F1_FOM_TIMING"],
     "POP_MONITOR": [],
     "SURVEY": [],
-    "FIA_OFFICIAL": [],
+    "FIA_OFFICIAL": ["F1_FOM_TIMING"],
     "WEATHER_SERVICE": [],
+    "PULSE_PIPELINE": [],
 }
 
 
@@ -87,12 +88,12 @@ _EVENT_ROLE_MAP: dict[str, list[str]] = {
 
 # Payload key → value extraction for each role
 _VALUE_KEYS: dict[str, list[str]] = {
-    "lap_record": ["lap_time_seconds", "lap_time", "last_lap_seconds", "duration_s", "value"],
+    "lap_record": ["lap_time_seconds", "last_lap_seconds", "lap_time", "duration_s", "value"],
     "sector_record": ["sector_time_seconds", "sector_time", "duration_s", "value"],
     "timing_speed": ["speed_kph", "speed", "pit_speed_kph", "value"],
     "vehicle_speed": ["speed_kph", "speed", "car_speed", "value"],
     "position_report": ["position", "driver_position", "value"],
-    "weather_reading": ["air_temp", "air_temperature", "temperature", "track_temp", "value"],
+    "weather_reading": ["air_temp_c", "air_temp", "air_temperature", "track_temp_c", "track_temp", "temperature", "value"],
     "configured_distance": ["distance_cm", "loop_distance_cm", "value"],
 }
 
@@ -216,12 +217,35 @@ def build_scope_for_contract(envelope: EventEnvelope, scope_class: str) -> dict[
 # PULSE → SIA conversion
 # ---------------------------------------------------------------------------
 
+def _parse_time_str(val: Any) -> Any:
+    """Parse lap time string like '1:17.000' or '77.0' into float seconds."""
+    if isinstance(val, (int, float)):
+        return float(val)
+    if isinstance(val, str):
+        v = val.strip()
+        if ":" in v:
+            try:
+                parts = v.split(":")
+                if len(parts) == 2:
+                    return float(parts[0]) * 60 + float(parts[1])
+            except (ValueError, TypeError):
+                pass
+        try:
+            return float(v)
+        except (ValueError, TypeError):
+            pass
+    return val
+
+
 def _extract_value(payload: dict[str, Any], role_id: str) -> Any:
     """Extract the numeric/categorical value from a payload for a given role."""
     keys = _VALUE_KEYS.get(role_id, ["value"])
     for k in keys:
         if k in payload and payload[k] is not None:
-            return payload[k]
+            raw = payload[k]
+            if role_id in ("lap_record", "sector_record") and isinstance(raw, str):
+                return _parse_time_str(raw)
+            return raw
     return None
 
 
@@ -234,6 +258,11 @@ def _provider_to_origin(provider: str) -> str:
         "OPENF1": "TRACINGINSIGHTS",
         "FOM": "PITWALL",
         "LIVE_TIMING": "PITWALL",
+        "FIA_OFFICIAL_TIMING": "PITWALL",
+        "FIA_OFFICIAL_TIMING_AND_TELEMETRY": "PITWALL",
+        "FIA_OFFICIAL": "FIA_OFFICIAL",
+        "JOLPICA_F1_AND_FIA_OFFICIAL": "PITWALL",
+        "FASTF1": "TRACINGINSIGHTS",
     }
     return aliases.get(p, p)
 

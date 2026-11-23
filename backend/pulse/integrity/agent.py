@@ -211,10 +211,23 @@ class IntegrityAgent(BaseAgent):
         # lap_start time = event_time (start of the lap that just completed)
         p = envelope.payload
         lap_time_s = None
-        for k in ("lap_time_seconds", "lap_time", "last_lap_seconds", "duration_s"):
+        for k in ("lap_time_seconds", "last_lap_seconds", "duration_s", "lap_time"):
             if k in p and p[k] is not None:
-                lap_time_s = float(p[k])
-                break
+                val = p[k]
+                if isinstance(val, (int, float)):
+                    lap_time_s = float(val)
+                    break
+                elif isinstance(val, str):
+                    try:
+                        v = val.strip()
+                        if ":" in v:
+                            parts = v.split(":")
+                            lap_time_s = float(parts[0]) * 60 + float(parts[1])
+                        else:
+                            lap_time_s = float(v)
+                        break
+                    except (ValueError, TypeError):
+                        pass
 
         if lap_time_s is None:
             return
@@ -351,64 +364,12 @@ class IntegrityAgent(BaseAgent):
         await self.emit_finding(finding)
 
     def initialize_session_grid(self, session_id: str, drivers: list[Any]) -> None:
-        """Pre-opens decisions across active contracts for all drivers in the session grid."""
+        """Configures active session ID and driver context.
+        Decision instances are dynamically opened as evidence arrives (or on-demand during
+        active replay), preventing false-alarm DEGRADED states caused by premature epoch-0
+        slot deadline expirations."""
         self._session_id = session_id
-        now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
-        K = fmt_instant(now_us)
-
-        # Weather contract (SESSION scope)
-        if "weather_observation" in self._engine.contracts:
-            try:
-                self._engine.open_decision("weather_observation", {"session_id": session_id}, K, auto=True)
-            except Exception as e:
-                logger.debug("Failed opening weather decision: %s", e)
-
-        driver_nums = []
-        for d in drivers:
-            if isinstance(d, dict):
-                dn = d.get("number") or d.get("driver_number")
-            else:
-                dn = d
-            if dn is not None:
-                driver_nums.append(str(dn))
-
-        if not driver_nums:
-            driver_nums = [str(n) for n in [1, 4, 16, 44, 81, 63, 55, 11, 14, 23, 18, 10, 31, 22, 27, 20, 77, 24, 2, 21]]
-
-        for dn_str in driver_nums:
-            # lap_time contract (DRIVER_LAP scope)
-            if "lap_time" in self._engine.contracts:
-                try:
-                    self._engine.open_decision("lap_time", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1"}, K, auto=True)
-                except Exception as e:
-                    logger.debug("Failed opening lap_time for driver %s: %s", dn_str, e)
-
-            # driver_position contract (DRIVER_LAP scope)
-            if "driver_position" in self._engine.contracts:
-                try:
-                    self._engine.open_decision("driver_position", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1"}, K, auto=True)
-                except Exception as e:
-                    logger.debug("Failed opening driver_position for driver %s: %s", dn_str, e)
-
-            # sector_time contract (SECTOR scope)
-            if "sector_time" in self._engine.contracts:
-                try:
-                    self._engine.open_decision("sector_time", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1", "sector_number": "1"}, K, auto=True)
-                except Exception as e:
-                    logger.debug("Failed opening sector_time for driver %s: %s", dn_str, e)
-
-            # pit_speed contract (SECTOR scope)
-            if "pit_speed" in self._engine.contracts:
-                try:
-                    self._engine.open_decision("pit_speed", {"session_id": session_id, "driver_id": dn_str, "lap_number": "1", "sector_number": "1"}, K, auto=True)
-                except Exception as e:
-                    logger.debug("Failed opening pit_speed for driver %s: %s", dn_str, e)
-
-        # Initial deterministic evaluation tick
-        try:
-            self._engine.tick(K)
-        except Exception as e:
-            logger.debug("Initial grid tick: %s", e)
+        logger.info("IntegrityAgent session initialized for %s with %d drivers", session_id, len(drivers))
 
     def _find_instance_id(self, instance_id: str) -> str | None:
         """Finds a matching decision instance ID, supporting aliases and prefix formats."""
@@ -469,7 +430,9 @@ class IntegrityAgent(BaseAgent):
                 break
 
         sid = self._session_id or "f1-session"
-        now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
+        if self._knowledge_time_us <= 0:
+            return None
+        now_us = self._knowledge_time_us
         K = fmt_instant(now_us)
 
         for avail_cid in self._engine.contracts:
