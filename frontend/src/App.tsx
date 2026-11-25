@@ -317,70 +317,27 @@ export default function App() {
     const finalVerdict: SIAAssessment = v ?? {
       decision_instance_id: instanceId,
       revision_number: 1,
-      integrity_state: 'HEALTHY',
+      integrity_state: 'UNKNOWN',
       disposition: 'NORMAL',
-      resolution_maturity: 'STATE_RESOLVED',
+      resolution_maturity: 'OPEN',
       finality_status: 'PROVISIONAL',
-      verdict_hash: 'blake3:e9b17f8a3c4d2e1f0b9a8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f',
-      record_hash: 'blake3:8f2a1b0c9d8e7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e',
+      verdict_hash: 'pending-evaluation',
+      record_hash: 'pending-evaluation',
       contract: {
         id: instanceId.split('-')[1] || 'lap_time',
         version: '1.0.0',
-        formula: `AND(${instanceId.split('-')[1] || 'lap_time'}_timing, ${instanceId.split('-')[1] || 'lap_time'}_sensor)`,
+        formula: 'Awaiting live atom admission',
       },
-      scope: { driver: `#${instanceId.split('-')[2]?.replace('d', '') || '16'}`, session: sessionId },
-      roles: {
-        [`${instanceId.split('-')[1] || 'lap_time'}_timing`]: {
-          role_id: `${instanceId.split('-')[1] || 'lap_time'}_timing`,
-          state: 'HEALTHY',
-          atom: {
-            atom_id: `atm-${instanceId.slice(-6)}-t`,
-            role_id: `${instanceId.split('-')[1] || 'lap_time'}_timing`,
-            value: 60.08,
-            unit: 'km/h',
-            observed_at: new Date().toISOString(),
-            time: {
-              class: 'ABSOLUTE_UTC',
-              value: 1716559925120000,
-              unc: 1000,
-            },
-            scope: { driver: `#${instanceId.split('-')[2]?.replace('d', '') || '16'}`, session: sessionId },
-            source_origins: ['FOM_OPTICAL_LOOP'],
-            processing_origins: ['FLINK_STREAM_JOB_01'],
-            processor_family_id: 'timing_sequencer',
-            transform_version: '1.0.0',
-            raw_event_ids: [`raw-evt-${instanceId.slice(-6)}-0`],
-            quality_grade: 'HEALTHY',
-            content_hash: 'blake3:a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e',
-          },
+      scope: { driver: `#${instanceId.split('-')[2]?.replace('d', '') || 'unknown'}`, session: sessionId },
+      roles: {},
+      witnesses: [
+        {
+          code: 'NO_ADMITTED_EVIDENCE',
+          role: 'decision',
+          detail: 'No verdict exists yet in SIA Core v3 for this contract/scope (awaiting qualifying events during replay).',
         },
-        [`${instanceId.split('-')[1] || 'lap_time'}_sensor`]: {
-          role_id: `${instanceId.split('-')[1] || 'lap_time'}_sensor`,
-          state: 'HEALTHY',
-          atom: {
-            atom_id: `atm-${instanceId.slice(-6)}-s`,
-            role_id: `${instanceId.split('-')[1] || 'lap_time'}_sensor`,
-            value: 59.95,
-            unit: 'km/h',
-            observed_at: new Date().toISOString(),
-            time: {
-              class: 'ABSOLUTE_UTC',
-              value: 1716559925125000,
-              unc: 500,
-            },
-            scope: { driver: `#${instanceId.split('-')[2]?.replace('d', '') || '16'}`, session: sessionId },
-            source_origins: ['CAN_BUS_TELEMETRY'],
-            processing_origins: ['AGENT_03_VEHICLE'],
-            processor_family_id: 'telemetry_aligner',
-            transform_version: '1.0.0',
-            raw_event_ids: [`raw-evt-${instanceId.slice(-6)}-1`],
-            quality_grade: 'HEALTHY',
-            content_hash: 'blake3:b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f',
-          },
-        },
-      },
-      witnesses: [],
-      limitations: ['Evaluated under Public Data Regime (declared common-cause exposure: FOM telemetry transport)'],
+      ],
+      limitations: ['UNEVALUATED_SCOPE: Start replay or advance timeline until qualifying events arrive for this scope.'],
     };
     setInspectingAssessment(finalVerdict);
     const exp = await fetchVerdictExplanation(instanceId);
@@ -598,7 +555,7 @@ export default function App() {
 
       {/* Declared Baseline Survey & Uncertainty Guard Band Footer */}
       <AssumptionsBar
-        surveyReference="Monaco-2025-v2.1 (Effective 2025-11-01 UTC)"
+        surveyReference={`${circuitId.toUpperCase()} Geometry Baseline`}
         sensorToleranceMeters={0.05}
         timingSource="FOM Optical Loops & CAN Telemetry"
         dataRegime="PUBLIC"

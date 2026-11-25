@@ -10,7 +10,7 @@ from dataclasses import replace
 from typing import Any, Dict, List, Mapping, Optional
 
 from .algebra import IntegrityState as S
-from .canon import NEG_INF, fmt_instant, parse_instant
+from .canon import NEG_INF, POS_INF, fmt_instant, parse_instant
 from .contract import Contract, Validation, parse_contract, validate_contract
 from .evaluator import EngineConfig, evaluate_decision
 from .ledger import Admission, Ledger
@@ -35,6 +35,9 @@ class IntegrityEngine:
         self.index = BitemporalIndex()
         self._sealed: Dict[str, Assessment] = {}
         self._last_eval: Dict[str, int] = {}
+        self._dirty: set[str] = set()
+        self._next_wake: Dict[str, int] = {}
+        self._last_tick_K: int = NEG_INF
         self.finality_violations: List[dict] = []
         self.contract_history: List[dict] = []
 
@@ -76,12 +79,25 @@ class IntegrityEngine:
         adm = self.ledger.admit_atom(atom, knowledge_time)
         if adm.accepted:
             self._auto_open(atom)
+            atom_drv = dict(atom.scope).get("driver_id")
+            for iid, inst in self.instances.items():
+                if iid in self._sealed:
+                    continue
+                if atom.role_id not in self.contracts[inst.contract_id].roles:
+                    continue
+                inst_drv = inst.scope_dict.get("driver_id")
+                if inst_drv is not None and atom_drv is not None and inst_drv != atom_drv:
+                    continue
+                self._dirty.add(iid)
             self._check_finality(atom.role_id, dict(atom.scope), "atom", atom.atom_id, parse_instant(knowledge_time))
         return adm
 
     def admit_fact(self, fact: ReferenceFact, knowledge_time) -> Admission:
         adm = self.ledger.admit_fact(fact, knowledge_time)
         if adm.accepted:
+            for iid in self.instances:
+                if iid not in self._sealed:
+                    self._dirty.add(iid)
             for c in self.contracts.values():
                 for rn, r in c.roles.items():
                     if r.kind == "reference" and r.fact_type == fact.fact_type:
@@ -89,7 +105,12 @@ class IntegrityEngine:
         return adm
 
     def admit_guard(self, guard: GuardFact, knowledge_time) -> Admission:
-        return self.ledger.admit_guard(guard, knowledge_time)
+        adm = self.ledger.admit_guard(guard, knowledge_time)
+        if adm.accepted:
+            for iid in self.instances:
+                if iid not in self._sealed:
+                    self._dirty.add(iid)
+        return adm
 
     def _check_finality(self, role_id: str, scope: Dict[str, str], kind: str, item_id: str, kt: int, cid: Optional[str] = None) -> None:
         """Post-finality evidence is quarantined (never changes a FINAL verdict) and logged as a violation."""
@@ -161,7 +182,8 @@ class IntegrityEngine:
             raise ValueError("evaluation instant regressed; use as_of() for historical queries")
         self._last_eval[instance_id] = K
         self.ledger.advance_clock(K)
-        out = evaluate_decision(self.contracts[inst.contract_id], inst, self.ledger, self.registry, self.cfg, K)
+        c = self.contracts[inst.contract_id]
+        out = evaluate_decision(c, inst, self.ledger, self.registry, self.cfg, K)
         head = self.index.head(instance_id)
         if head is not None and head.content_hash == _hash(out.content):
             rec = replace(head, evaluated_at=K)             # same conclusion: no new revision
@@ -173,15 +195,39 @@ class IntegrityEngine:
             ch, rh = make_record(out.content, rev, prev, kt, reason)
             rec = Assessment(out.content, ch, rev, prev, kt, reason, rh, K, out.timeline)
             self.index.append(rec)
+        self._dirty.discard(instance_id)
+        wake_candidates = [rec.timeline.next_change_after(K), inst.opens_at + c.cutoff_us]
+        for r in c.roles.values():
+            wake_candidates.append(inst.opens_at + r.slot.deadline_us)
+            wake_candidates.append(inst.opens_at + r.slot.deadline_us + r.slot.lateness_us)
+        self._next_wake[instance_id] = min((t for t in wake_candidates if t is not None and t > K), default=POS_INF)
         if out.final:
             self._sealed[instance_id] = rec
         return rec
 
     def tick(self, K) -> List[Assessment]:
-        """Advance the run clock and re-evaluate every open decision (works with a stationary watermark)."""
+        """Advance the run clock and evaluate open decisions that are dirty or crossed a transition boundary."""
         K = parse_instant(K)
         self.ledger.advance_clock(K)
-        return [self.evaluate(i, K) for i in sorted(self.instances) if i not in self._sealed]
+        prev_k = self._last_tick_K
+        if any(prev_k < g.kt <= K for g in self.ledger.guards):
+            for iid in self.instances:
+                if iid not in self._sealed:
+                    self._dirty.add(iid)
+        self._last_tick_K = max(prev_k, K)
+        res: List[Assessment] = []
+        for i in sorted(self.instances):
+            if i in self._sealed:
+                continue
+            head = self.index.head(i)
+            if head is not None and i not in self._dirty and K < self._next_wake.get(i, NEG_INF):
+                if K < self._last_eval.get(i, NEG_INF):
+                    raise ValueError("evaluation instant regressed; use as_of() for historical queries")
+                self._last_eval[i] = K
+                res.append(replace(head, evaluated_at=K))
+            else:
+                res.append(self.evaluate(i, K))
+        return res
 
     # ------------------------------------------------------------------ queries
     def history(self, instance_id: str) -> List[Assessment]:

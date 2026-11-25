@@ -101,6 +101,7 @@ class IntegrityAgent(BaseAgent):
         self._session_t0_admitted = False
         self._knowledge_time_us: int = 0
         self._contract_ids: list[str] = []
+        self._last_emitted_sigs: dict[str, tuple[str, int]] = {}
 
         # Register default contracts
         self._register_contracts(session_type)
@@ -136,6 +137,7 @@ class IntegrityAgent(BaseAgent):
         self._session_t0_admitted = False
         self._knowledge_time_us = 0
         self._contract_ids.clear()
+        self._last_emitted_sigs.clear()
         self._register_contracts(self._session_type)
         self.reset_metrics()
         logger.info("IntegrityAgent reset for new session.")
@@ -298,12 +300,14 @@ class IntegrityAgent(BaseAgent):
             # Evaluate all open decisions (tick)
             assessments = self._engine.tick(K)
 
-            # Emit findings for each assessment
+            # Emit findings only when a decision verdict revision/hash changed
+            emitted_any = False
             for assessment in assessments:
-                await self._emit_integrity_finding(assessment, event)
+                if await self._emit_integrity_finding(assessment, event):
+                    emitted_any = True
 
             latency = (time.monotonic() - t0) * 1000
-            if assessments:
+            if emitted_any:
                 self.record_outcome("FINDING_EMITTED", latency)
             else:
                 self.record_outcome("NO_FINDING", latency)
@@ -316,8 +320,14 @@ class IntegrityAgent(BaseAgent):
     # Finding emission
     # ------------------------------------------------------------------
 
-    async def _emit_integrity_finding(self, assessment: SIAAssessment, trigger_event: EventEnvelope) -> None:
-        """Convert a SIA Assessment into a PULSE Finding and emit it."""
+    async def _emit_integrity_finding(self, assessment: SIAAssessment, trigger_event: EventEnvelope) -> bool:
+        """Convert a SIA Assessment into a PULSE Finding and emit it when changed."""
+        did = assessment.content.get("decision_instance_id")
+        sig = (assessment.record_hash, assessment.revision_number)
+        if did and self._last_emitted_sigs.get(did) == sig:
+            return False
+        if did:
+            self._last_emitted_sigs[did] = sig
         d = sia_assessment_to_dict(assessment)
         state = d.get("integrity_state", "UNKNOWN")
 
@@ -362,6 +372,7 @@ class IntegrityAgent(BaseAgent):
         )
 
         await self.emit_finding(finding)
+        return True
 
     def initialize_session_grid(self, session_id: str, drivers: list[Any]) -> None:
         """Configures active session ID and driver context.

@@ -137,7 +137,7 @@ export const ContextualityDag: React.FC<ContextualityDagProps> = ({
           </div>
           <div className="title-right">
             <span className="theorem-callout font-mono">
-              Theorem: &nbsp; &Escr;<sub>C01</sub>(atom) &perp; &Escr;<sub>C03</sub>(atom)
+              Theorem: &nbsp; E<sub>C01</sub>(atom) &perp; E<sub>C03</sub>(atom)
             </span>
           </div>
         </div>

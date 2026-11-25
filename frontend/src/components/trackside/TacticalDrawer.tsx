@@ -63,7 +63,7 @@ export const TacticalDrawer: React.FC<TacticalDrawerProps> = ({
                       <strong>{s.label}</strong>
                       <span>{s.condition}</span>
                     </div>
-                    <span className="sector-conf">Grip Confidence: {(s.confidence * 100).toFixed(0)}%</span>
+                    <span className="sector-conf">Grip Confidence: {(s.confidence <= 1 ? s.confidence * 100 : s.confidence).toFixed(0)}%</span>
                   </div>
                 ))}
               </div>

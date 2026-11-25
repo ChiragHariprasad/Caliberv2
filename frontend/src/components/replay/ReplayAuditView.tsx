@@ -356,7 +356,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
             <div>
               <p className="eyebrow">Cryptographic Integrity Audit</p>
               <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc' }}>
-                Hash-Chained Verdict Ledger (Append-Only Blake3 Verification)
+                Hash-Chained Verdict Ledger (Append-Only SHA-256 Verification)
               </h3>
             </div>
             <button
@@ -405,7 +405,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
               </strong>
               <span style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
                 {verificationResult?.chain_count ?? availableDecisions.length} decision instance chains inspected ·
-                Continuous Blake3 Merkle-chain continuity confirmed · Zero tampering detected.
+                Continuous SHA-256 hash-chain continuity confirmed &middot; Zero tampering detected.
               </span>
             </div>
           </div>
@@ -467,7 +467,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                   <th style={{ padding: '8px 12px' }}>DECISION INSTANCE ID</th>
                   <th style={{ padding: '8px 12px' }}>STATE</th>
                   <th style={{ padding: '8px 12px' }}>DISPOSITION</th>
-                  <th style={{ padding: '8px 12px' }}>CONTENT HASH (BLAKE3)</th>
+                  <th style={{ padding: '8px 12px' }}>CONTENT HASH (SHA-256)</th>
                   <th style={{ padding: '8px 12px' }}>RECORD HASH (CHAIN LINK)</th>
                   <th style={{ padding: '8px 12px' }}>CHAIN STATUS</th>
                 </tr>
@@ -655,7 +655,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                   cursor: 'pointer',
                 }}
               >
-                Genesis ($K_0$ Green Flag)
+                Genesis (K<sub>0</sub> Green Flag)
               </button>
             </div>
           </div>
@@ -666,7 +666,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
             <div style={{ padding: '16px', background: '#0b1017', border: '1px solid #1a2536', borderRadius: '6px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#38bdf8', textTransform: 'uppercase' }}>
-                  EPISYSTEMIC STATE AS OF K
+                  EPISTEMIC STATE AS OF K
                 </span>
                 {asOfVerdict && <StateBadge state={asOfVerdict.integrity_state} size="sm" />}
               </div>
@@ -692,7 +692,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
             <div style={{ padding: '16px', background: '#0b1017', border: '1px solid #1a2536', borderRadius: '6px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase' }}>
-                  LATEST CURRENT KNOWLEDGE ($K_\infty$)
+                  LATEST CURRENT KNOWLEDGE (K<sub>&infin;</sub>)
                 </span>
                 {currentLiveDecision && <StateBadge state={currentLiveDecision.integrity_state} size="sm" />}
               </div>

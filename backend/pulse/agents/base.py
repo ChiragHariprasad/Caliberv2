@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import logging
+import math
 import time
 from abc import ABC, abstractmethod
+from collections import deque
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -71,6 +73,7 @@ class BaseAgent(ABC):
         self.failures = 0
         self.retries = 0
         self.last_latency_ms = 0.0
+        self._latency_samples_ms: deque[float] = deque(maxlen=256)
         self.last_processed_event_id: str | None = None
         self.last_outcome: str = "INITIALIZED"
         self.output_finding_ids: list[str] = []
@@ -99,6 +102,8 @@ class BaseAgent(ABC):
         """Records the terminal execution outcome for the current event."""
         self.last_outcome = outcome
         self.last_latency_ms = latency_ms
+        if latency_ms > 0:
+            self._latency_samples_ms.append(latency_ms)
         if outcome == "FINDING_EMITTED":
             self.successfully_processed += 1
         elif outcome == "NO_FINDING":
@@ -131,8 +136,16 @@ class BaseAgent(ABC):
         )
 
     def get_metrics(self) -> AgentExecutionMetrics:
-        """Returns run-scoped execution transparency metrics."""
+        """Returns run-scoped execution transparency metrics with empirical latency percentiles."""
         lat = round(self.last_latency_ms, 2)
+        samples = sorted(self._latency_samples_ms)
+        if samples:
+            n = len(samples)
+            p50 = round(samples[min(n - 1, max(0, math.ceil(0.50 * n) - 1))], 2)
+            p95 = round(samples[min(n - 1, max(0, math.ceil(0.95 * n) - 1))], 2)
+        else:
+            p50 = 0.0
+            p95 = 0.0
         return AgentExecutionMetrics(
             agent_id=self.agent_id,
             name=self.name,
@@ -151,8 +164,8 @@ class BaseAgent(ABC):
             failures=self.failures,
             retries=self.retries,
             processing_latency_ms=lat,
-            p50_latency_ms=max(0.4, round(lat * 0.85, 2)) if lat > 0 else 0.0,
-            p95_latency_ms=max(0.9, round(lat * 1.25, 2)) if lat > 0 else 0.0,
+            p50_latency_ms=p50,
+            p95_latency_ms=p95,
             last_processed_event_id=self.last_processed_event_id,
             last_outcome=self.last_outcome,
             output_finding_ids=list(self.output_finding_ids),
@@ -174,6 +187,7 @@ class BaseAgent(ABC):
         self.failures = 0
         self.retries = 0
         self.last_latency_ms = 0.0
+        self._latency_samples_ms.clear()
         self.last_processed_event_id = None
         self.last_outcome = "RESET"
         self.output_finding_ids.clear()

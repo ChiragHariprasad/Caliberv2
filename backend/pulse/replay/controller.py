@@ -82,12 +82,12 @@ class ReplayController:
         return replayed
 
     async def _process(self, envelope: EventEnvelope, *, publish: bool) -> None:
-        # Guarantee state store projection is immediately updated on every event
-        get_state_store().record_canonical_event(envelope)
-
         if self._event_processor is not None:
             await self._event_processor(envelope, publish=publish)
             return
+
+        # Standalone controller path (no external processor wired)
+        get_state_store().record_canonical_event(envelope)
 
         if publish:
             topic = raw_topic_for_event(envelope.event_type)

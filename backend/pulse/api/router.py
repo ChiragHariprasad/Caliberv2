@@ -8,7 +8,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from pulse.circuits import get_circuit, list_circuits
 from pulse.simulator.runner import get_scenario_runner
@@ -31,9 +31,9 @@ class SessionSelectPayload(BaseModel):
 
 
 class ReplaySeekPayload(BaseModel):
-    target_lap: int | None = None
-    target_index: int | None = None
-    target_elapsed_ms: int | None = None
+    target_lap: int | None = Field(default=None, ge=0)
+    target_index: int | None = Field(default=None, ge=0)
+    target_elapsed_ms: int | None = Field(default=None, ge=0)
 
 
 class ReplaySpeedPayload(BaseModel):
@@ -368,6 +368,9 @@ async def get_session_metadata(session_id: str) -> dict[str, Any]:
 
 @api_router.post("/sessions/select")
 async def select_session(payload: SessionSelectPayload) -> dict[str, Any]:
+    from pulse.sessions.registry import get_session_by_id
+    if get_session_by_id(payload.session_id) is None:
+        raise HTTPException(status_code=404, detail=f"Session '{payload.session_id}' not found")
     from pulse.replay.controller import get_replay_controller
     controller = get_replay_controller()
     status = await controller.switch_session(payload.session_id)
@@ -429,12 +432,6 @@ async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
 async def replay_speed(payload: ReplaySpeedPayload) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().set_speed(payload.speed)
-
-
-@api_router.get("/replay/status")
-async def get_replay_status() -> dict[str, Any]:
-    from pulse.replay.controller import get_replay_controller
-    return get_replay_controller().get_status()
 
 
 @api_router.post("/replay/{action}")
@@ -517,9 +514,6 @@ async def event_stream(request: Request, limit: int | None = Query(default=None)
                     data_str = json.dumps(msg)
 
                     yield f"id: {msg_id}\nevent: {event_type}\ndata: {data_str}\n\n"
-                    # Also emit generic event name for backwards compatibility
-                    if event_type != "event":
-                        yield f"id: {msg_id}\nevent: event\ndata: {data_str}\n\n"
 
                     count += 1
                     if limit is not None and count >= limit:

@@ -311,7 +311,7 @@ export const SuperpositionView: React.FC<SuperpositionViewProps> = ({
               <p>
                 In SIA Core v3, before a decision reaches finality or tuple resolution, pending evidence roles are represented
                 by an algebraic possibility envelope <code>[L, U]</code>. As knowledge time advances monotonically, newly
-                admitted evidence atoms shrink this interval until $L = U$.
+                admitted evidence atoms shrink this interval until L = U.
               </p>
             </div>
 
@@ -334,7 +334,7 @@ export const SuperpositionView: React.FC<SuperpositionViewProps> = ({
                 <strong>Bitemporal Non-Interference</strong>
               </div>
               <p>
-                All evidence evaluations are strictly indexed by Knowledge Time $K$. A late-arriving atom cannot retroactively
+                All evidence evaluations are strictly indexed by Knowledge Time K. A late-arriving atom cannot retroactively
                 alter historical decisions already sealed at earlier coordinates.
               </p>
             </div>

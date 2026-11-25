@@ -83,6 +83,7 @@ class RaceStateProjector:
 
         # Full 20-driver initial grid state
         self.drivers: dict[int, dict[str, Any]] = self._init_full_grid()
+        self._driver_last_lap_num: dict[int, int] = {}
 
         # Circuit Sectors
         self.sectors: list[dict[str, Any]] = [
@@ -237,6 +238,7 @@ class RaceStateProjector:
                 "history": history,
             }
         self.drivers = new_drivers
+        self._driver_last_lap_num.clear()
 
     def _init_official_notices(self) -> list[dict[str, Any]]:
         """Initialises historical official FIA Race Control messages and stewards' decisions."""
@@ -494,6 +496,12 @@ class RaceStateProjector:
             dn = envelope.subject.driver_number
             if dn:
                 self._ensure_driver(dn)
+                lap_num = p.get("lap") or p.get("lap_number")
+                if isinstance(lap_num, int):
+                    prev_lap = self._driver_last_lap_num.get(dn, 0)
+                    if lap_num < prev_lap:
+                        return
+                    self._driver_last_lap_num[dn] = lap_num
                 if "last_lap_seconds" in p:
                     self.drivers[dn]["lastLap"] = p["last_lap_seconds"]
                 elif "lap_time" in p:

@@ -4,6 +4,7 @@ import asyncio
 import json
 import logging
 import time
+from collections import deque
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -42,6 +43,10 @@ class StateStore:
         self.latest_assessments: dict[int, Assessment] = {}
         self.assessment_history: list[Assessment] = []
         self.findings: list[Finding] = []
+        self._finding_ids: set[str] = set()
+        self._assessment_ids: set[str] = set()
+        self._seen_event_ids: set[str] = set()
+        self._seen_event_order: deque[str] = deque(maxlen=20000)
         self.processed_events_count: int = 0
         self.duplicate_events_count: int = 0
         self.last_event_time: datetime | None = None
@@ -87,6 +92,8 @@ class StateStore:
     def begin_run(self, run_id: str) -> None:
         """Associate subsequent projection and SSE state with one replay run."""
         self.current_run_id = run_id
+        self._seen_event_ids.clear()
+        self._seen_event_order.clear()
         for agent in self.agents.values():
             if hasattr(agent, "run_id"):
                 agent.run_id = run_id
@@ -102,6 +109,10 @@ class StateStore:
     def switch_session(self, session_id: str) -> None:
         """Configures state and driver grid for the chosen session."""
         self.current_session_id = session_id
+        self._finding_ids.clear()
+        self._assessment_ids.clear()
+        self._seen_event_ids.clear()
+        self._seen_event_order.clear()
         meta = get_session_by_id(session_id)
 
         for agent in self.agents.values():
@@ -217,6 +228,16 @@ class StateStore:
 
     def record_canonical_event(self, envelope: EventEnvelope) -> None:
         """Applies canonical event to projector, updates telemetry stats, and pushes SSE notifications."""
+        eid = envelope.event_id
+        if eid in self._seen_event_ids:
+            self.duplicate_events_count += 1
+            return
+        if len(self._seen_event_order) == self._seen_event_order.maxlen:
+            evicted = self._seen_event_order.popleft()
+            self._seen_event_ids.discard(evicted)
+        self._seen_event_ids.add(eid)
+        self._seen_event_order.append(eid)
+
         self.processed_events_count += 1
         self.last_event_time = envelope.time.event_time_utc
         self.projector.apply_event(envelope)
@@ -263,8 +284,10 @@ class StateStore:
 
     def record_finding(self, finding: Finding) -> None:
         """Stores a specialist agent finding and emits SSE updates."""
-        if not any(f.finding_id == finding.finding_id for f in self.findings):
-            self.findings.append(finding)
+        if finding.finding_id in self._finding_ids:
+            return
+        self._finding_ids.add(finding.finding_id)
+        self.findings.append(finding)
         if finding.finding_type == "PIT_WINDOW_OPPORTUNITY" and "scenarios" in finding.result:
             self.default_strategies = finding.result["scenarios"]
         if finding.finding_type == "INTEGRITY_ASSESSMENT":
@@ -276,6 +299,9 @@ class StateStore:
 
     def record_assessment(self, assessment: Assessment) -> None:
         """Stores fused driver consequence assessment and emits SSE update."""
+        if assessment.assessment_id in self._assessment_ids:
+            return
+        self._assessment_ids.add(assessment.assessment_id)
         dn = assessment.subject.driver_number
         if dn:
             self.latest_assessments[dn] = assessment
@@ -285,8 +311,7 @@ class StateStore:
                     "tone": tone,
                     "label": assessment.impact.summary[:30],
                 }
-        if not any(a.assessment_id == assessment.assessment_id for a in self.assessment_history):
-            self.assessment_history.append(assessment)
+        self.assessment_history.append(assessment)
 
         self._notify_listeners("assessment", assessment.model_dump(mode="json"))
         self._notify_listeners("IMPACT_ASSESSMENT_UPDATED", assessment.model_dump(mode="json"))

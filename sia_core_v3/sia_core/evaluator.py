@@ -266,7 +266,8 @@ def _eval_evidence(ctx: _Ctx, role: RoleSpec) -> RoleResult:
     unresolved: List[tuple] = []
     scope = ctx.scope
 
-    recs = [r for r in ctx.ledger.atoms(role.name) if r.kt <= horizon and scope_in(r.atom.scope, scope, role.scope_class)]
+    atom_pool = ctx.ledger.atoms_for(role.name, scope, role.scope_class) if hasattr(ctx.ledger, "atoms_for") else ctx.ledger.atoms(role.name)
+    recs = [r for r in atom_pool if r.kt <= horizon and scope_in(r.atom.scope, scope, role.scope_class)]
     for r in sorted(_supersede_atoms(recs), key=lambda r: (r.atom.observed_at, r.atom.atom_id)):
         a = r.atom
         ctx.note_kt(r.kt)

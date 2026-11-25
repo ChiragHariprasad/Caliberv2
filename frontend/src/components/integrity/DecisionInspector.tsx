@@ -288,14 +288,14 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
               <h3 className="drawer-section-heading">4. Cryptographic Record &amp; Hash-Chain</h3>
               <span className="chain-verified-pill">
                 <ShieldIcon size={12} className="inline mr-1 text-emerald-400" />
-                CHAIN OK (Blake3)
+                CHAIN OK (SHA-256)
               </span>
             </div>
 
             <div className="crypto-hash-stack">
               <div className="crypto-hash-row">
                 <div className="crypto-hash-header">
-                  <span className="crypto-hash-label">CONTENT HASH (BLAKE3):</span>
+                  <span className="crypto-hash-label">CONTENT HASH (SHA-256):</span>
                   <button
                     type="button"
                     className="btn-copy-hash"
@@ -304,7 +304,7 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
                     {copiedHash === 'content' ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <code className="crypto-hash-code">{assessment.verdict_hash || 'blake3:0000000000000000'}</code>
+                <code className="crypto-hash-code">{assessment.verdict_hash || 'pending'}</code>
               </div>
 
               <div className="crypto-hash-row">
@@ -318,7 +318,7 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
                     {copiedHash === 'record' ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <code className="crypto-hash-code text-purple-300">{assessment.record_hash || 'blake3:0000000000000000'}</code>
+                <code className="crypto-hash-code text-purple-300">{assessment.record_hash || 'pending'}</code>
               </div>
 
               <div className="crypto-hash-row">

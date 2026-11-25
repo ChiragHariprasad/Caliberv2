@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 from .canon import NEG_INF, fmt_instant, parse_instant
-from .model import EvidenceAtom, GuardFact, ReferenceFact, _finite
+from .model import SCOPE_FIELDS, EvidenceAtom, GuardFact, ReferenceFact, ScopeClass, _finite
 
 
 @dataclass(frozen=True)
@@ -54,6 +54,7 @@ class Ledger:
         self.clock: int = NEG_INF
         self._seq = 0
         self._atoms: Dict[str, List[AtomRec]] = {}
+        self._atoms_by_drv: Dict[tuple, List[AtomRec]] = {}
         self._facts: Dict[str, List[FactRec]] = {}
         self.guards: List[GuardRec] = []
         self._ids: Dict[str, object] = {}
@@ -61,6 +62,11 @@ class Ledger:
 
     # ---- queries
     def atoms(self, role_id: str) -> List[AtomRec]:
+        return self._atoms.get(role_id, [])
+
+    def atoms_for(self, role_id: str, scope: dict, scope_class: ScopeClass) -> List[AtomRec]:
+        if "driver_id" in SCOPE_FIELDS[scope_class] and "driver_id" in scope:
+            return self._atoms_by_drv.get((role_id, scope["driver_id"]), [])
         return self._atoms.get(role_id, [])
 
     def facts(self, fact_type: str) -> List[FactRec]:
@@ -106,6 +112,8 @@ class Ledger:
             return self._reject("atom", atom.atom_id, "MALFORMED_VALUE", kt)
         rec = AtomRec(atom, kt, self._next(kt))
         self._atoms.setdefault(atom.role_id, []).append(rec)
+        drv = dict(atom.scope).get("driver_id")
+        self._atoms_by_drv.setdefault((atom.role_id, drv), []).append(rec)
         self._ids[atom.atom_id] = rec
         return Admission("ACCEPTED", "OK", atom.atom_id)
 
