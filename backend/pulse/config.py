@@ -55,6 +55,12 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("PULSE_SIA_WAL_PATH", "SIA_WAL_PATH"),
     )
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
+    control_api_key: str = Field(
+        default="",
+        description="Optional API key required for mutating control routes when non-empty",
+        validation_alias=AliasChoices("PULSE_API_KEY", "PULSE_CONTROL_API_KEY"),
+    )
+    max_sse_listeners: int = Field(default=64, ge=1, le=500)
     default_replay_speed: float = Field(default=1.0, gt=0, le=32)
     groq_enabled: bool = True
     groq_api_key: str = Field(

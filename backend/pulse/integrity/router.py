@@ -9,8 +9,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
+
+from pulse.api.security import require_control_api_key
 
 logger = logging.getLogger("pulse.integrity.router")
 
@@ -161,7 +163,7 @@ class LabScenarioRequest(BaseModel):
     scenario_id: str
 
 
-@integrity_router.post("/lab-scenario")
+@integrity_router.post("/lab-scenario", dependencies=[Depends(require_control_api_key)])
 async def execute_lab_scenario(req: LabScenarioRequest) -> dict[str, Any]:
     """Run an isolated LAB fault-injection drill inside SIA Core v3 without mutating active session state."""
     agent = _get_agent()

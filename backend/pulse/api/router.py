@@ -6,11 +6,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from pulse.api.security import require_control_api_key
 from pulse.circuits import get_circuit, list_circuits
+from pulse.config import get_settings
 from pulse.simulator.runner import get_scenario_runner
 from pulse.state.store import get_state_store
 
@@ -27,7 +29,7 @@ class ControlPayload(BaseModel):
 
 
 class SessionSelectPayload(BaseModel):
-    session_id: str
+    session_id: str = Field(pattern=r"^[a-zA-Z0-9._-]{1,80}$")
 
 
 class ReplaySeekPayload(BaseModel):
@@ -409,7 +411,7 @@ async def get_session_metadata(session_id: str) -> dict[str, Any]:
     return meta.model_dump(mode="json")
 
 
-@api_router.post("/sessions/select")
+@api_router.post("/sessions/select", dependencies=[Depends(require_control_api_key)])
 async def select_session(payload: SessionSelectPayload) -> dict[str, Any]:
     from pulse.sessions.registry import get_session_by_id
     if get_session_by_id(payload.session_id) is None:
@@ -436,32 +438,32 @@ async def get_replay_status() -> dict[str, Any]:
     return get_replay_controller().get_status()
 
 
-@api_router.post("/replay/start")
+@api_router.post("/replay/start", dependencies=[Depends(require_control_api_key)])
 async def replay_start(payload: ControlPayload | None = None) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     controller = get_replay_controller()
     return await controller.start(speed=payload.speed if payload else None)
 
 
-@api_router.post("/replay/pause")
+@api_router.post("/replay/pause", dependencies=[Depends(require_control_api_key)])
 async def replay_pause() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().pause()
 
 
-@api_router.post("/replay/resume")
+@api_router.post("/replay/resume", dependencies=[Depends(require_control_api_key)])
 async def replay_resume() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().resume()
 
 
-@api_router.post("/replay/reset")
+@api_router.post("/replay/reset", dependencies=[Depends(require_control_api_key)])
 async def replay_reset() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return await get_replay_controller().reset()
 
 
-@api_router.post("/replay/seek")
+@api_router.post("/replay/seek", dependencies=[Depends(require_control_api_key)])
 async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return await get_replay_controller().seek(
@@ -471,13 +473,13 @@ async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
     )
 
 
-@api_router.post("/replay/speed")
+@api_router.post("/replay/speed", dependencies=[Depends(require_control_api_key)])
 async def replay_speed(payload: ReplaySpeedPayload) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().set_speed(payload.speed)
 
 
-@api_router.post("/replay/{action}")
+@api_router.post("/replay/{action}", dependencies=[Depends(require_control_api_key)])
 async def handle_replay_action(action: str, payload: ControlPayload | None = None) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     act = action.lower()
@@ -513,7 +515,7 @@ async def handle_replay_action(action: str, payload: ControlPayload | None = Non
     }
 
 
-@api_router.post("/runs/{run_id}/controls")
+@api_router.post("/runs/{run_id}/controls", dependencies=[Depends(require_control_api_key)])
 async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str, Any]:
     action = (payload.action or "").lower()
     return await handle_replay_action(action, payload)
@@ -522,6 +524,9 @@ async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str,
 @api_router.get("/stream")
 async def event_stream(request: Request, limit: int | None = Query(default=None)) -> StreamingResponse:
     """Continuous Server-Sent Events (SSE) delivering real-time telemetry and intelligence updates."""
+    store = get_state_store()
+    if len(store._listeners) >= get_settings().max_sse_listeners:
+        raise HTTPException(status_code=429, detail="Maximum concurrent SSE stream connections reached")
     last_event_id = request.headers.get("Last-Event-ID")
 
     async def sse_generator():
