@@ -1,0 +1,55 @@
+{
+  "generated_at_utc": "2026-11-26T16:10:50.000265+00:00",
+  "session": "f1-2023-silverstone-race",
+  "cold_target_index": 36321,
+  "legacy_baseline_cold_sec": [
+    83.8,
+    87.5
+  ],
+  "phase_i_cold_seek_trials": {
+    "n": 5,
+    "mean_sec": 70.8831,
+    "std_sec": 1.0337,
+    "min_sec": 69.6203,
+    "p50_sec": 71.215,
+    "p95_sec": 72.2208,
+    "max_sec": 72.2208
+  },
+  "phase_i_cold_trials_raw_sec": [
+    71.27,
+    69.6203,
+    71.215,
+    72.2208,
+    70.0893
+  ],
+  "warm_build_48000_sec": 94.2067,
+  "cached_random_seeks": {
+    "n": 6,
+    "mean_sec": 1.6507,
+    "std_sec": 0.7809,
+    "min_sec": 0.7595,
+    "p50_sec": 1.5628,
+    "p95_sec": 3.0038,
+    "max_sec": 3.0038
+  },
+  "sequential_step_seeks": {
+    "n": 5,
+    "mean_sec": 2.6895,
+    "std_sec": 1.1696,
+    "min_sec": 1.3927,
+    "p50_sec": 2.2373,
+    "p95_sec": 4.0706,
+    "max_sec": 4.0706
+  },
+  "session_switch_and_seek_4500": {
+    "n": 3,
+    "mean_sec": 13.0321,
+    "std_sec": 3.4073,
+    "min_sec": 9.6808,
+    "p50_sec": 12.9226,
+    "p95_sec": 16.4928,
+    "max_sec": 16.4928
+  },
+  "sia_decisions_verified": 451,
+  "sia_hash_mismatches": 0
+}

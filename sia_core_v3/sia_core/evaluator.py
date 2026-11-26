@@ -425,7 +425,7 @@ def _eval_reference(ctx: _Ctx, role: RoleSpec) -> RoleResult:
     cutoff = deadline + role.slot.lateness_us
     horizon, closed = min(K, cutoff), K >= cutoff
     wit: List[Witness] = []
-    recs = [r for r in ctx.ledger.facts(role.fact_type) if r.kt <= horizon and scope_in(r.fact.scope, ctx.scope, role.scope_class)]
+    recs = [r for r in ctx.ledger.facts_for(role.fact_type, ctx.scope, role.scope_class) if r.kt <= horizon and scope_in(r.fact.scope, ctx.scope, role.scope_class)]
     valid: List[Tuple[FactRec, FrozenSet[str]]] = []
     for r in _supersede_facts(recs):
         ctx.note_kt(r.kt)

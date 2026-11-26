@@ -130,12 +130,28 @@ def _jstr(s: str) -> str:
     return "".join(out)
 
 
+_SAFE_STR_RE = re.compile(r'^[^\x00-\x1f"\\]{0,256}$')
+_KEY_CACHE: dict[str, str] = {}
+
+
 def _jstr(s: str) -> str:
+    if _SAFE_STR_RE.match(s) is not None:
+        return f'"{s}"'
     return json.dumps(s, ensure_ascii=False)
 
 
+def _jkey(k: str) -> str:
+    cached = _KEY_CACHE.get(k)
+    if cached is not None:
+        return cached
+    encoded = _jstr(k)
+    if len(_KEY_CACHE) < 4096:
+        _KEY_CACHE[k] = encoded
+    return encoded
+
+
 def jcs(data: Any) -> str:
-    """Serialise to RFC 8785 canonical JSON text (fast ASCII/C-escaped path)."""
+    """Serialise to RFC 8785 canonical JSON text (fast ASCII/key-cached path)."""
     if data is None:
         return "null"
     if isinstance(data, bool):
@@ -147,15 +163,15 @@ def jcs(data: Any) -> str:
     if isinstance(data, float):
         return es6_format_float(data)
     if isinstance(data, str):
-        return json.dumps(data, ensure_ascii=False)
+        return _jstr(data)
     if isinstance(data, (list, tuple)):
         return "[" + ",".join(jcs(x) for x in data) + "]"
     if isinstance(data, dict):
         if all(type(k) is str and k.isascii() for k in data):
             keys = sorted(data.keys())
-            return "{" + ",".join(json.dumps(k, ensure_ascii=False) + ":" + jcs(data[k]) for k in keys) + "}"
+            return "{" + ",".join(_jkey(k) + ":" + jcs(data[k]) for k in keys) + "}"
         keys = sorted(data.keys(), key=lambda k: str(k).encode("utf-16-be"))
-        return "{" + ",".join(json.dumps(str(k), ensure_ascii=False) + ":" + jcs(data[k]) for k in keys) + "}"
+        return "{" + ",".join(_jstr(str(k)) + ":" + jcs(data[k]) for k in keys) + "}"
     raise TypeError(f"unsupported type for canonicalisation: {type(data)}")
 
 

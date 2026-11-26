@@ -57,6 +57,8 @@ class Ledger:
         self._atoms_by_drv: Dict[tuple, List[AtomRec]] = {}
         self._atoms_by_drv_lap: Dict[tuple, List[AtomRec]] = {}
         self._facts: Dict[str, List[FactRec]] = {}
+        self._facts_by_drv: Dict[tuple, List[FactRec]] = {}
+        self._facts_by_drv_lap: Dict[tuple, List[FactRec]] = {}
         self.guards: List[GuardRec] = []
         self._ids: Dict[str, object] = {}
         self.rejections: List[dict] = []
@@ -86,6 +88,32 @@ class Ledger:
         return getattr(rec, "fact", None)
 
     def facts(self, fact_type: str) -> List[FactRec]:
+        return self._facts.get(fact_type, [])
+
+    def facts_for(self, fact_type: str, scope: dict, scope_class: ScopeClass) -> List[FactRec]:
+        if scope_class == ScopeClass.DRIVER_LAP and "driver_id" in scope and "lap_number" in scope:
+            drv = scope["driver_id"]
+            lap = scope["lap_number"]
+            exact = self._facts_by_drv_lap.get((fact_type, drv, lap))
+            drv_wild = self._facts_by_drv_lap.get((fact_type, drv, None))
+            lap_wild = self._facts_by_drv_lap.get((fact_type, None, lap))
+            glob = self._facts_by_drv_lap.get((fact_type, None, None))
+            if not drv_wild and not lap_wild and not glob:
+                return exact or []
+            out = list(exact) if exact else []
+            if drv_wild:
+                out.extend(drv_wild)
+            if lap_wild:
+                out.extend(lap_wild)
+            if glob:
+                out.extend(glob)
+            return out
+        if "driver_id" in SCOPE_FIELDS[scope_class] and "driver_id" in scope:
+            drv_recs = self._facts_by_drv.get((fact_type, scope["driver_id"]))
+            glob_recs = self._facts_by_drv.get((fact_type, None))
+            if not glob_recs:
+                return drv_recs or []
+            return (list(drv_recs) if drv_recs else []) + glob_recs
         return self._facts.get(fact_type, [])
 
     def counts(self) -> dict:
@@ -128,9 +156,13 @@ class Ledger:
             return self._reject("atom", atom.atom_id, "MALFORMED_VALUE", kt)
         rec = AtomRec(atom, kt, self._next(kt))
         self._atoms.setdefault(atom.role_id, []).append(rec)
-        sc_dict = dict(atom.scope)
-        drv = sc_dict.get("driver_id")
-        lap = sc_dict.get("lap_number")
+        drv = None
+        lap = None
+        for sk, sv in atom.scope:
+            if sk == "driver_id":
+                drv = sv
+            elif sk == "lap_number":
+                lap = sv
         self._atoms_by_drv.setdefault((atom.role_id, drv), []).append(rec)
         self._atoms_by_drv_lap.setdefault((atom.role_id, drv, lap), []).append(rec)
         self._ids[atom.atom_id] = rec
@@ -149,6 +181,15 @@ class Ledger:
             return self._reject("fact", fact.fact_id, "MALFORMED_VALUE", kt)
         rec = FactRec(fact, kt, self._next(kt))
         self._facts.setdefault(fact.fact_type, []).append(rec)
+        f_drv = None
+        f_lap = None
+        for sk, sv in fact.scope:
+            if sk == "driver_id":
+                f_drv = sv
+            elif sk == "lap_number":
+                f_lap = sv
+        self._facts_by_drv.setdefault((fact.fact_type, f_drv), []).append(rec)
+        self._facts_by_drv_lap.setdefault((fact.fact_type, f_drv, f_lap), []).append(rec)
         self._ids[fact.fact_id] = rec
         return Admission("ACCEPTED", "OK", fact.fact_id)
 

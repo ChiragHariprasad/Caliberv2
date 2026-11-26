@@ -76,13 +76,20 @@ class ReplayController:
         self._reset_hook = hook
 
     def _for_current_run(self, envelope: EventEnvelope) -> EventEnvelope:
-        """Copy a source envelope into the active replay-run namespace."""
-        replayed = envelope.model_copy(deep=True)
-        replayed.run.run_id = self.run_id
-        replayed.run.session_instance_id = self.session_id
-        replayed.run.mode = RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED
-        replayed.event_id = f"{envelope.event_id}-{self.run_id}"
-        return replayed
+        """Shallow-clone source envelope into the active replay-run namespace (avoids deepcopy overhead)."""
+        new_run = envelope.run.model_copy(
+            update={
+                "run_id": self.run_id,
+                "session_instance_id": self.session_id,
+                "mode": RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED,
+            }
+        )
+        return envelope.model_copy(
+            update={
+                "event_id": f"{envelope.event_id}-{self.run_id}",
+                "run": new_run,
+            }
+        )
 
     async def _process(self, envelope: EventEnvelope, *, publish: bool) -> None:
         if self._event_processor is not None:
@@ -367,20 +374,26 @@ class ReplayController:
 
             # Check if a keyframe checkpoint <= target_idx is cached for this session
             store = get_state_store()
-            sess_ckpts = self._checkpoints.setdefault(self.session_id, {})
-            best_ckpt_idx = max((idx for idx in sess_ckpts if idx <= target_idx), default=0)
-
             old_run_id = self.run_id
             self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
             store.retire_run(old_run_id)
             if self._reset_hook is not None:
                 self._reset_hook()
 
-            if best_ckpt_idx > 0:
-                store.restore_checkpoint(sess_ckpts[best_ckpt_idx])
-                store.begin_run(self.run_id)
-                start_idx = best_ckpt_idx
-            else:
+            sess_ckpts = self._checkpoints.setdefault(self.session_id, {})
+            start_idx = 0
+            restored = False
+            for ckpt_idx in sorted((idx for idx in sess_ckpts if idx <= target_idx), reverse=True):
+                try:
+                    store.restore_checkpoint(sess_ckpts[ckpt_idx])
+                    store.begin_run(self.run_id)
+                    start_idx = ckpt_idx
+                    restored = True
+                    break
+                except Exception as exc:
+                    logger.warning("Corrupted replay checkpoint at idx=%d popped; falling back (%s)", ckpt_idx, exc)
+                    sess_ckpts.pop(ckpt_idx, None)
+            if not restored:
                 store.switch_session(self.session_id)
                 store.begin_run(self.run_id)
                 start_idx = 0

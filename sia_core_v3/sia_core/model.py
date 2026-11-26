@@ -49,10 +49,28 @@ def norm_scope(scope: Mapping[str, Any]) -> ScopeT:
     return tuple(sorted(out.items()))
 
 
+_SCOPE_FIELDS_TUPLE = {cls: tuple(fields) for cls, fields in SCOPE_FIELDS.items()}
+
+
 def scope_in(item_scope: ScopeT, inst_scope: Mapping[str, str], cls: ScopeClass) -> bool:
     """Item carries every field of ``cls`` and agrees with the decision on each (scope locality)."""
-    d = dict(item_scope)
-    return all(f in d and f in inst_scope and d[f] == inst_scope[f] for f in SCOPE_FIELDS[cls])
+    req = _SCOPE_FIELDS_TUPLE[cls]
+    if len(item_scope) < len(req):
+        return False
+    for field_name in req:
+        expected = inst_scope.get(field_name)
+        if expected is None:
+            return False
+        matched = False
+        for k, v in item_scope:
+            if k == field_name:
+                if v != expected:
+                    return False
+                matched = True
+                break
+        if not matched:
+            return False
+    return True
 
 
 def scope_covers(item_scope: ScopeT, scope: Mapping[str, str]) -> bool:
