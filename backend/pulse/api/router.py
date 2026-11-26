@@ -20,7 +20,7 @@ api_router = APIRouter(prefix="/api", tags=["PULSE Race Intelligence API"])
 
 class ControlPayload(BaseModel):
     action: str | None = None
-    speed: float | None = None
+    speed: float | None = Field(default=None, ge=0.1, le=20.0)
     target_lap: int | None = None
     target_index: int | None = None
     target_elapsed_ms: int | None = None
@@ -37,7 +37,7 @@ class ReplaySeekPayload(BaseModel):
 
 
 class ReplaySpeedPayload(BaseModel):
-    speed: float
+    speed: float = Field(..., ge=0.1, le=20.0)
 
 
 @api_router.get("/health")
@@ -130,47 +130,77 @@ async def get_run(run_id: str) -> dict[str, Any]:
     return runner.run_record.model_dump(mode="json")
 
 
+def _require_registered_session(session_id: str) -> Any:
+    from pulse.sessions.registry import get_session_by_id as lookup_session
+    meta = lookup_session(session_id)
+    if meta is None:
+        raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found")
+    return meta
+
+
+def _require_active_session_scope(session_id: str, store: Any) -> None:
+    _require_registered_session(session_id)
+    if store.current_session_id != session_id:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Session '{session_id}' is not active (active: '{store.current_session_id}'). Select it via POST /api/sessions/select.",
+        )
+
+
 @api_router.get("/sessions/{session_id}")
 async def get_session_by_id(session_id: str) -> dict[str, Any]:
+    meta = _require_registered_session(session_id)
     store = get_state_store()
-    return store.get_session()
+    if store.current_session_id == session_id:
+        return store.get_session()
+    return {
+        **meta.model_dump(mode="json"),
+        "active": False,
+        "activeSessionId": store.current_session_id,
+    }
 
 
 @api_router.get("/sessions/{session_id}/drivers")
 async def get_session_drivers(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_drivers()
 
 
 @api_router.get("/sessions/{session_id}/drivers/{driver_number}")
 async def get_session_driver_by_number(session_id: str, driver_number: int) -> dict[str, Any]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     if driver_number in store.projector.drivers:
         return store.projector.drivers[driver_number]
-    raise HTTPException(status_code=404, detail=f"Driver #{driver_number} not found")
+    raise HTTPException(status_code=404, detail=f"Driver #{driver_number} not found in session '{session_id}'")
 
 
 @api_router.get("/sessions/{session_id}/timeline")
 async def get_session_timeline(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_timeline()
 
 
 @api_router.get("/sessions/{session_id}/track")
 async def get_session_track(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_track()
 
 
 @api_router.get("/sessions/{session_id}/strategy")
 async def get_session_strategy(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_strategy()
 
 
 @api_router.get("/sessions/{session_id}/assessments")
 async def get_session_assessments(session_id: str, driver_number: int | None = Query(default=None)) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_assessments(driver_number=driver_number)
 
 
@@ -251,7 +281,13 @@ async def get_pipeline_status() -> dict[str, Any]:
     health = store.get_health()
     agent_metrics = store.get_agent_metrics()
 
-    flink_info = {"status": "UNKNOWN", "job_id": None, "checkpoints": 0}
+    flink_info: dict[str, Any] = {
+        "status": "UNKNOWN",
+        "job_id": None,
+        "checkpoints_completed": 0,
+        "read_records": 0,
+        "write_records": 0,
+    }
     try:
         from pulse.stream.flink.manager import get_flink_manager
         mgr = get_flink_manager()
@@ -268,10 +304,17 @@ async def get_pipeline_status() -> dict[str, Any]:
     except Exception as e:
         logger.debug("Could not query Flink metrics: %s", e)
 
+    from pulse.config import get_settings
+    from pulse.stream.kafka_io import build_topic_catalogue
+    cfg = get_settings()
+    topic_count = len(build_topic_catalogue())
+
     return {
         "kafka": {
             "connected": health.get("kafka_connected", False),
             "transport": health.get("transport", "MEMORY"),
+            "bootstrap_servers": cfg.kafka_bootstrap_servers,
+            "topic_count": topic_count,
             "processed_events": health.get("processed_events", 0),
             "duplicate_events": health.get("duplicate_events", 0),
         },

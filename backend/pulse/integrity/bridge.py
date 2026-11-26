@@ -50,8 +50,12 @@ DEFAULT_ORIGINS: dict[str, list[str]] = {
     "TIMING_CONFIG": ["F1_FOM_TIMING"],
     "POP_MONITOR": [],
     "SURVEY": [],
-    "FIA_OFFICIAL": ["F1_FOM_TIMING"],
+    "FIA_OFFICIAL": ["FIA_RACE_CONTROL"],
     "WEATHER_SERVICE": [],
+    "FASTF1_RESEARCH": ["F1_TIMING_ARCHIVE", "F1_FOM_TIMING"],
+    "JOLPICA_OPEN": ["ERGAST_JOLPICA_ARCHIVE"],
+    "SYNTHETIC_SIM": ["PULSE_SYNTHETIC_GENERATOR"],
+    "LAB_ARCHIVE": ["PULSE_LAB_COMPOSED_STREAM"],
     "PULSE_PIPELINE": [],
 }
 
@@ -250,19 +254,30 @@ def _extract_value(payload: dict[str, Any], role_id: str) -> Any:
 
 
 def _provider_to_origin(provider: str) -> str:
-    """Normalise a PULSE provider name to a SIA source origin."""
+    """Normalise a PULSE provider name into an honest SIA source origin without laundering synthetic feeds."""
     p = provider.upper().replace(" ", "_").replace("-", "_")
-    # Map common variants
     aliases = {
-        "F1_TIMING": "PITWALL",
+        "PULSE_SYNTHETIC_SIM": "SYNTHETIC_SIM",
+        "PULSE_SYNTHETIC_SIMULATOR": "SYNTHETIC_SIM",
+        "SIMULATOR": "SYNTHETIC_SIM",
+        "TEST_HARNESS": "SYNTHETIC_SIM",
+        "PULSE_VERIFICATION_HARNESS": "SYNTHETIC_SIM",
+        "LAB_COMPOSED_ARCHIVE": "LAB_ARCHIVE",
+        "JOLPICA_F1_AND_FIA_OFFICIAL": "JOLPICA_OPEN",
+        "JOLPICA": "JOLPICA_OPEN",
+        "JOLPICA_OPEN": "JOLPICA_OPEN",
+        "FASTF1": "FASTF1_RESEARCH",
+        "FASTF1_RESEARCH": "FASTF1_RESEARCH",
         "OPENF1": "TRACINGINSIGHTS",
+        "F1_TIMING": "PITWALL",
         "FOM": "PITWALL",
         "LIVE_TIMING": "PITWALL",
         "FIA_OFFICIAL_TIMING": "PITWALL",
         "FIA_OFFICIAL_TIMING_AND_TELEMETRY": "PITWALL",
         "FIA_OFFICIAL": "FIA_OFFICIAL",
-        "JOLPICA_F1_AND_FIA_OFFICIAL": "PITWALL",
-        "FASTF1": "TRACINGINSIGHTS",
+        "CAR_ECU": "CAR_SENSOR",
+        "CAR_SENSOR": "CAR_SENSOR",
+        "WEATHER_SERVICE": "WEATHER_SERVICE",
     }
     return aliases.get(p, p)
 
@@ -291,6 +306,13 @@ def envelope_to_atom(envelope: EventEnvelope, role_id: str):
     else:
         tt = None  # make_atom defaults to ABSOLUTE_UTC from observed_at
 
+    run_suffix = f"-{envelope.run.run_id}" if envelope.run and envelope.run.run_id else ""
+    canonical_event_id = (
+        envelope.event_id[: -len(run_suffix)]
+        if run_suffix and envelope.event_id.endswith(run_suffix)
+        else envelope.event_id
+    )
+
     try:
         atom = make_atom(
             role_id=role_id,
@@ -303,7 +325,7 @@ def envelope_to_atom(envelope: EventEnvelope, role_id: str):
             processing_origins=[f"adapter:{envelope.source.adapter}"],
             processor_family_id=envelope.source.adapter or "pulse_normalizer",
             transform_version="1.0.0",
-            raw_event_ids=(envelope.event_id,),
+            raw_event_ids=(canonical_event_id,),
             quality_grade=grade,
         )
         return atom
@@ -360,11 +382,96 @@ def finding_to_atom(finding: Finding, role_id: str):
 # SIA → PULSE conversion
 # ---------------------------------------------------------------------------
 
-def sia_assessment_to_dict(assessment: SIAAssessment) -> dict[str, Any]:
-    """Convert a SIA Assessment into a JSON-serialisable dict for the API."""
-    d = assessment.to_dict()
+def _role_evidence_details(
+    role_dict: dict[str, Any],
+    ledger: Any = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Resolve concrete admitted Atom and ReferenceFact metadata for API/UI inspection."""
+    atoms_detail: list[dict[str, Any]] = []
+    facts_detail: list[dict[str, Any]] = []
+    if ledger is None:
+        return atoms_detail, facts_detail
 
-    # Ensure datetime-like strings are properly formatted
+    for aid in role_dict.get("support_atom_ids") or []:
+        atom = ledger.get_atom(aid) if hasattr(ledger, "get_atom") else None
+        if atom is None:
+            rec = (getattr(ledger, "_ids", None) or {}).get(aid)
+            atom = getattr(rec, "atom", None)
+        if atom is None:
+            continue
+        atoms_detail.append({
+            "atom_id": atom.atom_id,
+            "role_id": atom.role_id,
+            "value": atom.value,
+            "unit": atom.unit,
+            "observed_at": fmt_instant(atom.observed_at),
+            "source_origins": list(atom.source_origins),
+            "processing_origins": list(atom.processing_origins),
+            "quality_grade": atom.quality_grade.name if hasattr(atom.quality_grade, "name") else str(atom.quality_grade),
+            "raw_event_ids": list(atom.raw_event_ids),
+        })
+    for fid in role_dict.get("reference_fact_ids") or []:
+        fact = ledger.get_fact(fid) if hasattr(ledger, "get_fact") else None
+        if fact is None:
+            rec = (getattr(ledger, "_ids", None) or {}).get(fid)
+            fact = getattr(rec, "fact", None)
+        if fact is None:
+            continue
+        facts_detail.append({
+            "fact_id": fact.fact_id,
+            "fact_type": fact.fact_type,
+            "value": fact.value,
+            "unit": fact.unit,
+            "valid_from": fmt_instant(fact.valid_from) if fact.valid_from is not None else None,
+            "source_origins": list(getattr(fact, "origins", ()) or ()),
+        })
+    return atoms_detail, facts_detail
+
+
+def sia_assessment_to_dict(
+    assessment: SIAAssessment,
+    ledger: Any = None,
+    contract: Any = None,
+) -> dict[str, Any]:
+    """Convert a SIA Assessment into a JSON-serialisable dict enriched with witness details."""
+    d = assessment.to_dict()
+    roles_out: dict[str, Any] = {}
+    distinct_sources: set[str] = set()
+    distinct_processors: set[str] = set()
+    max_source_depth = 0
+    for rname, rinfo in (d.get("roles") or {}).items():
+        rcopy = dict(rinfo)
+        max_source_depth = max(max_source_depth, int(rcopy.get("source_depth") or 0))
+        for dep in rcopy.get("dependencies") or []:
+            if isinstance(dep, str) and dep.startswith("S:"):
+                distinct_sources.add(dep[2:])
+            elif isinstance(dep, str) and dep.startswith("P:"):
+                distinct_processors.add(dep[2:])
+        atoms_detail, facts_detail = _role_evidence_details(rcopy, ledger=ledger)
+        rcopy["atoms_detail"] = atoms_detail
+        rcopy["reference_facts_detail"] = facts_detail
+        roles_out[rname] = rcopy
+
+    resilience = d.get("resilience") or {}
+    crit = resilience.get("critical_origins") or []
+    denom = max(1, len(distinct_sources))
+    crit_sources = [c for c in crit if isinstance(c, str) and c.startswith("S:")]
+    common_cause_exposure = round(min(1.0, len(crit_sources) / denom), 2) if distinct_sources else 1.0
+
+    contract_constraints = []
+    if contract is not None and getattr(contract, "constraints", None):
+        for cs in contract.constraints:
+            params = dict(getattr(cs, "params", {}) or {})
+            contract_constraints.append({
+                "id": getattr(cs, "id", None),
+                "kind": getattr(cs, "kind", None),
+                "operands": list(getattr(cs, "operands", ()) or ()),
+                "lo": params.get("lo"),
+                "hi": params.get("hi"),
+                "tolerance": params.get("tolerance", params.get("tol")),
+                "uncertainty": params.get("uncertainty"),
+            })
+
     return {
         "decision_instance_id": d.get("decision_instance_id"),
         "contract": d.get("contract"),
@@ -375,14 +482,19 @@ def sia_assessment_to_dict(assessment: SIAAssessment) -> dict[str, Any]:
         "finality_status": d.get("finality_status"),
         "decision_maturity": d.get("decision_maturity"),
         "envelope": d.get("envelope"),
-        "roles": d.get("roles"),
+        "roles": roles_out,
         "constraints": d.get("constraints"),
+        "contract_constraints": contract_constraints,
         "diagnosis": d.get("diagnosis"),
-        "resilience": d.get("resilience"),
+        "resilience": resilience,
         "witnesses": d.get("witnesses"),
         "witness_set": d.get("witness_set"),
         "primary_binding_witness": d.get("primary_binding_witness"),
         "limitations": d.get("limitations"),
+        "source_origins": sorted(distinct_sources),
+        "processing_origins": sorted(distinct_processors),
+        "corroboration_depth": max_source_depth,
+        "common_cause_exposure": common_cause_exposure,
         "evaluated_at": d.get("evaluated_at"),
         "next_transition_at": d.get("next_transition_at"),
         "lease_until": d.get("lease_until"),

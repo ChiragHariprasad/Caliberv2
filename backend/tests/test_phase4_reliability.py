@@ -235,7 +235,9 @@ def is_kafka_broker_online(bootstrap_servers: str) -> bool:
 
 @pytest.mark.asyncio
 async def test_06_kafka_consumer_restart_recovery():
-    """Verifies Kafka broker consumer group restart resumes without connection failure."""
+    """Verifies SAME consumer group commits offsets manually and resumes without skipping or repeating."""
+    from aiokafka import TopicPartition
+
     settings = get_settings()
     if not is_kafka_broker_online(settings.kafka_bootstrap_servers):
         pytest.skip("Kafka broker offline (Docker offline)")
@@ -246,41 +248,78 @@ async def test_06_kafka_consumer_restart_recovery():
         pytest.skip(f"Kafka broker offline: {exc}")
     assert broker.is_connected
 
-    group_id = f"pulse-test-restart-{uuid4().hex[:6]}"
+    group_id = f"pulse-test-samegroup-{uuid4().hex[:6]}"
     test_topic = RAW_TOPICS["race_control"]
-    test_env = make_envelope(
-        event_id=f"evt-k-restart-{uuid4().hex[:6]}",
+    env_1 = make_envelope(
+        event_id=f"evt-k-restart-1-{uuid4().hex[:6]}",
         event_type="SESSION_STARTED",
         elapsed_ms=0,
-        payload={"lap": 1},
+        payload={"lap": 1, "seq": 1},
     )
-    await broker.publish(test_topic, "test-session", test_env)
+    env_2 = make_envelope(
+        event_id=f"evt-k-restart-2-{uuid4().hex[:6]}",
+        event_type="VSC_DEPLOYED",
+        elapsed_ms=5000,
+        payload={"lap": 2, "seq": 2},
+    )
 
-    # First consumer reads message
-    c1 = await broker.create_consumer(topics=[test_topic], group_id=group_id, auto_offset_reset="earliest")
-    msg1 = await asyncio.wait_for(c1.getone(), timeout=3.0)
-    assert msg1 is not None
+    # Consumer 1 joins at latest, reads ONLY newly published env_1, commits offset+1 explicitly, then stops
+    c1 = await broker.create_consumer(
+        topics=[test_topic],
+        group_id=group_id,
+        auto_offset_reset="latest",
+        enable_auto_commit=False,
+    )
+    await broker.publish(test_topic, "test-session", env_1)
+    msg1 = None
+    for _ in range(20):
+        rec = await asyncio.wait_for(c1.getone(), timeout=3.0)
+        if isinstance(rec.value, dict) and rec.value.get("event_id") == env_1.event_id:
+            msg1 = rec
+            await c1.commit({TopicPartition(rec.topic, rec.partition): rec.offset + 1})
+            break
+    assert msg1 is not None, "Consumer 1 did not observe env_1"
     await c1.stop()
 
-    # Second consumer restarts with new group_id to verify broker responsiveness
-    group_id_2 = f"pulse-test-restart-2-{uuid4().hex[:6]}"
-    c2 = await broker.create_consumer(topics=[test_topic], group_id=group_id_2, auto_offset_reset="earliest")
-    msg2 = await asyncio.wait_for(c2.getone(), timeout=3.0)
-    assert msg2 is not None
+    # Publish env_2 while consumer group is down
+    await broker.publish(test_topic, "test-session", env_2)
+
+    # Consumer 2 restarts with the SAME group_id and must receive env_2 cleanly (not env_1!)
+    c2 = await broker.create_consumer(
+        topics=[test_topic],
+        group_id=group_id,
+        auto_offset_reset="latest",
+        enable_auto_commit=False,
+    )
+    seen_ids: list[str] = []
+    for _ in range(10):
+        rec2 = await asyncio.wait_for(c2.getone(), timeout=3.0)
+        if isinstance(rec2.value, dict) and rec2.value.get("event_id") in {env_1.event_id, env_2.event_id}:
+            seen_ids.append(rec2.value["event_id"])
+            if rec2.value["event_id"] == env_2.event_id:
+                await c2.commit({TopicPartition(rec2.topic, rec2.partition): rec2.offset + 1})
+                break
     await c2.stop()
     await broker.stop()
+    assert env_1.event_id not in seen_ids, "Already-committed env_1 was re-delivered after restart!"
+    assert env_2.event_id in seen_ids, "Consumer restart with same group_id missed env_2 published during outage!"
 
 
 def test_07_flink_checkpoint_recovery():
-    """Verifies that Flink streaming cluster has active checkpoints and healthy running job."""
+    """Verifies that Flink streaming cluster has completed >= 1 checkpoint and healthy v3 job."""
     flink_mgr = get_flink_manager()
     if not flink_mgr.client.is_cluster_online():
         pytest.skip("Flink cluster is offline on http://localhost:8081 (Docker offline)")
 
+    jid = flink_mgr.ensure_normalizer_job_running()
     metrics = flink_mgr.get_metrics()
     assert metrics is not None
     assert metrics.state == "RUNNING"
-    assert metrics.checkpoints_completed >= 0
+    assert metrics.checkpoints_completed >= 1, f"Expected >= 1 completed Flink checkpoint, got {metrics.checkpoints_completed}"
+    details = flink_mgr.client.get_job_status(jid) or {}
+    vertices = details.get("vertices", [])
+    assert len(vertices) >= 18, f"Expected v3 Flink graph (>= 18 vertices for 9 raw topics), got {len(vertices)}"
+    assert all(v.get("status") == "RUNNING" for v in vertices)
 
 
 @pytest.mark.asyncio

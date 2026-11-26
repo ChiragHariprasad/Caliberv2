@@ -4,7 +4,7 @@ Provides:
 1. Topic catalogue with explicit partition tiers (DRIVER=11, OPS=3, SINGLE=1), RF=3, min.isr=2,
    retention and compaction policies, plus broker drift verification.
 2. Driver-affine partitioning via deterministic DriverSlots.
-3. High-throughput idempotent producers with zstd compression and delivery latency tracking.
+3. High-throughput idempotent producers with gzip compression (universally supported by Flink & librdkafka) and delivery latency tracking.
 4. Consumers with cooperative-sticky rebalance, static membership, and read_committed isolation.
 5. Exactly-once consume-transform-produce transactional loop for Kafka-to-Kafka stages.
 6. Centralized DLQ dispatch with source coordinates and exception details.
@@ -313,7 +313,7 @@ class ProducerStats:
 
 
 class CalibreProducer:
-    """Production-grade Kafka producer with idempotence, zstd compression, and stats tracking."""
+    """Production-grade Kafka producer with idempotence, gzip compression, and stats tracking."""
 
     def __init__(
         self,
@@ -321,7 +321,7 @@ class CalibreProducer:
         client_id: str | None = None,
         transactional_id: str | None = None,
         linger_ms: int = 20,
-        compression_type: str = "zstd",
+        compression_type: str = "gzip",
     ) -> None:
         settings = get_settings()
         self.bootstrap = bootstrap_servers or settings.kafka_bootstrap_servers
@@ -737,12 +737,15 @@ class IdempotentVerdictSink:
 
     def __init__(self, db_path: str | Path = "verdicts.db") -> None:
         self.db_path = str(db_path)
+        self._lock = threading.Lock()
+        self._conn = sqlite3.connect(self.db_path, timeout=10.0, check_same_thread=False)
         self._init_db()
 
     def _init_db(self) -> None:
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute("PRAGMA journal_mode=WAL;")
-            conn.execute("""
+        with self._lock, self._conn:
+            self._conn.execute("PRAGMA journal_mode=WAL;")
+            self._conn.execute("PRAGMA synchronous=NORMAL;")
+            self._conn.execute("""
                 CREATE TABLE IF NOT EXISTS verdicts (
                     topic TEXT,
                     partition INTEGER,
@@ -753,18 +756,25 @@ class IdempotentVerdictSink:
                     PRIMARY KEY (topic, partition, offset)
                 );
             """)
-            conn.commit()
+
+    def has_verdict(self, topic: str, partition: int, offset: int) -> bool:
+        """Returns True if (topic, partition, offset) was already recorded."""
+        with self._lock:
+            cur = self._conn.execute(
+                "SELECT 1 FROM verdicts WHERE topic = ? AND partition = ? AND offset = ? LIMIT 1",
+                (topic, partition, offset),
+            )
+            return cur.fetchone() is not None
 
     def insert_verdict(self, topic: str, partition: int, offset: int, key: str, value: str) -> bool:
         """Inserts record idempotently. Returns True if newly inserted, False if ignored."""
         try:
-            with sqlite3.connect(self.db_path, timeout=10.0) as conn:
-                cur = conn.cursor()
+            with self._lock, self._conn:
+                cur = self._conn.cursor()
                 cur.execute(
                     "INSERT OR IGNORE INTO verdicts VALUES (?, ?, ?, ?, ?, ?)",
                     (topic, partition, offset, key, value, datetime.now(timezone.utc).isoformat()),
                 )
-                conn.commit()
                 return cur.rowcount > 0
         except sqlite3.OperationalError as e:
             if "database is locked" in str(e).lower():
@@ -774,10 +784,13 @@ class IdempotentVerdictSink:
             raise PoisonRecord(f"Failed to insert verdict: {e}") from e
 
     def count(self) -> int:
-        with sqlite3.connect(self.db_path) as conn:
-            cur = conn.cursor()
-            cur.execute("SELECT COUNT(*) FROM verdicts")
-            return cur.fetchone()[0]
+        with self._lock:
+            cur = self._conn.execute("SELECT COUNT(*) FROM verdicts")
+            return int(cur.fetchone()[0])
+
+    def close(self) -> None:
+        with self._lock:
+            self._conn.close()
 
 
 # ==============================================================================

@@ -14,17 +14,26 @@ export function DriverTelemetryModal({ driverNumber, onClose }: DriverTelemetryM
   useEffect(() => {
     if (!driverNumber) return;
     let active = true;
+    let inFlight = false;
+    setLoading(true);
+    setTelemetry(null);
 
     const load = async () => {
-      const data = await fetchDriverTelemetry(driverNumber);
-      if (active) {
-        setTelemetry(data);
-        setLoading(false);
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const data = await fetchDriverTelemetry(driverNumber);
+        if (active && data) {
+          setTelemetry(data);
+        }
+      } finally {
+        if (active) setLoading(false);
+        inFlight = false;
       }
     };
 
     load();
-    const interval = setInterval(load, 500);
+    const interval = setInterval(load, 1000);
 
     return () => {
       active = false;

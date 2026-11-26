@@ -20,28 +20,25 @@ export const TacticalDrawer: React.FC<TacticalDrawerProps> = ({
 
   return (
     <section className="tactical-drawer panel" aria-labelledby="tactical-drawer-title">
-      <div
+      <button
+        type="button"
         className="tactical-drawer__header"
         onClick={() => setExpanded(!expanded)}
-        role="button"
-        tabIndex={0}
         aria-expanded={expanded}
+        aria-label={expanded ? 'Collapse tactical strategy drawer' : 'Expand tactical strategy drawer'}
+        style={{ width: '100%', textAlign: 'left', border: 'none', background: 'transparent' }}
       >
         <div className="tactical-drawer__title-group">
           <span className="eyebrow">Secondary Analytics</span>
-          <h3 id="tactical-drawer-title">Tactical Strategy Models & Sector Weather (Optional Advisory)</h3>
+          <h3 id="tactical-drawer-title">Tactical Strategy Models &amp; Sector Weather (Optional Advisory)</h3>
           <span className="tactical-advisory-tag">NON-EPISTEMIC · STRATEGY PREDICTION</span>
         </div>
 
-        <button
-          type="button"
-          className="tactical-drawer__toggle-btn"
-          aria-label={expanded ? 'Collapse tactical strategy drawer' : 'Expand tactical strategy drawer'}
-        >
+        <span className="tactical-drawer__toggle-btn">
           {expanded ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
           <span className="toggle-label">{expanded ? 'Hide Strategy' : 'View Strategy Advisory'}</span>
-        </button>
-      </div>
+        </span>
+      </button>
 
       {expanded && (
         <div className="tactical-drawer__content">

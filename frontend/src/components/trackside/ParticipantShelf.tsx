@@ -45,7 +45,8 @@ export const ParticipantShelf: React.FC<ParticipantShelfProps> = ({
         d.team.toLowerCase().includes(q) ||
         d.number.toString().includes(q)
       );
-    });
+    })
+    .sort((a, b) => (a.position - b.position) || (a.number - b.number));
 
   return (
     <aside className={`participant-shelf ${className}`} aria-label="Participant Telemetry Shelf">
@@ -58,6 +59,8 @@ export const ParticipantShelf: React.FC<ParticipantShelfProps> = ({
 
         <div className="shelf-controls">
           <input
+            id="participant-search"
+            name="participant_search"
             type="search"
             className="shelf-search-input"
             placeholder="Search driver or car #..."
@@ -104,17 +107,30 @@ export const ParticipantShelf: React.FC<ParticipantShelfProps> = ({
                 key={driver.number}
                 className={`participant-card ${isSelected ? 'is-selected' : ''} ${driver.status === 'RETIRED' ? 'is-retired' : ''}`}
                 style={{ borderLeftColor: teamColor }}
-                onClick={() => {
-                  onSelectDriver(driver.number);
-                  onInspectTelemetry?.(driver.number);
-                }}
                 onMouseEnter={() => onHoverDriver?.(driver)}
                 onMouseLeave={() => onHoverDriver?.(null)}
-                role="button"
-                tabIndex={0}
-                aria-label={`Car #${driver.number} ${driver.name} Position ${driver.position}`}
               >
-                {/* Header: Pos, Car#, Name, Team */}
+                {/* Header: Pos, Car#, Name, Status */}
+                <button
+                  type="button"
+                  className="participant-card__select-surface"
+                  onClick={() => {
+                    onSelectDriver(driver.number);
+                    onInspectTelemetry?.(driver.number);
+                  }}
+                  aria-label={`Select and inspect Car #${driver.number} ${driver.name} Position ${driver.position}`}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    width: '100%',
+                    textAlign: 'left',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    display: 'block',
+                  }}
+                >
                 <div className="participant-card__header">
                   <div className="p-ident">
                     <span className="p-pos-tag" style={{ backgroundColor: teamColor }}>
@@ -160,6 +176,7 @@ export const ParticipantShelf: React.FC<ParticipantShelfProps> = ({
                     <span className="val-gap">{driver.gap || 'LEAD'}</span>
                   </div>
                 </div>
+                </button>
 
                 {/* Footer: Evidence & Contract Links */}
                 <div className="participant-card__footer">

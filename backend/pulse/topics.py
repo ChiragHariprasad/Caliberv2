@@ -56,9 +56,11 @@ def raw_topic_for_event(event_type: str) -> str:
         "RED_FLAG", "YELLOW_FLAG", "INCIDENT_NOTICE", "TRACK_STATUS_GREEN",
         "RACE_CONTROL_NOTICE", "RACE_CONTROL_MESSAGE", "CHEQUERED_FLAG",
         "GREEN_FLAG", "STEWARD_DECISION", "DRIVER_RETIRED", "DRIVER_DNS",
-        "SESSION_STARTED", "SESSION_ENTRY_LIST"
+        "SESSION_STARTED", "SESSION_ENTRY_LIST", "SESSION_CHEQUERED"
     }:
         return RAW_TOPICS["race_control"]
+    if event_type in {"SESSION_STATUS", "SESSION_STATUS_UPDATE"}:
+        return RAW_TOPICS["session_status"]
     if event_type in {"TRACK_STATUS_UPDATE", "SEGMENT_STATUS_UPDATE"}:
         return RAW_TOPICS["track_status"]
     if event_type in {"LAP_COMPLETED", "SECTOR_COMPLETED"}:
@@ -71,7 +73,7 @@ def raw_topic_for_event(event_type: str) -> str:
         return RAW_TOPICS["weather"]
     if event_type in {"TYRE_FITTED", "STINT_UPDATE"}:
         return RAW_TOPICS["tyres_stints"]
-    if event_type in {"PIT_ENTRY", "PIT_STOP", "PIT_EXIT"}:
+    if event_type in {"PIT_ENTRY", "PIT_STOP", "PIT_STOP_RECORDED", "PIT_EXIT"}:
         return RAW_TOPICS["pit_events"]
     return RAW_TOPICS["race_control"]
 

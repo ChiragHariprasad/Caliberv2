@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type DataRegime = 'PUBLIC' | 'LICENSED' | 'INSTITUTIONAL' | 'LAB';
+export type DataRegime = 'PUBLIC' | 'LICENSED' | 'INSTITUTIONAL' | 'LAB' | 'SYNTHETIC' | 'PREVIEW';
 
 interface RegimePillProps {
   regime?: DataRegime | string;
@@ -9,17 +9,19 @@ interface RegimePillProps {
 }
 
 export const RegimePill: React.FC<RegimePillProps> = ({
-  regime = 'PUBLIC',
+  regime = 'SYNTHETIC',
   className = '',
   showWarning = true,
 }) => {
-  const norm = (regime || 'PUBLIC').toUpperCase() as DataRegime;
+  const norm = (regime || 'SYNTHETIC').toUpperCase() as DataRegime;
 
   const labels: Record<DataRegime, string> = {
     PUBLIC: 'PUBLIC REGIME',
     LICENSED: 'LICENSED REGIME',
     INSTITUTIONAL: 'INSTITUTIONAL REGIME',
-    LAB: 'LAB / SYNTHETIC',
+    LAB: 'LAB ARCHIVE',
+    SYNTHETIC: 'SYNTHETIC SIM',
+    PREVIEW: 'GEOMETRY PREVIEW',
   };
 
   const tooltips: Record<DataRegime, string> = {
@@ -30,19 +32,25 @@ export const RegimePill: React.FC<RegimePillProps> = ({
     INSTITUTIONAL:
       'INSTITUTIONAL REGIME: Multiple independent hardware taps, telemetry loggers, and survey baselines. Multi-source corroboration depth verified.',
     LAB:
-      'LAB / SYNTHETIC: Injected faults, counterfactual scenarios, and simulated physics models. Watermarked for testing only.',
+      'LAB ARCHIVE: Derived/windowed replay capture combining open archive records with synthetic high-rate streams. Not institutional FIA feed.',
+    SYNTHETIC:
+      'SYNTHETIC SIM: Deterministic synthetic simulator stream generated locally for verification and testing.',
+    PREVIEW:
+      'GEOMETRY PREVIEW: Verified circuit geometry catalogue only; no timing or telemetry capture loaded.',
   };
+
+  const styleKey = norm === 'SYNTHETIC' || norm === 'PREVIEW' ? 'lab' : norm.toLowerCase();
 
   return (
     <span
-      className={`regime-pill regime-pill--${norm.toLowerCase()} ${className}`}
-      title={tooltips[norm] || tooltips.PUBLIC}
+      className={`regime-pill regime-pill--${styleKey} ${className}`}
+      title={tooltips[norm] || tooltips.SYNTHETIC}
     >
       <span className="regime-pill__dot" />
       <span className="regime-pill__name">{labels[norm] || norm}</span>
-      {norm === 'PUBLIC' && showWarning && (
-        <span className="regime-pill__badge" title="Common-cause exposure active (Depth: 1)">
-          COMMON-CAUSE EXP
+      {(norm === 'PUBLIC' || norm === 'LAB' || norm === 'SYNTHETIC') && showWarning && (
+        <span className="regime-pill__badge" title="Single upstream source or simulated feed — independent institutional corroboration absent">
+          {norm === 'SYNTHETIC' ? 'SIMULATED DATA' : 'COMMON-CAUSE EXP'}
         </span>
       )}
     </span>

@@ -1,0 +1,3 @@
+Metric,Scope,Value,Uncertainty,Calibration Status
+VSC_SC_PIT_LOSS_SAVING,e2e-session-844bbf,13.16 s,+/- 3.0 s,PRIOR_UNMEASURED+DRIVER_STINT_CALIBRATED
+FASTF1_CAUSAL_EVAL_REFERENCE,reports/f1_scientific_eval.json,Empirical held-out FastF1 walk-forward eval,Conformal/MAD 95% PI,SEE_F1_SCIENTIFIC_EVAL_JSON

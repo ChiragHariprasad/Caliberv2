@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import pickle
 import time
 from collections import deque
 from datetime import datetime
@@ -47,6 +48,8 @@ class StateStore:
         self._assessment_ids: set[str] = set()
         self._seen_event_ids: set[str] = set()
         self._seen_event_order: deque[str] = deque(maxlen=20000)
+        self._retired_run_ids: set[str] = set()
+        self._retired_run_order: deque[str] = deque(maxlen=500)
         self.processed_events_count: int = 0
         self.duplicate_events_count: int = 0
         self.last_event_time: datetime | None = None
@@ -57,31 +60,41 @@ class StateStore:
         self._lock = asyncio.Lock()
         self.agents: dict[str, Any] = {}
 
-        # Default strategy models (updated dynamically as findings arrive)
-        self.default_strategies = [
+        # Neutral unmeasured strategy templates until real neutralisation/pit findings arrive
+        self.default_strategies = self._initial_strategy_templates()
+
+    @staticmethod
+    def _initial_strategy_templates() -> list[dict[str, Any]]:
+        return [
             {
-                "label": "Box this lap",
-                "action": "Switch to Hard compound",
-                "score": 88,
-                "delta": "+10.5s VSC saving",
-                "tone": "positive",
-                "note": "Capitalises on neutralisation pit loss compression before green flag resumption.",
+                "label": "Box on neutralisation",
+                "action": "Evaluate pit window when VSC/SC deploys",
+                "score": None,
+                "delta": "Awaiting trigger",
+                "tone": "neutral",
+                "status": "AWAITING_EVENT",
+                "calibration_status": "UNMEASURED",
+                "note": "Strategies populate quantitatively once neutralisation and empirical lap data arrive.",
             },
             {
                 "label": "Hold 1 lap",
-                "action": "Maintain track position",
-                "score": 58,
-                "delta": "+0.4s projected",
+                "action": "Monitor track position & traffic gap",
+                "score": None,
+                "delta": "Awaiting trigger",
                 "tone": "neutral",
-                "note": "High risk of VSC concluding before next lap pit entry window.",
+                "status": "AWAITING_EVENT",
+                "calibration_status": "UNMEASURED",
+                "note": "Re-entry traffic projection depends on live field gaps and circuit pit transit loss.",
             },
             {
                 "label": "Stay out",
-                "action": "One-stop deep stint",
-                "score": 32,
-                "delta": "−1.3s projected",
-                "tone": "negative",
-                "note": "Severe undercut risk if P2 Norris or P3 Verstappen take discounted stop.",
+                "action": "Continue current stint",
+                "score": None,
+                "delta": "Awaiting trigger",
+                "tone": "neutral",
+                "status": "AWAITING_EVENT",
+                "calibration_status": "UNMEASURED",
+                "note": "Empirical fuel-compensated tyre degradation requires >= 5 clean stint laps.",
             },
         ]
 
@@ -89,9 +102,25 @@ class StateStore:
         """Registers a specialist agent to track durable execution metrics."""
         self.agents[agent.agent_id] = agent
 
+    def retire_run(self, run_id: str | None) -> None:
+        """Mark a superseded/abandoned replay run ID so delayed broker messages are discarded."""
+        if not run_id:
+            return
+        if run_id in self._retired_run_ids:
+            return
+        if len(self._retired_run_order) == self._retired_run_order.maxlen:
+            evicted = self._retired_run_order.popleft()
+            self._retired_run_ids.discard(evicted)
+        self._retired_run_ids.add(run_id)
+        self._retired_run_order.append(run_id)
+
+    def is_run_retired(self, run_id: str | None) -> bool:
+        return bool(run_id and run_id in self._retired_run_ids)
+
     def begin_run(self, run_id: str) -> None:
         """Associate subsequent projection and SSE state with one replay run."""
         self.current_run_id = run_id
+        self._retired_run_ids.discard(run_id)
         self._seen_event_ids.clear()
         self._seen_event_order.clear()
         for agent in self.agents.values():
@@ -106,18 +135,30 @@ class StateStore:
             if hasattr(a, "get_metrics")
         }
 
-    def switch_session(self, session_id: str) -> None:
+    def switch_session(self, session_id: str, *, preserve_wal: bool = False) -> None:
         """Configures state and driver grid for the chosen session."""
         self.current_session_id = session_id
         self._finding_ids.clear()
         self._assessment_ids.clear()
         self._seen_event_ids.clear()
         self._seen_event_order.clear()
+        self.processed_events_count = 0
+        self.duplicate_events_count = 0
+        self.last_event_time = None
+        self.default_strategies = self._initial_strategy_templates()
+        self.projector.reset_sectors()
         meta = get_session_by_id(session_id)
 
+        ia_restored = False
         for agent in self.agents.values():
             if hasattr(agent, "reset_metrics"):
                 agent.reset_metrics()
+            if agent.agent_id == "agent-06-integrity":
+                if hasattr(agent, "set_session_id"):
+                    agent.set_session_id(session_id)
+                if preserve_wal and hasattr(agent, "restore_from_wal") and agent.restore_from_wal():
+                    ia_restored = True
+                    continue
             if hasattr(agent, "reset"):
                 agent.reset()
 
@@ -187,7 +228,7 @@ class StateStore:
                 entries = json.loads(entry_file.read_text(encoding="utf-8"))
                 self.projector.load_session_entry_list(entries)
 
-            if "agent-06-integrity" in self.agents:
+            if "agent-06-integrity" in self.agents and not ia_restored:
                 try:
                     self.agents["agent-06-integrity"].initialize_session_grid(
                         session_id, list(self.projector.drivers.keys())
@@ -215,7 +256,7 @@ class StateStore:
             self.latest_assessments.clear()
             self.assessment_history.clear()
 
-            if "agent-06-integrity" in self.agents:
+            if "agent-06-integrity" in self.agents and not ia_restored:
                 try:
                     self.agents["agent-06-integrity"].initialize_session_grid(
                         session_id, list(self.projector.drivers.keys())
@@ -410,6 +451,12 @@ class StateStore:
     # --- Query Methods ---
 
     def get_session(self) -> dict[str, Any]:
+        meta = get_session_by_id(self.current_session_id)
+        try:
+            from pulse.config import get_settings
+            transport_mode = f"{get_settings().transport_mode.upper()} TRANSPORT"
+        except Exception:
+            transport_mode = "SIMULATOR TRANSPORT"
         return {
             "mode": self.projector.data_mode,
             "pipelineStatus": self.projector.pipeline_status,
@@ -422,8 +469,15 @@ class StateStore:
             "status": "NO_SESSION_DATA" if getattr(self.projector, "status", None) == "NO_SESSION_DATA" else ("Neutralised" if self.projector.active_lifecycle == "ACTIVE" else getattr(self.projector, "status", "Green Flag")),
             "elapsed": self.projector.elapsed_time,
             "activeEvent": self.projector.active_event_display,
-            "sourceLabel": f"PULSE {self.projector.data_mode.lower()} pipeline · {self.projector.session_name}",
-            "lastUpdated": "live",
+            "dataRegime": meta.data_regime if meta else "SYNTHETIC",
+            "datasetClassification": meta.dataset_classification if meta else "SYNTHETIC_SIMULATOR",
+            "sourceProvenance": meta.source_provenance if meta else "PULSE_SYNTHETIC_SIMULATOR",
+            "timingBaseline": meta.timing_baseline if meta else "Deterministic Simulator Stream",
+            "licenceReference": meta.licence_reference if meta else "PULSE-SYNTHETIC-SIM-INTERNAL",
+            "isSynthetic": meta.is_synthetic if meta else True,
+            "transportMode": transport_mode,
+            "sourceLabel": f"PULSE {meta.data_regime if meta else 'SYNTHETIC'} · {self.projector.session_name}",
+            "lastUpdated": "live" if self.last_event_time else "ready",
             "lastEventTime": self.last_event_time.isoformat() if self.last_event_time else None,
         }
 
@@ -453,7 +507,11 @@ class StateStore:
             if a.impact.inferred_effects:
                 narrative = a.impact.inferred_effects[0]
 
-            tone = "negative" if ("congestion" in narrative.lower() or "loss" in narrative.lower() or "deficit" in narrative.lower()) else ("positive" if dn == 1 else "neutral")
+            tone = (
+                "negative"
+                if ("congestion" in narrative.lower() or "loss" in narrative.lower() or "deficit" in narrative.lower() or "conflict" in narrative.lower())
+                else ("positive" if ("opens" in narrative.lower() or "favourable" in narrative.lower() or "saving" in narrative.lower()) else "neutral")
+            )
 
             formatted.append({
                 "id": a.assessment_id,
@@ -467,18 +525,96 @@ class StateStore:
                 "confidence": a.uncertainty.get("confidence_score"),
                 "calibrationStatus": a.uncertainty.get("calibration_status", "UNCALIBRATED"),
                 "forecast": (
-                    f"Position retention projected: P{a.impact.forecast.position_delta_range[0]}–P{a.impact.forecast.position_delta_range[1]}"
-                    if a.impact.forecast and a.impact.forecast.position_delta_range
-                    else "P1 retention highly probable across pit cycle"
+                    "Hold track position (0 net delta)"
+                    if (a.impact.forecast and a.impact.forecast.position_delta_range == (0, 0))
+                    else (
+                        f"Projected net delta: {a.impact.forecast.position_delta_range[0]:+d} pos"
+                        if (
+                            a.impact.forecast
+                            and a.impact.forecast.position_delta_range
+                            and a.impact.forecast.position_delta_range[0] == a.impact.forecast.position_delta_range[1]
+                        )
+                        else (
+                            f"Projected net delta: {a.impact.forecast.position_delta_range[0]:+d} to {a.impact.forecast.position_delta_range[1]:+d} pos"
+                            if a.impact.forecast and a.impact.forecast.position_delta_range
+                            else "Awaiting gap convergence"
+                        )
+                    )
                 ),
-                "alternative": a.impact.alternatives[0] if a.impact.alternatives else "Stay out and risk track position",
+                "alternative": a.impact.alternatives[0] if a.impact.alternatives else "Hold track position and monitor",
                 "evidence": a.evidence_refs,
                 "supersedesId": a.supersedes_assessment_id,
-                "changedAt": "recently",
+                "changedAt": a.as_of_event_time.isoformat() if a.as_of_event_time else "recent",
             })
 
-        formatted.sort(key=lambda x: (0 if x["driverNumber"] == 16 else (1 if x["driverNumber"] == 44 else 2)))
+        formatted.sort(key=lambda x: (self.projector.drivers.get(x["driverNumber"], {}).get("position", 99), x["driverNumber"]))
         return formatted
+
+    def export_checkpoint(self) -> bytes:
+        """Capture full deterministic StateStore + all specialist agent states for fast seek keyframes."""
+        agent_snaps: dict[str, tuple[str, Any]] = {}
+        for aid, agent in self.agents.items():
+            if hasattr(agent, "export_checkpoint"):
+                agent_snaps[aid] = ("custom", agent.export_checkpoint())
+            else:
+                saved_bus = getattr(agent, "bus", None)
+                try:
+                    if hasattr(agent, "bus"):
+                        agent.bus = None
+                    agent_snaps[aid] = ("pickle", pickle.dumps(agent.__dict__, protocol=pickle.HIGHEST_PROTOCOL))
+                finally:
+                    if hasattr(agent, "bus"):
+                        agent.bus = saved_bus
+
+        payload = {
+            "current_session_id": self.current_session_id,
+            "current_run_id": self.current_run_id,
+            "projector_blob": pickle.dumps(self.projector, protocol=pickle.HIGHEST_PROTOCOL),
+            "latest_assessments": self.latest_assessments,
+            "assessment_history": self.assessment_history,
+            "findings": self.findings,
+            "_finding_ids": self._finding_ids,
+            "_assessment_ids": self._assessment_ids,
+            "_seen_event_ids": self._seen_event_ids,
+            "_seen_event_order": self._seen_event_order,
+            "processed_events_count": self.processed_events_count,
+            "duplicate_events_count": self.duplicate_events_count,
+            "last_event_time": self.last_event_time,
+            "default_strategies": self.default_strategies,
+            "agents": agent_snaps,
+        }
+        return pickle.dumps(payload, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def restore_checkpoint(self, blob: bytes) -> None:
+        """Restore StateStore + all specialist agents from a captured keyframe checkpoint."""
+        payload = pickle.loads(blob)
+        self.current_session_id = payload["current_session_id"]
+        self.current_run_id = payload["current_run_id"]
+        self.projector = pickle.loads(payload["projector_blob"])
+        self.latest_assessments = payload["latest_assessments"]
+        self.assessment_history = payload["assessment_history"]
+        self.findings = payload["findings"]
+        self._finding_ids = payload["_finding_ids"]
+        self._assessment_ids = payload["_assessment_ids"]
+        self._seen_event_ids = payload["_seen_event_ids"]
+        self._seen_event_order = payload["_seen_event_order"]
+        self.processed_events_count = payload["processed_events_count"]
+        self.duplicate_events_count = payload["duplicate_events_count"]
+        self.last_event_time = payload["last_event_time"]
+        self.default_strategies = payload["default_strategies"]
+
+        for aid, (kind, data) in payload["agents"].items():
+            agent = self.agents.get(aid)
+            if agent is None:
+                continue
+            if kind == "custom" and hasattr(agent, "restore_checkpoint"):
+                agent.restore_checkpoint(data)
+            elif kind == "pickle":
+                saved_bus = getattr(agent, "bus", None)
+                restored_dict = pickle.loads(data)
+                agent.__dict__.update(restored_dict)
+                if hasattr(agent, "bus"):
+                    agent.bus = saved_bus
 
     def get_strategy(self) -> list[dict[str, Any]]:
         return self.default_strategies
@@ -536,6 +672,13 @@ class StateStore:
             "status": sess["status"],
             "elapsed": sess["elapsed"],
             "activeEvent": sess["activeEvent"],
+            "dataRegime": sess.get("dataRegime", "SYNTHETIC"),
+            "datasetClassification": sess.get("datasetClassification", "SYNTHETIC_SIMULATOR"),
+            "sourceProvenance": sess.get("sourceProvenance", "PULSE_SYNTHETIC_SIMULATOR"),
+            "timingBaseline": sess.get("timingBaseline", "Deterministic Simulator Stream"),
+            "licenceReference": sess.get("licenceReference", "PULSE-SYNTHETIC-SIM-INTERNAL"),
+            "isSynthetic": sess.get("isSynthetic", True),
+            "transportMode": sess.get("transportMode", "SIMULATOR TRANSPORT"),
             "sourceLabel": sess["sourceLabel"],
             "lastUpdated": sess["lastUpdated"],
             "drivers": self.get_drivers(),

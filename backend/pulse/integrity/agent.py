@@ -31,7 +31,10 @@ from sia_core import (
     IntegrityEngine,
     OriginRegistry,
     IntegrityState,
+    SIAWALStore,
+    make_atom,
     make_fact,
+    make_guard,
     explain as sia_explain,
     parse_instant,
     fmt_instant,
@@ -57,6 +60,7 @@ from pulse.integrity.bridge import (
     envelope_to_atom,
     extract_scope,
     map_event_to_roles,
+    quality_grade,
     role_to_contract,
     sia_assessment_to_dict,
     DEFAULT_ORIGINS,
@@ -82,6 +86,8 @@ class IntegrityAgent(BaseAgent):
         bus=None,
         origins: dict[str, list[str]] | None = None,
         session_type: str = "RACE",
+        wal_path: str | Path | None = None,
+        session_id: str = "default",
     ) -> None:
         super().__init__(
             agent_id="agent-06-integrity",
@@ -92,16 +98,28 @@ class IntegrityAgent(BaseAgent):
         )
         self._origins = origins or DEFAULT_ORIGINS
         self._session_type = session_type
+        self._wal_path = Path(wal_path) if wal_path else None
+        self._wal: SIAWALStore | None = (
+            SIAWALStore(self._wal_path, session_id=session_id) if self._wal_path else None
+        )
         self._registry = build_origin_registry(self._origins)
         self._engine = IntegrityEngine(
             registry=self._registry,
             config=EngineConfig(auto_open=True),
+            wal=self._wal,
         )
-        self._session_id: str | None = None
+        self._session_id: str | None = session_id if session_id != "default" else None
         self._session_t0_admitted = False
+        self._session_t0_official = False
+        self._session_t0_fact_id: str | None = None
+        self._session_t0_value: int | None = None
         self._knowledge_time_us: int = 0
         self._contract_ids: list[str] = []
         self._last_emitted_sigs: dict[str, tuple[str, int]] = {}
+        self._cached_chain_rev_sig: int = -1
+        self._cached_chain_verified: bool = True
+        self._verified_chain_lengths: dict[str, int] = {}
+        self._last_pos_state: dict[tuple[str, int, int], tuple[Any, str | None, int]] = {}
 
         # Register default contracts
         self._register_contracts(session_type)
@@ -128,19 +146,157 @@ class IntegrityAgent(BaseAgent):
     # Session lifecycle
     # ------------------------------------------------------------------
 
+    def set_session_id(self, session_id: str) -> None:
+        """Bind active session ID on both agent state and SQLite WAL partition."""
+        self._session_id = session_id
+        if self._wal is not None:
+            self._wal.session_id = session_id
+
     def reset(self) -> None:
-        """Reset engine state for a new session."""
+        """Reset engine state cleanly for a new session or replay run."""
+        if self._wal is not None:
+            if getattr(self._wal, "is_closed", False):
+                self._wal = None
+            else:
+                self._wal.clear_session()
         self._engine = IntegrityEngine(
             registry=self._registry,
             config=EngineConfig(auto_open=True),
+            wal=self._wal,
         )
         self._session_t0_admitted = False
+        self._session_t0_official = False
+        self._session_t0_fact_id = None
+        self._session_t0_value = None
         self._knowledge_time_us = 0
         self._contract_ids.clear()
         self._last_emitted_sigs.clear()
+        self._cached_chain_rev_sig = -1
+        self._cached_chain_verified = True
+        self._verified_chain_lengths.clear()
+        self._last_pos_state.clear()
         self._register_contracts(self._session_type)
         self.reset_metrics()
         logger.info("IntegrityAgent reset for new session.")
+
+    def restore_from_wal(self) -> bool:
+        """Recover ledger, decisions, quarantine log, and hash-chains from SQLite WAL if present."""
+        if self._wal is None:
+            return False
+        restored = self._wal.load_engine(registry=self._registry, config=EngineConfig(auto_open=True))
+        counts = restored.ledger.counts()
+        if restored.instances or counts.get("atoms", 0) > 0 or counts.get("facts", 0) > 0:
+            restored.wal = self._wal
+            self._engine = restored
+            self._contract_ids = list(restored.contracts.keys())
+            if restored.ledger.clock > 0:
+                self._knowledge_time_us = restored.ledger.clock
+            self._last_emitted_sigs.clear()
+            for did in restored.index.decisions():
+                head = restored.index.head(did)
+                if head is not None:
+                    self._last_emitted_sigs[did] = (head.record_hash, head.revision_number)
+            t0_facts = restored.ledger.facts("session_t0")
+            if t0_facts:
+                last_t0 = t0_facts[-1].fact
+                self._session_t0_admitted = True
+                self._session_t0_fact_id = last_t0.fact_id
+                self._session_t0_value = int(last_t0.value) if isinstance(last_t0.value, (int, float)) else None
+                self._session_t0_official = not (last_t0.note or "").lower().startswith("provisional")
+            else:
+                self._session_t0_admitted = False
+                self._session_t0_official = False
+                self._session_t0_fact_id = None
+                self._session_t0_value = None
+            self._cached_chain_rev_sig = -1
+            self._verified_chain_lengths.clear()
+            self._last_pos_state.clear()
+            return True
+        return False
+
+    def close(self) -> None:
+        """Close and detach any SQLite WAL handle bound to this agent."""
+        if self._wal is not None:
+            try:
+                self._wal.close()
+            finally:
+                self._wal = None
+                self._engine.wal = None
+
+    def set_wal_paused(self, paused: bool) -> None:
+        """Pause per-event WAL commits during bulk historical seek rebuilds, syncing once when resumed."""
+        if paused:
+            self._engine.wal = None
+        else:
+            wal = self._wal if (self._wal is not None and not getattr(self._wal, "is_closed", False)) else None
+            self._engine.wal = wal
+            if wal is not None:
+                wal.sync_engine(self._engine)
+
+    def export_checkpoint(self) -> dict[str, Any]:
+        """Export full IntegrityAgent + SIA Core v3 state for keyframe replay checkpoints."""
+        return {
+            "engine_blob": self._engine.export_state(),
+            "session_id": self._session_id,
+            "session_type": self._session_type,
+            "session_t0_admitted": self._session_t0_admitted,
+            "session_t0_official": self._session_t0_official,
+            "session_t0_fact_id": self._session_t0_fact_id,
+            "session_t0_value": self._session_t0_value,
+            "knowledge_time_us": self._knowledge_time_us,
+            "contract_ids": list(self._contract_ids),
+            "last_emitted_sigs": dict(self._last_emitted_sigs),
+            "cached_chain_rev_sig": self._cached_chain_rev_sig,
+            "cached_chain_verified": self._cached_chain_verified,
+            "verified_chain_lengths": dict(self._verified_chain_lengths),
+            "last_pos_state": dict(self._last_pos_state),
+            "metrics": {
+                "run_id": self.run_id,
+                "inputs_received": self.inputs_received,
+                "eligible_inputs": self.eligible_inputs,
+                "successfully_processed": self.successfully_processed,
+                "emitted_findings": self.emitted_findings,
+                "valid_no_finding_outcomes": self.valid_no_finding_outcomes,
+                "insufficient_data_outcomes": self.insufficient_data_outcomes,
+                "filtered_inputs": self.filtered_inputs,
+                "failures": self.failures,
+                "retries": self.retries,
+                "last_processed_event_id": self.last_processed_event_id,
+                "last_outcome": self.last_outcome,
+                "output_finding_ids": list(self.output_finding_ids),
+            },
+        }
+
+    def restore_checkpoint(self, ckpt: dict[str, Any]) -> None:
+        """Restore IntegrityAgent + SIA Core v3 state from a keyframe checkpoint."""
+        self._engine.restore_state(ckpt["engine_blob"])
+        self._session_id = ckpt["session_id"]
+        self._session_type = ckpt["session_type"]
+        self._session_t0_admitted = ckpt["session_t0_admitted"]
+        self._session_t0_official = ckpt.get("session_t0_official", ckpt["session_t0_admitted"])
+        self._session_t0_fact_id = ckpt.get("session_t0_fact_id")
+        self._session_t0_value = ckpt.get("session_t0_value")
+        self._knowledge_time_us = ckpt["knowledge_time_us"]
+        self._contract_ids = list(ckpt["contract_ids"])
+        self._last_emitted_sigs = dict(ckpt["last_emitted_sigs"])
+        self._cached_chain_rev_sig = ckpt["cached_chain_rev_sig"]
+        self._cached_chain_verified = ckpt["cached_chain_verified"]
+        self._verified_chain_lengths = dict(ckpt.get("verified_chain_lengths", {}))
+        self._last_pos_state = dict(ckpt.get("last_pos_state", {}))
+        m = ckpt["metrics"]
+        self.run_id = m["run_id"]
+        self.inputs_received = m["inputs_received"]
+        self.eligible_inputs = m["eligible_inputs"]
+        self.successfully_processed = m["successfully_processed"]
+        self.emitted_findings = m["emitted_findings"]
+        self.valid_no_finding_outcomes = m["valid_no_finding_outcomes"]
+        self.insufficient_data_outcomes = m["insufficient_data_outcomes"]
+        self.filtered_inputs = m["filtered_inputs"]
+        self.failures = m["failures"]
+        self.retries = m["retries"]
+        self.last_processed_event_id = m["last_processed_event_id"]
+        self.last_outcome = m["last_outcome"]
+        self.output_finding_ids = list(m["output_finding_ids"])
 
     def set_session_type(self, session_type: str) -> None:
         """Change session type and re-register contracts."""
@@ -154,52 +310,77 @@ class IntegrityAgent(BaseAgent):
     def _event_knowledge_time(self, envelope: EventEnvelope) -> str:
         """Derive a monotonically non-decreasing knowledge time from the event.
 
-        Uses ingest_time_utc as the knowledge time (when the engine learned of it).
-        Ensures monotonicity by taking the max with previous knowledge time.
+        Historical/replay runs never leak host wall-clock defaults: if ``ingest_time_utc`` was omitted
+        (defaulted at model construction) or sits days after a historical ``event_time_utc``, fall back
+        deterministically to ``event_time_utc``. Explicit bitemporal delays during a session are preserved.
         """
-        kt_us = parse_instant(envelope.time.ingest_time_utc.isoformat())
+        evt_us = parse_instant(envelope.time.event_time_utc.isoformat())
+        fields_set = getattr(envelope.time, "model_fields_set", set())
+        raw_ingest = envelope.time.ingest_time_utc
+        if raw_ingest is None or (
+            "ingest_time_utc" not in fields_set and parse_instant(raw_ingest.isoformat()) - evt_us > 86_400_000_000
+        ):
+            kt_us = evt_us
+        else:
+            ing_us = parse_instant(raw_ingest.isoformat())
+            # In replay mode, also guard against stale/corrupted synthetic ingest wall-clocks years away
+            if str(getattr(envelope.run.mode, "value", envelope.run.mode)).upper() == "REPLAY" and (ing_us - evt_us) > 86_400_000_000:
+                kt_us = evt_us
+            else:
+                kt_us = ing_us
         kt_us = max(kt_us, self._knowledge_time_us)
         self._knowledge_time_us = kt_us
         return fmt_instant(kt_us)
 
     def _event_eval_instant(self, envelope: EventEnvelope) -> str:
-        """Derive the evaluation instant K from the event.
-
-        Uses ingest_time_utc as K (the moment we evaluate).
-        """
-        kt_us = parse_instant(envelope.time.ingest_time_utc.isoformat())
-        kt_us = max(kt_us, self._knowledge_time_us)
-        return fmt_instant(kt_us)
+        """Derive deterministic evaluation instant K aligned with active clock policy."""
+        return self._event_knowledge_time(envelope)
 
     # ------------------------------------------------------------------
     # Reference fact management
     # ------------------------------------------------------------------
 
     def _maybe_admit_session_t0(self, envelope: EventEnvelope) -> None:
-        """Admit session_t0 reference fact on first event or SESSION_STARTED."""
-        if self._session_t0_admitted:
+        """Admit session_t0 reference fact, letting authoritative SESSION_STARTED supersede provisional order."""
+        et = envelope.event_type.upper()
+        is_official = (et == "SESSION_STARTED")
+        if self._session_t0_official or (self._session_t0_admitted and not is_official):
             return
 
-        et = envelope.event_type.upper()
-        if et == "SESSION_STARTED" or not self._session_t0_admitted:
-            scope = {"session_id": str(envelope.session.session_id or envelope.run.session_instance_id)}
-            t0_us = parse_instant(envelope.time.event_time_utc.isoformat())
-            kt = self._event_knowledge_time(envelope)
-            try:
-                fact = make_fact(
-                    fact_type="session_t0",
-                    scope=scope,
-                    value=t0_us,
-                    origins=["PULSE_PIPELINE"],
-                    unit="us",
-                )
-                adm = self._engine.admit_fact(fact, kt)
-                if adm.accepted:
-                    self._session_t0_admitted = True
-                    self._session_id = scope["session_id"]
-                    logger.info("Admitted session_t0 fact for session %s", scope["session_id"])
-            except Exception as exc:
-                logger.warning("Failed to admit session_t0: %s", exc)
+        scope = {"session_id": str(envelope.session.session_id or envelope.run.session_instance_id)}
+        t0_us = parse_instant(envelope.time.event_time_utc.isoformat())
+        if is_official and self._session_t0_admitted and self._session_t0_value == t0_us:
+            self._session_t0_official = True
+            return
+
+        kt = self._event_knowledge_time(envelope)
+        supersedes_id = self._session_t0_fact_id if (is_official and self._session_t0_admitted) else None
+        note = (
+            "authoritative_session_started_superseding_provisional"
+            if supersedes_id
+            else ("official_session_started" if is_official else "provisional_first_event")
+        )
+        try:
+            fact = make_fact(
+                fact_type="session_t0",
+                scope=scope,
+                value=t0_us,
+                origins=["PULSE_PIPELINE"],
+                unit="us",
+                supersedes=supersedes_id,
+                note=note,
+            )
+            adm = self._engine.admit_fact(fact, kt)
+            if adm.accepted:
+                self._session_t0_admitted = True
+                self._session_t0_fact_id = fact.fact_id
+                self._session_t0_value = t0_us
+                if is_official:
+                    self._session_t0_official = True
+                self._session_id = scope["session_id"]
+                logger.info("Admitted session_t0 fact (%s) for session %s", note, scope["session_id"])
+        except Exception as exc:
+            logger.warning("Failed to admit session_t0: %s", exc)
 
     def _maybe_admit_lap_start(self, envelope: EventEnvelope) -> None:
         """Admit lap_start reference fact when a LAP_COMPLETED event arrives."""
@@ -281,6 +462,41 @@ class IntegrityAgent(BaseAgent):
 
             kt = self._event_knowledge_time(event)
             K = self._event_eval_instant(event)
+
+            # Throttle redundant healthy 1Hz telemetry/position heartbeats to prevent O(N^2) revision growth,
+            # while admitting immediately on lap transitions, rank/status changes, anomalies, or >=12s heartbeats.
+            if set(roles) <= {"position_report", "vehicle_speed"}:
+                p = event.payload or {}
+                sid = str(event.session.session_id or event.run.session_instance_id or "")
+                dn = event.subject.driver_number
+                if dn is not None:
+                    lap_raw = p.get("lap_number") or p.get("lap") or p.get("current_lap") or 1
+                    try:
+                        lap_i = int(lap_raw)
+                    except (TypeError, ValueError):
+                        lap_i = 1
+                    pos_val = p.get("position")
+                    status_val = str(p.get("status")) if p.get("status") is not None else None
+                    spd_val = p.get("speed") if p.get("speed") is not None else p.get("speed_kph")
+                    is_anomalous = (
+                        quality_grade(event) != IntegrityState.HEALTHY
+                        or (isinstance(pos_val, (int, float)) and not (1 <= int(pos_val) <= 24))
+                        or (isinstance(spd_val, (int, float)) and (spd_val < 0 or spd_val > 375))
+                    )
+                    kt_us = parse_instant(kt)
+                    state_key = (sid, int(dn), lap_i)
+                    prev_state = self._last_pos_state.get(state_key)
+                    if (
+                        not is_anomalous
+                        and prev_state is not None
+                        and prev_state[0] == pos_val
+                        and prev_state[1] == status_val
+                        and (kt_us - prev_state[2]) < 12_000_000
+                    ):
+                        self.record_outcome("NO_FINDING", (time.monotonic() - t0) * 1000)
+                        return
+                    self._last_pos_state[state_key] = (pos_val, status_val, kt_us)
+
             atoms_admitted = 0
 
             for role_id in roles:
@@ -476,99 +692,67 @@ class IntegrityAgent(BaseAgent):
         return self._engine
 
     def get_all_verdicts(self) -> list[dict[str, Any]]:
-        """Return the latest verdict for every tracked decision instance."""
+        """Return the latest verdict for every tracked decision instance (read-only, enriched)."""
         results = []
         for iid in sorted(self._engine.instances):
             chain = self._engine.history(iid)
             if chain:
                 latest = chain[-1]
-                results.append(sia_assessment_to_dict(latest))
+                cid = (latest.content.get("contract") or {}).get("id")
+                c = self._engine.contracts.get(cid) if cid else None
+                results.append(sia_assessment_to_dict(latest, ledger=self._engine.ledger, contract=c))
         return results
 
     def get_verdict(self, instance_id: str) -> dict[str, Any] | None:
-        """Return the latest verdict for a specific decision instance."""
+        """Return the latest verdict for a specific decision instance without mutating ledger state."""
         real_iid = self._find_instance_id(instance_id)
         if real_iid:
             chain = self._engine.history(real_iid)
             if chain:
-                return sia_assessment_to_dict(chain[-1])
-
-        opened_iid = self._ensure_decision_instance(instance_id)
-        if opened_iid:
-            K = fmt_instant(max(0, self._knowledge_time_us))
-            try:
-                self._engine.tick(K)
-            except Exception:
-                pass
-            chain = self._engine.history(opened_iid)
-            if chain:
-                return sia_assessment_to_dict(chain[-1])
+                latest = chain[-1]
+                cid = (latest.content.get("contract") or {}).get("id")
+                c = self._engine.contracts.get(cid) if cid else None
+                return sia_assessment_to_dict(latest, ledger=self._engine.ledger, contract=c)
         return None
 
     def get_verdict_history(self, instance_id: str) -> list[dict[str, Any]]:
-        """Return the full revision history for a decision instance."""
+        """Return the full revision history for a decision instance (read-only)."""
         real_iid = self._find_instance_id(instance_id)
         if not real_iid:
-            real_iid = self._ensure_decision_instance(instance_id)
-        target_id = real_iid or instance_id
-        chain = self._engine.history(target_id)
-        if not chain:
-            now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
-            K = fmt_instant(now_us)
-            try:
-                self._engine.evaluate(target_id, K)
-                chain = self._engine.history(target_id)
-            except Exception:
-                pass
-        return [sia_assessment_to_dict(a) for a in chain]
+            return []
+        chain = self._engine.history(real_iid)
+        out = []
+        for a in chain:
+            cid = (a.content.get("contract") or {}).get("id")
+            c = self._engine.contracts.get(cid) if cid else None
+            out.append(sia_assessment_to_dict(a, ledger=self._engine.ledger, contract=c))
+        return out
 
     def get_verdict_as_of(self, instance_id: str, knowledge_time: str) -> dict[str, Any] | None:
-        """Bitemporal query: what did we conclude as known at K?"""
+        """Bitemporal query: what did we conclude as known at K? (strictly read-only)."""
         real_iid = self._find_instance_id(instance_id)
         if not real_iid:
-            real_iid = self._ensure_decision_instance(instance_id)
-        target_id = real_iid or instance_id
+            return None
         try:
-            a = self._engine.as_of(target_id, knowledge_time)
+            a = self._engine.as_of(real_iid, knowledge_time)
         except Exception:
-            chain = self._engine.history(target_id)
-            a = chain[-1] if chain else None
-        if a is None:
-            chain = self._engine.history(target_id)
-            if not chain:
-                now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
-                K = fmt_instant(now_us)
-                try:
-                    self._engine.evaluate(target_id, K)
-                    chain = self._engine.history(target_id)
-                    a = chain[-1] if chain else None
-                except Exception:
-                    pass
-            else:
-                a = chain[-1]
+            a = None
         if a is None:
             return None
-        return sia_assessment_to_dict(a)
+        cid = (a.content.get("contract") or {}).get("id")
+        c = self._engine.contracts.get(cid) if cid else None
+        return sia_assessment_to_dict(a, ledger=self._engine.ledger, contract=c)
 
     def verify_chains(self) -> dict[str, str]:
         """Verify hash-chain integrity for all decision instances."""
         return self._engine.verify()
 
     def explain_verdict(self, instance_id: str) -> str | None:
-        """Generate a template-based explanation for the latest verdict."""
+        """Generate a template-based explanation for the latest verdict (read-only)."""
         real_iid = self._find_instance_id(instance_id)
         if not real_iid:
-            real_iid = self._ensure_decision_instance(instance_id)
-        target_id = real_iid or instance_id
-        chain = self._engine.history(target_id)
-        if not chain:
-            now_us = self._knowledge_time_us if self._knowledge_time_us > 0 else 0
-            K = fmt_instant(now_us)
-            try:
-                self._engine.evaluate(target_id, K)
-                chain = self._engine.history(target_id)
-            except Exception:
-                pass
+            return None
+        chain = self._engine.history(real_iid)
         if not chain:
             return None
         return sia_explain(chain[-1])
@@ -592,7 +776,7 @@ class IntegrityAgent(BaseAgent):
         return results
 
     def get_contracts(self) -> list[dict[str, Any]]:
-        """Return registered contracts with metadata."""
+        """Return registered contracts with full role and constraint metadata."""
         return [
             {
                 "contract_id": c.contract_id,
@@ -603,6 +787,30 @@ class IntegrityAgent(BaseAgent):
                 "formula": c.formula_str,
                 "role_count": len(c.roles),
                 "constraint_count": len(c.constraints),
+                "roles": {
+                    rname: {
+                        "kind": r.kind.value if hasattr(r.kind, "value") else str(r.kind),
+                        "scope_class": r.scope_class.value if hasattr(r.scope_class, "value") else str(r.scope_class),
+                        "admissible_source_origins": list(getattr(r, "admissible_source_origins", ()) or ()),
+                        "corroboration_mode": getattr(getattr(r, "corroboration", None), "mode", "INFORMATIONAL").value
+                        if hasattr(getattr(getattr(r, "corroboration", None), "mode", None), "value")
+                        else str(getattr(getattr(r, "corroboration", None), "mode", "INFORMATIONAL")),
+                    }
+                    for rname, r in c.roles.items()
+                },
+                "constraints": [
+                    {
+                        "id": getattr(cs, "id", None),
+                        "kind": getattr(cs, "kind", None),
+                        "operands": list(getattr(cs, "operands", ()) or ()),
+                        "lo": (getattr(cs, "params", {}) or {}).get("lo"),
+                        "hi": (getattr(cs, "params", {}) or {}).get("hi"),
+                        "tolerance": (getattr(cs, "params", {}) or {}).get("tolerance", (getattr(cs, "params", {}) or {}).get("tol")),
+                        "uncertainty": (getattr(cs, "params", {}) or {}).get("uncertainty"),
+                    }
+                    for cs in c.constraints
+                ],
+                "limitations": list(getattr(c, "limitations", ()) or ()),
                 "definition_hash": c.definition_hash,
             }
             for c in self._engine.contracts.values()
@@ -619,11 +827,18 @@ class IntegrityAgent(BaseAgent):
         }
 
     def get_summary(self) -> dict[str, Any]:
-        """Return a high-level integrity summary across all decisions."""
-        verdicts = self.get_all_verdicts()
+        """Return a high-level integrity summary across all decisions without mutating ledger state."""
         state_counts = {"HEALTHY": 0, "SUSPECT": 0, "UNKNOWN": 0, "DEGRADED": 0}
-        for v in verdicts:
-            st = v.get("integrity_state", "UNKNOWN")
+        total_decisions = 0
+        rev_sig = 0
+        for iid in self._engine.instances:
+            chain = self._engine.index._chains.get(iid)
+            if not chain:
+                continue
+            total_decisions += 1
+            rev_sig += len(chain)
+            latest = chain[-1]
+            st = latest.integrity_state.name if hasattr(latest.integrity_state, "name") else str(latest.integrity_state)
             state_counts[st] = state_counts.get(st, 0) + 1
 
         overall = "HEALTHY"
@@ -634,13 +849,81 @@ class IntegrityAgent(BaseAgent):
         elif state_counts["UNKNOWN"] > 0:
             overall = "UNKNOWN"
 
+        cache_sig = hash((total_decisions, rev_sig, len(self._engine.finality_violations)))
+        if self._cached_chain_rev_sig != cache_sig:
+            if hasattr(self._engine, "verify_incremental"):
+                self._cached_chain_verified = self._engine.verify_incremental(self._verified_chain_lengths) if total_decisions else True
+            else:
+                self._cached_chain_verified = all(v == "OK" for v in self.verify_chains().values()) if total_decisions else True
+            self._cached_chain_rev_sig = cache_sig
+
         return {
             "overall_state": overall,
-            "decision_count": len(verdicts),
+            "decision_count": total_decisions,
             "state_distribution": state_counts,
             "contract_count": len(self._engine.contracts),
             "ledger": self._engine.ledger.counts(),
             "finality_violations": len(self._engine.finality_violations),
-            "chain_verified": all(v == "OK" for v in self.verify_chains().values()) if verdicts else True,
+            "quarantined_count": len(self._engine.quarantined_items),
+            "chain_verified": self._cached_chain_verified,
+        }
+
+    def run_lab_scenario(self, scenario_id: str) -> dict[str, Any]:
+        """Execute an isolated SIA Core v3 LAB fault scenario without mutating active session state."""
+        from pulse.integrity.contracts import get_contract_by_id
+
+        reg = OriginRegistry({
+            "PITWALL": ["F1_FOM_TIMING"],
+            "TRACINGINSIGHTS": ["F1_FOM_TIMING"],
+            "CAR_SENSOR": [],
+            "TIMING_CONFIG": [],
+            "SURVEY": [],
+            "POP_MONITOR": [],
+        })
+        eng = IntegrityEngine(registry=reg, config=EngineConfig(auto_open=False))
+        sid = scenario_id.lower().strip()
+        if sid in {"monaco", "monaco_pit_bias", "pit_bias"}:
+            eng.register_contract(get_contract_by_id("pit_speed"))
+            sc = {"session_id": "lab-monaco-bias", "driver_id": "16", "lap_number": "1", "sector_number": "1"}
+            iid = eng.open_decision("pit_speed", sc, "2026-05-24T13:00:00Z")
+            eng.admit_atom(make_atom("timing_speed", 61.2, "2026-05-24T13:00:05Z", sc, ["PITWALL"], unit="kph"), "2026-05-24T13:00:06Z")
+            eng.admit_atom(make_atom("vehicle_speed", 61.0, "2026-05-24T13:00:05.100Z", sc, ["CAR_SENSOR"], unit="kph"), "2026-05-24T13:00:06Z")
+            eng.admit_atom(make_atom("configured_distance", 2692.0, "2026-05-24T13:00:01Z", sc, ["TIMING_CONFIG"], unit="cm"), "2026-05-24T13:00:06Z")
+            sess_sc = {"session_id": "lab-monaco-bias"}
+            eng.admit_fact(make_fact("track_geometry", sess_sc, 2615.0, ["SURVEY"], unit="cm"), "2026-05-24T13:00:06Z")
+            eng.admit_fact(make_fact("calibration_bias", sess_sc, 0.001, ["POP_MONITOR"], unit="ratio"), "2026-05-24T13:00:06Z")
+            res = eng.evaluate(iid, "2026-05-24T13:00:07Z")
+            return {
+                "scenario_id": "monaco_pit_bias",
+                "regime": "LAB / ISOLATED_SCENARIO",
+                "verdict": sia_assessment_to_dict(res, ledger=eng.ledger, contract=eng.contracts["pit_speed"]),
+                "explanation": sia_explain(res),
+            }
+        if sid in {"late_ref", "late_reference_fact", "late_evidence"}:
+            eng.register_contract(get_contract_by_id("lap_time"))
+            sc = {"session_id": "lab-late-ref", "driver_id": "44", "lap_number": "12"}
+            iid = eng.open_decision("lap_time", sc, "2026-05-24T13:00:00Z", known_at="2026-05-24T13:00:00Z")
+            eng.admit_fact(make_fact("session_t0", {"session_id": "lab-late-ref"}, parse_instant("2026-05-24T13:00:00Z"), ["PITWALL"], unit="us"), "2026-05-24T13:00:00Z")
+            eng.admit_fact(make_fact("lap_start", sc, parse_instant("2026-05-24T13:00:05Z"), ["PITWALL"], unit="us"), "2026-05-24T13:00:05Z")
+            eng.evaluate(iid, "2026-05-24T13:00:35Z")
+            eng.admit_atom(make_atom("lap_record", 90.1, "2026-05-24T13:00:20Z", sc, ["PITWALL"], unit="s"), "2026-05-24T13:00:50Z")
+            res = eng.evaluate(iid, "2026-05-24T13:00:55Z")
+            return {
+                "scenario_id": "late_reference_fact",
+                "regime": "LAB / ISOLATED_SCENARIO",
+                "verdict": sia_assessment_to_dict(res, ledger=eng.ledger, contract=eng.contracts["lap_time"]),
+                "explanation": sia_explain(res),
+            }
+        # Default: silent_feed_guard
+        eng.register_contract(get_contract_by_id("lap_time"))
+        sc = {"session_id": "lab-silent-feed", "driver_id": "1", "lap_number": "5"}
+        iid = eng.open_decision("lap_time", sc, "2026-05-24T13:00:00Z", known_at="2026-05-24T13:00:00Z")
+        eng.admit_guard(make_guard("F1_FOM_TIMING", "STALLED", "2026-05-24T13:00:02Z"), "2026-05-24T13:00:03Z")
+        res = eng.evaluate(iid, "2026-05-24T13:00:25Z")
+        return {
+            "scenario_id": "silent_feed_guard",
+            "regime": "LAB / ISOLATED_SCENARIO",
+            "verdict": sia_assessment_to_dict(res, ledger=eng.ledger, contract=eng.contracts["lap_time"]),
+            "explanation": sia_explain(res),
         }
 

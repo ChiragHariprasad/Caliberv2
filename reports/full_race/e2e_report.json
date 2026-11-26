@@ -1,8 +1,8 @@
 {
-  "session_id": "e2e-session-ad3150",
-  "run_id": "run-3c661036",
+  "session_id": "e2e-session-e96249",
+  "run_id": "run-bb6d949f",
   "test_mode": "REPLAY",
-  "timestamp_utc": "2026-11-14T15:48:14.372100+00:00",
+  "timestamp_utc": "2026-11-26T10:16:17.665326+00:00",
   "status": "FAILED",
   "stages": [
     {
@@ -10,7 +10,7 @@
       "input_count": 0,
       "output_count": 0,
       "drop_count": 0,
-      "latency_ms": 1.073099992936477,
+      "latency_ms": 0.5722999921999872,
       "status": "PASSED",
       "details": {
         "capture_id": "f1-2023-silverstone-race",
@@ -20,15 +20,74 @@
         "manifest_sha256_status": "ALL_HASHES_MATCH",
         "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
       }
+    },
+    {
+      "stage_name": "1.PREFLIGHT",
+      "input_count": 0,
+      "output_count": 1,
+      "drop_count": 0,
+      "latency_ms": 13325.164199995925,
+      "status": "PASSED",
+      "details": {
+        "kafka_broker": "localhost:19092,localhost:19093,localhost:19094",
+        "flink_job_id": "426a0bc968e1fb0a5d956fee7b6e0635",
+        "flink_job_name": "pulse-canonical-normalizer-v3",
+        "flink_job_state": "RUNNING",
+        "checkpoints_completed": 0
+      }
+    },
+    {
+      "stage_name": "2.HISTORICAL_CAPTURE_INGEST_KAFKA",
+      "input_count": 72642,
+      "output_count": 72642,
+      "drop_count": 0,
+      "latency_ms": 126563.96230000246,
+      "status": "PASSED",
+      "details": {
+        "events_published_count": 72642,
+        "topics_used": [
+          "pulse.raw.timing.positions.v1",
+          "pulse.raw.race_control.v1",
+          "pulse.raw.pit.events.v1",
+          "pulse.raw.tyres.stints.v1",
+          "pulse.raw.timing.laps.v1",
+          "pulse.raw.weather.v1"
+        ],
+        "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
+      }
+    },
+    {
+      "stage_name": "3.FLINK_STREAM_NORMALIZATION",
+      "input_count": 72642,
+      "output_count": 72628,
+      "drop_count": 14,
+      "latency_ms": 20449.6352999995,
+      "status": "FAILED",
+      "details": {
+        "canonical_events_normalized": 72628,
+        "expected_events": 72642,
+        "missing_events": 14,
+        "flink_job_name": "pulse-canonical-normalizer-v3",
+        "flink_read_records": 66910,
+        "flink_write_records": 67333,
+        "flink_checkpoints": 0,
+        "verified_from_kafka_topics": [
+          "pulse.norm.race_events.v1",
+          "pulse.norm.driver_laps.v1",
+          "pulse.norm.driver_state.v1",
+          "pulse.norm.track_segments.v1",
+          "pulse.norm.tyre_stints.v1"
+        ]
+      }
     }
   ],
   "reconciliation_summary": {
-    "total_latency_ms": 10008.53,
-    "stages_count": 1,
-    "stages_passed": 1,
-    "drop_count_total": 0,
-    "transport_verified": "KAFKA (Real broker @ localhost:9092, zero silent fallbacks)",
-    "flink_stream_verified": "RUNNING (pulse-canonical-normalizer-v2, 5 domains normalized)",
+    "total_latency_ms": 160474.35,
+    "stages_count": 4,
+    "stages_passed": 3,
+    "drop_count_total": 14,
+    "transport_verified": "KAFKA (localhost:19092,localhost:19093,localhost:19094)",
+    "flink_stream_verified": "RESTARTING (pulse-canonical-normalizer-v3, 5 normalized domains from 9 raw topics)",
     "specialist_agents_verified": [
       "agent-01-event-control",
       "agent-02-track-state",
@@ -36,11 +95,11 @@
       "agent-04-tyre-strategy",
       "agent-05-fusion"
     ],
-    "error": "Flink SQL submission completed but failed to capture Job ID. Output: \u001b[34;1m[INFO] Executing SQL from file.\u001b[0m\n\nCommand history file path: /root/.flink-sql-history\nFlink SQL> \u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- 1. RACE CONTROL & SESSION STATUS -> pulse.norm.race_events.v1\n> -- ============================================================\n> CREATE TABLE kafka_raw_race_control (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.race_control.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-race-control-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_norm_race_events (\n>     event_id STRING,\n>     raw_payload STRING,\n>     PRIMARY KEY (event_id) NOT ENFORCED\n> ) WITH (\n>     'connector' = 'upsert-kafka',\n>     'topic' = 'pulse.norm.race_events.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'key.format' = 'raw',\n>     'value.format' = 'raw',\n>     'value.fields-include' = 'EXCEPT_KEY'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- 2. TRACK STATUS & WEATHER -> pulse.norm.track_segments.v1\n> -- ============================================================\n> CREATE TABLE kafka_raw_track_status (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.track_status.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-track-status-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_raw_weather (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.weather.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-weather-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_norm_track_segments (\n>     event_id STRING,\n>     raw_payload STRING,\n>     PRIMARY KEY (event_id) NOT ENFORCED\n> ) WITH (\n>     'connector' = 'upsert-kafka',\n>     'topic' = 'pulse.norm.track_segments.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'key.format' = 'raw',\n>     'value.format' = 'raw',\n>     'value.fields-include' = 'EXCEPT_KEY'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- 3. TIMING LAPS -> pulse.norm.driver_laps.v1\n> -- ============================================================\n> CREATE TABLE kafka_raw_timing_laps (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.timing.laps.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-timing-laps-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_norm_driver_laps (\n>     event_id STRING,\n>     raw_payload STRING,\n>     PRIMARY KEY (event_id) NOT ENFORCED\n> ) WITH (\n>     'connector' = 'upsert-kafka',\n>     'topic' = 'pulse.norm.driver_laps.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'key.format' = 'raw',\n>     'value.format' = 'raw',\n>     'value.fields-include' = 'EXCEPT_KEY'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- 4. POSITIONS & TELEMETRY -> pulse.norm.driver_state.v1\n> -- ============================================================\n> CREATE TABLE kafka_raw_timing_positions (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.timing.positions.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-positions-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_norm_driver_state (\n>     event_id STRING,\n>     raw_payload STRING,\n>     PRIMARY KEY (event_id) NOT ENFORCED\n> ) WITH (\n>     'connector' = 'upsert-kafka',\n>     'topic' = 'pulse.norm.driver_state.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'key.format' = 'raw',\n>     'value.format' = 'raw',\n>     'value.fields-include' = 'EXCEPT_KEY'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- 5. TYRES & PIT EVENTS -> pulse.norm.tyre_stints.v1\n> -- ============================================================\n> CREATE TABLE kafka_raw_tyres_stints (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.tyres.stints.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-tyres-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_raw_pit_events (\n>     raw_payload STRING,\n>     event_id AS JSON_VALUE(raw_payload, '$.event_id'),\n>     event_type AS JSON_VALUE(raw_payload, '$.event_type'),\n>     session_id AS JSON_VALUE(raw_payload, '$.session.session_id'),\n>     event_time_ts AS COALESCE(TRY_CAST(REPLACE(SUBSTRING(JSON_VALUE(raw_payload, '$.time.event_time_utc'), 1, 19), 'T', ' ') AS TIMESTAMP(3)), CURRENT_TIMESTAMP),\n>     WATERMARK FOR event_time_ts AS event_time_ts - INTERVAL '2' SECOND\n> ) WITH (\n>     'connector' = 'kafka',\n>     'topic' = 'pulse.raw.pit.events.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'properties.group.id' = 'pulse-flink-pit-events-v2',\n>     'scan.startup.mode' = 'earliest-offset',\n>     'format' = 'raw'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> CREATE TABLE kafka_norm_tyre_stints (\n>     event_id STRING,\n>     raw_payload STRING,\n>     PRIMARY KEY (event_id) NOT ENFORCED\n> ) WITH (\n>     'connector' = 'upsert-kafka',\n>     'topic' = 'pulse.norm.tyre_stints.v1',\n>     'properties.bootstrap.servers' = 'kafka-1:29092,kafka-2:29092,kafka-3:29092',\n>     'key.format' = 'raw',\n>     'value.format' = 'raw',\n>     'value.fields-include' = 'EXCEPT_KEY'\n> )\u001b[34;1m[INFO] Execute statement succeed.\u001b[0m\n\nFlink SQL> \n> -- ============================================================\n> -- UNIFIED EXECUTION STATEMENT SET\n> -- Deduplicates each stream statefully by event_id with event-time ordering\n> -- ============================================================\n> EXECUTE STATEMENT SET\n> BEGIN\n>     INSERT INTO kafka_norm_race_events\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_race_control\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_track_segments\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_track_status\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_track_segments\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_weather\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_driver_laps\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_timing_laps\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_driver_state\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_timing_positions\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_tyre_stints\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_tyres_stints\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     ) WHERE row_num = 1;\n> \n>     INSERT INTO kafka_norm_tyre_stints\n>     SELECT event_id, raw_payload\n>     FROM (\n>         SELECT event_id, raw_payload,\n>                ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY event_time_ts ASC) AS row_num\n>         FROM kafka_raw_pit_events\n>         WHERE event_id IS NOT NULL AND event_type IS NOT NULL\n>     )\u001b[31;1m[ERROR] Could not execute SQL statement. Reason:\norg.apache.flink.table.api.ValidationException: Could not find any factory for identifier 'kafka' that implements 'org.apache.flink.table.factories.DynamicTableFactory' in the classpath.\n\nAvailable factory identifiers are:\n\nblackhole\ndatagen\nfilesystem\nprint\npython-input-format\u001b[0m\n\nShutting down the session...\ndone.\nWARNING: Unknown module: jdk.compiler specified to --add-exports\nWARNING: Unknown module: jdk.compiler specified to --add-exports\nWARNING: Unknown module: jdk.compiler specified to --add-exports\nWARNING: Unknown module: jdk.compiler specified to --add-exports\nWARNING: Unknown module: jdk.compiler specified to --add-exports\nNov 14, 2026 3:48:16 PM org.jline.utils.Log logr\nWARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)\n"
+    "error": "Flink stream normalization missing 14/72642 events for run run-bb6d949f"
   },
   "trace_events": [
     {
-      "timestamp": "2026-11-14T15:48:14.373324+00:00",
+      "timestamp": "2026-11-26T10:16:17.666012+00:00",
       "stage": "MANIFEST_VALIDATION",
       "event": "CAPTURE_VERIFIED",
       "payload": {
@@ -50,6 +109,56 @@
         "drivers_registered": 20,
         "manifest_sha256_status": "ALL_HASHES_MATCH",
         "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
+      }
+    },
+    {
+      "timestamp": "2026-11-26T10:16:30.991230+00:00",
+      "stage": "PREFLIGHT",
+      "event": "CLUSTER_ONLINE",
+      "payload": {
+        "kafka_broker": "localhost:19092,localhost:19093,localhost:19094",
+        "flink_job_id": "426a0bc968e1fb0a5d956fee7b6e0635",
+        "flink_job_name": "pulse-canonical-normalizer-v3",
+        "flink_job_state": "RUNNING",
+        "checkpoints_completed": 0
+      }
+    },
+    {
+      "timestamp": "2026-11-26T10:18:37.688373+00:00",
+      "stage": "HISTORICAL_INGEST",
+      "event": "ALL_ENVELOPES_PUBLISHED",
+      "payload": {
+        "events_published_count": 72642,
+        "topics_used": [
+          "pulse.raw.timing.positions.v1",
+          "pulse.raw.race_control.v1",
+          "pulse.raw.pit.events.v1",
+          "pulse.raw.tyres.stints.v1",
+          "pulse.raw.timing.laps.v1",
+          "pulse.raw.weather.v1"
+        ],
+        "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
+      }
+    },
+    {
+      "timestamp": "2026-11-26T10:18:58.138096+00:00",
+      "stage": "FLINK_NORMALIZATION",
+      "event": "INCOMPLETE_NORMALIZATION",
+      "payload": {
+        "canonical_events_normalized": 72628,
+        "expected_events": 72642,
+        "missing_events": 14,
+        "flink_job_name": "pulse-canonical-normalizer-v3",
+        "flink_read_records": 66910,
+        "flink_write_records": 67333,
+        "flink_checkpoints": 0,
+        "verified_from_kafka_topics": [
+          "pulse.norm.race_events.v1",
+          "pulse.norm.driver_laps.v1",
+          "pulse.norm.driver_state.v1",
+          "pulse.norm.track_segments.v1",
+          "pulse.norm.tyre_stints.v1"
+        ]
       }
     }
   ],

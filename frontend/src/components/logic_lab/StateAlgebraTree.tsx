@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import type { IntegrityState } from '../../types/calibre';
+import React, { useEffect, useMemo, useState } from 'react';
+import type { IntegrityState, SIAAssessment } from '../../types/calibre';
 import { StateBadge } from '../shared/StateBadge';
 import { CheckCircleIcon, ShieldIcon, AlertTriangleIcon, InfoIcon } from '../icons';
 
 interface StateAlgebraTreeProps {
   decisionId?: string;
   contractId?: string;
+  verdict?: SIAAssessment | null;
   className?: string;
 }
 
@@ -16,13 +17,58 @@ const ORDERED_STATES: Array<{ state: IntegrityState; rank: number; color: string
   { state: 'HEALTHY', rank: 3, color: '#00ff88', label: '3 — HEALTHY (All Constraints Verified)' },
 ];
 
+const DEFAULT_ROLE_LABELS: Record<string, { roleA: [string, string]; roleB: [string, string]; roleC: [string, string]; roleD: [string, string] }> = {
+  pit_speed: {
+    roleA: ['timing_speed', 'Timing transponder pit-lane speed measurement'],
+    roleB: ['vehicle_speed', 'ECU CAN-bus wheelspeed and engine RPM sensor'],
+    roleC: ['configured_distance', 'Calibrated physical distance between timing loops'],
+    roleD: ['calibration_bias', 'Master telemetry clock drift and bias reference'],
+  },
+  lap_time: {
+    roleA: ['lap_record', 'Official lap completion timing passage'],
+    roleB: ['lap_start', 'Session elapsed lap start reference fact'],
+    roleC: ['session_t0', 'Session genesis anchor timestamp'],
+    roleD: ['feed_guard', 'Upstream origin liveliness and stall monitor'],
+  },
+  sector_time: {
+    roleA: ['sector_record', 'Sector boundary crossing elapsed interval'],
+    roleB: ['sector_gate', 'Circuit timing gate reference geometry'],
+    roleC: ['session_t0', 'Session genesis anchor timestamp'],
+    roleD: ['feed_guard', 'Upstream origin liveliness and stall monitor'],
+  },
+  driver_position: {
+    roleA: ['position_report', 'Per-car race classification and gap observation'],
+    roleB: ['lap_anchor', 'Current driver lap counter alignment'],
+    roleC: ['session_t0', 'Session genesis anchor timestamp'],
+    roleD: ['feed_guard', 'Upstream origin liveliness and stall monitor'],
+  },
+  weather_observation: {
+    roleA: ['weather_reading', 'Track and ambient temperature observation'],
+    roleB: ['precipitation_sensor', 'Surface moisture and rain risk channel'],
+    roleC: ['session_t0', 'Session genesis anchor timestamp'],
+    roleD: ['feed_guard', 'Upstream origin liveliness and stall monitor'],
+  },
+};
+
 export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
-  decisionId = 'dec-pit_speed-d16',
-  contractId = 'pit_speed',
+  decisionId = '',
+  contractId = 'lap_time',
+  verdict,
   className = '',
 }) => {
   const [operator, setOperator] = useState<'MEET' | 'JOIN' | 'K_OF_N'>('MEET');
   const [kThreshold, setKThreshold] = useState<number>(2);
+
+  const roleLabels = useMemo(() => {
+    const defaults = DEFAULT_ROLE_LABELS[contractId] || DEFAULT_ROLE_LABELS.lap_time;
+    const roleKeys = verdict?.roles ? Object.keys(verdict.roles) : [];
+    return {
+      roleA: [roleKeys[0] || defaults.roleA[0], defaults.roleA[1]],
+      roleB: [roleKeys[1] || defaults.roleB[0], defaults.roleB[1]],
+      roleC: [roleKeys[2] || defaults.roleC[0], defaults.roleC[1]],
+      roleD: [roleKeys[3] || defaults.roleD[0], defaults.roleD[1]],
+    };
+  }, [contractId, verdict?.roles]);
 
   const [inputStates, setInputStates] = useState<{
     roleA: IntegrityState;
@@ -30,11 +76,26 @@ export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
     roleC: IntegrityState;
     roleD: IntegrityState;
   }>({
-    roleA: 'HEALTHY',
-    roleB: 'SUSPECT',
-    roleC: 'HEALTHY',
+    roleA: 'UNKNOWN',
+    roleB: 'UNKNOWN',
+    roleC: 'UNKNOWN',
     roleD: 'UNKNOWN',
   });
+
+  useEffect(() => {
+    if (!verdict?.roles) return;
+    const roleVals = Object.values(verdict.roles).map((r: any) => {
+      const tl = Array.isArray(r?.timeline) ? r.timeline : [];
+      const last = tl[tl.length - 1];
+      return (Array.isArray(last) ? last[1] : last?.state || (r?.has_evidence ? verdict.integrity_state : 'UNKNOWN')) as IntegrityState;
+    });
+    setInputStates({
+      roleA: roleVals[0] || verdict.integrity_state || 'UNKNOWN',
+      roleB: roleVals[1] || verdict.integrity_state || 'UNKNOWN',
+      roleC: roleVals[2] || 'HEALTHY',
+      roleD: roleVals[3] || 'HEALTHY',
+    });
+  }, [verdict?.decision_instance_id, verdict?.revision_number]);
 
   const getRank = (st: IntegrityState): number => {
     switch (st) {
@@ -208,11 +269,11 @@ export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
             <div className="role-panel-header">
               <div className="role-header-left">
                 <span className="role-id font-mono">ROLE A</span>
-                <strong className="role-name">timing_speed</strong>
+                <strong className="role-name">{roleLabels.roleA[0]}</strong>
               </div>
               <StateBadge state={inputStates.roleA} size="sm" />
             </div>
-            <p className="role-desc">Optical loop timing speed sensor measurement</p>
+            <p className="role-desc">{roleLabels.roleA[1]}</p>
             <div className="role-rank-indicator">
               <span>Current Rank: </span>
               <strong className="font-mono text-cyan-400">Rank {getRank(inputStates.roleA)}</strong>
@@ -236,11 +297,11 @@ export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
             <div className="role-panel-header">
               <div className="role-header-left">
                 <span className="role-id font-mono">ROLE B</span>
-                <strong className="role-name">vehicle_speed</strong>
+                <strong className="role-name">{roleLabels.roleB[0]}</strong>
               </div>
               <StateBadge state={inputStates.roleB} size="sm" />
             </div>
-            <p className="role-desc">ECU CAN-bus wheelspeed and engine RPM sensor</p>
+            <p className="role-desc">{roleLabels.roleB[1]}</p>
             <div className="role-rank-indicator">
               <span>Current Rank: </span>
               <strong className="font-mono text-cyan-400">Rank {getRank(inputStates.roleB)}</strong>
@@ -264,11 +325,11 @@ export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
             <div className="role-panel-header">
               <div className="role-header-left">
                 <span className="role-id font-mono">ROLE C</span>
-                <strong className="role-name">configured_distance</strong>
+                <strong className="role-name">{roleLabels.roleC[0]}</strong>
               </div>
               <StateBadge state={inputStates.roleC} size="sm" />
             </div>
-            <p className="role-desc">Calibrated physical distance between timing loops</p>
+            <p className="role-desc">{roleLabels.roleC[1]}</p>
             <div className="role-rank-indicator">
               <span>Current Rank: </span>
               <strong className="font-mono text-cyan-400">Rank {getRank(inputStates.roleC)}</strong>
@@ -292,11 +353,11 @@ export const StateAlgebraTree: React.FC<StateAlgebraTreeProps> = ({
             <div className="role-panel-header">
               <div className="role-header-left">
                 <span className="role-id font-mono">ROLE D</span>
-                <strong className="role-name">calibration_bias</strong>
+                <strong className="role-name">{roleLabels.roleD[0]}</strong>
               </div>
               <StateBadge state={inputStates.roleD} size="sm" />
             </div>
-            <p className="role-desc">Master telemetry clock drift and bias reference</p>
+            <p className="role-desc">{roleLabels.roleD[1]}</p>
             <div className="role-rank-indicator">
               <span>Current Rank: </span>
               <strong className="font-mono text-cyan-400">Rank {getRank(inputStates.roleD)}</strong>

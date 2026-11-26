@@ -80,9 +80,14 @@ export default function App() {
     const res = await loadSnapshot();
     setSnapshot(res.snapshot);
     setConnected(res.connected);
+    if (res.connected && res.snapshot.sessionId) {
+      setSessionId(res.snapshot.sessionId);
+      if (res.snapshot.circuitId) setCircuitId(res.snapshot.circuitId);
+    }
     const rStatus = await fetchReplayStatus();
     if (rStatus) {
       setReplayStatusData(rStatus);
+      if (rStatus.sessionId) setSessionId(rStatus.sessionId);
     }
   };
 
@@ -120,7 +125,10 @@ export default function App() {
   // Load SIA Integrity Contracts, Decisions, and Verdicts
   useEffect(() => {
     let active = true;
+    let inFlight = false;
     const loadIntegrityData = async () => {
+      if (inFlight) return;
+      inFlight = true;
       try {
         const [cList, dList, vList] = await Promise.all([
           fetchContracts(),
@@ -134,6 +142,8 @@ export default function App() {
         }
       } catch (e) {
         console.warn('Failed to load integrity datasets:', e);
+      } finally {
+        inFlight = false;
       }
     };
     loadIntegrityData();
@@ -153,6 +163,8 @@ export default function App() {
       onSnapshot: (newSnapshot) => {
         setSnapshot(newSnapshot);
         setConnected(true);
+        if (newSnapshot.sessionId) setSessionId(newSnapshot.sessionId);
+        if (newSnapshot.circuitId) setCircuitId(newSnapshot.circuitId);
       },
       onSessionUpdate: (data) => {
         setSnapshot((prev) => ({
@@ -164,19 +176,23 @@ export default function App() {
           activeEvent: data.activeEvent ?? prev.activeEvent,
           mode: data.mode ?? prev.mode,
           pipelineStatus: data.pipelineStatus ?? prev.pipelineStatus,
+          dataRegime: data.dataRegime ?? prev.dataRegime,
+          timingBaseline: data.timingBaseline ?? prev.timingBaseline,
+          transportMode: data.transportMode ?? prev.transportMode,
           lastUpdated: 'live',
         }));
       },
       onDriverUpdate: (data) => {
         if (data && Array.isArray(data.drivers)) {
-          setSnapshot((prev) => ({ ...prev, drivers: data.drivers, lastUpdated: 'live' }));
+          const sorted = [...data.drivers].sort((a, b) => (a.position - b.position) || (a.number - b.number));
+          setSnapshot((prev) => ({ ...prev, drivers: sorted, lastUpdated: 'live' }));
         } else if (data && (data.driver_number || data.number)) {
           const dn = data.driver_number || data.number;
-          setSnapshot((prev) => ({
-            ...prev,
-            drivers: prev.drivers.map((d) => (d.number === dn ? { ...d, ...data } : d)),
-            lastUpdated: 'live',
-          }));
+          setSnapshot((prev) => {
+            const mapped = prev.drivers.map((d) => (d.number === dn ? { ...d, ...data } : d));
+            mapped.sort((a, b) => (a.position - b.position) || (a.number - b.number));
+            return { ...prev, drivers: mapped, lastUpdated: 'live' };
+          });
         }
       },
       onTelemetryUpdate: (data) => {
@@ -220,6 +236,25 @@ export default function App() {
         setSnapshot((prev) => {
           const dn = assessment.subject?.driver_number;
           const existing = prev.assessments.filter((a) => a.id !== assessment.assessment_id);
+          const summaryLower = String(assessment.impact?.summary || '').toLowerCase();
+          const hasConflicts = Array.isArray(assessment.uncertainty?.conflicts) && assessment.uncertainty.conflicts.length > 0;
+          const rng = assessment.impact?.forecast?.position_delta_range;
+          const rngLo = Array.isArray(rng) && rng.length >= 2 ? Number(rng[0]) : 0;
+          const rngHi = Array.isArray(rng) && rng.length >= 2 ? Number(rng[1]) : 0;
+          const computedImpact: 'positive' | 'negative' | 'neutral' =
+            summaryLower.includes('congestion') ||
+            summaryLower.includes('loss') ||
+            summaryLower.includes('risk') ||
+            summaryLower.includes('penalt') ||
+            rngLo < 0 ||
+            hasConflicts
+              ? 'negative'
+              : rngHi > 0 ||
+                  summaryLower.includes('gain') ||
+                  summaryLower.includes('opportunity') ||
+                  summaryLower.includes('clear')
+                ? 'positive'
+                : 'neutral';
           const formatted = {
             id: assessment.assessment_id,
             version: assessment.assessment_version,
@@ -227,13 +262,21 @@ export default function App() {
             title: assessment.impact?.summary || 'Tactical Assessment',
             narrative: assessment.impact?.inferred_effects?.[0] || assessment.impact?.summary || '',
             driverRadio: null,
-            impact: dn === 16 ? ('positive' as const) : (dn === 44 ? ('negative' as const) : ('neutral' as const)),
+            impact: computedImpact,
             status: assessment.status || 'PROVISIONAL',
             confidence: assessment.uncertainty?.confidence_score,
             calibrationStatus: assessment.uncertainty?.calibration_status || 'UNCALIBRATED',
-            forecast: assessment.impact?.forecast?.position_delta_range
-              ? `Position retention projected: P${assessment.impact.forecast.position_delta_range[0]}–P${assessment.impact.forecast.position_delta_range[1]}`
-              : 'P1 retention highly probable across pit cycle',
+            forecast: (() => {
+              const rng = assessment.impact?.forecast?.position_delta_range;
+              if (!Array.isArray(rng) || rng.length < 2) return 'Awaiting gap convergence';
+              const lo = Number(rng[0]);
+              const hi = Number(rng[1]);
+              if (lo === 0 && hi === 0) return 'Hold track position (0 net delta)';
+              const fmtSigned = (n: number) => `${n >= 0 ? '+' : ''}${n}`;
+              return lo === hi
+                ? `Projected net delta: ${fmtSigned(lo)} pos`
+                : `Projected net delta: ${fmtSigned(lo)} to ${fmtSigned(hi)} pos`;
+            })(),
             alternative: assessment.impact?.alternatives?.[0] || 'Stay out and risk track position',
             evidence: assessment.evidence_refs || [],
             supersedesId: assessment.supersedes_assessment_id,
@@ -252,8 +295,11 @@ export default function App() {
       },
     });
 
-    // Periodic safety sync every 2 seconds: ensures latest snapshot and replay status are always fresh
+    // Periodic safety sync every 2 seconds without overlapping requests
+    let syncInFlight = false;
     const interval = setInterval(async () => {
+      if (syncInFlight) return;
+      syncInFlight = true;
       try {
         const [rStatus, snapRes] = await Promise.all([
           fetchReplayStatus(),
@@ -269,6 +315,8 @@ export default function App() {
         }
       } catch {
         // ignore network error
+      } finally {
+        syncInFlight = false;
       }
     }, 2000);
 
@@ -380,8 +428,12 @@ export default function App() {
         onChangeSession={handleSessionChange}
         activeView={activeView}
         onChangeView={(view) => setActiveView(view)}
-        dataRegime="PUBLIC"
-        transportMode={snapshot.pipelineStatus === 'CONNECTED' ? 'IN-MEMORY EVENT BUS' : 'DEGRADED / FALLBACK'}
+        dataRegime={snapshot.dataRegime ?? 'SYNTHETIC'}
+        transportMode={
+          snapshot.pipelineStatus === 'CONNECTED'
+            ? (snapshot.transportMode ?? 'SIMULATOR TRANSPORT')
+            : 'DEGRADED / FALLBACK'
+        }
       />
 
       <main className="dashboard-content">
@@ -539,7 +591,7 @@ export default function App() {
         {/* VIEW 4: AGENTS & PIPELINE (Runtime vs target archetypes)       */}
         {/* ============================================================ */}
         {activeView === 'AGENTS_PIPELINE' && (
-          <AgentsPipelineView />
+          <AgentsPipelineView decisionCount={decisions.length || snapshot.integrity?.decision_count} />
         )}
 
         {/* ============================================================ */}
@@ -557,8 +609,8 @@ export default function App() {
       <AssumptionsBar
         surveyReference={`${circuitId.toUpperCase()} Geometry Baseline`}
         sensorToleranceMeters={0.05}
-        timingSource="FOM Optical Loops & CAN Telemetry"
-        dataRegime="PUBLIC"
+        timingSource={snapshot.timingBaseline ?? 'Deterministic Simulator Stream'}
+        dataRegime={snapshot.dataRegime ?? 'SYNTHETIC'}
       />
 
       {/* Interactive Driver Telemetry Waveform Modal */}

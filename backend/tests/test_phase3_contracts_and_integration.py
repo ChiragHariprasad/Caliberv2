@@ -143,15 +143,41 @@ def test_08_stale_telemetry_freshness():
 
 
 def test_09_official_versus_pulse_event_separation():
-    """Verify complete separation between official FIA regulatory notices and PULSE analytical assessments."""
+    """Verify complete separation between Race Control notices and PULSE analytical assessments."""
+    from datetime import timedelta
+    from pulse.contracts import EventEnvelope, EventTime, Interpretation, Quality, RunContext, RunMode, SessionRef, SourceRef, Subject, UnitValidation
+
+    store = get_state_store()
+    # Initially clean boot should not contain fabricated future 2026 notices
+    assert client.get("/api/race-control").json() == []
+
+    # Ingest Race Control / session start events to populate honest notices
+    t0 = datetime(2026, 5, 24, 13, 0, tzinfo=UTC)
+    for idx, (eid, etype, pay) in enumerate([
+        ("p3-rc-1", "SESSION_STARTED", {"lap": 1, "total_laps": 78}),
+        ("p3-rc-2", "VSC_DEPLOYED", {"reason": "Stopped car Sector 2", "affected_drivers": [16, 4]}),
+    ]):
+        store.record_canonical_event(EventEnvelope(
+            event_id=eid,
+            event_type=etype,
+            source=SourceRef(provider="PULSE_SYNTHETIC_SIM", adapter="pytest", source_record_id=eid, capture_id="cap-p3-rc"),
+            time=EventTime(event_time_utc=t0 + timedelta(seconds=idx * 5), session_elapsed_ms=idx * 5000),
+            session=SessionRef(season=2026, meeting_id="monaco-2026", session_id="f1-2026-monaco-sim"),
+            run=RunContext(run_id="run-p3-rc", session_instance_id="f1-2026-monaco-sim", mode=RunMode.SIMULATED),
+            subject=Subject(),
+            payload=pay,
+            quality=Quality(completeness=Completeness.COMPLETE, unit_validation=UnitValidation.PASSED, interpretation=Interpretation.OBSERVED),
+        ))
+
     res_notices = client.get("/api/race-control")
     assert res_notices.status_code == 200
     notices = res_notices.json()
-    assert len(notices) >= 4
+    assert len(notices) == 2
     for n in notices:
       assert "source" in n
       assert "regulatory_reference" in n
-      assert "FIA" in n["source"] or "Meteo" in n["source"]
+      assert "status" in n
+      assert "FIA" in n["source"] or "PULSE" in n["source"] or "Session" in n["source"]
 
     res_pulse = client.get("/api/assessments")
     assert res_pulse.status_code == 200

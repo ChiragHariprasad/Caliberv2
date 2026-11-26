@@ -12,7 +12,7 @@ interface AssumptionsBarProps {
 export const AssumptionsBar: React.FC<AssumptionsBarProps> = ({
   surveyReference = 'Monaco-2025-v2.1 (Effective 2025-11-01 UTC)',
   sensorToleranceMeters = 0.05,
-  timingSource = 'FOM Optical Loops & CAN Telemetry',
+  timingSource = 'Session Timing & Telemetry Baseline',
   dataRegime = 'PUBLIC',
   className = '',
 }) => {

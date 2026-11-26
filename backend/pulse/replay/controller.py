@@ -35,6 +35,8 @@ class ReplayController:
     """
 
     ALLOWED_SPEEDS: list[float] = [0.25, 0.5, 1.0, 2.0, 5.0]
+    CHECKPOINT_INTERVAL: int = 2000
+    MAX_CHECKPOINTS_PER_SESSION: int = 35
 
     def __init__(self, bus: PulseEventBus | None = None) -> None:
         self.bus = bus or get_event_bus()
@@ -54,6 +56,7 @@ class ReplayController:
         self._lock = asyncio.Lock()
         self._event_processor: Callable[..., Awaitable[None]] | None = None
         self._reset_hook: Callable[[], None] | None = None
+        self._checkpoints: dict[str, dict[int, bytes]] = {}
 
         # Load initial default session envelopes
         self._load_session_envelopes(self.session_id)
@@ -133,10 +136,28 @@ class ReplayController:
                 break
 
         if env_file is not None and env_file.exists():
+            is_sim = meta.data_regime == "SYNTHETIC" or meta.availability_status == "AVAILABLE_SIMULATION"
+            resolved_provider = "PULSE_SYNTHETIC_SIM" if is_sim else "LAB_COMPOSED_ARCHIVE"
+            resolved_licence = meta.licence_reference
             with open(env_file, "r", encoding="utf-8") as f:
                 for line in f:
                     if line.strip():
-                        self.envelopes.append(EventEnvelope.model_validate(json.loads(line)))
+                        raw = json.loads(line)
+                        src = raw.get("source")
+                        if isinstance(src, dict):
+                            raw_provider = str(src.get("provider", ""))
+                            raw_lic = str(src.get("licence_reference") or "")
+                            if raw_provider in {
+                                "FIA_OFFICIAL_TIMING",
+                                "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+                                "JOLPICA_F1_AND_FIA_OFFICIAL",
+                            } or raw_lic == "FIA-F1-DATA-ACQUISITION-V1":
+                                payload = raw.setdefault("payload", {})
+                                if isinstance(payload, dict) and "_legacy_source_claim" not in payload:
+                                    payload["_legacy_source_claim"] = raw_provider
+                                src["provider"] = resolved_provider
+                                src["licence_reference"] = resolved_licence
+                        self.envelopes.append(EventEnvelope.model_validate(raw))
         elif meta.availability_status == "AVAILABLE_SIMULATION":
             from pulse.simulator.scenarios import build_vsc_scenario
             self.envelopes = build_vsc_scenario()
@@ -193,6 +214,7 @@ class ReplayController:
         if self._reset_hook is not None:
             self._reset_hook()
         store = get_state_store()
+        store.retire_run(self.run_id)
         store.switch_session(session_id)
         self._load_session_envelopes(session_id)
         self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
@@ -225,9 +247,11 @@ class ReplayController:
         self.elapsed_ms = 0
         self.last_event_time_utc = None
         self.drop_count = 0
+        old_run_id = self.run_id
         self.run_id = f"run-{uuid4().hex[:8]}"
 
         store = get_state_store()
+        store.retire_run(old_run_id)
         store.switch_session(self.session_id)
         store.begin_run(self.run_id)
         self.status = ReplayStatus.READY
@@ -341,31 +365,58 @@ class ReplayController:
                 else:
                     target_idx = len(self.envelopes)
 
-            # A seek creates a new execution lineage. Any delayed Kafka
-            # records from the abandoned cursor can therefore be identified
-            # and ignored by the active-run consumer instead of mutating the
-            # reconstructed state.
+            # Check if a keyframe checkpoint <= target_idx is cached for this session
+            store = get_state_store()
+            sess_ckpts = self._checkpoints.setdefault(self.session_id, {})
+            best_ckpt_idx = max((idx for idx in sess_ckpts if idx <= target_idx), default=0)
+
+            old_run_id = self.run_id
+            self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
+            store.retire_run(old_run_id)
             if self._reset_hook is not None:
                 self._reset_hook()
-            self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
 
-            # Rebuild state from index 0 up to target_idx through the exact
-            # same canonical processor as normal playback. This deliberately
-            # avoids republishing raw source records while reconstructing.
-            store = get_state_store()
-            store.switch_session(self.session_id)
-            store.begin_run(self.run_id)
-            self.last_event_time_utc = None
-            self.elapsed_ms = 0
+            if best_ckpt_idx > 0:
+                store.restore_checkpoint(sess_ckpts[best_ckpt_idx])
+                store.begin_run(self.run_id)
+                start_idx = best_ckpt_idx
+            else:
+                store.switch_session(self.session_id)
+                store.begin_run(self.run_id)
+                start_idx = 0
+
+            self.last_event_time_utc = (
+                self.envelopes[start_idx - 1].time.event_time_utc if start_idx > 0 else None
+            )
+            self.elapsed_ms = (
+                (self.envelopes[start_idx - 1].time.session_elapsed_ms or 0) if start_idx > 0 else 0
+            )
             self.drop_count = 0
+
+            ia = store.agents.get("agent-06-integrity")
+            if ia and hasattr(ia, "set_wal_paused"):
+                ia.set_wal_paused(True)
+
+            interval = max(1, int(self.CHECKPOINT_INTERVAL))
             try:
-                for i in range(target_idx):
+                for i in range(start_idx, target_idx):
                     await self._process(self._for_current_run(self.envelopes[i]), publish=False)
+                    done_idx = i + 1
+                    if done_idx % interval == 0 and done_idx not in sess_ckpts:
+                        if len(sess_ckpts) >= self.MAX_CHECKPOINTS_PER_SESSION:
+                            oldest_key = min(sess_ckpts.keys())
+                            sess_ckpts.pop(oldest_key, None)
+                        sess_ckpts[done_idx] = store.export_checkpoint()
+                    if (i - start_idx) % 200 == 199:
+                        await asyncio.sleep(0)
             except Exception:
                 self.status = ReplayStatus.FAILED
                 store.notify_replay_status(self.get_status())
                 logger.exception("Replay seek reconstruction failed at index %d", self.current_index)
                 raise
+            finally:
+                if ia and hasattr(ia, "set_wal_paused"):
+                    ia.set_wal_paused(False)
 
             self.current_index = target_idx
             self.published_count = target_idx

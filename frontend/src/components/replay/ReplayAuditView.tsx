@@ -4,7 +4,9 @@ import {
   verifyHashChains,
   fetchAllVerdicts,
   fetchVerdictHistory,
-} from '../../api';
+  runLabScenario,
+  type LabScenarioResponse,
+} from '../../api/integrity';
 import type { HashChainVerificationResult, ReplayStatusData, SIAAssessment } from '../../types';
 import {
   AlertTriangleIcon,
@@ -35,22 +37,24 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
   const [verificationResult, setVerificationResult] = useState<HashChainVerificationResult | null>(null);
   const [verifying, setVerifying] = useState<boolean>(false);
 
-  // Dynamic Ledger State
+  // Dynamic Ledger State (bound strictly to actual tracked SIA decisions)
   const [availableDecisions, setAvailableDecisions] = useState<SIAAssessment[]>([]);
-  const [selectedLedgerDecisionId, setSelectedLedgerDecisionId] = useState<string>('dec-pit_speed-d1');
+  const [selectedLedgerDecisionId, setSelectedLedgerDecisionId] = useState<string>('');
   const [decisionHistory, setDecisionHistory] = useState<SIAAssessment[]>([]);
   const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
   const [selectedRevisionDetail, setSelectedRevisionDetail] = useState<SIAAssessment | null>(null);
 
   // As-Of Knowledge Time Query State
-  const [queryInstanceId, setQueryInstanceId] = useState<string>('dec-pit_speed-d1');
-  const [knowledgeTimeIso, setKnowledgeTimeIso] = useState<string>(new Date().toISOString());
+  const [queryInstanceId, setQueryInstanceId] = useState<string>('');
+  const [knowledgeTimeIso, setKnowledgeTimeIso] = useState<string>('');
   const [asOfVerdict, setAsOfVerdict] = useState<SIAAssessment | null>(null);
   const [queryingAsOf, setQueryingAsOf] = useState<boolean>(false);
   const [asOfError, setAsOfError] = useState<string | null>(null);
 
-  // Synthetic Scenario State
+  // Isolated LAB Scenario State
   const [activeScenarioFeedback, setActiveScenarioFeedback] = useState<string | null>(null);
+  const [activeScenarioResult, setActiveScenarioResult] = useState<LabScenarioResponse | null>(null);
+  const [runningScenario, setRunningScenario] = useState<string | null>(null);
 
   // Load hash chain verification status
   const runVerification = async () => {
@@ -66,15 +70,16 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
       const vList = await fetchAllVerdicts();
       if (vList && vList.length > 0) {
         setAvailableDecisions(vList);
-        if (!selectedLedgerDecisionId) {
-          setSelectedLedgerDecisionId(vList[0].decision_instance_id);
-          setQueryInstanceId(vList[0].decision_instance_id);
-        }
+        const firstId = vList[0].decision_instance_id;
+        setSelectedLedgerDecisionId((prev) => prev || firstId);
+        setQueryInstanceId((prev) => prev || firstId);
+        const defaultK = vList[0].knowledge_time || replayStatus?.lastEventTimeUtc || '';
+        if (defaultK) setKnowledgeTimeIso((prev) => prev || defaultK);
       }
     };
     loadDecisions();
     runVerification();
-  }, []);
+  }, [replayStatus?.sessionId, replayStatus?.currentIndex]);
 
   // Fetch history when selected ledger decision changes
   useEffect(() => {
@@ -99,7 +104,12 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
   const handleExecuteAsOf = async (overrideK?: string) => {
     setQueryingAsOf(true);
     setAsOfError(null);
-    const timeToQuery = overrideK || knowledgeTimeIso;
+    const timeToQuery = overrideK || knowledgeTimeIso || replayStatus?.lastEventTimeUtc || '';
+    if (!queryInstanceId || !timeToQuery) {
+      setAsOfError('Select a tracked decision instance and specify an ISO-8601 knowledge instant K.');
+      setQueryingAsOf(false);
+      return;
+    }
     try {
       const res = await fetchVerdictAsOf(queryInstanceId, timeToQuery);
       setAsOfVerdict(res);
@@ -114,15 +124,40 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
   };
 
   const handleShortcutNow = () => {
-    const nowIso = new Date().toISOString();
-    setKnowledgeTimeIso(nowIso);
-    handleExecuteAsOf(nowIso);
+    const latestK =
+      currentLiveDecision?.knowledge_time ||
+      replayStatus?.lastEventTimeUtc ||
+      availableDecisions[0]?.knowledge_time ||
+      '';
+    if (latestK) {
+      setKnowledgeTimeIso(latestK);
+      handleExecuteAsOf(latestK);
+    }
   };
 
   const handleShortcutGenesis = () => {
-    const genesisIso = '2023-04-02T05:00:00.000Z';
-    setKnowledgeTimeIso(genesisIso);
-    handleExecuteAsOf(genesisIso);
+    const earliestRevision = decisionHistory[0]?.knowledge_time || availableDecisions[0]?.knowledge_time || '';
+    if (earliestRevision) {
+      setKnowledgeTimeIso(earliestRevision);
+      handleExecuteAsOf(earliestRevision);
+    } else {
+      setAsOfError('No historical decision revisions recorded yet in active session.');
+    }
+  };
+
+  const triggerLabScenario = async (scenarioId: string) => {
+    setRunningScenario(scenarioId);
+    const res = await runLabScenario(scenarioId);
+    if (res) {
+      setActiveScenarioResult(res);
+      const wCodes = (res.verdict.witnesses || []).map((w) => w.code).join(', ') || 'NONE';
+      setActiveScenarioFeedback(
+        `${res.regime} [${res.scenario_id}]: state=${res.verdict.integrity_state}, finality=${res.verdict.finality_status}, witnesses=[${wCodes}]`
+      );
+    } else {
+      setActiveScenarioFeedback(`Failed to execute isolated LAB scenario '${scenarioId}'.`);
+    }
+    setRunningScenario(null);
   };
 
   const isRunning = replayStatus?.status === 'RUNNING';
@@ -183,7 +218,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
             TRACKED DECISIONS
           </span>
           <strong style={{ fontSize: '1.25rem', color: '#f8fafc', display: 'block', margin: '4px 0', fontFamily: 'var(--font-mono)' }}>
-            {availableDecisions.length || 81}
+            {availableDecisions.length}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Active Instances</span>
         </div>
@@ -192,10 +227,12 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
           <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
             CHAINS VERIFIED
           </span>
-          <strong style={{ fontSize: '1.25rem', color: '#10b981', display: 'block', margin: '4px 0' }}>
-            {verificationResult?.chain_count ?? availableDecisions.length ?? 81} / {availableDecisions.length || 81}
+          <strong style={{ fontSize: '1.25rem', color: verificationResult?.verified === false ? '#ef4444' : '#10b981', display: 'block', margin: '4px 0' }}>
+            {verificationResult?.chain_count ?? availableDecisions.length} / {availableDecisions.length}
           </strong>
-          <span style={{ fontSize: '0.65rem', color: '#10b981' }}>100% Cryptographically Sound</span>
+          <span style={{ fontSize: '0.65rem', color: verificationResult?.verified === false ? '#ef4444' : '#10b981' }}>
+            {verificationResult?.verified === false ? 'Integrity Break Detected' : 'Verified SHA-256 Chain'}
+          </span>
         </div>
 
         <div className="kpi-mini-card panel" style={{ padding: '12px 14px' }}>
@@ -430,6 +467,9 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                 Inspect Decision Chain:
               </span>
               <select
+                id="ledger-decision-select"
+                name="ledger_decision_select"
+                aria-label="Inspect decision chain"
                 value={selectedLedgerDecisionId}
                 onChange={(e) => {
                   setSelectedLedgerDecisionId(e.target.value);
@@ -771,11 +811,12 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                 Monaco 2026 Geometry Model Fault (Motivating Incident)
               </h4>
               <p style={{ margin: 0, fontSize: '0.75rem', color: '#94a3b8', lineHeight: '1.4', flexGrow: 1 }}>
-                Simulates 2.9% survey distance overstatement in pit lane timing loops. Verifies Pattern P3 guard-band margin detection against vehicle CAN telemetry.
+                Simulates 2.9% survey distance overstatement in pit lane timing loops. Runs isolated SIA Core v3 evaluation against vehicle telemetry and survey geometry.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveScenarioFeedback('Monaco Geometry Drill executed: Pattern P3 guard-band triggered. Suspect threshold verified.')}
+                disabled={runningScenario === 'monaco_pit_bias'}
+                onClick={() => triggerLabScenario('monaco_pit_bias')}
                 style={{
                   padding: '8px 12px',
                   background: '#131e2c',
@@ -787,7 +828,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                   cursor: 'pointer',
                 }}
               >
-                Run Monaco Reference Scenario
+                {runningScenario === 'monaco_pit_bias' ? 'Running SIA Drill...' : 'Run Monaco Reference Scenario'}
               </button>
             </div>
 
@@ -804,14 +845,15 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
               }}
             >
               <h4 style={{ margin: 0, fontSize: '0.88rem', color: '#f8fafc' }}>
-                Late Reference Fact Injection
+                Late Evidence Admission Drill
               </h4>
               <p style={{ margin: 0, fontSize: '0.75rem', color: '#94a3b8', lineHeight: '1.4', flexGrow: 1 }}>
-                Reference fact admitted after soft deadline. Verifies that evaluator emits <code>LATE_REFERENCE_FACT</code> witness without mutating sealed history.
+                Admits observation after slot deadline inside allowed lateness window. Runs isolated SIA engine to emit <code>LATE_EVIDENCE_ADMITTED</code>.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveScenarioFeedback('Late Reference Fact Drill executed: Evaluator emitted witness LATE_REFERENCE_FACT. Append-only ledger sealed.')}
+                disabled={runningScenario === 'late_reference_fact'}
+                onClick={() => triggerLabScenario('late_reference_fact')}
                 style={{
                   padding: '8px 12px',
                   background: '#131e2c',
@@ -823,7 +865,7 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                   cursor: 'pointer',
                 }}
               >
-                Inject Late Reference
+                {runningScenario === 'late_reference_fact' ? 'Running SIA Drill...' : 'Inject Late Reference'}
               </button>
             </div>
 
@@ -840,14 +882,15 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
               }}
             >
               <h4 style={{ margin: 0, fontSize: '0.88rem', color: '#f8fafc' }}>
-                Silent Feed & Stationary Clock Drill
+                Silent Feed &amp; Stalled Origin Guard Drill
               </h4>
               <p style={{ margin: 0, fontSize: '0.75rem', color: '#94a3b8', lineHeight: '1.4', flexGrow: 1 }}>
-                Simulates stopped event-time watermark. Verifies that independent A5 Supervisor clock triggers expiry and avoids false-HEALTHY outcome.
+                Injects STALLED GuardFact on upstream origin. Runs isolated SIA engine to verify fail-closed <code>DEGRADED</code> transition before deadline.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveScenarioFeedback('Silent Feed Drill executed: A5 Supervisor heartbeat timeout expired. State fell to UNKNOWN/DEGRADED as expected.')}
+                disabled={runningScenario === 'silent_feed_guard'}
+                onClick={() => triggerLabScenario('silent_feed_guard')}
                 style={{
                   padding: '8px 12px',
                   background: '#131e2c',
@@ -859,10 +902,24 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
                   cursor: 'pointer',
                 }}
               >
-                Inject Silent Feed Fault
+                {runningScenario === 'silent_feed_guard' ? 'Running SIA Drill...' : 'Inject Silent Feed Fault'}
               </button>
             </div>
           </div>
+
+          {activeScenarioResult && (
+            <div style={{ marginTop: '14px', background: '#070b10', border: '1px solid #1e293b', borderRadius: '6px', padding: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8' }}>
+                  ISOLATED SIA ENGINE OUTPUT ({activeScenarioResult.scenario_id})
+                </span>
+                <StateBadge state={activeScenarioResult.verdict.integrity_state} size="sm" />
+              </div>
+              <pre style={{ margin: 0, fontSize: '0.72rem', color: '#cbd5e1', whiteSpace: 'pre-wrap', fontFamily: 'var(--font-mono)' }}>
+                {activeScenarioResult.explanation}
+              </pre>
+            </div>
+          )}
         </section>
       )}
 
@@ -929,11 +986,11 @@ export const ReplayAuditView: React.FC<ReplayAuditViewProps> = ({
 
             <div style={{ background: '#070b10', padding: '12px', borderRadius: '6px', border: '1px solid #16202c', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.75rem' }}>
               <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>Blake3 Content Hash (Verdict Payload):</span>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>RFC 8785 SHA-256 Content Hash (Verdict Payload):</span>
                 <MonoHash hash={selectedRevisionDetail.verdict_hash} truncateLength={40} />
               </div>
               <div>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>Blake3 Record Hash (Merkle Chain Link):</span>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>RFC 8785 SHA-256 Record Hash (Hash-Chain Link):</span>
                 <MonoHash hash={selectedRevisionDetail.record_hash} truncateLength={40} />
               </div>
             </div>

@@ -49,6 +49,11 @@ class Settings(BaseSettings):
         description="Whether a running Flink cluster is strictly required in KAFKA mode",
         validation_alias=AliasChoices("PULSE_FLINK_REQUIRED", "FLINK_REQUIRED"),
     )
+    sia_wal_path: str | None = Field(
+        default="data/sia_ledger.sqlite",
+        description="SQLite WAL persistence path for SIA Core v3 ledger & hash chains (None disables disk WAL)",
+        validation_alias=AliasChoices("PULSE_SIA_WAL_PATH", "SIA_WAL_PATH"),
+    )
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
     default_replay_speed: float = Field(default=1.0, gt=0, le=32)
     groq_enabled: bool = True

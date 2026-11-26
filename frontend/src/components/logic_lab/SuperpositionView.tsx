@@ -67,56 +67,9 @@ export const SuperpositionView: React.FC<SuperpositionViewProps> = ({
   onSelectDecision,
   className = '',
 }) => {
-  // Default evidence slots if not provided
   const slots = useMemo(() => {
     if (openSlots && openSlots.length > 0) return openSlots;
-    return [
-      {
-        roleId: 'vehicle_speed',
-        kind: 'evidence' as const,
-        status: 'ADMITTED' as const,
-        value: '79.2 km/h',
-        source: 'FOM_OPTICAL_LOOP',
-        timestamp: '12:04:15.240',
-        isLimiting: false,
-      },
-      {
-        roleId: 'timing_speed',
-        kind: 'evidence' as const,
-        status: 'ADMITTED' as const,
-        value: '78.8 km/h',
-        source: 'CAN_BUS_GATEWAY',
-        timestamp: '12:04:15.238',
-        isLimiting: false,
-      },
-      {
-        roleId: 'configured_distance',
-        kind: 'evidence' as const,
-        status: 'PENDING' as const,
-        value: '—',
-        source: 'TRACK_MAP_CALIBRATION',
-        timestamp: 'Awaiting Gate G02 Tick',
-        isLimiting: true,
-      },
-      {
-        roleId: 'track_geometry',
-        kind: 'reference' as const,
-        status: 'ADMITTED' as const,
-        value: 'Gate G02 Validated',
-        source: 'FIA_GEOMETRY_SPEC',
-        timestamp: 'Pre-session static',
-        isLimiting: false,
-      },
-      {
-        roleId: 'calibration_bias',
-        kind: 'reference' as const,
-        status: 'PENDING' as const,
-        value: '—',
-        source: 'TELEMETRY_CLOCK_MASTER',
-        timestamp: 'Awaiting monotonic tick',
-        isLimiting: true,
-      },
-    ];
+    return [];
   }, [openSlots]);
 
   const loIdx = ORDERED_LATTICE.findIndex((l) => l.state === lowerBound);
@@ -322,9 +275,28 @@ export const SuperpositionView: React.FC<SuperpositionViewProps> = ({
               </div>
               <p>
                 A role is declared a <em>limiting child</em> if improving its integrity state would directly promote the
-                lower bound of the contract. In the current configuration, observing <code>configured_distance</code> and{' '}
-                <code>calibration_bias</code> will immediately resolve the decision from <strong>UNKNOWN</strong> to{' '}
-                <strong>HEALTHY</strong>.
+                lower bound of the contract (<code>{contractId}</code>). Currently{' '}
+                {(() => {
+                  const lim = slots.filter((s) => s.isLimiting).map((s) => s.roleId);
+                  if (lim.length === 0) {
+                    return (
+                      <>
+                        no roles are blocking promotion; bounds have converged at <strong>{currentState}</strong>.
+                      </>
+                    );
+                  }
+                  return (
+                    <>
+                      observing {lim.map((r, idx) => (
+                        <span key={r}>
+                          {idx > 0 ? (idx === lim.length - 1 ? ' and ' : ', ') : ''}
+                          <code>{r}</code>
+                        </span>
+                      ))}{' '}
+                      can promote the envelope from <strong>{lowerBound}</strong> toward <strong>{upperBound}</strong>.
+                    </>
+                  );
+                })()}
               </p>
             </div>
 

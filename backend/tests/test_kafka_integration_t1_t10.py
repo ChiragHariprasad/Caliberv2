@@ -205,23 +205,88 @@ def test_t2_single_broker_failure_zero_data_loss(admin_client):
 # ==============================================================================
 
 def test_t3_two_broker_failure_not_enough_replicas_safety():
-    """T3: Stop 2 of 3 brokers -> producer fails fast / blocks on NotEnoughReplicas,
-    preventing un-replicated commits."""
-    # Verified by configuration: min.insync.replicas=2 requires >= 2 alive brokers
+    """T3: Stop 2 of 3 brokers -> producer acks=all fails with zero un-replicated commits,
+    then full 3-broker ISR recovers cleanly."""
     settings = get_settings()
+    admin = AdminClient({"bootstrap.servers": settings.kafka_bootstrap_servers})
+    topic = "calibre.raw.fastf1.position"
+    specs = build_topic_catalogue(driver_partitions=11)
+    assert len(verify_topics(admin, specs)) == 0
+
+    md = admin.list_topics(topic, timeout=10.0)
+    tmeta = md.topics.get(topic)
+    assert tmeta is not None and len(tmeta.partitions) >= 1
+    leader_p = next((pid for pid, pmeta in tmeta.partitions.items() if pmeta.leader == 1), None)
+    assert leader_p is not None, "Expected at least one partition led by broker 1 (kafka-1)"
+
+    probe_consumer = Consumer({
+        "bootstrap.servers": settings.kafka_bootstrap_servers,
+        "group.id": f"t3-wm-{uuid4().hex[:6]}",
+    })
+    _lo, hi_before = probe_consumer.get_watermark_offsets(TopicPartition(topic, leader_p), timeout=5.0)
+    probe_consumer.close()
+
+    delivered = 0
+    errors: list[str] = []
+
+    def _on_delivery(err, _msg):
+        nonlocal delivered
+        if err is not None:
+            errors.append(str(err))
+        else:
+            delivered += 1
+
     p = Producer({
         "bootstrap.servers": settings.kafka_bootstrap_servers,
         "acks": "all",
-        "delivery.timeout.ms": 3000,
+        "enable.idempotence": True,
+        "delivery.timeout.ms": 3500,
         "request.timeout.ms": 2000,
-        "message.timeout.ms": 3000,
+        "message.timeout.ms": 3500,
     })
-    # When min.isr is not met, broker rejects with NOT_ENOUGH_REPLICAS.
-    # We verify the cluster enforces min.isr=2 via verify_topics
-    admin = AdminClient({"bootstrap.servers": settings.kafka_bootstrap_servers})
-    specs = build_topic_catalogue(driver_partitions=11)
-    problems = verify_topics(admin, specs)
-    assert len(problems) == 0, f"Topic configuration drift: {problems}"
+    try:
+        subprocess.run(["docker", "stop", "kafka-2", "kafka-3"], check=True, timeout=20)
+        time.sleep(2.0)
+
+        for i in range(3):
+            p.produce(
+                topic,
+                partition=leader_p,
+                key=f"t3-unreplicated-{i}".encode("utf-8"),
+                value=json.dumps({"test": "t3", "seq": i}).encode("utf-8"),
+                on_delivery=_on_delivery,
+            )
+        p.flush(6.0)
+
+        assert delivered == 0, f"Producer unexpectedly committed {delivered} un-replicated records with 2/3 brokers down!"
+        assert len(errors) == 3, f"Expected all 3 produce attempts to fail safely, got errors={errors}"
+    finally:
+        subprocess.run(["docker", "start", "kafka-2", "kafka-3"], check=True, timeout=20)
+        recovery_deadline = time.time() + 35.0
+        recovered = False
+        while time.time() < recovery_deadline:
+            try:
+                md_rec = admin.list_topics(topic, timeout=3.0)
+                t_rec = md_rec.topics.get(topic)
+                if (
+                    len(md_rec.brokers) == 3
+                    and t_rec is not None
+                    and len(t_rec.partitions[leader_p].isrs) >= 2
+                ):
+                    recovered = True
+                    break
+            except Exception:
+                pass
+            time.sleep(1.0)
+        assert recovered, "3-broker quorum / ISR failed to recover cleanly after docker start!"
+
+    probe_after = Consumer({
+        "bootstrap.servers": settings.kafka_bootstrap_servers,
+        "group.id": f"t3-wm-after-{uuid4().hex[:6]}",
+    })
+    _lo2, hi_after = probe_after.get_watermark_offsets(TopicPartition(topic, leader_p), timeout=5.0)
+    probe_after.close()
+    assert hi_after == hi_before, f"Watermark advanced ({hi_before} -> {hi_after}) despite 2-broker failure!"
 
 
 # ==============================================================================
@@ -419,16 +484,74 @@ def test_t7_dlq_poison_record_routing_with_coordinates():
 # T8: CLOCK WATERMARK & REPLAY ISOLATION
 # ==============================================================================
 
-def test_t8_clock_watermark_and_replay_isolation():
-    """T8: Verifies live vs replay run isolation and durable evaluation clock topics."""
+def test_t8_clock_watermark_and_replay_isolation(tmp_path):
+    """T8: Verifies live vs replay run isolation, broker watermark monotonicity, and durable clock ticks."""
     settings = get_settings()
     producer = CalibreProducer(bootstrap_servers=settings.kafka_bootstrap_servers)
     clock_topic = "calibre.guard.clock"
+    raw_topic = "calibre.raw.fastf1.race_control"
 
-    # Clock tick broadcast
-    producer.publish(clock_topic, json.dumps({"tick_utc": "2026-11-05T12:00:00Z", "epoch": 100}), key="clock")
-    producer.flush()
-    assert producer.stats.delivered >= 1
+    probe = Consumer({
+        "bootstrap.servers": settings.kafka_bootstrap_servers,
+        "group.id": f"t8-reader-{uuid4().hex[:6]}",
+        "auto.offset.reset": "earliest",
+        "isolation.level": "read_committed",
+        "enable.auto.commit": False,
+    })
+    _lo_c, hi_clock = probe.get_watermark_offsets(TopicPartition(clock_topic, 0), timeout=5.0)
+    _lo_r, hi_raw = probe.get_watermark_offsets(TopicPartition(raw_topic, 0), timeout=5.0)
+
+    tag = uuid4().hex[:8]
+    # 1. Monotonic durable evaluation clock ticks on calibre.guard.clock
+    for epoch in (100, 101):
+        producer.publish(
+            clock_topic,
+            json.dumps({"tag": tag, "tick_utc": "2026-11-05T12:00:00Z", "epoch": epoch}),
+            key=f"clock-{tag}",
+        )
+
+    # 2. Isolated LIVE vs REPLAY streams published to Kafka raw topic
+    live_run_id = f"run-live-{tag}"
+    replay_run_id = f"run-replay-{tag}"
+    producer.publish(raw_topic, json.dumps({"event_id": f"evt-live-{tag}", "event_type": "SESSION_STARTED", "run": {"run_id": live_run_id, "mode": "LIVE", "session_instance_id": f"live-{tag}"}}), key=f"live-{tag}")
+    producer.publish(raw_topic, json.dumps({"event_id": f"evt-rep-{tag}", "event_type": "SESSION_STARTED", "run": {"run_id": replay_run_id, "mode": "REPLAY", "session_instance_id": f"rep-{tag}"}}), key=f"rep-{tag}")
+    producer.flush(10.0)
+    assert producer.stats.delivered >= 4
+
+    probe.assign([TopicPartition(clock_topic, 0, hi_clock), TopicPartition(raw_topic, 0, hi_raw)])
+    epochs_seen: list[int] = []
+    runs_seen: dict[str, str] = {}
+    deadline = time.time() + 10.0
+    while time.time() < deadline and (len(epochs_seen) < 2 or len(runs_seen) < 2):
+        msg = probe.poll(0.3)
+        if msg is None or msg.error() or msg.value() is None:
+            continue
+        data = json.loads(msg.value().decode("utf-8"))
+        if msg.topic() == clock_topic and data.get("tag") == tag:
+            epochs_seen.append(int(data["epoch"]))
+        elif msg.topic() == raw_topic and isinstance(data.get("run"), dict):
+            rid = data["run"].get("run_id")
+            if rid in {live_run_id, replay_run_id}:
+                runs_seen[rid] = data["run"].get("mode", "")
+    probe.close()
+
+    assert epochs_seen == [100, 101], f"Clock epochs out of order or missing: {epochs_seen}"
+    assert runs_seen == {live_run_id: "LIVE", replay_run_id: "REPLAY"}
+
+    # 3. Verify SQLite SIA WAL enforces disjoint session scope isolation
+    from sia_core import SIAWALStore, OriginRegistry, IntegrityEngine, make_atom
+    from sia_core.evaluator import EngineConfig
+    wal_db = tmp_path / "t8_isolation.sqlite"
+    reg = OriginRegistry({"PITWALL": ["F1_FOM_TIMING"]})
+    wal_live = SIAWALStore(wal_db, session_id=f"live-{tag}")
+    eng_live = IntegrityEngine(registry=reg, config=EngineConfig(auto_open=False), wal=wal_live)
+    eng_live.admit_atom(make_atom("lap_record", 89.1, "2026-05-24T13:00:00Z", {"session_id": f"live-{tag}", "driver_id": "16", "lap_number": "1"}, ["PITWALL"]), "2026-05-24T13:00:01Z")
+    wal_live.close()
+
+    wal_replay = SIAWALStore(wal_db, session_id=f"rep-{tag}")
+    eng_replay = wal_replay.load_engine(registry=reg, config=EngineConfig(auto_open=False))
+    assert eng_replay.ledger.counts()["atoms"] == 0, "LIVE session atoms leaked into REPLAY session WAL!"
+    wal_replay.close()
 
 
 # ==============================================================================
@@ -436,22 +559,78 @@ def test_t8_clock_watermark_and_replay_isolation():
 # ==============================================================================
 
 def test_t9_static_membership_no_rebalance_on_quick_restart():
-    """T9: Consumer with group.instance.id restarts within session.timeout without triggering rebalance."""
+    """T9: Consumer with group.instance.id restarts within session.timeout without triggering rebalance
+    on sibling members."""
     settings = get_settings()
     group_id = f"t9-static-{uuid4().hex[:6]}"
-    instance_id = f"worker-static-01-{uuid4().hex[:6]}"
-    topic = "calibre.alerts"
+    inst_1 = f"worker-static-01-{uuid4().hex[:6]}"
+    inst_2 = f"worker-static-02-{uuid4().hex[:6]}"
+    topic = "calibre.evidence.vehicle"
 
-    c = Consumer({
-        "bootstrap.servers": settings.kafka_bootstrap_servers,
-        "group.id": group_id,
-        "group.instance.id": instance_id,
-        "auto.offset.reset": "earliest",
-        "session.timeout.ms": 45000,
-    })
-    c.subscribe([topic])
-    c.poll(0.5)
-    c.close()  # leaves group, but static instance ID is retained on broker during session.timeout.ms
+    revokes_standby: list[int] = []
+    assigns_standby: list[int] = []
+
+    def _mk(inst_id: str) -> Consumer:
+        return Consumer({
+            "bootstrap.servers": settings.kafka_bootstrap_servers,
+            "group.id": group_id,
+            "group.instance.id": inst_id,
+            "auto.offset.reset": "earliest",
+            "session.timeout.ms": 45000,
+        })
+
+    c1 = _mk(inst_1)
+    standby = _mk(inst_2)
+    c1.subscribe([topic])
+    standby.subscribe(
+        [topic],
+        on_revoke=lambda _c, ps: revokes_standby.append(len(ps)),
+        on_assign=lambda _c, ps: assigns_standby.append(len(ps)),
+    )
+
+    t0 = time.time()
+    while time.time() - t0 < 10.0:
+        c1.poll(0.2)
+        standby.poll(0.2)
+        if (
+            len(c1.assignment()) + len(standby.assignment()) == 11
+            and len(c1.assignment()) > 0
+            and len(standby.assignment()) > 0
+        ):
+            break
+    # Drain any trailing rebalance callbacks before clearing tracking counters
+    for _ in range(3):
+        c1.poll(0.1)
+        standby.poll(0.1)
+
+    p1_before = {p.partition for p in c1.assignment()}
+    p2_before = {p.partition for p in standby.assignment()}
+    assert p1_before and p2_before and p1_before.isdisjoint(p2_before)
+
+    # Clear initial assignment counters, close c1 cleanly, and rejoin immediately with same group.instance.id
+    revokes_standby.clear()
+    assigns_standby.clear()
+    c1.close()
+
+    c1_restarted = _mk(inst_1)
+    c1_restarted.subscribe([topic])
+    t1 = time.time()
+    while time.time() - t1 < 10.0 and not c1_restarted.assignment():
+        c1_restarted.poll(0.2)
+        standby.poll(0.2)
+
+    for _ in range(3):
+        c1_restarted.poll(0.1)
+        standby.poll(0.1)
+
+    p1_after = {p.partition for p in c1_restarted.assignment()}
+
+    assert p1_after == p1_before, f"Static member lost partition affinity on restart: {p1_before} -> {p1_after}"
+    assert revokes_standby == [], f"Standby experienced spurious revoke rebalance: {revokes_standby}"
+    assert assigns_standby == [], f"Standby experienced spurious assign rebalance: {assigns_standby}"
+
+    c1_restarted.close()
+    standby.close()
 
 
 # ==============================================================================
@@ -459,32 +638,78 @@ def test_t9_static_membership_no_rebalance_on_quick_restart():
 # ==============================================================================
 
 def test_t10_partition_count_invariance():
-    """T10: Verifies that per-driver decision hashing yields identical results regardless of
-    whether 1 or 11 partitions are used (zero cross-driver hidden order dependencies)."""
+    """T10: Verifies real Kafka round-trip decisions are invariant across 1-partition vs 11-partition
+    topologies (zero cross-driver order dependencies)."""
     import hashlib
 
-    # Generate synthetic findings for 20 drivers
-    findings = [
-        {"driver": d, "lap": lap, "pit_loss": 10.5 if d in {16, 44} else 8.0}
-        for lap in range(1, 10)
-        for d in [1, 11, 44, 16, 55, 63, 4, 81, 14, 10]
-    ]
-
+    settings = get_settings()
+    topic_p1 = "calibre.alerts"             # 1 partition in catalogue
+    topic_p11 = "calibre.evidence.timing"   # 11 partitions in catalogue
+    drivers = [1, 11, 44, 16, 55, 63]
+    run_tag = uuid4().hex[:8]
     slots = DriverSlots()
 
-    # Partition count = 1
-    hashes_p1 = set()
-    for f in findings:
-        p1 = driver_partition(slots, f["driver"], 1)
-        h1 = hashlib.sha256(json.dumps(f, sort_keys=True).encode("utf-8")).hexdigest()
-        hashes_p1.add((f["driver"], f["lap"], h1))
+    probe = Consumer({
+        "bootstrap.servers": settings.kafka_bootstrap_servers,
+        "group.id": f"t10-wm-{uuid4().hex[:6]}",
+        "isolation.level": "read_committed",
+        "enable.auto.commit": False,
+    })
+    start_tps_p1 = [TopicPartition(topic_p1, 0, probe.get_watermark_offsets(TopicPartition(topic_p1, 0), timeout=5.0)[1])]
+    start_tps_p11 = [
+        TopicPartition(topic_p11, pid, probe.get_watermark_offsets(TopicPartition(topic_p11, pid), timeout=5.0)[1])
+        for pid in range(11)
+    ]
+    probe.close()
 
-    # Partition count = 11
-    hashes_p11 = set()
-    for f in findings:
-        p11 = driver_partition(slots, f["driver"], 11)
-        h11 = hashlib.sha256(json.dumps(f, sort_keys=True).encode("utf-8")).hexdigest()
-        hashes_p11.add((f["driver"], f["lap"], h11))
+    producer = CalibreProducer(bootstrap_servers=settings.kafka_bootstrap_servers)
+    expected_total = len(drivers) * 4
+    for lap in range(1, 5):
+        for d in drivers:
+            rec = {
+                "tag": run_tag,
+                "driver": d,
+                "lap": lap,
+                "pit_loss": 10.5 if d in {16, 44} else 8.0,
+            }
+            producer.publish(topic_p1, rec, key=f"driver-{d}", driver_id=d)
+            producer.publish(topic_p11, rec, key=f"driver-{d}", driver_id=d)
+    producer.flush(10.0)
 
-    assert hashes_p1 == hashes_p11, "Partition-count invariance violation: hash sets differ!"
+    def _consume_digest(topic: str, start_tps: list[TopicPartition]) -> tuple[dict[int, str], set[int]]:
+        c = Consumer({
+            "bootstrap.servers": settings.kafka_bootstrap_servers,
+            "group.id": f"t10-read-{uuid4().hex[:6]}",
+            "isolation.level": "read_committed",
+            "enable.auto.commit": False,
+        })
+        c.assign(start_tps)
+        per_driver: dict[int, list[dict]] = defaultdict(list)
+        partitions_used: set[int] = set()
+        seen = 0
+        deadline = time.time() + 12.0
+        while seen < expected_total and time.time() < deadline:
+            msg = c.poll(0.3)
+            if msg is None or msg.error() or msg.value() is None:
+                continue
+            row = json.loads(msg.value().decode("utf-8"))
+            if row.get("tag") != run_tag:
+                continue
+            per_driver[row["driver"]].append({"lap": row["lap"], "pit_loss": row["pit_loss"]})
+            partitions_used.add(msg.partition())
+            seen += 1
+        c.close()
+        assert seen == expected_total, f"Missing records on {topic}: {seen}/{expected_total}"
+        digests = {
+            d: hashlib.sha256(json.dumps(rows, sort_keys=True).encode("utf-8")).hexdigest()
+            for d, rows in per_driver.items()
+        }
+        return digests, partitions_used
+
+    digests_p1, parts_p1 = _consume_digest(topic_p1, start_tps_p1)
+    digests_p11, parts_p11 = _consume_digest(topic_p11, start_tps_p11)
+
+    assert parts_p1 == {0}, f"1-partition topic should only use partition 0, got {parts_p1}"
+    assert len(parts_p11) >= 3, f"Expected driver spreading across >= 3 of 11 partitions, got {parts_p11}"
+    assert digests_p1 == digests_p11, f"Per-driver Kafka digests diverged across 1 vs 11 partitions!"
 

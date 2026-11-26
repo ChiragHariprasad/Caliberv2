@@ -227,8 +227,8 @@ export function TrackMap({
         if (el) {
           const d = drivers.find((x) => x.number === num);
           if (d?.status === 'RETIRED') {
-            const rx = rawViewBox.min_x + 30;
-            const ry = rawViewBox.min_y + 30 + (d.position % 6) * 16;
+            const rx = rawViewBox.min_x + 28 + (d.number % 2) * 20;
+            const ry = rawViewBox.min_y + 34 + (d.position % 3) * 12;
             el.setAttribute('transform', `translate(${rx}, ${ry})`);
           } else {
             const [x, y] = interpolatePositionFromIndex(splineIndex, state.current);
@@ -268,7 +268,7 @@ export function TrackMap({
       status: info.status,
       measurement: sec?.condition ? sec.condition : '31.428s',
       unit: 'seconds (s)',
-      source: 'FOM_OPTICAL_LOOP / TIMING_TRANSPONDER_V1',
+      source: 'TIMING_TRANSPONDER / STREAM_GATE',
       contractRef: `C02_sector_sum_consistency / sector_time`,
     });
   };
@@ -582,6 +582,33 @@ export function TrackMap({
                 </text>
               </g>
             ))}
+
+          {/* Retired / Pit Bay Frame when any car has RETIRED status */}
+          {showDrivers && drivers.some((d) => d.status === 'RETIRED') && (
+            <g className="retired-pit-bay" aria-label="Retired cars pit bay">
+              <rect
+                x={rawViewBox.min_x + 12}
+                y={rawViewBox.min_y + 10}
+                width="68"
+                height="68"
+                rx="4"
+                fill="rgba(13, 17, 23, 0.85)"
+                stroke="#334155"
+                strokeWidth="1"
+                strokeDasharray="3 2"
+              />
+              <text
+                x={rawViewBox.min_x + 16}
+                y={rawViewBox.min_y + 20}
+                fill="#94a3b8"
+                fontSize="6.5"
+                fontFamily="ui-monospace, monospace"
+                fontWeight="700"
+              >
+                DNF / PIT BAY
+              </text>
+            </g>
+          )}
 
           {/* Interactive Full-Grid Driver Markers (60 FPS animated via requestAnimationFrame) */}
           {showDrivers &&

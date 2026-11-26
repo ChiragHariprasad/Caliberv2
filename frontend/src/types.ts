@@ -37,6 +37,7 @@ export interface Driver {
   tyreAge: number;
   lastLap: string;
   momentum: number;
+  momentumHistory?: number[];
   status?: DriverStatus;
   progress?: number;
   positionMode?: PositionMode;
@@ -215,6 +216,8 @@ export interface PipelineStatusData {
   kafka: {
     connected: boolean;
     transport: string;
+    bootstrap_servers?: string;
+    topic_count?: number;
     processed_events: number;
     duplicate_events: number;
   };
@@ -249,6 +252,9 @@ export interface VerificationRun {
   stages?: Array<{
     stage_name: string;
     status: string;
+    input_count?: number | null;
+    output_count?: number | null;
+    drop_count?: number;
     inputs_expected?: number | null;
     outputs_actual?: number | null;
     drops?: number;
@@ -269,11 +275,19 @@ export interface PulseSnapshot {
   circuitId?: string;
   sessionName: string;
   sessionType: string;
+  sessionId?: string;
   lap: number;
   totalLaps: number;
   status: string;
   elapsed: string;
   activeEvent: string;
+  dataRegime?: string;
+  datasetClassification?: string;
+  sourceProvenance?: string;
+  timingBaseline?: string;
+  licenceReference?: string;
+  isSynthetic?: boolean;
+  transportMode?: string;
   sourceLabel: string;
   lastUpdated: string;
   drivers: Driver[];
@@ -282,6 +296,12 @@ export interface PulseSnapshot {
   strategies: StrategyOption[];
   sectors: TrackSector[];
   officialNotices?: OfficialNotice[];
+  integrity?: {
+    overall_state?: string;
+    decision_count?: number;
+    contract_count?: number;
+    chain_verified?: boolean;
+  };
 }
 
 export interface ReplayStatusData {

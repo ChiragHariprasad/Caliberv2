@@ -1,12 +1,16 @@
 {
   "capture_id": "f1-2023-austria",
-  "data_regime": "PUBLIC",
-  "regime": "PUBLIC",
-  "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
-  "provider": "FIA_OFFICIAL_TIMING",
+  "data_regime": "LAB",
+  "regime": "LAB",
+  "provenance_status": "LAB_SYNTHETIC_WINDOWED_REPLAY",
+  "provider": "PULSE_LAB_REPLAY_CAPTURE",
   "session_id": "f1-2023-austria",
   "session_name": "Austrian Grand Prix 2023",
   "circuit_id": "red_bull_ring",
   "total_laps": 71,
-  "duration_seconds": 600
+  "duration_seconds": 600,
+  "dataset_classification": "LAB_SYNTHETIC_CAPTURE",
+  "is_synthetic": true,
+  "licence_reference": "PULSE-LAB-REPLAY-INTERNAL",
+  "raw_archive_note": "Legacy raw envelopes preserved verbatim; runtime loader normalizes synthetic/lab provenance honestly."
 }

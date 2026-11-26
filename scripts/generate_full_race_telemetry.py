@@ -222,11 +222,11 @@ def generate_race(config: dict) -> None:
             "event_type": evt_type,
             "schema_version": 1,
             "source": {
-                "provider": "FIA_OFFICIAL_TIMING",
+                "provider": "PULSE_SYNTHETIC_SIM",
                 "adapter": "high_frequency_track_adapter",
                 "source_record_id": f"rec-{event_seq}",
                 "capture_id": capture_id,
-                "licence_reference": "FIA-F1-DATA-ACQUISITION-V1",
+                "licence_reference": "PULSE-SYNTHETIC-SIM-INTERNAL",
             },
             "run": {
                 "run_id": f"run-{session_id}",
@@ -491,13 +491,18 @@ def generate_race(config: dict) -> None:
         "total_laps": total_laps,
         "total_drivers": 20,
         "duration_seconds": duration,
-        "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        "source": "PULSE_SYNTHETIC_SIMULATOR",
     }
     (out_dir / "session_info.json").write_text(json.dumps(session_info, indent=2), encoding="utf-8")
 
     manifest = {
         "capture_id": capture_id,
-        "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        "data_regime": "SYNTHETIC",
+        "dataset_classification": "SYNTHETIC_SIMULATOR",
+        "regime": "SYNTHETIC",
+        "is_synthetic": True,
+        "provider": "PULSE_SYNTHETIC_SIMULATOR",
+        "licence_reference": "PULSE-SYNTHETIC-SIM-INTERNAL",
         "session_id": session_id,
         "session_name": grand_prix,
         "total_canonical_records": len(lines),

@@ -137,11 +137,13 @@ class EventControlAgent(BaseAgent):
                         if d not in affected_drivers:
                             affected_drivers.append(d)
 
-                for dn in affected_drivers:
+                for idx, dn in enumerate(affected_drivers):
                     driver_cfgs = event.payload.get("driver_exposures", {})
                     dn_cfg = driver_cfgs.get(str(dn), {})
-                    exposure_level = dn_cfg.get("exposure_level", "CRITICAL_OPPORTUNITY" if dn == 16 else "HIGH_TRAFFIC_RISK")
-                    pit_status = dn_cfg.get("pit_window_status", "OPEN" if dn == 16 else "EXPOSED")
+                    default_exposure = "CRITICAL_OPPORTUNITY" if (event.subject.driver_number == dn or idx == 0) else "HIGH_TRAFFIC_RISK"
+                    default_pit = "OPEN" if (event.subject.driver_number == dn or idx == 0) else "EVALUATE"
+                    exposure_level = dn_cfg.get("exposure_level", default_exposure)
+                    pit_status = dn_cfg.get("pit_window_status", default_pit)
                     finding_exp = Finding(
                         finding_id=f"finding-exp-{event.event_id}-{dn}",
                         agent_id=self.agent_id,

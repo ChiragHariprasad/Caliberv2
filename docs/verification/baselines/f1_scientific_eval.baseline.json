@@ -1,0 +1,173 @@
+{
+  "benchmark": "FastF1_Causal_WalkForward_Phase3",
+  "races": [
+    {
+      "year": 2021,
+      "grand_prix": "British Grand Prix",
+      "total_laps": 52,
+      "evaluated_laps": 745,
+      "legacy_76s_mae_sec": 17.343,
+      "pulse_v2_mae_sec": 0.358,
+      "pulse_v2_rmse_sec": 0.546,
+      "mae_reduction_pct": 97.94,
+      "empirical_95pi_coverage_pct": 92.62,
+      "calibrated_green_pit_loss_sec": 18.26,
+      "calibrated_vsc_pit_loss_sec": 9.34,
+      "pit_samples": 20,
+      "pit_calibration_status": "EMPIRICAL_PIT_CALIBRATED",
+      "compound_degradation": {
+        "S": {
+          "n_stints": 1,
+          "raw_median_slope": -0.2547,
+          "raw_positive_count": 0,
+          "fuel_comp_median_slope": -0.1874,
+          "fuel_comp_positive_count": 0
+        },
+        "M": {
+          "n_stints": 20,
+          "raw_median_slope": -0.1025,
+          "raw_positive_count": 2,
+          "fuel_comp_median_slope": -0.0352,
+          "fuel_comp_positive_count": 6
+        },
+        "H": {
+          "n_stints": 19,
+          "raw_median_slope": -0.037,
+          "raw_positive_count": 2,
+          "fuel_comp_median_slope": 0.0303,
+          "fuel_comp_positive_count": 15
+        }
+      }
+    },
+    {
+      "year": 2021,
+      "grand_prix": "Saudi Arabian Grand Prix",
+      "total_laps": 50,
+      "evaluated_laps": 446,
+      "legacy_76s_mae_sec": 19.475,
+      "pulse_v2_mae_sec": 1.976,
+      "pulse_v2_rmse_sec": 5.719,
+      "mae_reduction_pct": 89.86,
+      "empirical_95pi_coverage_pct": 93.72,
+      "calibrated_green_pit_loss_sec": 19.63,
+      "calibrated_vsc_pit_loss_sec": 10.04,
+      "pit_samples": 1,
+      "pit_calibration_status": "EMPIRICAL_PIT_CALIBRATED",
+      "compound_degradation": {
+        "S": {
+          "n_stints": 1,
+          "raw_median_slope": -0.0649,
+          "raw_positive_count": 0,
+          "fuel_comp_median_slope": 0.0051,
+          "fuel_comp_positive_count": 1
+        },
+        "M": {
+          "n_stints": 24,
+          "raw_median_slope": -0.1116,
+          "raw_positive_count": 4,
+          "fuel_comp_median_slope": -0.0416,
+          "fuel_comp_positive_count": 8
+        },
+        "H": {
+          "n_stints": 13,
+          "raw_median_slope": -0.0864,
+          "raw_positive_count": 0,
+          "fuel_comp_median_slope": -0.0164,
+          "fuel_comp_positive_count": 4
+        }
+      }
+    },
+    {
+      "year": 2021,
+      "grand_prix": "Abu Dhabi Grand Prix",
+      "total_laps": 58,
+      "evaluated_laps": 697,
+      "legacy_76s_mae_sec": 13.627,
+      "pulse_v2_mae_sec": 0.352,
+      "pulse_v2_rmse_sec": 0.587,
+      "mae_reduction_pct": 97.42,
+      "empirical_95pi_coverage_pct": 92.25,
+      "calibrated_green_pit_loss_sec": 22.88,
+      "calibrated_vsc_pit_loss_sec": 44.0,
+      "pit_samples": 17,
+      "pit_calibration_status": "EMPIRICAL_PIT_CALIBRATED",
+      "compound_degradation": {
+        "S": {
+          "n_stints": 8,
+          "raw_median_slope": -0.0313,
+          "raw_positive_count": 2,
+          "fuel_comp_median_slope": 0.029,
+          "fuel_comp_positive_count": 7
+        },
+        "M": {
+          "n_stints": 12,
+          "raw_median_slope": -0.0871,
+          "raw_positive_count": 1,
+          "fuel_comp_median_slope": -0.0268,
+          "fuel_comp_positive_count": 3
+        },
+        "H": {
+          "n_stints": 19,
+          "raw_median_slope": -0.0427,
+          "raw_positive_count": 2,
+          "fuel_comp_median_slope": 0.0176,
+          "fuel_comp_positive_count": 12
+        }
+      }
+    },
+    {
+      "year": 2022,
+      "grand_prix": "Monaco Grand Prix",
+      "total_laps": 64,
+      "evaluated_laps": 718,
+      "legacy_76s_mae_sec": 9.745,
+      "pulse_v2_mae_sec": 1.484,
+      "pulse_v2_rmse_sec": 3.647,
+      "mae_reduction_pct": 84.78,
+      "empirical_95pi_coverage_pct": 92.06,
+      "calibrated_green_pit_loss_sec": 14.79,
+      "calibrated_vsc_pit_loss_sec": 23.54,
+      "pit_samples": 9,
+      "pit_calibration_status": "EMPIRICAL_PIT_CALIBRATED",
+      "compound_degradation": {
+        "S": {
+          "n_stints": 1,
+          "raw_median_slope": 0.0717,
+          "raw_positive_count": 1,
+          "fuel_comp_median_slope": 0.1264,
+          "fuel_comp_positive_count": 1
+        },
+        "M": {
+          "n_stints": 11,
+          "raw_median_slope": -0.08,
+          "raw_positive_count": 3,
+          "fuel_comp_median_slope": -0.0253,
+          "fuel_comp_positive_count": 5
+        },
+        "H": {
+          "n_stints": 9,
+          "raw_median_slope": -0.1322,
+          "raw_positive_count": 2,
+          "fuel_comp_median_slope": -0.0775,
+          "fuel_comp_positive_count": 2
+        }
+      }
+    },
+    {
+      "year": 2022,
+      "grand_prix": "Japanese Grand Prix",
+      "total_laps": 29,
+      "evaluated_laps": 323,
+      "legacy_76s_mae_sec": 38.224,
+      "pulse_v2_mae_sec": 3.701,
+      "pulse_v2_rmse_sec": 12.931,
+      "mae_reduction_pct": 90.32,
+      "empirical_95pi_coverage_pct": 83.28,
+      "calibrated_green_pit_loss_sec": 27.62,
+      "calibrated_vsc_pit_loss_sec": 14.13,
+      "pit_samples": 11,
+      "pit_calibration_status": "EMPIRICAL_PIT_CALIBRATED",
+      "compound_degradation": {}
+    }
+  ]
+}

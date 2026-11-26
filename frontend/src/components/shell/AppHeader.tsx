@@ -152,6 +152,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           <label htmlFor="circuit-select" className="sr-only">Select Session and Circuit</label>
           <select
             id="circuit-select"
+            name="circuit_select"
             className="circuit-select-input"
             value={sessionId}
             onChange={(e) => handleSessionChange(e.target.value)}

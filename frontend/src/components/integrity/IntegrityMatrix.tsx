@@ -81,15 +81,26 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
     return map;
   }, [verdicts]);
 
-  // Lookup helper matching canonical SIA IDs and friendly aliases
+  // Lookup helper matching canonical SIA IDs and C01..C13 library aliases
+  const LIB_TO_RUNTIME_CONTRACT: Record<string, string> = {
+    C01_lap_time_consistency: 'lap_time',
+    C02_sector_sum_consistency: 'sector_time',
+    C03_pit_speed_integrity: 'pit_speed',
+    C06_position_track_consistency: 'driver_position',
+    C09_weather_reporting: 'weather_observation',
+  };
+
   const findVerdict = (contractId: string, driverNumber: number): SIAAssessment | null => {
-    const cid = contractId.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const mapped = LIB_TO_RUNTIME_CONTRACT[contractId] || contractId;
+    const cid = mapped.toLowerCase().replace(/[^a-z0-9]/g, '_');
     const directKey = `dec-${cid}-d${driverNumber}`;
     if (verdictMap.has(directKey)) return verdictMap.get(directKey)!;
 
+    let best: SIAAssessment | null = null;
     for (const v of verdicts) {
       const vId = v.decision_instance_id.toLowerCase();
-      const matchContract = vId.includes(cid) || (v.contract?.id && v.contract.id.toLowerCase().includes(cid));
+      const contractKey = (v.contract?.id || '').toLowerCase();
+      const matchContract = contractKey === cid || vId.startsWith(`${cid}@`) || vId.includes(cid);
       if (!matchContract) continue;
 
       const isSessionScope =
@@ -98,7 +109,8 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
         vId.includes('weather') ||
         vId.includes('session');
       if (isSessionScope) {
-        return v;
+        best = v;
+        continue;
       }
 
       const matchDriver =
@@ -109,10 +121,10 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
         v.scope?.driver === String(driverNumber) ||
         v.scope?.driver_id === String(driverNumber);
       if (matchDriver) {
-        return v;
+        best = v;
       }
     }
-    return null;
+    return best;
   };
 
   // Active contracts from backend or library reference
@@ -497,6 +509,8 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
           <div className="search-bar-wrapper">
             <SearchIcon size={14} className="search-bar-icon" />
             <input
+              id="matrix-search"
+              name="matrix_search"
               type="search"
               className="search-bar-input"
               placeholder="Search driver, team, or car #..."
@@ -577,10 +591,13 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
                       {displayedContracts
                         .filter((c) => contractFilter === 'ALL' || c.id === contractFilter)
                         .map((contract) => {
-                          const verdict = findVerdict(contract.id, driver.number);
+                          const mappedRuntime = contractMode === 'ALL_13' ? LIB_TO_RUNTIME_CONTRACT[contract.id] : contract.id;
+                          const isUninstrumented = contractMode === 'ALL_13' && !mappedRuntime;
+                          const verdict = isUninstrumented ? null : findVerdict(contract.id, driver.number);
+                          const effectiveContractId = mappedRuntime || contract.id;
                           const instId =
                             verdict?.decision_instance_id ||
-                            `dec-${contract.id.toLowerCase().replace(/[^a-z0-9]/g, '_')}-d${driver.number}`;
+                            `dec-${effectiveContractId.toLowerCase().replace(/[^a-z0-9]/g, '_')}-d${driver.number}`;
 
                           const cellState: IntegrityState = verdict?.integrity_state || 'UNKNOWN';
                           const disposition = verdict?.disposition || 'NORMAL';
@@ -621,12 +638,18 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
                               tabIndex={0}
                             >
                               <div className="verdict-cell-content">
-                                <StateBadge
-                                  state={cellState}
-                                  disposition={disposition}
-                                  size="sm"
-                                  className="verdict-pill-badge"
-                                />
+                                {isUninstrumented ? (
+                                  <span className="subtle-chip" title="Catalogue spec contract not emitted by active runtime evaluators">
+                                    NO FEED
+                                  </span>
+                                ) : (
+                                  <StateBadge
+                                    state={cellState}
+                                    disposition={disposition}
+                                    size="sm"
+                                    className="verdict-pill-badge"
+                                  />
+                                )}
                                 {isAlert && <span className="alert-pulse-dot" />}
                               </div>
                             </td>
@@ -666,8 +689,8 @@ export const IntegrityMatrix: React.FC<IntegrityMatrixProps> = ({
           <div className="footer-left-info">
             <span className="footer-pulse-dot" />
             <span>
-              All matrix verdicts are deterministically evaluated by <strong>SIA Core v3</strong> from calibrated
-              optical loops, ECU CAN-bus transponders, and regulatory AST contracts.
+              All matrix verdicts are deterministically evaluated by <strong>SIA Core v3</strong> against registered
+              Decision Evidence Contracts, declared session provenance, and explicit source-independence boundaries.
             </span>
           </div>
           <div className="footer-right-info">

@@ -7,6 +7,7 @@ runs are bit-for-bit comparable.
 from __future__ import annotations
 
 from dataclasses import replace
+import pickle
 from typing import Any, Dict, List, Mapping, Optional
 
 from .algebra import IntegrityState as S
@@ -18,6 +19,11 @@ from .model import (DecisionInstance, EvidenceAtom, GuardFact, OriginRegistry, R
                     norm_scope, scope_in, scope_projection)
 from .verdict import GENESIS, Assessment, BitemporalIndex, explain, make_record, revision_diff, verify_chain
 
+try:
+    from .wal import SIAWALStore
+except Exception:  # pragma: no cover
+    SIAWALStore = None  # type: ignore
+
 
 class ContractRejected(ValueError):
     def __init__(self, validation: Validation):
@@ -26,28 +32,87 @@ class ContractRejected(ValueError):
 
 
 class IntegrityEngine:
-    def __init__(self, registry: Optional[OriginRegistry] = None, config: Optional[EngineConfig] = None):
+    def __init__(
+        self,
+        registry: Optional[OriginRegistry] = None,
+        config: Optional[EngineConfig] = None,
+        wal: Optional[Any] = None,
+    ):
         self.registry = registry or OriginRegistry()
         self.cfg = config or EngineConfig()
+        self.wal = wal
         self.ledger = Ledger()
         self.contracts: Dict[str, Contract] = {}
+        self._contract_raw: Dict[str, dict] = {}
         self.instances: Dict[str, DecisionInstance] = {}
+        self._open_instances: set[str] = set()
         self.index = BitemporalIndex()
         self._sealed: Dict[str, Assessment] = {}
         self._last_eval: Dict[str, int] = {}
         self._dirty: set[str] = set()
         self._next_wake: Dict[str, int] = {}
         self._last_tick_K: int = NEG_INF
+        self._guard_scan_idx: int = 0
         self.finality_violations: List[dict] = []
+        self.quarantined_items: List[dict] = []
         self.contract_history: List[dict] = []
+
+    def export_state(self) -> bytes:
+        """Serialize complete in-memory SIA state (ledger, chains, instances, registry) for fast keyframe checkpoints."""
+        state = {
+            "registry": self.registry,
+            "cfg": self.cfg,
+            "ledger": self.ledger,
+            "contracts": self.contracts,
+            "_contract_raw": self._contract_raw,
+            "instances": self.instances,
+            "_open_instances": self._open_instances,
+            "index": self.index,
+            "_sealed": self._sealed,
+            "_last_eval": self._last_eval,
+            "_dirty": self._dirty,
+            "_next_wake": self._next_wake,
+            "_last_tick_K": self._last_tick_K,
+            "_guard_scan_idx": self._guard_scan_idx,
+            "finality_violations": self.finality_violations,
+            "quarantined_items": self.quarantined_items,
+            "contract_history": self.contract_history,
+        }
+        return pickle.dumps(state, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def restore_state(self, blob: bytes) -> None:
+        """Restore in-memory SIA state from a checkpoint blob while preserving the WAL handle."""
+        state = pickle.loads(blob)
+        self.registry = state["registry"]
+        self.cfg = state["cfg"]
+        self.ledger = state["ledger"]
+        self.contracts = state["contracts"]
+        self._contract_raw = state["_contract_raw"]
+        self.instances = state["instances"]
+        self._open_instances = state["_open_instances"]
+        self.index = state["index"]
+        self._sealed = state["_sealed"]
+        self._last_eval = state["_last_eval"]
+        self._dirty = state["_dirty"]
+        self._next_wake = state["_next_wake"]
+        self._last_tick_K = state["_last_tick_K"]
+        self._guard_scan_idx = state["_guard_scan_idx"]
+        self.finality_violations = state["finality_violations"]
+        self.quarantined_items = state["quarantined_items"]
+        self.contract_history = state["contract_history"]
 
     # ------------------------------------------------------------------ contracts
     def register_contract(self, contract: Contract | Mapping[str, Any]) -> Contract:
+        raw_dict = dict(contract) if isinstance(contract, Mapping) else None
         c = parse_contract(contract) if isinstance(contract, Mapping) else contract
         v = validate_contract(c, self.registry)
         if not v.ok:
             raise ContractRejected(v)
         self.contracts[c.contract_id] = c
+        if raw_dict is not None:
+            self._contract_raw[c.contract_id] = raw_dict
+            if self.wal is not None:
+                self.wal.save_contract(raw_dict)
         self.contract_history.append(c.ref)
         return c
 
@@ -60,7 +125,11 @@ class IntegrityEngine:
         iid = f"{contract_id}@" + "|".join(proj[f] for f in SCOPE_FIELDS[c.scope_class])
         if iid not in self.instances:
             reg = parse_instant(known_at) if known_at is not None else (self.ledger.clock if self.ledger.clock > NEG_INF else parse_instant(opens_at))
-            self.instances[iid] = DecisionInstance(iid, contract_id, norm_scope(proj), parse_instant(opens_at), reg, auto)
+            inst = DecisionInstance(iid, contract_id, norm_scope(proj), parse_instant(opens_at), reg, auto)
+            self.instances[iid] = inst
+            self._open_instances.add(iid)
+            if self.wal is not None:
+                self.wal.save_decision(inst)
         return iid
 
     def _auto_open(self, atom: EvidenceAtom) -> None:
@@ -74,63 +143,158 @@ class IntegrityEngine:
             if proj is not None:
                 self.open_decision(c.contract_id, proj, atom.observed_at, auto=True)
 
+    def _matching_sealed_instances(self, role_id: str, scope: Dict[str, str], cid: Optional[str] = None) -> List[str]:
+        matched: List[str] = []
+        sc_items = tuple(scope.items())
+        for iid in self._sealed:
+            inst = self.instances[iid]
+            c = self.contracts[inst.contract_id]
+            if cid and c.contract_id != cid:
+                continue
+            r = c.roles.get(role_id)
+            if r is not None and scope_in(sc_items, inst.scope_dict, r.scope_class):
+                matched.append(iid)
+        return matched
+
+    def _has_open_target_for_atom(self, atom: EvidenceAtom) -> bool:
+        sc = dict(atom.scope)
+        sc_items = tuple(sc.items())
+        for iid in self._open_instances:
+            inst = self.instances[iid]
+            c = self.contracts[inst.contract_id]
+            r = c.roles.get(atom.role_id)
+            if r is not None and scope_in(sc_items, inst.scope_dict, r.scope_class):
+                return True
+        if self.cfg.auto_open:
+            for c in self.contracts.values():
+                role = c.roles.get(atom.role_id)
+                if role is None or role.kind != "evidence" or role.scope_class != c.scope_class:
+                    continue
+                proj = scope_projection(sc, c.scope_class)
+                if proj is not None:
+                    cand_iid = f"{c.contract_id}@" + "|".join(proj[f] for f in SCOPE_FIELDS[c.scope_class])
+                    if cand_iid not in self._sealed:
+                        return True
+        return False
+
+    def _has_open_target_for_fact(self, fact: ReferenceFact) -> bool:
+        sc_items = tuple(dict(fact.scope).items())
+        for iid in self._open_instances:
+            inst = self.instances[iid]
+            c = self.contracts[inst.contract_id]
+            for r in c.roles.values():
+                if r.kind == "reference" and r.fact_type == fact.fact_type:
+                    return True
+        # Global SESSION facts may also apply to future auto-opened decisions
+        if self.cfg.auto_open and dict(fact.scope):
+            for c in self.contracts.values():
+                for r in c.roles.values():
+                    if r.kind == "reference" and r.fact_type == fact.fact_type and r.scope_class == ScopeClass.SESSION:
+                        return True
+        return len(self._sealed) == 0 and any(True for _ in sc_items)
+
     # ------------------------------------------------------------------ admission
     def admit_atom(self, atom: EvidenceAtom, knowledge_time) -> Admission:
+        # Pre-admission finality quarantine check BEFORE ledger mutation
+        try:
+            kt = parse_instant(knowledge_time)
+        except (ValueError, TypeError):
+            return self.ledger.admit_atom(atom, knowledge_time)
+        sealed_hits = self._matching_sealed_instances(atom.role_id, dict(atom.scope))
+        if sealed_hits and kt >= self.ledger.clock and atom.recompute_id() == atom.atom_id and not self._has_open_target_for_atom(atom):
+            self.ledger.advance_clock(kt)
+            for iid in sealed_hits:
+                rec = {
+                    "decision_instance_id": iid,
+                    "kind": "atom",
+                    "item_id": atom.atom_id,
+                    "knowledge_time": fmt_instant(kt),
+                    "code": "POST_FINALITY_QUARANTINED",
+                }
+                self.finality_violations.append(rec)
+                self.quarantined_items.append({**rec, "payload": atom.to_dict()})
+                if self.wal is not None:
+                    self.wal.save_quarantine("atom", atom.atom_id, iid, kt, "POST_FINALITY_QUARANTINED", {**atom.to_dict(), "knowledge_time": fmt_instant(kt)})
+            return Admission("QUARANTINED", "POST_FINALITY_QUARANTINED", atom.atom_id)
+
         adm = self.ledger.admit_atom(atom, knowledge_time)
         if adm.accepted:
+            if self.wal is not None:
+                self.wal.save_atom(atom, kt, self.ledger._seq)
             self._auto_open(atom)
             atom_drv = dict(atom.scope).get("driver_id")
-            for iid, inst in self.instances.items():
-                if iid in self._sealed:
-                    continue
+            for iid in self._open_instances:
+                inst = self.instances[iid]
                 if atom.role_id not in self.contracts[inst.contract_id].roles:
                     continue
                 inst_drv = inst.scope_dict.get("driver_id")
                 if inst_drv is not None and atom_drv is not None and inst_drv != atom_drv:
                     continue
                 self._dirty.add(iid)
-            self._check_finality(atom.role_id, dict(atom.scope), "atom", atom.atom_id, parse_instant(knowledge_time))
+            self._check_finality(atom.role_id, dict(atom.scope), "atom", atom.atom_id, kt, payload=atom.to_dict())
         return adm
 
     def admit_fact(self, fact: ReferenceFact, knowledge_time) -> Admission:
+        try:
+            kt = parse_instant(knowledge_time)
+        except (ValueError, TypeError):
+            return self.ledger.admit_fact(fact, knowledge_time)
+        sealed_hits: List[str] = []
+        for c in self.contracts.values():
+            for rn, r in c.roles.items():
+                if r.kind == "reference" and r.fact_type == fact.fact_type:
+                    sealed_hits.extend(self._matching_sealed_instances(rn, dict(fact.scope), cid=c.contract_id))
+        if sealed_hits and kt >= self.ledger.clock and fact.recompute_id() == fact.fact_id and not self._has_open_target_for_fact(fact):
+            self.ledger.advance_clock(kt)
+            for iid in dict.fromkeys(sealed_hits):
+                rec = {
+                    "decision_instance_id": iid,
+                    "kind": "fact",
+                    "item_id": fact.fact_id,
+                    "knowledge_time": fmt_instant(kt),
+                    "code": "POST_FINALITY_QUARANTINED",
+                }
+                self.finality_violations.append(rec)
+                self.quarantined_items.append({**rec, "payload": fact.to_dict()})
+                if self.wal is not None:
+                    self.wal.save_quarantine("fact", fact.fact_id, iid, kt, "POST_FINALITY_QUARANTINED", {**fact.to_dict(), "knowledge_time": fmt_instant(kt)})
+            return Admission("QUARANTINED", "POST_FINALITY_QUARANTINED", fact.fact_id)
+
         adm = self.ledger.admit_fact(fact, knowledge_time)
         if adm.accepted:
-            for iid in self.instances:
-                if iid not in self._sealed:
-                    self._dirty.add(iid)
+            if self.wal is not None:
+                self.wal.save_fact(fact, kt, self.ledger._seq)
+            for iid in self._open_instances:
+                self._dirty.add(iid)
             for c in self.contracts.values():
                 for rn, r in c.roles.items():
                     if r.kind == "reference" and r.fact_type == fact.fact_type:
-                        self._check_finality(rn, dict(fact.scope), "fact", fact.fact_id, parse_instant(knowledge_time), cid=c.contract_id)
+                        self._check_finality(rn, dict(fact.scope), "fact", fact.fact_id, kt, cid=c.contract_id, payload=fact.to_dict())
         return adm
 
     def admit_guard(self, guard: GuardFact, knowledge_time) -> Admission:
         adm = self.ledger.admit_guard(guard, knowledge_time)
         if adm.accepted:
-            for iid in self.instances:
-                if iid not in self._sealed:
-                    self._dirty.add(iid)
+            kt = parse_instant(knowledge_time)
+            if self.wal is not None:
+                self.wal.save_guard(guard, kt, self.ledger._seq)
+            for iid in self._open_instances:
+                self._dirty.add(iid)
         return adm
 
-    def _check_finality(self, role_id: str, scope: Dict[str, str], kind: str, item_id: str, kt: int, cid: Optional[str] = None) -> None:
-        """Post-finality evidence is quarantined (never changes a FINAL verdict) and logged as a violation."""
-        for iid, sealed in self._sealed.items():
-            inst = self.instances[iid]
-            c = self.contracts[inst.contract_id]
-            if cid and c.contract_id != cid:
-                continue
-            r = c.roles.get(role_id)
-            if r is not None and scope_in(tuple(scope.items()), inst.scope_dict, r.scope_class):
-                self.finality_violations.append({"decision_instance_id": iid, "kind": kind, "item_id": item_id,
-                                                 "knowledge_time": fmt_instant(kt), "code": "POST_FINALITY_QUARANTINED"})
+    def _check_finality(self, role_id: str, scope: Dict[str, str], kind: str, item_id: str, kt: int, cid: Optional[str] = None, payload: Optional[dict] = None) -> None:
+        """Post-finality evidence for sealed decisions is logged as a violation and quarantined."""
+        for iid in self._matching_sealed_instances(role_id, scope, cid=cid):
+            rec = {"decision_instance_id": iid, "kind": kind, "item_id": item_id,
+                   "knowledge_time": fmt_instant(kt), "code": "POST_FINALITY_QUARANTINED"}
+            self.finality_violations.append(rec)
+            self.quarantined_items.append({**rec, "payload": payload or {}})
+            if self.wal is not None:
+                self.wal.save_quarantine(kind, item_id, iid, kt, "POST_FINALITY_QUARANTINED", {**(payload or {}), "knowledge_time": fmt_instant(kt)})
 
     # ------------------------------------------------------------------ evaluation
     def void_decision(self, instance_id: str, K, *, reason: str = "SESSION_EVENT", witness_code: str = "VOIDED", detail: str = "") -> Assessment:
-        """Legitimately voids a scheduled decision instance (CR-1).
-
-        Finalizes the decision as UNKNOWN with finality FINAL and a named VOIDED witness,
-        preventing false-alarm DEGRADED states for retired participants or red-flagged sessions.
-        """
+        """Legitimately voids a scheduled decision instance (CR-1) using standard SIA v3 schema."""
         K = parse_instant(K)
         if instance_id not in self.instances:
             raise KeyError(f"unknown decision instance: {instance_id}")
@@ -152,25 +316,30 @@ class IntegrityEngine:
             "detail": detail or f"Legitimately voided due to {reason}",
         }
         content = {
-            "contract": c.ref,
+            "schema": "calibre.sia.assessment/3.0",
             "decision_instance_id": instance_id,
+            "contract": c.ref,
             "scope": dict(inst.scope_dict),
-            "state": S.UNKNOWN.value,
+            "opens_at": fmt_instant(inst.opens_at),
             "validity_timeline": void_timeline.to_list(),
-            "maturity_status": "TUPLE_RESOLVED",
+            "resolution_maturity": "TUPLE_RESOLVED",
             "finality_status": "FINAL",
-            "witnesses": [witness_entry],
-            "limitations": ["DECISION_VOIDED"],
+            "envelope": {"lower": S.UNKNOWN.name, "upper": S.UNKNOWN.name, "alternatives": [S.UNKNOWN.name]},
             "roles": {},
             "constraints": {},
-            "corroboration": {},
-            "resilience": {},
-            "envelope": {"lower": S.UNKNOWN.value, "upper": S.UNKNOWN.value, "resolved": True},
+            "diagnosis": {"result": "NONE", "excluded_items": [], "excluded_origins": [], "minimal_diagnoses": []},
+            "resilience": {"required_k": 0, "profile": {}, "critical_origins": []},
+            "witnesses": [witness_entry],
+            "limitations": ["DECISION_VOIDED"],
+            "evidence_frontier": fmt_instant(kt),
         }
         ch, rh = make_record(content, rev, prev, kt, "VOIDED")
         rec = Assessment(content, ch, rev, prev, kt, "VOIDED", rh, K, void_timeline)
         self.index.append(rec)
         self._sealed[instance_id] = rec
+        self._open_instances.discard(instance_id)
+        if self.wal is not None:
+            self.wal.save_assessment(rec)
         return rec
 
     def evaluate(self, instance_id: str, K) -> Assessment:
@@ -195,6 +364,8 @@ class IntegrityEngine:
             ch, rh = make_record(out.content, rev, prev, kt, reason)
             rec = Assessment(out.content, ch, rev, prev, kt, reason, rh, K, out.timeline)
             self.index.append(rec)
+            if self.wal is not None:
+                self.wal.save_assessment(rec)
         self._dirty.discard(instance_id)
         wake_candidates = [rec.timeline.next_change_after(K), inst.opens_at + c.cutoff_us]
         for r in c.roles.values():
@@ -203,6 +374,7 @@ class IntegrityEngine:
         self._next_wake[instance_id] = min((t for t in wake_candidates if t is not None and t > K), default=POS_INF)
         if out.final:
             self._sealed[instance_id] = rec
+            self._open_instances.discard(instance_id)
         return rec
 
     def tick(self, K) -> List[Assessment]:
@@ -210,15 +382,16 @@ class IntegrityEngine:
         K = parse_instant(K)
         self.ledger.advance_clock(K)
         prev_k = self._last_tick_K
-        if any(prev_k < g.kt <= K for g in self.ledger.guards):
-            for iid in self.instances:
-                if iid not in self._sealed:
+        if self._guard_scan_idx < len(self.ledger.guards):
+            unseen = self.ledger.guards[self._guard_scan_idx :]
+            if any(prev_k < g.kt <= K for g in unseen):
+                for iid in self._open_instances:
                     self._dirty.add(iid)
+            if all(g.kt <= K for g in unseen):
+                self._guard_scan_idx = len(self.ledger.guards)
         self._last_tick_K = max(prev_k, K)
         res: List[Assessment] = []
-        for i in sorted(self.instances):
-            if i in self._sealed:
-                continue
+        for i in sorted(self._open_instances):
             head = self.index.head(i)
             if head is not None and i not in self._dirty and K < self._next_wake.get(i, NEG_INF):
                 if K < self._last_eval.get(i, NEG_INF):
@@ -238,6 +411,18 @@ class IntegrityEngine:
 
     def verify(self) -> Dict[str, str]:
         return {i: verify_chain(self.index.chain(i))[1] for i in self.index.decisions()}
+
+    def verify_incremental(self, cached_lengths: Dict[str, int]) -> bool:
+        """Verify only decision chains whose length changed since cached_lengths."""
+        for iid in self.index.decisions():
+            chain = self.index.chain(iid)
+            n = len(chain)
+            if cached_lengths.get(iid) == n:
+                continue
+            if verify_chain(chain)[1] != "OK":
+                return False
+            cached_lengths[iid] = n
+        return True
 
     def explain(self, a: Assessment) -> str:
         return explain(a)

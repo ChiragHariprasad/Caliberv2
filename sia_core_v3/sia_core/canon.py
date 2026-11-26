@@ -7,6 +7,7 @@ the boundary and only formatted again for output/hashing.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 from datetime import datetime, timedelta, timezone
@@ -129,8 +130,12 @@ def _jstr(s: str) -> str:
     return "".join(out)
 
 
+def _jstr(s: str) -> str:
+    return json.dumps(s, ensure_ascii=False)
+
+
 def jcs(data: Any) -> str:
-    """Serialise to RFC 8785 canonical JSON text."""
+    """Serialise to RFC 8785 canonical JSON text (fast ASCII/C-escaped path)."""
     if data is None:
         return "null"
     if isinstance(data, bool):
@@ -142,14 +147,29 @@ def jcs(data: Any) -> str:
     if isinstance(data, float):
         return es6_format_float(data)
     if isinstance(data, str):
-        return _jstr(data)
+        return json.dumps(data, ensure_ascii=False)
     if isinstance(data, (list, tuple)):
         return "[" + ",".join(jcs(x) for x in data) + "]"
     if isinstance(data, dict):
+        if all(type(k) is str and k.isascii() for k in data):
+            keys = sorted(data.keys())
+            return "{" + ",".join(json.dumps(k, ensure_ascii=False) + ":" + jcs(data[k]) for k in keys) + "}"
         keys = sorted(data.keys(), key=lambda k: str(k).encode("utf-16-be"))
-        return "{" + ",".join(_jstr(str(k)) + ":" + jcs(data[k]) for k in keys) + "}"
+        return "{" + ",".join(json.dumps(str(k), ensure_ascii=False) + ":" + jcs(data[k]) for k in keys) + "}"
     raise TypeError(f"unsupported type for canonicalisation: {type(data)}")
 
 
 def sha256_hex(data: Any) -> str:
     return hashlib.sha256(jcs(data).encode("utf-8")).hexdigest()
+
+
+def sha256_tagged(data: Any) -> str:
+    """Return canonical algorithm-tagged SHA-256 digest compatible with UI hash badges."""
+    return f"sha256:{sha256_hex(data)}"
+
+
+def normalize_hash_hex(digest: str) -> str:
+    """Strip optional algorithm tag ('sha256:') cleanly when comparing digests."""
+    if isinstance(digest, str) and digest.startswith("sha256:"):
+        return digest[7:]
+    return digest

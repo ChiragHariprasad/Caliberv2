@@ -239,8 +239,15 @@ export interface SIAAssessment {
   };
   resilience?: {
     k_values?: Record<number, boolean>;
+    required_k?: number;
+    profile?: Record<string, string>;
     critical_origins?: string[];
   };
+  source_origins?: string[];
+  processing_origins?: string[];
+  corroboration_depth?: number;
+  common_cause_exposure?: number;
+  contract_constraints?: Array<Record<string, any>>;
   witnesses: SIAWitness[];
   witness_set?: string[];
   primary_binding_witness?: string;

@@ -83,6 +83,8 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: flink-jobmanager
         parallelism.default: 2
+    volumes:
+      - ./docker/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:/opt/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:ro
     depends_on:
       kafka-1: {condition: service_healthy}
 
@@ -96,6 +98,8 @@ services:
         jobmanager.rpc.address: flink-jobmanager
         taskmanager.numberOfTaskSlots: 4
         parallelism.default: 2
+    volumes:
+      - ./docker/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:/opt/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:ro
     depends_on:
       - flink-jobmanager
 

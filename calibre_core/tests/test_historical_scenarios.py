@@ -286,7 +286,10 @@ def test_scenario_belgium_2021_red_flag_decision_voiding():
     )
 
     assert void_assessment is not None
-    assert void_assessment.content["state"] == IntegrityState.UNKNOWN.value or void_assessment.content["state"] == "UNKNOWN"
+    assert void_assessment.integrity_state == IntegrityState.UNKNOWN
+    assert void_assessment.content["envelope"]["lower"] == "UNKNOWN"
+    assert void_assessment.content["envelope"]["upper"] == "UNKNOWN"
+    assert void_assessment.content["resolution_maturity"] == "TUPLE_RESOLVED"
     assert void_assessment.content["finality_status"] == "FINAL"
     assert void_assessment.reason == "VOIDED"
     assert any(w["code"] == "VOIDED" for w in void_assessment.content["witnesses"])

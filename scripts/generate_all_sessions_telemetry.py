@@ -309,17 +309,20 @@ def generate_session_capture(config: dict) -> None:
         "total_laps": total_laps,
         "total_drivers": 20,
         "duration_seconds": duration,
-        "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        "source": "PULSE_SYNTHETIC_SIMULATOR",
     }
     (out_dir / "session_info.json").write_text(json.dumps(session_info, indent=2), encoding="utf-8")
     
     # 2. Capture Manifest
     manifest = {
         "capture_id": session_id,
-        "data_regime": "PUBLIC",
-        "regime": "PUBLIC",
-        "provenance_status": "HISTORICAL_REPLAY_CAPTURE",
-        "provider": "FIA_OFFICIAL_TIMING",
+        "data_regime": "LAB",
+        "dataset_classification": "LAB_SYNTHETIC_CAPTURE",
+        "regime": "LAB",
+        "is_synthetic": True,
+        "provenance_status": "LAB_SYNTHETIC_WINDOWED_REPLAY",
+        "provider": "PULSE_SYNTHETIC_SIM",
+        "licence_reference": "PULSE-LAB-REPLAY-INTERNAL",
         "session_id": session_id,
         "session_name": grand_prix,
         "circuit_id": circuit_id,
@@ -366,11 +369,11 @@ def generate_session_capture(config: dict) -> None:
             "event_type": evt_type,
             "schema_version": 1,
             "source": {
-                "provider": "FIA_OFFICIAL_TIMING",
+                "provider": "PULSE_SYNTHETIC_SIM",
                 "adapter": "high_frequency_track_adapter",
                 "source_record_id": f"rec-{event_seq}",
                 "capture_id": session_id,
-                "licence_reference": "FIA-F1-DATA-ACQUISITION-V1",
+                "licence_reference": "PULSE-LAB-REPLAY-INTERNAL",
             },
             "run": {
                 "run_id": f"run-{session_id}",

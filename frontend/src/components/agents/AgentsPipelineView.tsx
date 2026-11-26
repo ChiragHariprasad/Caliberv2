@@ -17,6 +17,7 @@ import {
   InfoIcon,
 } from '../icons';
 import { MonoHash } from '../shared/MonoHash';
+import { PipelineLabView } from '../PipelineLabView';
 
 interface AgentMeta {
   id: string;
@@ -35,8 +36,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Race Event & Control Intelligence',
     role: 'Lifecycle FSM, SC/VSC phases, dynamic driver exposure mapping',
     type: 'TACTICAL',
-    inputs: ['f1.raw.race_control', 'f1.timing.flag_states', 'f1.session.lifecycle'],
-    outputs: ['f1.findings.event_control', 'f1.evidence.flag_intervals'],
+    inputs: ['pulse.raw.race_control.v1', 'pulse.norm.race_events.v1'],
+    outputs: ['pulse.agents.event_control.v1'],
     responsibilities: [
       'Track-wide and sector-local flag state change machine (GREEN, YELLOW, RED, SC, VSC)',
       'Pit lane open/closed condition tracking and speed limit regime mapping',
@@ -49,8 +50,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Track-State Intelligence',
     role: 'Sector condition transitions, weather correlation, physical surface observations',
     type: 'TACTICAL',
-    inputs: ['f1.raw.weather', 'f1.track.sectors', 'f1.timing.optical_loops'],
-    outputs: ['f1.findings.track_state', 'f1.evidence.track_conditions'],
+    inputs: ['pulse.raw.weather.v1', 'pulse.raw.track_status.v1', 'pulse.norm.track_segments.v1'],
+    outputs: ['pulse.agents.track_state.v1'],
     responsibilities: [
       'Continuous micro-sector grip coefficient and wetness index evaluation',
       'Ambient & track temperature thermal gradients with rainfall intensity',
@@ -63,12 +64,12 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Vehicle-Response Intelligence',
     role: 'Driver pace baselines, dirty-air traffic detection, telemetry anomaly audits',
     type: 'TACTICAL',
-    inputs: ['f1.raw.car_telemetry', 'f1.timing.lap_times', 'f1.spatial.car_positions'],
-    outputs: ['f1.findings.vehicle_response', 'f1.evidence.telemetry_channels'],
+    inputs: ['pulse.raw.timing_laps.v1', 'pulse.raw.timing_positions.v1', 'pulse.norm.driver_laps.v1'],
+    outputs: ['pulse.agents.vehicle_response.v1'],
     responsibilities: [
-      'CAN-bus 500ms sensor sanity checking (throttle/brake exclusivity, speed vs RPM)',
-      'Dirty air aerodynamic loss modeling and DRS wake tracking',
-      'Sector delta pace baseline anomaly audits and deceleration profile checks',
+      'CAN-bus / telemetry sanity checking (throttle/brake exclusivity, speed vs RPM)',
+      'Circuit-adapted clean-air pace baselines and dirty-air gap monitoring',
+      'Sector delta pace baseline anomaly audits and outlier exclusion',
     ],
     icon: 'car',
   },
@@ -77,12 +78,12 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Tyre & Strategy Intelligence',
     role: 'Compound degradation modeling, neutralised pit compression delta calculation',
     type: 'TACTICAL',
-    inputs: ['f1.raw.pit_stops', 'f1.raw.car_telemetry', 'f1.timing.intervals'],
-    outputs: ['f1.findings.tyre_strategy', 'f1.evidence.tyre_degradation'],
+    inputs: ['pulse.raw.pit_events.v1', 'pulse.raw.tyres_stints.v1', 'pulse.norm.tyre_stints.v1'],
+    outputs: ['pulse.agents.tyre_strategy.v1'],
     responsibilities: [
-      'Stint lap counting and empirical non-linear tyre degradation curves',
+      'Fuel-mass compensated stint regression with explicit uncertainty bands',
       'Pit lane loss time calculation under green vs neutralized delta conditions',
-      'Compound crossover timing estimations and under-cut / over-cut threat forecasting',
+      'Compound crossover timing estimations and undercut / overcut threat forecasting',
     ],
     icon: 'tyre',
   },
@@ -91,26 +92,26 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Consequence Fusion Engine',
     role: 'Asynchronous multi-domain synthesis, bounded waiting, provisional & revised assessments',
     type: 'FUSION',
-    inputs: ['f1.findings.*', 'f1.evidence.*'],
-    outputs: ['f1.tactical.impact_assessments', 'f1.pipeline.alerts'],
+    inputs: ['pulse.agents.*', 'pulse.norm.*'],
+    outputs: ['pulse.intel.assessments.v1', 'pulse.intel.alerts.v1'],
     responsibilities: [
-      'Asynchronous bounded joining of cross-domain findings across all 4 tactical agents',
-      'Multi-hypothesis tactical consequence evaluation (e.g. SC pit window opportunity vs track traffic)',
-      'Provisional and final impact assessment generation with confidence intervals',
+      'Asynchronous bounded joining of cross-domain findings across tactical agents',
+      'Evidence-grounded tactical consequence synthesis with conflict surfacing',
+      'Provisional and revised impact assessment versioning',
     ],
     icon: 'brain',
   },
   'agent-06-integrity': {
     id: 'agent-06-integrity',
     title: 'J2 Evaluator Bridge (SIA Core v3)',
-    role: 'Scoped Integrity Algebra kernel, bitemporal fact admission, Blake3 hash chaining',
+    role: 'Scoped Integrity Algebra kernel, bitemporal fact admission, RFC 8785 SHA-256 hash chaining',
     type: 'EVALUATOR',
-    inputs: ['f1.raw.*', 'f1.evidence.*', 'f1.timing.*'],
-    outputs: ['f1.integrity.verdicts', 'f1.ledger.bitemporal_records'],
+    inputs: ['pulse.raw.*', 'pulse.norm.*', 'pulse.agents.*'],
+    outputs: ['pulse.integrity.verdicts.v1', 'pulse.integrity.audit.v1'],
     responsibilities: [
       'Pure Scoped Integrity Algebra (SIA) evaluation over 4-state lattice (DEGRADED < UNKNOWN < SUSPECT < HEALTHY)',
-      'Pattern P3 guard-band margin detection for pit speed and timing tolerances',
-      'Append-only bitemporal knowledge ledger updates and cryptographic Blake3 hash-chain linkage',
+      'Pattern P3 guard-band margin detection and source-independence depth checks',
+      'Append-only bitemporal knowledge ledger updates and RFC 8785 Canonical SHA-256 hash-chain linkage',
     ],
     icon: 'shield',
   },
@@ -169,25 +170,38 @@ const TARGET_ARCHETYPES = [
   },
 ];
 
-export const AgentsPipelineView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'RUNTIME' | 'TARGET_ARCHETYPES' | 'TOPOLOGY'>('RUNTIME');
+export const AgentsPipelineView: React.FC<{ decisionCount?: number }> = ({ decisionCount }) => {
+  const [activeTab, setActiveTab] = useState<'RUNTIME' | 'TARGET_ARCHETYPES' | 'TOPOLOGY' | 'PIPELINE_LAB'>('RUNTIME');
   const [metrics, setMetrics] = useState<Record<string, AgentTelemetry>>({});
   const [pipelineData, setPipelineData] = useState<PipelineStatusData | null>(null);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [selectedAgentId, setSelectedAgentId] = useState<string>('agent-01-event-control');
   const [findings, setFindings] = useState<AgentFinding[]>([]);
   const [loadingFindings, setLoadingFindings] = useState<boolean>(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
-  const loadData = async () => {
-    const [m, p] = await Promise.all([fetchAgentsMetrics(), fetchPipelineStatus()]);
-    if (m) setMetrics(m);
-    if (p) setPipelineData(p);
-  };
-
   useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 3000);
-    return () => clearInterval(interval);
+    let active = true;
+    let inFlight = false;
+    const load = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const [m, p] = await Promise.all([fetchAgentsMetrics(), fetchPipelineStatus()]);
+        if (!active) return;
+        if (m) setMetrics(m);
+        if (p) setPipelineData(p);
+        setLoaded(true);
+      } finally {
+        inFlight = false;
+      }
+    };
+    load();
+    const interval = setInterval(load, 3000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const handleSelectAgent = async (agentId: string, openDrawer = true) => {
@@ -210,11 +224,15 @@ export const AgentsPipelineView: React.FC = () => {
   const agentEntries = Object.entries(metrics);
   const totalProcessedInputs = agentEntries.reduce((acc, [_, m]) => acc + (m.processed_inputs || 0), 0);
   const totalFindingsEmitted = agentEntries.reduce((acc, [_, m]) => acc + (m.findings_emitted || 0), 0);
+  const totalFailures = agentEntries.reduce((acc, [_, m]) => acc + (m.failed_count || 0), 0);
+  const errorRatePct = totalProcessedInputs > 0 ? ((totalFailures / totalProcessedInputs) * 100).toFixed(2) : '0.0';
+  const activeAgentCount = pipelineData?.agents?.total_registered ?? agentEntries.length;
   const latencies = agentEntries.map(([_, m]) => m.p95_latency_ms).filter(Boolean) as number[];
-  const avgP95 = latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 12.4;
+  const avgP95 = latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : null;
   const isKafkaOnline = pipelineData?.kafka?.connected ?? false;
-  const transportMode = pipelineData?.kafka?.transport ?? 'SIMULATOR';
-  const flinkStatus = pipelineData?.flink?.status ?? 'FALLBACK';
+  const transportMode = loaded ? (pipelineData?.kafka?.transport ?? 'MEMORY') : 'CONNECTING...';
+  const flinkStatus = loaded ? (pipelineData?.flink?.status ?? 'FALLBACK') : 'CHECKING...';
+  const liveDecisionCount = decisionCount ?? 0;
 
   const selectedAgentMeta = AGENTS_METADATA[selectedAgentId] || AGENTS_METADATA['agent-01-event-control'];
   const selectedAgentMetric = metrics[selectedAgentId];
@@ -252,6 +270,13 @@ export const AgentsPipelineView: React.FC = () => {
           >
             Transport & Normalizer Diagnostics
           </button>
+          <button
+            type="button"
+            className={`domain-tab ${activeTab === 'PIPELINE_LAB' ? 'active' : ''}`}
+            onClick={() => setActiveTab('PIPELINE_LAB')}
+          >
+            Verification & Lineage Lab
+          </button>
         </div>
       </div>
 
@@ -266,10 +291,12 @@ export const AgentsPipelineView: React.FC = () => {
       >
         <div className="kpi-mini-card panel" style={{ padding: '12px 14px' }}>
           <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
-            TACTICAL AGENTS
+            REGISTERED AGENTS
           </span>
-          <strong style={{ fontSize: '1.25rem', color: '#10b981', display: 'block', margin: '4px 0' }}>5 Active</strong>
-          <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Producers Operational</span>
+          <strong style={{ fontSize: '1.25rem', color: '#10b981', display: 'block', margin: '4px 0' }}>
+            {loaded ? `${activeAgentCount} Active` : '—'}
+          </strong>
+          <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Specialists + SIA Engine</span>
         </div>
 
         <div className="kpi-mini-card panel" style={{ padding: '12px 14px' }}>
@@ -285,7 +312,7 @@ export const AgentsPipelineView: React.FC = () => {
             PROCESSED INPUTS
           </span>
           <strong style={{ fontSize: '1.25rem', color: '#f8fafc', display: 'block', margin: '4px 0', fontFamily: 'var(--font-mono)' }}>
-            {totalProcessedInputs.toLocaleString()}
+            {loaded ? totalProcessedInputs.toLocaleString() : '—'}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Events Ingested</span>
         </div>
@@ -295,7 +322,7 @@ export const AgentsPipelineView: React.FC = () => {
             FINDINGS EMITTED
           </span>
           <strong style={{ fontSize: '1.25rem', color: '#f59e0b', display: 'block', margin: '4px 0', fontFamily: 'var(--font-mono)' }}>
-            {totalFindingsEmitted.toLocaleString()}
+            {loaded ? totalFindingsEmitted.toLocaleString() : '—'}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Synthesized Evidence</span>
         </div>
@@ -305,7 +332,7 @@ export const AgentsPipelineView: React.FC = () => {
             LATENCY p95
           </span>
           <strong style={{ fontSize: '1.25rem', color: '#38bdf8', display: 'block', margin: '4px 0', fontFamily: 'var(--font-mono)' }}>
-            {avgP95.toFixed(1)}ms
+            {loaded && avgP95 !== null ? `${avgP95.toFixed(1)}ms` : '—'}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Bounded Response</span>
         </div>
@@ -314,8 +341,12 @@ export const AgentsPipelineView: React.FC = () => {
           <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
             SYSTEM ERROR RATE
           </span>
-          <strong style={{ fontSize: '1.25rem', color: '#10b981', display: 'block', margin: '4px 0' }}>0.0%</strong>
-          <span style={{ fontSize: '0.65rem', color: '#64748b' }}>0 Pipeline Failures</span>
+          <strong style={{ fontSize: '1.25rem', color: totalFailures === 0 ? '#10b981' : '#ef4444', display: 'block', margin: '4px 0' }}>
+            {loaded ? `${errorRatePct}%` : '—'}
+          </strong>
+          <span style={{ fontSize: '0.65rem', color: '#64748b' }}>
+            {loaded ? `${totalFailures} Pipeline Failures` : 'Evaluating...'}
+          </span>
         </div>
 
         <div className="kpi-mini-card panel" style={{ padding: '12px 14px' }}>
@@ -326,7 +357,7 @@ export const AgentsPipelineView: React.FC = () => {
             {transportMode}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>
-            {isKafkaOnline ? 'Kafka Clustered' : 'Deterministic Bus'}
+            {!loaded ? 'Probing Cluster...' : (isKafkaOnline ? 'Kafka Clustered' : 'In-Process Bus')}
           </span>
         </div>
 
@@ -335,7 +366,7 @@ export const AgentsPipelineView: React.FC = () => {
             STREAM NORMALIZER
           </span>
           <strong style={{ fontSize: '1.1rem', color: flinkStatus === 'RUNNING' ? '#10b981' : '#94a3b8', display: 'block', margin: '4px 0' }}>
-            {flinkStatus === 'RUNNING' ? 'APACHE FLINK' : 'IN-PROCESS J1'}
+            {!loaded ? 'CHECKING...' : (flinkStatus === 'RUNNING' ? 'APACHE FLINK' : 'IN-PROCESS J1')}
           </strong>
           <span style={{ fontSize: '0.65rem', color: '#64748b' }}>Monotonic Knowledge Time</span>
         </div>
@@ -409,8 +440,8 @@ export const AgentsPipelineView: React.FC = () => {
                 <g transform="translate(10, 140)" style={{ cursor: 'pointer' }}>
                   <rect width="130" height="80" rx="6" fill="#111822" stroke="#253549" strokeWidth="1.5" />
                   <text x="65" y="24" textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="700">RAW INGESTION</text>
-                  <text x="65" y="44" textAnchor="middle" fill="#f8fafc" fontSize="11" fontWeight="800">FOM Feeds & CAN</text>
-                  <text x="65" y="62" textAnchor="middle" fill="#64748b" fontSize="9">500ms Cadence</text>
+                  <text x="65" y="44" textAnchor="middle" fill="#f8fafc" fontSize="11" fontWeight="800">{isKafkaOnline ? 'Kafka Streams' : 'Capture & Sim'}</text>
+                  <text x="65" y="62" textAnchor="middle" fill="#64748b" fontSize="9">{isKafkaOnline ? '7 Raw Topics' : 'Event Envelope'}</text>
                 </g>
 
                 {/* Node 2: Stream Normalizer & Canonical Sequencer */}
@@ -534,7 +565,7 @@ export const AgentsPipelineView: React.FC = () => {
                   <text x="90" y="26" textAnchor="middle" fill="#e10600" fontSize="10" fontWeight="800">REASONING KERNEL</text>
                   <text x="90" y="46" textAnchor="middle" fill="#f8fafc" fontSize="12" fontWeight="800">J2 Evaluator Bridge</text>
                   <text x="90" y="66" textAnchor="middle" fill="#38bdf8" fontSize="10" fontWeight="600">SIA Core v3 Evaluator</text>
-                  <text x="90" y="84" textAnchor="middle" fill="#10b981" fontSize="9">81 Decision Instances</text>
+                  <text x="90" y="84" textAnchor="middle" fill="#10b981" fontSize="9">{liveDecisionCount} Decision Instances</text>
                 </g>
 
                 {/* Node 7: Bitemporal Sinks & Downstream Fact Ledger */}
@@ -542,7 +573,7 @@ export const AgentsPipelineView: React.FC = () => {
                   <rect width="90" height="80" rx="6" fill="#0d141e" stroke="#253549" strokeWidth="1.5" />
                   <text x="45" y="24" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="700">SINKS</text>
                   <text x="45" y="42" textAnchor="middle" fill="#f8fafc" fontSize="10" fontWeight="800">Fact Ledger</text>
-                  <text x="45" y="58" textAnchor="middle" fill="#38bdf8" fontSize="8">Blake3 Chain</text>
+                  <text x="45" y="58" textAnchor="middle" fill="#38bdf8" fontSize="8">SHA-256 Chain</text>
                   <text x="45" y="72" textAnchor="middle" fill="#64748b" fontSize="8">SSE Stream</text>
                 </g>
               </svg>
@@ -879,7 +910,7 @@ export const AgentsPipelineView: React.FC = () => {
               </div>
               <p style={{ margin: 0, fontSize: '0.74rem', color: '#94a3b8', lineHeight: '1.4' }}>
                 {isKafkaOnline
-                  ? 'Clustered multi-broker Apache Kafka active with partitioned topics and consumer group coordination.'
+                  ? `Clustered multi-broker Apache Kafka (${pipelineData?.kafka?.bootstrap_servers ?? 'KRaft'}) active across ${pipelineData?.kafka?.topic_count ?? 70} verified topics with consumer group coordination.`
                   : 'Zero external broker dependency. In-memory event bus guarantees strict microsecond ordering for deterministic re-simulation.'}
               </p>
             </div>
@@ -894,11 +925,11 @@ export const AgentsPipelineView: React.FC = () => {
               </strong>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: flinkStatus === 'RUNNING' ? '#10b981' : '#f59e0b' }}>
                 <CheckCircleIcon size={14} />
-                <span>{flinkStatus === 'RUNNING' ? 'Flink Job Cluster Running' : 'In-Process Python Normalizer Operating'}</span>
+                <span>{flinkStatus === 'RUNNING' ? `Flink Running (${pipelineData?.flink?.checkpoints_completed ?? 0} Checkpoints)` : 'In-Process Python Normalizer Operating'}</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.74rem', color: '#94a3b8', lineHeight: '1.4' }}>
                 {flinkStatus === 'RUNNING'
-                  ? 'Flink cluster running with continuous stateful checkpointing and event-time watermark alignments.'
+                  ? `Job ${pipelineData?.flink?.job_name ?? 'pulse-canonical-normalizer-v3'} running with stateful checkpointing (${pipelineData?.flink?.read_records ?? 0} in / ${pipelineData?.flink?.write_records ?? 0} out).`
                   : 'Operating in self-contained mode with Python high-frequency stream adapter and bounded buffer queues.'}
               </p>
             </div>
@@ -920,6 +951,9 @@ export const AgentsPipelineView: React.FC = () => {
           </div>
         </section>
       )}
+
+      {/* TAB 4: VERIFICATION & LINEAGE LAB */}
+      {activeTab === 'PIPELINE_LAB' && <PipelineLabView />}
 
       {/* SLIDE-OVER AGENT DETAIL INSPECTOR DRAWER */}
       {isDrawerOpen && (

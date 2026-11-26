@@ -1736,6 +1736,13 @@ body {
   align-items: center;
 }
 
+.panel,
+.domain-tabs,
+.domain-tab,
+section {
+  scroll-margin-top: 96px;
+}
+
 .circuit-select-input {
   background: #151b24;
   border: 1px solid #303e50;
@@ -1746,7 +1753,7 @@ body {
   border-radius: 6px;
   cursor: pointer;
   outline: none;
-  max-width: 380px;
+  max-width: 520px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -1754,7 +1761,7 @@ body {
 
 @media (max-width: 1440px) {
   .circuit-select-input {
-    max-width: 270px;
+    max-width: 380px;
   }
 }
 
@@ -1771,14 +1778,14 @@ body {
     padding: 5px 8px;
   }
   .circuit-select-input {
-    max-width: 200px;
+    max-width: 280px;
     font-size: 0.74rem;
   }
 }
 
 @media (max-width: 1024px) {
   .circuit-select-input {
-    max-width: 160px;
+    max-width: 200px;
   }
   .dual-time-readout {
     display: none;
@@ -2367,12 +2374,19 @@ body {
 .telemetry-modal-card {
   width: 100%;
   max-width: 840px;
-  max-height: 90vh;
+  max-height: 92vh;
   background: #0d1117;
   border: 1px solid #303e50;
   border-radius: 12px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+}
+
+.telemetry-modal-card .modal-body {
+  overflow-y: auto;
+  flex: 1 1 auto;
 }
 
 .modal-header {

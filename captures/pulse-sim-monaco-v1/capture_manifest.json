@@ -1,10 +1,17 @@
 {
   "capture_id": "f1-2026-monaco-sim",
-  "provider": "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+  "provider": "PULSE_SYNTHETIC_SIMULATOR",
   "session_id": "f1-2026-monaco-sim",
   "session_name": "Formula 1 Grand Prix de Monaco",
   "total_canonical_records": 72926,
   "circuit_id": "monaco",
   "total_laps": 78,
-  "duration_seconds": 3600
+  "duration_seconds": 3600,
+  "data_regime": "SYNTHETIC",
+  "regime": "SYNTHETIC",
+  "dataset_classification": "SYNTHETIC_SIMULATOR",
+  "is_synthetic": true,
+  "provenance_status": "SYNTHETIC_SIMULATION_CAPTURE",
+  "licence_reference": "PULSE-SYNTHETIC-SIM-INTERNAL",
+  "raw_archive_note": "Legacy raw envelopes preserved verbatim; runtime loader normalizes synthetic/lab provenance honestly."
 }

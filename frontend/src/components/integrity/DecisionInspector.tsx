@@ -172,18 +172,35 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
               </p>
             </div>
 
-            {/* Pattern P3 Threshold Gauge (if pit speed) */}
-            {isPitSpeed && (
-              <div className="threshold-gauge-wrapper mt-3">
-                <ThresholdMarginGauge
-                  measuredValue={60.08}
-                  thresholdValue={60.0}
-                  uncertainty={0.11}
-                  unit="km/h"
-                  label="Pit-Lane Speed Limit (Pattern P3 Guard-Band Verification)"
-                />
-              </div>
-            )}
+            {/* Pattern P3 Threshold Gauge (pit speed — strictly from real admitted atoms) */}
+            {isPitSpeed && (() => {
+              const timingAtoms = (roles as any)?.timing_speed?.atoms_detail || [];
+              const vehAtoms = (roles as any)?.vehicle_speed?.atoms_detail || [];
+              const measuredAtom = timingAtoms[0] || vehAtoms[0];
+              const measuredNum = typeof measuredAtom?.value === 'number' ? measuredAtom.value : null;
+              const boundsConstraint = ((assessment as any)?.contract_constraints || []).find(
+                (cs: any) => cs.kind === 'bounds' && typeof cs.hi === 'number'
+              );
+              const limitKph = boundsConstraint?.hi ?? 80.0;
+              const uncKph = boundsConstraint?.uncertainty ?? 0.15;
+              return measuredNum !== null ? (
+                <div className="threshold-gauge-wrapper mt-3">
+                  <ThresholdMarginGauge
+                    measuredValue={measuredNum}
+                    thresholdValue={limitKph}
+                    uncertainty={uncKph}
+                    unit={measuredAtom?.unit || 'km/h'}
+                    label="Pit-Lane Speed Limit (Pattern P3 Guard-Band Verification)"
+                  />
+                </div>
+              ) : (
+                <div className="evaluator-explanation-box mt-3">
+                  <span className="text-xs text-slate-400">
+                    Pit-lane speed margin gauge awaiting numeric timing or vehicle telemetry atom.
+                  </span>
+                </div>
+              );
+            })()}
           </section>
 
           {/* Section B: Supporting Evidence Atoms */}
@@ -199,45 +216,72 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
                   No individual evidence atoms admitted yet for this decision instance.
                 </div>
               ) : (
-                roleEntries.map(([roleName, roleData]) => {
-                  const atom = roleData?.atom;
-                  const isAdmitted = !!atom;
+                roleEntries.map(([roleName, rawRoleData]) => {
+                  const roleData = rawRoleData as any;
+                  const atomsDetail = Array.isArray(roleData?.atoms_detail) ? roleData.atoms_detail : [];
+                  const factsDetail = Array.isArray(roleData?.reference_facts_detail) ? roleData.reference_facts_detail : [];
+                  const firstAtom = atomsDetail[0];
+                  const firstFact = factsDetail[0];
+                  const hasEvidence = Boolean(roleData?.has_evidence || firstAtom || firstFact);
+                  const roleTimeline = Array.isArray(roleData?.timeline) ? roleData.timeline : [];
+                  const latestRolePoint = roleTimeline.length > 0 ? roleTimeline[roleTimeline.length - 1] : null;
+                  const latestRoleState =
+                    roleData?.state ||
+                    (Array.isArray(latestRolePoint) ? latestRolePoint[1] : latestRolePoint?.state) ||
+                    (hasEvidence ? assessment.integrity_state : 'UNKNOWN');
+                  const displayVal =
+                    firstAtom?.value !== undefined
+                      ? `${firstAtom.value} ${firstAtom.unit || ''}`.trim()
+                      : firstFact?.value !== undefined
+                      ? `${String(firstFact.value)} ${firstFact.unit || ''}`.trim()
+                      : hasEvidence
+                      ? 'Admitted (scalar summary only)'
+                      : 'Pending observation';
+                  const displayOrigin =
+                    firstAtom?.source_origins?.[0] ||
+                    firstFact?.source_origins?.[0] ||
+                    (roleData?.dependencies || []).find((d: string) => d.startsWith('S:'))?.slice(2) ||
+                    'Unassigned';
+                  const displayTime =
+                    firstAtom?.observed_at || firstFact?.valid_from || roleData?.latest_observed_at || null;
+                  const displayId =
+                    firstAtom?.atom_id ||
+                    firstFact?.fact_id ||
+                    roleData?.support_atom_ids?.[0] ||
+                    roleData?.reference_fact_ids?.[0] ||
+                    `awaiting-${roleName}`;
 
                   return (
                     <div key={roleName} className="evidence-atom-card">
                       <div className="atom-card-header">
                         <div className="atom-role-name">
                           <code>{roleName}</code>
-                          <span className={`atom-kind-tag ${(roleData as any)?.kind === 'reference' ? 'is-ref' : 'is-evidence'}`}>
-                            {(roleData as any)?.kind || (isAdmitted ? 'evidence' : 'slot')}
+                          <span className={`atom-kind-tag ${roleData?.kind === 'reference' ? 'is-ref' : 'is-evidence'}`}>
+                            {roleData?.kind || (hasEvidence ? 'evidence' : 'slot')}
                           </span>
                         </div>
-                        <StateBadge state={roleData?.state || (isAdmitted ? 'HEALTHY' : 'UNKNOWN')} size="sm" />
+                        <StateBadge state={latestRoleState} size="sm" />
                       </div>
 
                       <div className="atom-card-grid">
                         <div className="atom-grid-item">
                           <span className="atom-item-label">MEASURED VALUE:</span>
-                          <span className="atom-item-val font-mono">
-                            {atom?.value !== undefined ? `${atom.value} ${atom.unit || ''}` : 'Pending observation'}
-                          </span>
+                          <span className="atom-item-val font-mono">{displayVal}</span>
                         </div>
                         <div className="atom-grid-item">
                           <span className="atom-item-label">SOURCE ORIGIN:</span>
-                          <span className="atom-item-val">
-                            {atom?.source_origins?.[0] || 'FOM_OPTICAL_LOOP'}
-                          </span>
+                          <span className="atom-item-val">{displayOrigin}</span>
                         </div>
                         <div className="atom-grid-item">
-                          <span className="atom-item-label">INGEST TIME:</span>
+                          <span className="atom-item-label">OBSERVED TIME:</span>
                           <span className="atom-item-val font-mono text-xs">
-                            {atom?.observed_at ? atom.observed_at.slice(11, 23) : 'Event-time synchronous'}
+                            {displayTime ? String(displayTime).slice(11, 23) : 'Awaiting observation'}
                           </span>
                         </div>
                         <div className="atom-grid-item">
-                          <span className="atom-item-label">ATOM ID:</span>
+                          <span className="atom-item-label">EVIDENCE ID:</span>
                           <span className="atom-item-val font-mono text-xs text-cyan-400">
-                            {atom?.atom_id || `atm-${roleName.slice(0, 6)}`}
+                            {String(displayId).slice(0, 18)}
                           </span>
                         </div>
                       </div>
@@ -251,35 +295,77 @@ export const DecisionInspector: React.FC<DecisionInspectorProps> = ({
           {/* Section C: Provenance & Origin Closure */}
           <section className="drawer-section">
             <h3 className="drawer-section-heading">3. Provenance &amp; Origin Closures</h3>
-            <div className="provenance-detail-card">
-              <div className="provenance-row">
-                <span className="prov-label">SOURCE ORIGINS:</span>
-                <div className="origin-pills-wrap">
-                  <span className="origin-pill origin-pill--source">FOM_OPTICAL_LOOP</span>
-                  <span className="origin-pill origin-pill--source">CAN_BUS_GATEWAY</span>
-                  <span className="origin-pill origin-pill--source">FIA_REGULATORY_REGIME</span>
+            {(() => {
+              const allDeps = new Set<string>();
+              let maxSrcDepth = (assessment as any)?.corroboration_depth ?? 0;
+              for (const [, r] of roleEntries) {
+                const rr = r as any;
+                maxSrcDepth = Math.max(maxSrcDepth, rr?.source_depth || 0);
+                for (const d of rr?.dependencies || []) allDeps.add(String(d));
+              }
+              const srcOrigins: string[] =
+                (assessment as any)?.source_origins?.length > 0
+                  ? (assessment as any).source_origins
+                  : Array.from(allDeps).filter((d) => d.startsWith('S:')).map((d) => d.slice(2));
+              const procOrigins: string[] =
+                (assessment as any)?.processing_origins?.length > 0
+                  ? (assessment as any).processing_origins
+                  : Array.from(allDeps).filter((d) => d.startsWith('P:')).map((d) => d.slice(2));
+              const criticalOrigins: string[] = (assessment.resilience?.critical_origins || []).map(String);
+              const exposureVal =
+                typeof (assessment as any)?.common_cause_exposure === 'number'
+                  ? (assessment as any).common_cause_exposure
+                  : criticalOrigins.length > 0
+                  ? 1.0
+                  : 0.0;
+              const profileStr = assessment.resilience?.profile
+                ? JSON.stringify(assessment.resilience.profile)
+                : '{}';
+
+              return (
+                <div className="provenance-detail-card">
+                  <div className="provenance-row">
+                    <span className="prov-label">SOURCE ORIGINS:</span>
+                    <div className="origin-pills-wrap">
+                      {srcOrigins.length > 0 ? (
+                        srcOrigins.map((o) => (
+                          <span key={o} className="origin-pill origin-pill--source">{o}</span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-slate-400">No source origins admitted</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="provenance-row">
+                    <span className="prov-label">PROCESSING ORIGIN:</span>
+                    <div className="origin-pills-wrap">
+                      {procOrigins.length > 0 ? (
+                        procOrigins.map((p) => (
+                          <span key={p} className="origin-pill origin-pill--proc">{p}</span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-slate-400">Direct admission</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="provenance-row">
+                    <span className="prov-label">CORROBORATION:</span>
+                    <span className={`font-mono text-sm ${maxSrcDepth > 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      Depth D={maxSrcDepth} · Required k={assessment.resilience?.required_k ?? 0} · Profile {profileStr}
+                    </span>
+                  </div>
+                  <div className="provenance-row">
+                    <span className="prov-label">COMMON-CAUSE RISK:</span>
+                    <span className="text-sm text-slate-300">
+                      Exposure: <strong>{exposureVal.toFixed(2)}</strong>{' '}
+                      {criticalOrigins.length > 0
+                        ? `(SPOF: ${criticalOrigins.join(', ')})`
+                        : '(Origin closures evaluated disjoint)'}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="provenance-row">
-                <span className="prov-label">PROCESSING ORIGIN:</span>
-                <div className="origin-pills-wrap">
-                  <span className="origin-pill origin-pill--proc">FLINK_STREAM_JOB_01</span>
-                  <span className="origin-pill origin-pill--proc">TIMING_SEQUENCER</span>
-                </div>
-              </div>
-              <div className="provenance-row">
-                <span className="prov-label">CORROBORATION:</span>
-                <span className="font-mono text-sm text-emerald-400">
-                  Depth D=2 (Independent optical tap + onboard telematics)
-                </span>
-              </div>
-              <div className="provenance-row">
-                <span className="prov-label">COMMON-CAUSE RISK:</span>
-                <span className="text-sm text-slate-300">
-                  Exposure: <strong>0.00</strong> (Origin closures are disjoint)
-                </span>
-              </div>
-            </div>
+              );
+            })()}
           </section>
 
           {/* Section D: Cryptographic Hashes & Ledger Chain */}

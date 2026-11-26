@@ -74,7 +74,15 @@ async def lifespan(app: FastAPI):
             else:
                 logger.warning("Flink cluster is offline at %s. Operating in KAFKA mode with Python in-process stream normalizer fallback.", flink_mgr.client.rest_url)
         else:
-            logger.info("Flink cluster online at %s. Flink streaming normalizer active.", flink_mgr.client.rest_url)
+            try:
+                job_id = flink_mgr.ensure_normalizer_job_running()
+                logger.info("Flink cluster online at %s. Flink streaming normalizer active (job: %s).", flink_mgr.client.rest_url, job_id)
+            except Exception as e:
+                if settings.flink_required:
+                    logger.error("FATAL: Failed to ensure Flink normalizer job running: %s", e)
+                    raise RuntimeError(f"Failed to ensure Flink normalizer job running: {e}") from e
+                flink_online = False
+                logger.warning("Flink normalizer deployment unavailable (%s). Using Python stream normalizer fallback.", e)
     elif mode == "MEMORY":
         logger.info("Operating in MEMORY transport mode (unit tests). In-memory event bus active.")
     elif mode == "SIMULATOR":
@@ -82,13 +90,17 @@ async def lifespan(app: FastAPI):
     else:
         raise ValueError(f"Unsupported transport_mode: {settings.transport_mode}")
 
+    from pulse.replay.controller import get_replay_controller
+    replay_controller = get_replay_controller()
+    wal_path = (settings.sia_wal_path or "").strip() or None
+
     # 2. Instantiate all 6 agents and register for execution transparency
     agent_ec = EventControlAgent(bus=bus)
     agent_ts = TrackStateAgent(bus=bus)
     agent_vr = VehicleResponseAgent(bus=bus)
     agent_ty = TyreStrategyAgent(bus=bus)
     agent_fu = ConsequenceFusionEngine(bus=bus)
-    agent_ia = IntegrityAgent(bus=bus)
+    agent_ia = IntegrityAgent(bus=bus, wal_path=wal_path, session_id=replay_controller.session_id)
 
     store.register_agent(agent_ec)
     store.register_agent(agent_ts)
@@ -225,50 +237,123 @@ async def lifespan(app: FastAPI):
             return
         await processor.process(envelope, publish=True)
 
-    # 7. In KAFKA transport mode, consume all Flink-normalized streams from Kafka
+    # 7. In KAFKA transport mode, consume all normalized streams from Kafka with idempotent WAL sink
     kafka_consumer_task: asyncio.Task | None = None
+    verdict_sink: Any = None
     if mode == "KAFKA":
+        from collections import deque
+        from pathlib import Path
+        from pulse.replay.controller import ReplayStatus, get_replay_controller
+        from pulse.stream.kafka_io import IdempotentVerdictSink
+
+        from aiokafka import TopicPartition
+        verdict_db_path = Path("data/pulse_verdicts.sqlite")
+        verdict_db_path.parent.mkdir(parents=True, exist_ok=True)
+        verdict_sink = IdempotentVerdictSink(verdict_db_path)
+        consumer_ready = asyncio.Event()
+        paused_replay_buffer: deque[tuple[str, int, int, str, EventEnvelope]] = deque(maxlen=5000)
+
+        async def _route_normalized(topic: str, key_str: str, env: EventEnvelope) -> None:
+            if topic == NORMALISED_TOPICS["race_events"]:
+                await normalized_race_events_handler(topic, key_str, env)
+            elif topic == NORMALISED_TOPICS["driver_laps"]:
+                await normalized_driver_laps_handler(topic, key_str, env)
+            elif topic == NORMALISED_TOPICS["driver_state"]:
+                await normalized_driver_state_handler(topic, key_str, env)
+            elif topic == NORMALISED_TOPICS["track_segments"]:
+                await normalized_track_handler(topic, key_str, env)
+            elif topic == NORMALISED_TOPICS["tyre_stints"]:
+                await normalized_tyre_stints_handler(topic, key_str, env)
+
         async def kafka_consumer_loop() -> None:
             try:
                 consumer = await broker.create_consumer(
                     topics=list(NORMALISED_TOPICS.values()),
                     group_id="pulse-backend-normalised-consumer-v2",
                     auto_offset_reset="latest",
+                    enable_auto_commit=False,
                 )
-                logger.info("Kafka consumer loop started for normalized topics: %s", list(NORMALISED_TOPICS.values()))
-                async for msg in consumer:
-                    try:
-                        val = msg.value
-                        if isinstance(val, (str, bytes)):
-                            import json
-                            val = json.loads(val)
-                        env = EventEnvelope.model_validate(val)
-                        key_str = msg.key.decode("utf-8") if isinstance(msg.key, bytes) else str(msg.key or "")
-                        if msg.topic == NORMALISED_TOPICS["race_events"]:
-                            await normalized_race_events_handler(msg.topic, key_str, env)
-                        elif msg.topic == NORMALISED_TOPICS["driver_laps"]:
-                            await normalized_driver_laps_handler(msg.topic, key_str, env)
-                        elif msg.topic == NORMALISED_TOPICS["driver_state"]:
-                            await normalized_driver_state_handler(msg.topic, key_str, env)
-                        elif msg.topic == NORMALISED_TOPICS["track_segments"]:
-                            await normalized_track_handler(msg.topic, key_str, env)
-                        elif msg.topic == NORMALISED_TOPICS["tyre_stints"]:
-                            await normalized_tyre_stints_handler(msg.topic, key_str, env)
-                    except Exception as err:
-                        logger.error("Error handling Kafka normalized message from %s: %s", msg.topic, err)
+                consumer_ready.set()
+                logger.info("Kafka consumer loop assigned & ready for normalized topics: %s", list(NORMALISED_TOPICS.values()))
+                while True:
+                    batches = await consumer.getmany(timeout_ms=100, max_records=250)
+                    if not batches:
+                        continue
+                    rc = get_replay_controller()
+                    pending_offsets: dict[TopicPartition, int] = {}
+                    for _tp, records in batches.items():
+                        for msg in records:
+                            tp = TopicPartition(msg.topic, msg.partition)
+                            try:
+                                val = msg.value
+                                if val is None:
+                                    # Tombstone from upsert-kafka compaction: advance offset cleanly
+                                    pending_offsets[tp] = msg.offset + 1
+                                    continue
+                                if isinstance(val, (str, bytes)):
+                                    import json
+                                    val = json.loads(val)
+                                if isinstance(val, dict):
+                                    rblk = val.get("run")
+                                    if isinstance(rblk, dict):
+                                        rid = str(rblk.get("run_id") or "")
+                                        sid = str(rblk.get("session_instance_id") or "")
+                                        if (
+                                            store.is_run_retired(rid)
+                                            or rid.startswith(("bench-", "diag-"))
+                                            or sid.startswith(("e2e-session-", "sess-ph-"))
+                                            or (rc.session_id and sid and sid != rc.session_id)
+                                        ):
+                                            pending_offsets[tp] = msg.offset + 1
+                                            continue
+                                env = EventEnvelope.model_validate(val)
+                                key_str = msg.key.decode("utf-8") if isinstance(msg.key, bytes) else str(msg.key or "")
+                                if verdict_sink.has_verdict(msg.topic, msg.partition, msg.offset):
+                                    pending_offsets[tp] = msg.offset + 1
+                                    continue
+                                if (
+                                    store.is_run_retired(env.run.run_id)
+                                    or (rc.session_id and env.run.session_instance_id != rc.session_id)
+                                ):
+                                    pending_offsets[tp] = msg.offset + 1
+                                    continue
+                                if rc.status == ReplayStatus.PAUSED and env.run.run_id == rc.run_id:
+                                    paused_replay_buffer.append((msg.topic, msg.partition, msg.offset, key_str, env))
+                                    continue
+                                while paused_replay_buffer:
+                                    b_topic, b_part, b_off, b_key, b_env = paused_replay_buffer.popleft()
+                                    if not store.is_run_retired(b_env.run.run_id) and not verdict_sink.has_verdict(b_topic, b_part, b_off):
+                                        await _route_normalized(b_topic, b_key, b_env)
+                                        verdict_sink.insert_verdict(b_topic, b_part, b_off, b_key, b_env.event_id)
+                                    pending_offsets[TopicPartition(b_topic, b_part)] = max(
+                                        pending_offsets.get(TopicPartition(b_topic, b_part), 0), b_off + 1
+                                    )
+                                await _route_normalized(msg.topic, key_str, env)
+                                verdict_sink.insert_verdict(msg.topic, msg.partition, msg.offset, key_str, env.event_id)
+                                pending_offsets[tp] = msg.offset + 1
+                            except Exception as err:
+                                logger.error("Poison/unhandled Kafka normalized message from %s[%s]@%s: %s", msg.topic, msg.partition, msg.offset, err)
+                                raw_bytes = msg.value if isinstance(msg.value, (bytes, bytearray)) else str(msg.value or "").encode("utf-8")
+                                broker.publish_dlq(msg.topic, msg.partition, msg.offset, msg.key, bytes(raw_bytes), err)
+                                pending_offsets[tp] = msg.offset + 1
+                    if pending_offsets:
+                        await consumer.commit(pending_offsets)
             except asyncio.CancelledError:
                 pass
             except Exception as e:
+                consumer_ready.set()
                 logger.error("Kafka consumer loop exited with error: %s", e)
 
         kafka_consumer_task = asyncio.create_task(kafka_consumer_loop())
+        try:
+            await asyncio.wait_for(consumer_ready.wait(), timeout=8.0)
+        except asyncio.TimeoutError:
+            logger.warning("Timed out waiting for Kafka normalized consumer partition assignment")
 
-    # 8. Initialize backend ReplayController
-    from pulse.replay.controller import get_replay_controller
-    replay_controller = get_replay_controller()
+    # 8. Initialize backend ReplayController (preserve WAL on startup crash recovery)
     replay_controller.set_event_processor(process_replay_event)
     replay_controller.set_reset_hook(normalizer.reset)
-    store.switch_session(replay_controller.session_id)
+    store.switch_session(replay_controller.session_id, preserve_wal=bool(wal_path))
     logger.info("Backend ReplayController initialized in READY state (session: %s).", replay_controller.session_id)
 
     yield
@@ -287,6 +372,9 @@ async def lifespan(app: FastAPI):
         replay_controller.pause()
     if runner.status == RunStatus.RUNNING:
         runner.pause()
+    agent_ia.close()
+    if verdict_sink is not None:
+        verdict_sink.close()
     await broker.stop()
     logger.info("Shutdown complete.")
 
@@ -295,7 +383,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
         title="PULSE Race Intelligence API",
-        description="F1 Event Consequence Engine with Specialist Agents, SIA Integrity Engine & Groq Tactical Synthesis",
+        description="F1 Event Consequence Engine with Specialist Agents, Flink Stream Normalization & SIA Integrity Engine",
         version="0.1.0",
         lifespan=lifespan,
     )

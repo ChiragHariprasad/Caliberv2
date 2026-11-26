@@ -153,7 +153,30 @@ def _depth(obs: List[_Obs], agree: List[List[bool]], axis: str) -> int:
 
 
 def _supersede_atoms(recs: List[AtomRec]) -> List[AtomRec]:
-    sup = {r.atom.supersedes for r in recs if r.atom.supersedes}
+    by_id = {r.atom.atom_id: r for r in recs}
+    sup: set[str] = set()
+    # Validate authority (same processor family or overlapping source origin) and cycle safety
+    for r in recs:
+        target_id = r.atom.supersedes
+        if not target_id or target_id not in by_id or target_id == r.atom.atom_id:
+            continue
+        target = by_id[target_id]
+        same_proc = r.atom.processor_family_id == target.atom.processor_family_id
+        shared_src = bool(set(r.atom.source_origins) & set(target.atom.source_origins))
+        if not (same_proc or shared_src):
+            continue
+        seen = {r.atom.atom_id}
+        cur_id = target_id
+        cyclic = False
+        while cur_id and cur_id in by_id:
+            if cur_id in seen:
+                cyclic = True
+                break
+            seen.add(cur_id)
+            cur_id = by_id[cur_id].atom.supersedes
+        if not cyclic:
+            sup.add(target_id)
+
     best: Dict[tuple, AtomRec] = {}
     for r in recs:
         if r.atom.atom_id in sup:
@@ -167,7 +190,26 @@ def _supersede_atoms(recs: List[AtomRec]) -> List[AtomRec]:
 
 
 def _supersede_facts(recs: List[FactRec]) -> List[FactRec]:
-    sup = {r.fact.supersedes for r in recs if r.fact.supersedes}
+    by_id = {r.fact.fact_id: r for r in recs}
+    sup: set[str] = set()
+    for r in recs:
+        target_id = r.fact.supersedes
+        if not target_id or target_id not in by_id or target_id == r.fact.fact_id:
+            continue
+        target = by_id[target_id]
+        if not (set(r.fact.origins) & set(target.fact.origins)):
+            continue
+        seen = {r.fact.fact_id}
+        cur_id = target_id
+        cyclic = False
+        while cur_id and cur_id in by_id:
+            if cur_id in seen:
+                cyclic = True
+                break
+            seen.add(cur_id)
+            cur_id = by_id[cur_id].fact.supersedes
+        if not cyclic:
+            sup.add(target_id)
     return [r for r in recs if r.fact.fact_id not in sup]
 
 

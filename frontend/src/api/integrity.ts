@@ -135,3 +135,24 @@ export async function fetchQuarantinedEvidence(): Promise<QuarantinedEvidence[]>
   return res ?? [];
 }
 
+export interface LabScenarioResponse {
+  scenario_id: string;
+  regime: string;
+  verdict: SIAAssessment;
+  explanation: string;
+}
+
+export async function runLabScenario(scenarioId: string): Promise<LabScenarioResponse | null> {
+  try {
+    const response = await fetch(`${API_ROOT}/lab-scenario`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ scenario_id: scenarioId }),
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as LabScenarioResponse;
+  } catch {
+    return null;
+  }
+}
+

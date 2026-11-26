@@ -55,6 +55,7 @@ class Ledger:
         self._seq = 0
         self._atoms: Dict[str, List[AtomRec]] = {}
         self._atoms_by_drv: Dict[tuple, List[AtomRec]] = {}
+        self._atoms_by_drv_lap: Dict[tuple, List[AtomRec]] = {}
         self._facts: Dict[str, List[FactRec]] = {}
         self.guards: List[GuardRec] = []
         self._ids: Dict[str, object] = {}
@@ -65,9 +66,24 @@ class Ledger:
         return self._atoms.get(role_id, [])
 
     def atoms_for(self, role_id: str, scope: dict, scope_class: ScopeClass) -> List[AtomRec]:
+        if scope_class == ScopeClass.DRIVER_LAP and "driver_id" in scope and "lap_number" in scope:
+            exact = self._atoms_by_drv_lap.get((role_id, scope["driver_id"], scope["lap_number"]))
+            # Driver-wide atoms (no lap_number) must still be considered if present
+            wild = self._atoms_by_drv_lap.get((role_id, scope["driver_id"], None))
+            if wild:
+                return (exact or []) + wild
+            return exact or []
         if "driver_id" in SCOPE_FIELDS[scope_class] and "driver_id" in scope:
             return self._atoms_by_drv.get((role_id, scope["driver_id"]), [])
         return self._atoms.get(role_id, [])
+
+    def get_atom(self, atom_id: str) -> EvidenceAtom | None:
+        rec = self._ids.get(atom_id)
+        return getattr(rec, "atom", None)
+
+    def get_fact(self, fact_id: str) -> ReferenceFact | None:
+        rec = self._ids.get(fact_id)
+        return getattr(rec, "fact", None)
 
     def facts(self, fact_type: str) -> List[FactRec]:
         return self._facts.get(fact_type, [])
@@ -112,8 +128,11 @@ class Ledger:
             return self._reject("atom", atom.atom_id, "MALFORMED_VALUE", kt)
         rec = AtomRec(atom, kt, self._next(kt))
         self._atoms.setdefault(atom.role_id, []).append(rec)
-        drv = dict(atom.scope).get("driver_id")
+        sc_dict = dict(atom.scope)
+        drv = sc_dict.get("driver_id")
+        lap = sc_dict.get("lap_number")
         self._atoms_by_drv.setdefault((atom.role_id, drv), []).append(rec)
+        self._atoms_by_drv_lap.setdefault((atom.role_id, drv, lap), []).append(rec)
         self._ids[atom.atom_id] = rec
         return Admission("ACCEPTED", "OK", atom.atom_id)
 

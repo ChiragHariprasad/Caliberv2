@@ -152,7 +152,18 @@ async def verify_chains() -> dict[str, Any]:
 
 @integrity_router.get("/quarantine")
 async def get_quarantined() -> list[dict[str, Any]]:
-    """Evidence that arrived after a decision was sealed FINAL (quarantined)."""
+    """Evidence quarantined pre-admission or flagged post-finality."""
     agent = _get_agent()
-    return agent.engine.finality_violations
+    return agent.engine.quarantined_items or agent.engine.finality_violations
+
+
+class LabScenarioRequest(BaseModel):
+    scenario_id: str
+
+
+@integrity_router.post("/lab-scenario")
+async def execute_lab_scenario(req: LabScenarioRequest) -> dict[str, Any]:
+    """Run an isolated LAB fault-injection drill inside SIA Core v3 without mutating active session state."""
+    agent = _get_agent()
+    return agent.run_lab_scenario(req.scenario_id)
 

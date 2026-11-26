@@ -111,15 +111,43 @@ def test_api_full_grid_drivers():
 
 
 def test_api_driver_telemetry():
-    # Active driver #16 (Leclerc)
+    from datetime import UTC, datetime, timedelta
+    from pulse.contracts import Completeness, EventEnvelope, EventTime, Interpretation, Quality, RunContext, RunMode, SessionRef, SourceRef, Subject, UnitValidation
+    from pulse.state.store import get_state_store
+
+    store = get_state_store()
+    # Prior to telemetry stream arrival, high-frequency channels must report UNAVAILABLE (no fabricated curves)
+    res_idle = client.get("/api/telemetry/16")
+    assert res_idle.status_code == 200
+    tel_idle = res_idle.json()
+    assert tel_idle["channels"]["speed"]["quality"] == "UNAVAILABLE"
+    assert tel_idle["channels"]["speed"]["value"] is None
+    assert tel_idle["history"] == []
+
+    # Ingest 5 real DRIVER_TELEMETRY envelopes -> history and channels populate dynamically
+    base = datetime(2026, 5, 24, 13, 0, tzinfo=UTC)
+    for idx in range(5):
+        env = EventEnvelope(
+            event_id=f"tel-test-{idx}",
+            event_type="DRIVER_TELEMETRY",
+            source=SourceRef(provider="PULSE_SYNTHETIC_SIM", adapter="pytest", source_record_id=f"rec-{idx}", capture_id="cap-test-tel"),
+            time=EventTime(event_time_utc=base + timedelta(milliseconds=idx * 500), session_elapsed_ms=idx * 500),
+            session=SessionRef(season=2026, meeting_id="monaco-2026", session_id="f1-2026-monaco-sim"),
+            run=RunContext(run_id="run-tel-test", session_instance_id="f1-2026-monaco-sim", mode=RunMode.SIMULATED),
+            subject=Subject(driver_number=16),
+            payload={"speed": 210.0 + idx * 5.0, "throttle": 92.0, "brake": 0.0, "gear": 6, "rpm": 11200},
+            quality=Quality(completeness=Completeness.COMPLETE, unit_validation=UnitValidation.PASSED, interpretation=Interpretation.OBSERVED),
+        )
+        store.record_canonical_event(env)
+
     res_16 = client.get("/api/telemetry/16")
     assert res_16.status_code == 200
     tel_16 = res_16.json()
     assert tel_16["driver_number"] == 16
     assert tel_16["status"] == "ACTIVE"
     assert tel_16["channels"]["speed"]["quality"] == "AVAILABLE"
-    assert tel_16["channels"]["speed"]["value"] > 200
-    assert len(tel_16["history"]) == 20
+    assert tel_16["channels"]["speed"]["value"] == 230.0
+    assert len(tel_16["history"]) == 5
 
     # Retired driver #31 (Ocon) - missing telemetry channels marked UNAVAILABLE
     res_31 = client.get("/api/telemetry/31")
@@ -131,15 +159,44 @@ def test_api_driver_telemetry():
 
 
 def test_api_race_control_notices():
+    from datetime import UTC, datetime
+    from pulse.contracts import Completeness, EventEnvelope, EventTime, Interpretation, Quality, RunContext, RunMode, SessionRef, SourceRef, Subject, UnitValidation
+    from pulse.state.store import get_state_store
+
+    # On clean boot without events, no fake future 2026 notices are pre-populated
+    res_empty = client.get("/api/race-control")
+    assert res_empty.status_code == 200
+    assert res_empty.json() == []
+
+    # Ingest genuine session start & VSC events -> honest notices created
+    store = get_state_store()
+    t0 = datetime(2026, 5, 24, 13, 0, tzinfo=UTC)
+    for eid, etype, pay in [
+        ("rc-start-1", "SESSION_STARTED", {"lap": 1, "total_laps": 78}),
+        ("rc-vsc-1", "VSC_DEPLOYED", {"reason": "Stopped car Turn 10", "affected_drivers": [16, 4]}),
+    ]:
+        env = EventEnvelope(
+            event_id=eid,
+            event_type=etype,
+            source=SourceRef(provider="PULSE_SYNTHETIC_SIM", adapter="pytest", source_record_id=eid, capture_id="cap-test-rc"),
+            time=EventTime(event_time_utc=t0, session_elapsed_ms=1000),
+            session=SessionRef(season=2026, meeting_id="monaco-2026", session_id="f1-2026-monaco-sim"),
+            run=RunContext(run_id="run-rc-test", session_instance_id="f1-2026-monaco-sim", mode=RunMode.SIMULATED),
+            subject=Subject(),
+            payload=pay,
+            quality=Quality(completeness=Completeness.COMPLETE, unit_validation=UnitValidation.PASSED, interpretation=Interpretation.OBSERVED),
+        )
+        store.record_canonical_event(env)
+
     res = client.get("/api/race-control")
     assert res.status_code == 200
     notices = res.json()
-    assert len(notices) >= 4
+    assert len(notices) == 2
     categories = {n["category"] for n in notices}
     assert "SAFETY_CAR" in categories
     assert "FLAG" in categories
-    assert "source" in notices[0]
-    assert "regulatory_reference" in notices[0]
+    assert notices[0]["status"] == "SIMULATED_NOTICE"
+    assert "PULSE Synthetic Simulator" in notices[0]["source"]
 
 
 def test_api_pipeline_status():

@@ -38,36 +38,26 @@ export const SiaLogicLabView: React.FC<SiaLogicLabViewProps> = ({
   className = '',
 }) => {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('ENVELOPE');
-  const [internalDecisionId, setInternalDecisionId] = useState<string>('dec-pit_speed-d16');
+  const [internalDecisionId, setInternalDecisionId] = useState<string>('');
 
-  const currentDecisionId = selectedDecisionId || internalDecisionId;
-
-  // Derive list of selectable decision instances
+  // Derive list of selectable real decision instances
   const availableDecisionIds = useMemo(() => {
     const set = new Set<string>();
-    // Add from decisions
     for (const d of decisions) {
       if (d.instance_id) set.add(d.instance_id);
     }
-    // Add from verdicts
     for (const v of verdicts) {
       if (v.decision_instance_id) set.add(v.decision_instance_id);
     }
-    // Fallback standard decisions if empty
-    if (set.size === 0) {
-      return [
-        'dec-pit_speed-d16',
-        'dec-lap_time-d16',
-        'dec-sector_time-d16',
-        'dec-driver_position-d16',
-        'dec-pit_speed-d1',
-        'dec-lap_time-d1',
-        'dec-pit_speed-d44',
-        'dec-weather_observation-session',
-      ];
-    }
     return Array.from(set);
   }, [decisions, verdicts]);
+
+  const currentDecisionId =
+    (selectedDecisionId && availableDecisionIds.includes(selectedDecisionId) ? selectedDecisionId : '') ||
+    (internalDecisionId && availableDecisionIds.includes(internalDecisionId) ? internalDecisionId : '') ||
+    availableDecisionIds[0] ||
+    selectedDecisionId ||
+    '';
 
   const handleDecisionChange = (newId: string) => {
     setInternalDecisionId(newId);
@@ -79,14 +69,49 @@ export const SiaLogicLabView: React.FC<SiaLogicLabViewProps> = ({
     return verdicts.find((v) => v.decision_instance_id === currentDecisionId) || null;
   }, [verdicts, currentDecisionId]);
 
-  // Extract decision metadata
-  const currentContractId = activeVerdict?.contract?.id || currentDecisionId.split('-')[1] || 'pit_speed';
+  // Extract real decision metadata
+  const currentContractId = activeVerdict?.contract?.id || (currentDecisionId.split('@')[0] || 'lap_time');
   const currentState: IntegrityState = activeVerdict?.integrity_state || 'UNKNOWN';
   const maturity = activeVerdict?.resolution_maturity || 'OPEN';
-
-  // Lower / Upper bounds from envelope if available
   const lowerBound: IntegrityState = (activeVerdict?.envelope?.lower as IntegrityState) || 'DEGRADED';
   const upperBound: IntegrityState = (activeVerdict?.envelope?.upper as IntegrityState) || 'HEALTHY';
+
+  const realSlots = useMemo(() => {
+    if (!activeVerdict?.roles) return undefined;
+    const entries = Object.entries(activeVerdict.roles);
+    if (entries.length === 0) return undefined;
+    const limiting = new Set(activeVerdict.limiting_children || []);
+    return entries.map(([roleId, raw]) => {
+      const r = raw as any;
+      const atom = Array.isArray(r?.atoms_detail) ? r.atoms_detail[0] : undefined;
+      const fact = Array.isArray(r?.reference_facts_detail) ? r.reference_facts_detail[0] : undefined;
+      const hasEv = Boolean(r?.has_evidence || atom || fact);
+      const val =
+        atom?.value !== undefined
+          ? `${atom.value} ${atom.unit || ''}`.trim()
+          : fact?.value !== undefined
+          ? `${String(fact.value)} ${fact.unit || ''}`.trim()
+          : undefined;
+      const src =
+        atom?.source_origins?.[0] ||
+        fact?.source_origins?.[0] ||
+        (r?.dependencies || []).find((d: string) => d.startsWith('S:'))?.slice(2) ||
+        'Awaiting source';
+      const ts = atom?.observed_at || fact?.valid_from || r?.latest_observed_at || 'Awaiting admission';
+      return {
+        roleId,
+        kind: (r?.kind === 'reference' ? 'reference' : 'evidence') as 'evidence' | 'reference',
+        status: (hasEv ? 'ADMITTED' : r?.closed ? 'MISSING' : 'PENDING') as 'ADMITTED' | 'PENDING' | 'MISSING' | 'REJECTED',
+        value: val ?? (hasEv ? 'Admitted' : '—'),
+        source: src,
+        timestamp: String(ts),
+        isLimiting: limiting.has(roleId) || !hasEv,
+      };
+    });
+  }, [activeVerdict]);
+
+  const realCorroborationDepth = activeVerdict?.corroboration_depth ?? 0;
+  const realHasCommonCause = (activeVerdict?.resilience?.critical_origins?.length ?? 0) > 0;
 
   return (
     <div className={`logic-lab-workbench-root ${className}`}>
@@ -123,6 +148,8 @@ export const SiaLogicLabView: React.FC<SiaLogicLabViewProps> = ({
         <div className="context-item context-item--decision">
           <span className="ctx-label">SELECTED DECISION INSTANCE:</span>
           <select
+            id="lab-decision-select"
+            name="lab_decision_select"
             className="ctx-decision-select"
             value={currentDecisionId}
             onChange={(e) => handleDecisionChange(e.target.value)}
@@ -204,12 +231,13 @@ export const SiaLogicLabView: React.FC<SiaLogicLabViewProps> = ({
       <main className="logic-lab-workspace-content">
         {activeTab === 'ENVELOPE' && (
           <SuperpositionView
-            decisionId={currentDecisionId}
-            contractId={`${currentContractId} v1.0.0`}
+            decisionId={currentDecisionId || 'Awaiting active decision'}
+            contractId={`${currentContractId} v${activeVerdict?.contract?.version || '1.0.0'}`}
             lowerBound={lowerBound}
             upperBound={upperBound}
             currentState={currentState}
             maturity={maturity}
+            openSlots={realSlots}
             availableDecisions={availableDecisionIds}
             onSelectDecision={handleDecisionChange}
           />
@@ -217,25 +245,28 @@ export const SiaLogicLabView: React.FC<SiaLogicLabViewProps> = ({
 
         {activeTab === 'PROVENANCE' && (
           <EntanglementGraph
-            decisionId={currentDecisionId}
+            decisionId={currentDecisionId || 'Awaiting active decision'}
             contractId={currentContractId}
-            corroborationDepth={2}
-            hasCommonCause={false}
+            corroborationDepth={realCorroborationDepth}
+            hasCommonCause={realHasCommonCause}
+            verdict={activeVerdict}
           />
         )}
 
         {activeTab === 'CONTEXTUALITY' && (
           <ContextualityDag
-            atomId="atm-spd-88f2"
-            roleId="timing_speed"
             decisionId={currentDecisionId}
+            verdict={activeVerdict}
+            allVerdicts={verdicts}
+            contracts={contracts}
           />
         )}
 
         {activeTab === 'EVALUATOR' && (
           <StateAlgebraTree
-            decisionId={currentDecisionId}
+            decisionId={currentDecisionId || 'Awaiting active decision'}
             contractId={currentContractId}
+            verdict={activeVerdict}
           />
         )}
       </main>

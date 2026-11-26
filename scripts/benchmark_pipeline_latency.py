@@ -1,41 +1,39 @@
-"""Comprehensive latency benchmark suite for the PULSE Formula 1 streaming pipeline.
+"""Comprehensive benchmark & reconciliation suite for the PULSE Formula 1 streaming pipeline.
 
-Measures:
-1. Per-event processing latency across each architectural layer:
-   - Layer 1: Ingestion & Kafka Transport (event serialization & broker publish)
-   - Layer 2: Flink Stream Normalization & Canonical Watermarking
-   - Layer 3: Specialist Analytics Agents:
-       * Agent 1: Race Event & Control Intelligence
-       * Agent 2: Track-State Intelligence
-       * Agent 3: Vehicle-Response Intelligence
-       * Agent 4: Tyre & Strategy Intelligence
-       * Aggregated Specialist Agent Layer
-   - Layer 4: Consequence Fusion Engine (Agent 5)
-   - Layer 5: State Store Persistence & Projection
-   - Layer 6: API Serving & Serialization
-   - Full Pipeline Per-Event End-to-End Latency (Ingest -> Flink -> Agent -> Fusion -> Store)
-
-2. Stage-by-stage session replay latency across repeated full pipeline executions:
-   - 3 complete runs of the historical 52-lap session (72,642 events)
-   - Min, Avg, Max execution time for each stage and the full pipeline.
+Rigorous Phase H methodology:
+1. Never mixes transport-disconnected compute benchmarks with connected Kafka publish RTT:
+   - Separates Layer 1a (serial acks=all RTT), Layer 1b (batch-50 async), Layer 1c (enqueue+flush throughput).
+   - Separates Layer 3/4 CPU-only processing from connected Kafka Finding/Assessment emission.
+   - Measures real Stage 3 Apache Flink v3 end-to-end normalization latency & throughput.
+2. Segregates cold-start / first-run vs subsequent runs; never prints P95/P99 on n < 20 samples.
+3. Measures identical target_index=36321 cold seeks vs target_index=36500 cached keyframe seeks
+   across n >= 10 trials, verifying zero SIA record_hash divergence.
+4. Measures SQLite WAL crash-recovery load latency, /api/snapshot, /api/integrity/verify,
+   SSE delivery latency, and process RSS + Docker container CPU/RAM footprints.
 """
 
 from __future__ import annotations
 
+import argparse
 import asyncio
+import ctypes
 import json
 import logging
 import math
+import os
 import statistics
+import subprocess
+import tempfile
 import time
+import tracemalloc
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-import httpx
 from fastapi.testclient import TestClient
 
+import pulse.replay.controller as ctrl_mod
 import pulse.state.store as store_mod
 import pulse.stream.bus as bus_mod
 from pulse.agents.event_control import EventControlAgent
@@ -45,44 +43,94 @@ from pulse.agents.tyre_strategy import TyreStrategyAgent
 from pulse.agents.vehicle_response import VehicleResponseAgent
 from pulse.config import get_settings
 from pulse.contracts import EventEnvelope, Finding, Interpretation, Subject, utc_now
+from pulse.integrity.agent import IntegrityAgent
 from pulse.main import create_app
+from pulse.replay.controller import ReplayController
+from pulse.replay.processor import ReplayEventProcessor
 from pulse.state.store import StateStore, get_state_store
 from pulse.stream.bus import PulseEventBus
+from pulse.stream.flink.manager import get_flink_manager
 from pulse.stream.kafka_client import KafkaBroker
+from pulse.stream.kafka_io import CalibreProducer
+from pulse.stream.normalizer import StreamNormalizer
 from pulse.testing.orchestrator import VerticalSliceVerifier
-from pulse.topics import AGENT_TOPICS, INTELLIGENCE_TOPICS, NORMALISED_TOPICS, RAW_TOPICS
+from pulse.topics import AGENT_TOPICS, INTELLIGENCE_TOPICS, NORMALISED_TOPICS, RAW_TOPICS, raw_topic_for_event
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("pulse.benchmark")
 
 
-def compute_stats(samples: list[float]) -> dict[str, float]:
-    """Computes min, max, avg, median, p95, p99, and stdev for a list of latency samples (in ms)."""
-    if not samples:
-        return {"min": 0.0, "max": 0.0, "avg": 0.0, "median": 0.0, "p95": 0.0, "p99": 0.0, "stdev": 0.0, "count": 0}
+def get_process_rss_mb() -> float:
+    """Read current process working-set memory (MB) via Windows API or POSIX fallback."""
+    if os.name == "nt":
+        class PROCESS_MEMORY_COUNTERS(ctypes.Structure):
+            _fields_ = [
+                ("cb", ctypes.c_ulong),
+                ("PageFaultCount", ctypes.c_ulong),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+        counters = PROCESS_MEMORY_COUNTERS()
+        counters.cb = ctypes.sizeof(PROCESS_MEMORY_COUNTERS)
+        hproc = ctypes.windll.kernel32.GetCurrentProcess()
+        if ctypes.windll.psapi.GetProcessMemoryInfo(hproc, ctypes.byref(counters), counters.cb):
+            return round(counters.WorkingSetSize / (1024 * 1024), 2)
+    return 0.0
+
+
+def capture_docker_stats() -> list[dict[str, Any]]:
+    """Sample non-streaming CPU% and memory usage for Kafka + Flink containers."""
+    containers = ["kafka-1", "kafka-2", "kafka-3", "calibre-flink-jobmanager", "calibre-flink-taskmanager"]
+    try:
+        res = subprocess.run(
+            ["docker", "stats", "--no-stream", "--format", "{{.Name}}|{{.CPUPerc}}|{{.MemUsage}}|{{.MemPerc}}", *containers],
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        out = []
+        for line in res.stdout.splitlines():
+            parts = line.strip().split("|")
+            if len(parts) == 4:
+                out.append({"container": parts[0], "cpu": parts[1], "mem_usage": parts[2], "mem_pct": parts[3]})
+        return out
+    except Exception as exc:
+        return [{"error": str(exc)}]
+
+
+def compute_stats(samples: list[float]) -> dict[str, Any]:
+    """Compute rigorous summary statistics without fabricating P95/P99 on small samples."""
+    n = len(samples)
+    if n == 0:
+        return {"min": 0.0, "max": 0.0, "avg": 0.0, "median": 0.0, "range": 0.0, "stdev": 0.0, "p95": None, "p99": None, "count": 0}
     s = sorted(samples)
-    n = len(s)
-    p95_idx = min(int(math.ceil(0.95 * n)) - 1, n - 1)
-    p99_idx = min(int(math.ceil(0.99 * n)) - 1, n - 1)
+    p95 = round(s[min(int(math.ceil(0.95 * n)) - 1, n - 1)], 4) if n >= 20 else None
+    p99 = round(s[min(int(math.ceil(0.99 * n)) - 1, n - 1)], 4) if n >= 100 else None
     return {
         "min": round(s[0], 4),
-        "max": round(s[-1], 4),
-        "avg": round(statistics.mean(s), 4),
         "median": round(statistics.median(s), 4),
-        "p95": round(s[p95_idx], 4),
-        "p99": round(s[p99_idx], 4),
+        "avg": round(statistics.mean(s), 4),
+        "max": round(s[-1], 4),
+        "range": round(s[-1] - s[0], 4),
         "stdev": round(statistics.stdev(s), 4) if n > 1 else 0.0,
+        "p95": p95,
+        "p99": p99,
         "count": n,
     }
 
 
 async def benchmark_per_event_layers(capture_dir: Path, sample_limit: int = 1000) -> dict[str, Any]:
-    """Measures granular per-event processing latency across each architectural layer."""
+    """Measure separated transport vs pure-compute latencies across all pipeline layers."""
     print("\n" + "=" * 80)
-    print("RUNNING BENCHMARK 1: PER-EVENT PROCESSING LATENCY PER ARCHITECTURAL LAYER")
+    print("BENCHMARK 1: SEPARATED COMPUTE VS KAFKA TRANSPORT PER-EVENT LATENCIES")
     print("=" * 80)
 
-    # 1. Load sample envelopes from historical capture
     envelopes_file = capture_dir / "envelopes.jsonl"
     all_envelopes: list[EventEnvelope] = []
     with open(envelopes_file, "r", encoding="utf-8") as f:
@@ -90,116 +138,127 @@ async def benchmark_per_event_layers(capture_dir: Path, sample_limit: int = 1000
             if line.strip():
                 all_envelopes.append(EventEnvelope.model_validate(json.loads(line)))
 
-    print(f"Loaded {len(all_envelopes)} total envelopes from capture.")
-
-    # Categorize envelopes
     rc_events = [e for e in all_envelopes if e.event_type in {
         "SESSION_STARTED", "VSC_DEPLOYED", "VSC_ENDING", "VSC_ENDED",
         "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_IN_THIS_LAP", "SAFETY_CAR_ENDING",
-        "GREEN_FLAG_RESUMED", "TRACK_STATUS_GREEN", "DRIVER_RETIRED", "STEWARD_DECISION", "SESSION_CHEQUERED",
-        "RACE_CONTROL_MESSAGE", "RACE_CONTROL_NOTICE",
+        "GREEN_FLAG_RESUMED", "TRACK_STATUS_GREEN", "DRIVER_RETIRED", "STEWARD_DECISION",
+        "SESSION_CHEQUERED", "RACE_CONTROL_MESSAGE", "RACE_CONTROL_NOTICE",
     }]
     lap_events = [e for e in all_envelopes if e.event_type == "LAP_COMPLETED"]
     weather_events = [e for e in all_envelopes if e.event_type in {"WEATHER_OBSERVATION", "TRACK_STATUS_UPDATE"}]
     strat_events = [e for e in all_envelopes if e.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "PIT_STOP_RECORDED", "TYRE_FITTED"}]
     pos_events = [e for e in all_envelopes if e.event_type == "POSITION_UPDATE"]
 
-    # ----------------------------------------------------
-    # LAYER 1: Ingestion & Kafka Transport Latency
-    # ----------------------------------------------------
-    print("[1/7] Profiling Layer 1: Ingestion & Kafka Transport...")
+    # Stamp fresh event IDs for probe isolation so Flink/dedup don't collapse probes
+    probe_tag = f"bench-{uuid4().hex[:6]}"
+    publish_sample: list[EventEnvelope] = []
+    for idx, orig in enumerate((rc_events + weather_events + strat_events + lap_events[:200] + pos_events)[:sample_limit]):
+        cloned = orig.model_copy(deep=True)
+        cloned.event_id = f"{probe_tag}-{idx}"
+        cloned.run.run_id = probe_tag
+        publish_sample.append(cloned)
+
+    # Layer 1a: Serial acks=all RTT (concurrency=1)
+    print("[1/8] Layer 1a (serial acks=all), 1b (batch-50 async), 1c (enqueue+flush 5k)...")
     broker = KafkaBroker()
     await broker.start()
-    kafka_samples: list[float] = []
-
-    # Sample across various topics
-    publish_sample = (rc_events + weather_events + strat_events + lap_events[:200] + pos_events[: sample_limit])[:sample_limit]
-    for env in publish_sample:
-        topic = RAW_TOPICS["telemetry_car"] if env.event_type == "POSITION_UPDATE" else RAW_TOPICS["race_control"]
+    l1_serial: list[float] = []
+    for env in publish_sample[:250]:
+        topic = raw_topic_for_event(env.event_type)
         key = str(env.subject.driver_number or "session")
         t0 = time.perf_counter_ns()
         await broker.publish(topic, key, env)
         t1 = time.perf_counter_ns()
-        kafka_samples.append((t1 - t0) / 1_000_000.0)
+        l1_serial.append((t1 - t0) / 1_000_000.0)
 
+    # Layer 1b: Batched concurrency=50 async publish
+    l1_batch50: list[float] = []
+    t_b_all = time.perf_counter()
+    for i in range(0, len(publish_sample), 50):
+        chunk = publish_sample[i : i + 50]
+        t0 = time.perf_counter_ns()
+        await asyncio.gather(*[
+            broker.publish(raw_topic_for_event(env.event_type), str(env.subject.driver_number or "session"), env)
+            for env in chunk
+        ])
+        l1_batch50.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+    b50_sec = time.perf_counter() - t_b_all
     await broker.stop()
 
-    # ----------------------------------------------------
-    # LAYER 2: Stream Normalization & Canonical Watermarking
-    # ----------------------------------------------------
-    print("[2/7] Profiling Layer 2: Stream Normalization & Canonical Validation...")
+    # Layer 1c: Sustained non-blocking enqueue + flush (5,000 events)
+    cp = CalibreProducer(bootstrap_servers=get_settings().kafka_bootstrap_servers)
+    bulk_5k = pos_events[:5000]
+    t_bulk_0 = time.perf_counter()
+    for idx, orig in enumerate(bulk_5k):
+        cp.publish(
+            RAW_TOPICS["timing_positions"],
+            {"event_id": f"{probe_tag}-5k-{idx}", "event_type": "POSITION_UPDATE", "run": {"run_id": probe_tag}},
+            key=str(orig.subject.driver_number or "session"),
+            driver_id=orig.subject.driver_number,
+        )
+    cp.flush(30.0)
+    bulk_sec = time.perf_counter() - t_bulk_0
+
+    # Layer 2: StreamNormalizer CPU parse
+    print("[2/8] Layer 2: Canonical schema parse...")
     norm_samples: list[float] = []
     for env in publish_sample:
         raw_dict = env.model_dump(mode="json")
         t0 = time.perf_counter_ns()
-        # Canonical schema validation and timestamp normalization
         parsed = EventEnvelope.model_validate(raw_dict)
         _ = parsed.time.session_elapsed_ms
         _ = parsed.event_type
-        t1 = time.perf_counter_ns()
-        norm_samples.append((t1 - t0) / 1_000_000.0)
+        norm_samples.append((time.perf_counter_ns() - t0) / 1_000_000.0)
 
-    # ----------------------------------------------------
-    # LAYER 3: Specialist Analytics Agents
-    # ----------------------------------------------------
-    print("[3/7] Profiling Layer 3: Specialist Intelligence Agents...")
-    bus = PulseEventBus()
-    agent_ec = EventControlAgent(bus=bus)
-    agent_ts = TrackStateAgent(bus=bus)
-    agent_vr = VehicleResponseAgent(bus=bus)
-    agent_ty = TyreStrategyAgent(bus=bus)
+    # Layer 3: Agents 01-04 PURE COMPUTE (disconnected bus) vs WITH KAFKA PUBLISH
+    print("[3/8] Layer 3: Agents 01-04 (compute-only vs Kafka finding publish)...")
+    local_bus = PulseEventBus()  # disconnected
+    ec_c = EventControlAgent(bus=local_bus)
+    ts_c = TrackStateAgent(bus=local_bus)
+    vr_c = VehicleResponseAgent(bus=local_bus)
+    ty_c = TyreStrategyAgent(bus=local_bus)
 
-    # Agent 1
-    ec_samples: list[float] = []
+    ec_cpu, ts_cpu, vr_cpu, ty_cpu = [], [], [], []
     for env in rc_events:
         t0 = time.perf_counter_ns()
-        await agent_ec.on_event(NORMALISED_TOPICS["race_events"], "session", env)
-        t1 = time.perf_counter_ns()
-        ec_samples.append((t1 - t0) / 1_000_000.0)
-
-    # Agent 2
-    ts_samples: list[float] = []
+        await ec_c.on_event(NORMALISED_TOPICS["race_events"], "session", env)
+        ec_cpu.append((time.perf_counter_ns() - t0) / 1_000_000.0)
     for env in weather_events:
         t0 = time.perf_counter_ns()
-        await agent_ts.on_event(NORMALISED_TOPICS["track_segments"], "circuit", env)
-        t1 = time.perf_counter_ns()
-        ts_samples.append((t1 - t0) / 1_000_000.0)
-
-    # Agent 3
-    vr_samples: list[float] = []
+        await ts_c.on_event(NORMALISED_TOPICS["track_segments"], "circuit", env)
+        ts_cpu.append((time.perf_counter_ns() - t0) / 1_000_000.0)
     for env in lap_events[:sample_limit]:
         t0 = time.perf_counter_ns()
-        await agent_vr.on_event(NORMALISED_TOPICS["driver_laps"], f"session:{env.subject.driver_number}", env)
-        t1 = time.perf_counter_ns()
-        vr_samples.append((t1 - t0) / 1_000_000.0)
-
-    # Agent 4
-    ty_samples: list[float] = []
+        await vr_c.on_event(NORMALISED_TOPICS["driver_laps"], f"session:{env.subject.driver_number}", env)
+        vr_cpu.append((time.perf_counter_ns() - t0) / 1_000_000.0)
     for env in strat_events:
         t0 = time.perf_counter_ns()
-        await agent_ty.on_event(NORMALISED_TOPICS["race_events"], f"session:{env.subject.driver_number or 44}", env)
-        t1 = time.perf_counter_ns()
-        ty_samples.append((t1 - t0) / 1_000_000.0)
+        await ty_c.on_event(NORMALISED_TOPICS["race_events"], f"session:{env.subject.driver_number or 44}", env)
+        ty_cpu.append((time.perf_counter_ns() - t0) / 1_000_000.0)
 
-    specialist_all_samples = ec_samples + ts_samples + vr_samples + ty_samples
+    kafka_bus_broker = KafkaBroker()
+    await kafka_bus_broker.start()
+    kafka_bus = PulseEventBus(broker=kafka_bus_broker)
+    ec_k = EventControlAgent(bus=kafka_bus)
+    ty_k = TyreStrategyAgent(bus=kafka_bus)
+    ec_kafka, ty_kafka = [], []
+    for env in rc_events:
+        t0 = time.perf_counter_ns()
+        await ec_k.on_event(NORMALISED_TOPICS["race_events"], "session", env)
+        ec_kafka.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+    for env in strat_events[:40]:
+        t0 = time.perf_counter_ns()
+        await ty_k.on_event(NORMALISED_TOPICS["race_events"], f"session:{env.subject.driver_number or 44}", env)
+        ty_kafka.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+    await kafka_bus_broker.stop()
 
-    # ----------------------------------------------------
-    # LAYER 4: Consequence Fusion Engine (Agent 5)
-    # ----------------------------------------------------
-    print("[4/7] Profiling Layer 4: Consequence Fusion Engine (Agent 5)...")
-    agent_fu = ConsequenceFusionEngine(bus=bus)
+    # Layer 4 & 5: Fusion + StateStore (CPU + SSE delivery latency)
+    print("[4/8] Layer 4 & 5: Fusion + StateStore + SSE push latency...")
+    agent_fu = ConsequenceFusionEngine(bus=local_bus)
     store = StateStore()
-
-    # Collect findings generated by agents 1-4
-    candidate_findings: list[Finding] = []
-    # Register findings from agents
-    # Use store findings from verifier or generate
-    for f_id in agent_ec.output_finding_ids:
-        pass
-    # We can use findings generated in agent_ec and synthetic/real findings
     findings_to_fuse: list[Finding] = []
     for i, env in enumerate(strat_events + rc_events):
-        f = Finding(
+        findings_to_fuse.append(Finding(
             finding_id=f"bench-f-{i}-{uuid4().hex[:6]}",
             agent_id="agent-04-tyre-strategy" if i % 2 == 0 else "agent-01-event-control",
             finding_type="PIT_WINDOW_OPPORTUNITY" if i % 2 == 0 else "RACE_EVENT_LIFECYCLE",
@@ -212,220 +271,305 @@ async def benchmark_per_event_layers(capture_dir: Path, sample_limit: int = 1000
             result={"net_time_saving_sec": 10.5, "driver_number": env.subject.driver_number or 16},
             evidence_refs=[env.event_id],
             model_version="1.2.0",
-        )
-        findings_to_fuse.append(f)
-
-    # Add vehicle response findings for 20 drivers
-    for i in range(1, 21):
+        ))
+    for drv in range(1, 21):
         for lap in range(1, 15):
-            f = Finding(
-                finding_id=f"bench-vr-d{i}-l{lap}",
+            findings_to_fuse.append(Finding(
+                finding_id=f"bench-vr-d{drv}-l{lap}",
                 agent_id="agent-03-vehicle-response",
                 finding_type="PACE_DEVIATION",
                 session_id="bench-session",
                 run_id="bench-run",
-                subject=Subject(driver_number=i, segment_id=None),
-                trigger_event_id=f"evt-lap-{i}-{lap}",
+                subject=Subject(driver_number=drv),
+                trigger_event_id=f"evt-lap-{drv}-{lap}",
                 as_of_event_time=utc_now(),
                 interpretation=Interpretation.DERIVED,
-                result={"driver_number": i, "lap_number": lap, "lap_time_seconds": 91.2 + (lap * 0.05), "pace_delta_sec": 0.25},
-                evidence_refs=[f"evt-lap-{i}-{lap}"],
+                result={"driver_number": drv, "lap_number": lap, "lap_time_seconds": 91.2 + lap * 0.05, "pace_delta_sec": 0.25},
+                evidence_refs=[f"evt-lap-{drv}-{lap}"],
                 model_version="1.0.0",
-            )
-            findings_to_fuse.append(f)
+            ))
 
     fusion_samples: list[float] = []
     for f in findings_to_fuse:
         t0 = time.perf_counter_ns()
         await agent_fu.on_finding(AGENT_TOPICS["event_context"], f"session:{f.subject.driver_number}", f)
-        t1 = time.perf_counter_ns()
-        fusion_samples.append((t1 - t0) / 1_000_000.0)
+        fusion_samples.append((time.perf_counter_ns() - t0) / 1_000_000.0)
 
-    # ----------------------------------------------------
-    # LAYER 5: State Store Persistence & Projection
-    # ----------------------------------------------------
-    print("[5/7] Profiling Layer 5: State Store Persistence & Projection...")
     statestore_samples: list[float] = []
-    for f in findings_to_fuse:
+    sse_queue = store.add_listener()
+    sse_samples: list[float] = []
+    for f in findings_to_fuse[:100]:
         t0 = time.perf_counter_ns()
         store.record_finding(f)
         t1 = time.perf_counter_ns()
         statestore_samples.append((t1 - t0) / 1_000_000.0)
+        # Drain emitted queue notifications & time delivery
+        while not sse_queue.empty():
+            _ = await sse_queue.get()
+        sse_samples.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+    store.remove_listener(sse_queue)
 
-    for a in agent_fu.assessment_history:
-        t0 = time.perf_counter_ns()
-        store.record_assessment(a)
-        t1 = time.perf_counter_ns()
-        statestore_samples.append((t1 - t0) / 1_000_000.0)
-
-    # ----------------------------------------------------
-    # LAYER 6: API Serving & Query Serialization
-    # ----------------------------------------------------
-    print("[6/7] Profiling Layer 6: API Serving & Serialization...")
+    # Layer 6: API Serialization across endpoints
+    print("[5/8] Layer 6: API Serving & Serialization...")
+    prev_mode = os.environ.get("PULSE_TRANSPORT_MODE")
+    os.environ["PULSE_TRANSPORT_MODE"] = "MEMORY"
+    get_settings.cache_clear()
     app = create_app()
     api_samples: list[float] = []
     with TestClient(app) as client:
-        endpoints = ["/api/health", "/api/replay/status", "/api/findings", "/api/assessments", "/api/agents/metrics", "/api/snapshot"]
-        for ep in endpoints * 20:
+        for ep in ["/api/health", "/api/replay/status", "/api/findings", "/api/assessments", "/api/agents/metrics", "/api/snapshot"] * 20:
             t0 = time.perf_counter_ns()
             res = client.get(ep)
             t1 = time.perf_counter_ns()
-            assert res.status_code == 200, f"Endpoint {ep} failed with {res.status_code}"
+            assert res.status_code == 200
             api_samples.append((t1 - t0) / 1_000_000.0)
+    if prev_mode is None:
+        os.environ.pop("PULSE_TRANSPORT_MODE", None)
+    else:
+        os.environ["PULSE_TRANSPORT_MODE"] = prev_mode
+    get_settings.cache_clear()
 
-    # ----------------------------------------------------
-    # FULL PIPELINE PER-EVENT END-TO-END
-    # ----------------------------------------------------
-    print("[7/7] Profiling Full Pipeline Per-Event End-to-End Latency...")
-    e2e_per_event_samples: list[float] = []
-    e2e_broker = KafkaBroker()
-    await e2e_broker.start()
-    e2e_bus = PulseEventBus(broker=e2e_broker)
-    e2e_agent_ec = EventControlAgent(bus=e2e_bus)
-    e2e_agent_fu = ConsequenceFusionEngine(bus=e2e_bus)
-    e2e_store = StateStore()
-
-    async def handle_agent_finding(topic: str, key: str, f: Finding):
-        await e2e_agent_fu.on_finding(topic, key, f)
-        e2e_store.record_finding(f)
-
-    async def handle_assessment(topic: str, key: str, a: Any):
-        e2e_store.record_assessment(a)
-
-    e2e_bus.subscribe(AGENT_TOPICS["event_context"], handle_agent_finding)
-    e2e_bus.subscribe(INTELLIGENCE_TOPICS["driver_impact"], handle_assessment)
-
-    # Prime grid in store
-    entry_list_file = capture_dir / "entry_list.json"
-    if entry_list_file.exists():
-        e2e_store.load_session_entry_list(json.loads(entry_list_file.read_text(encoding="utf-8")))
-
-    for env in rc_events:
-        t_start = time.perf_counter_ns()
-        # 1. Layer 1: Ingest to Kafka
-        await e2e_broker.publish(RAW_TOPICS["race_control"], str(env.subject.driver_number or "session"), env)
-        # 2. Layer 2: Normalization parse
-        norm_env = EventEnvelope.model_validate(env.model_dump(mode="json"))
-        # 3. Layer 3, 4, 5: Bus-driven propagation through Agent 1 -> Fusion -> StateStore
-        await e2e_agent_ec.on_event(NORMALISED_TOPICS["race_events"], "session", norm_env)
-        await e2e_bus.drain()
-        t_end = time.perf_counter_ns()
-        e2e_per_event_samples.append((t_end - t_start) / 1_000_000.0)
-
-    await e2e_broker.stop()
+    flink_mgr = get_flink_manager()
+    fmetrics = flink_mgr.get_metrics()
 
     return {
-        "layer_1_kafka_ingest": compute_stats(kafka_samples),
-        "layer_2_flink_normalization": compute_stats(norm_samples),
-        "layer_3_agent_1_event_control": compute_stats(ec_samples),
-        "layer_3_agent_2_track_state": compute_stats(ts_samples),
-        "layer_3_agent_3_vehicle_response": compute_stats(vr_samples),
-        "layer_3_agent_4_tyre_strategy": compute_stats(ty_samples),
-        "layer_3_specialist_agents_aggregated": compute_stats(specialist_all_samples),
-        "layer_4_consequence_fusion": compute_stats(fusion_samples),
-        "layer_5_statestore_persistence": compute_stats(statestore_samples),
-        "layer_6_api_serving": compute_stats(api_samples),
-        "full_pipeline_per_event_e2e": compute_stats(e2e_per_event_samples),
+        "layer_1a_kafka_serial_rtt_ms": compute_stats(l1_serial),
+        "layer_1b_kafka_batch50_ms": {
+            **compute_stats(l1_batch50),
+            "events_total": len(publish_sample),
+            "elapsed_sec": round(b50_sec, 4),
+            "throughput_evt_per_sec": round(len(publish_sample) / b50_sec, 2) if b50_sec > 0 else 0.0,
+        },
+        "layer_1c_kafka_enqueue_flush_5000": {
+            "events": len(bulk_5k),
+            "elapsed_sec": round(bulk_sec, 4),
+            "ms_per_event": round((bulk_sec * 1000.0) / len(bulk_5k), 4),
+            "throughput_evt_per_sec": round(len(bulk_5k) / bulk_sec, 2) if bulk_sec > 0 else 0.0,
+        },
+        "layer_2_stream_normalization_cpu_ms": compute_stats(norm_samples),
+        "flink_live_cluster_metrics": fmetrics.model_dump() if fmetrics else None,
+        "layer_3_agent_1_compute_ms": compute_stats(ec_cpu),
+        "layer_3_agent_2_compute_ms": compute_stats(ts_cpu),
+        "layer_3_agent_3_compute_ms": compute_stats(vr_cpu),
+        "layer_3_agent_4_compute_ms": compute_stats(ty_cpu),
+        "layer_3_agents_compute_aggregated_ms": compute_stats(ec_cpu + ts_cpu + vr_cpu + ty_cpu),
+        "layer_3_agent_1_with_kafka_publish_ms": compute_stats(ec_kafka),
+        "layer_3_agent_4_with_kafka_publish_ms": compute_stats(ty_kafka),
+        "layer_4_consequence_fusion_compute_ms": compute_stats(fusion_samples),
+        "layer_5_statestore_persistence_ms": compute_stats(statestore_samples),
+        "layer_7_sse_queue_delivery_ms": compute_stats(sse_samples),
+        "layer_6_api_serving_ms": compute_stats(api_samples),
     }
 
 
-async def benchmark_full_pipeline_multi_runs(num_runs: int = 3) -> dict[str, Any]:
-    """Executes multiple complete pipeline runs through the full historical replay suite and computes statistics."""
+async def benchmark_seek_wal_and_snapshot(seek_runs: int = 10) -> dict[str, Any]:
+    """Benchmark identical target_index=36321 cold seeks vs 36500 cached keyframe seeks + WAL restore."""
     print("\n" + "=" * 80)
-    print(f"RUNNING BENCHMARK 2: FULL PIPELINE REPLAY BENCHMARK ({num_runs} COMPLETE RUNS)")
+    print(f"BENCHMARK 2: IDENTICAL-INDEX SEEK, SNAPSHOT, VERIFY & WAL RECOVERY ({seek_runs} TRIALS)")
+    print("=" * 80)
+
+    prev_mode = os.environ.get("PULSE_TRANSPORT_MODE")
+    os.environ["PULSE_TRANSPORT_MODE"] = "MEMORY"
+    get_settings.cache_clear()
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp_dir:
+        wal_path = Path(tmp_dir) / "bench_sia_wal.sqlite"
+        os.environ["PULSE_SIA_WAL_PATH"] = str(wal_path)
+        get_settings.cache_clear()
+
+        store_mod._store = None
+        bus_mod._bus = None
+        ctrl_mod._controller = None
+
+        cold_36321_ms: list[float] = []
+        cached_36500_ms: list[float] = []
+        wal_restore_ms: list[float] = []
+        snapshot_midrace_ms: list[float] = []
+        verify_chains_ms: list[float] = []
+        hash_mismatches = 0
+        chain_count = 0
+        snapshot_bytes = 0
+
+        app = create_app()
+        with TestClient(app) as client:
+            r_sel = client.post("/api/sessions/select", json={"session_id": "f1-2023-silverstone-race"})
+            assert r_sel.status_code == 200
+            from pulse.replay.controller import get_replay_controller
+            rc = get_replay_controller()
+            store = get_state_store()
+            assert rc.session_id == "f1-2023-silverstone-race"
+
+            # Cold reference seek at 36500 once (with clean checkpoints) to establish ground-truth hashes
+            res_ref = client.post("/api/replay/seek", json={"target_index": 36500})
+            assert res_ref.status_code == 200
+            ia = store.agents["agent-06-integrity"]
+            ref_verdicts = {
+                v["decision_instance_id"]: (v["integrity_state"], v["record_hash"], v["revision_number"])
+                for v in ia.get_all_verdicts()
+            }
+
+            # Snapshot & Verify latency at mid-race load
+            for _ in range(50):
+                t0 = time.perf_counter_ns()
+                r_snap = client.get("/api/snapshot")
+                snapshot_midrace_ms.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+                assert r_snap.status_code == 200
+                snapshot_bytes = len(r_snap.content)
+
+            for _ in range(seek_runs):
+                t0 = time.perf_counter_ns()
+                r_ver = client.get("/api/integrity/verify")
+                verify_chains_ms.append((time.perf_counter_ns() - t0) / 1_000_000.0)
+                assert r_ver.status_code == 200
+                body = r_ver.json()
+                assert body["verified"] is True
+                chain_count = int(body.get("chain_count", len(body.get("results", {}))))
+
+            # Measure n cold seeks to 36321 (clear checkpoints -> cold seek builds 5k..35k checkpoints -> jump to 36500)
+            for trial in range(1, seek_runs + 1):
+                rc._checkpoints.clear()
+                t0 = time.perf_counter_ns()
+                r_c = client.post("/api/replay/seek", json={"target_index": 36321})
+                dt_c = (time.perf_counter_ns() - t0) / 1_000_000.0
+                assert r_c.status_code == 200
+                cold_36321_ms.append(dt_c)
+
+                # WAL restore benchmark from synced state
+                t_w0 = time.perf_counter_ns()
+                ia2 = IntegrityAgent(wal_path=wal_path, session_id=rc.session_id)
+                assert ia2.restore_from_wal() is True
+                wal_restore_ms.append((time.perf_counter_ns() - t_w0) / 1_000_000.0)
+                ia2._wal.close()
+
+                # Cached keyframe seek to 36500 (uses checkpoint at 35000 + replays 1500 events)
+                t1 = time.perf_counter_ns()
+                r_k = client.post("/api/replay/seek", json={"target_index": 36500})
+                dt_k = (time.perf_counter_ns() - t1) / 1_000_000.0
+                assert r_k.status_code == 200
+                cached_36500_ms.append(dt_k)
+
+                cur_verdicts = {
+                    v["decision_instance_id"]: (v["integrity_state"], v["record_hash"], v["revision_number"])
+                    for v in store.agents["agent-06-integrity"].get_all_verdicts()
+                }
+                if cur_verdicts != ref_verdicts:
+                    hash_mismatches += 1
+                print(f"  [Trial {trial}/{seek_runs}] cold_seek(36321)={dt_c:.1f}ms | cached_seek(36500)={dt_k:.1f}ms | wal_restore={wal_restore_ms[-1]:.1f}ms")
+
+            if store.agents["agent-06-integrity"]._wal is not None:
+                store.agents["agent-06-integrity"]._wal.close()
+
+    os.environ.pop("PULSE_SIA_WAL_PATH", None)
+    if prev_mode is None:
+        os.environ.pop("PULSE_TRANSPORT_MODE", None)
+    else:
+        os.environ["PULSE_TRANSPORT_MODE"] = prev_mode
+    get_settings.cache_clear()
+
+    return {
+        "trials": seek_runs,
+        "cold_seek_36321_first_run_ms": round(cold_36321_ms[0], 2),
+        "cold_seek_36321_warm_runs_2_to_n_ms": compute_stats(cold_36321_ms[1:]) if len(cold_36321_ms) > 1 else compute_stats(cold_36321_ms),
+        "cold_seek_36321_all_runs_ms": compute_stats(cold_36321_ms),
+        "cached_keyframe_seek_36500_ms": compute_stats(cached_36500_ms),
+        "keyframe_vs_cold_median_speedup": round(statistics.median(cold_36321_ms) / statistics.median(cached_36500_ms), 2),
+        "sia_hash_mismatches": hash_mismatches,
+        "wal_restore_midrace_ms": compute_stats(wal_restore_ms),
+        "snapshot_midrace_ms": compute_stats(snapshot_midrace_ms),
+        "snapshot_payload_kb": round(snapshot_bytes / 1024.0, 2),
+        "integrity_verify_all_chains_ms": compute_stats(verify_chains_ms),
+        "verified_chain_count": chain_count,
+    }
+
+
+async def benchmark_full_pipeline_multi_runs(num_runs: int = 5) -> dict[str, Any]:
+    """Execute full 72,642-event Kafka + Flink v3 E2E runs via VerticalSliceVerifier."""
+    print("\n" + "=" * 80)
+    print(f"BENCHMARK 3: FULL 72,642-EVENT KAFKA + FLINK V3 E2E BENCHMARK ({num_runs} COMPLETE RUNS)")
     print("=" * 80)
 
     stage_latencies: dict[str, list[float]] = {}
     total_pipeline_latencies: list[float] = []
 
     for run_idx in range(1, num_runs + 1):
-        print(f"\n--- Starting Full Pipeline Run {run_idx}/{num_runs} (72,642 events) ---")
+        print(f"\n--- Full E2E Run {run_idx}/{num_runs} (72,642 events through Kafka + Flink v3) ---")
         t0 = time.perf_counter()
-
-        # Reset singletons
         store_mod._store = None
         bus_mod._bus = None
+        ctrl_mod._controller = None
 
         verifier = VerticalSliceVerifier(
             capture_id="pulse-capture-f1-2023-silverstone-race-v1",
             mode="REPLAY",
             output_dir=f"reports/benchmark_run_{run_idx}",
         )
-
         result = await verifier.run()
+        assert result.status == "PASSED"
+        for s in result.stages:
+            assert s.drop_count == 0
         run_duration_ms = (time.perf_counter() - t0) * 1000.0
         total_pipeline_latencies.append(run_duration_ms)
-
-        print(f"Run {run_idx} completed in {run_duration_ms / 1000.0:.2f}s with status: {result.status}")
+        print(f"Run {run_idx} PASSED in {run_duration_ms / 1000.0:.2f}s (all {len(result.stages)} stages, 0 drops)")
 
         for stage in result.stages:
-            if stage.stage_name not in stage_latencies:
-                stage_latencies[stage.stage_name] = []
-            stage_latencies[stage.stage_name].append(stage.latency_ms)
-
-    # Compute statistics per stage
-    stage_summary = {}
-    for stage_name, samples in stage_latencies.items():
-        stage_summary[stage_name] = compute_stats(samples)
-
-    total_summary = compute_stats(total_pipeline_latencies)
+            stage_latencies.setdefault(stage.stage_name, []).append(stage.latency_ms)
 
     return {
         "num_runs": num_runs,
-        "stages": stage_summary,
-        "full_pipeline_total": total_summary,
+        "run_1_cold_ms": round(total_pipeline_latencies[0], 2) if total_pipeline_latencies else 0.0,
+        "warm_runs_2_to_n_ms": compute_stats(total_pipeline_latencies[1:]) if len(total_pipeline_latencies) > 1 else compute_stats(total_pipeline_latencies),
+        "stages": {k: compute_stats(v) for k, v in stage_latencies.items()},
+        "full_pipeline_total": compute_stats(total_pipeline_latencies),
     }
 
 
-async def main():
+async def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seek-runs", type=int, default=10)
+    parser.add_argument("--full-runs", type=int, default=10)
+    parser.add_argument("--skip-layers-and-seek", action="store_true")
+    parser.add_argument("--skip-full-runs", action="store_true")
+    args = parser.parse_args()
+
     capture_dir = Path("captures/f1-2023-silverstone-race")
     if not capture_dir.exists():
         raise FileNotFoundError("Missing capture directory")
 
-    t_start = time.time()
-
-    # 1. Per-event layer benchmark
-    per_event_metrics = await benchmark_per_event_layers(capture_dir, sample_limit=1000)
-
-    # 2. Multi-run complete pipeline benchmark
-    multi_run_metrics = await benchmark_full_pipeline_multi_runs(num_runs=3)
-
-    total_bench_time = time.time() - t_start
-
-    # Combine into comprehensive report
-    report = {
-        "timestamp_utc": datetime.now(UTC).isoformat(),
-        "total_benchmark_duration_seconds": round(total_bench_time, 2),
-        "per_event_layer_benchmarks_ms": per_event_metrics,
-        "multi_run_full_pipeline_benchmarks_ms": multi_run_metrics,
-    }
-
     report_path = Path("reports/pipeline_latency_report.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
+    report: dict[str, Any] = {}
+    if report_path.exists() and (args.skip_layers_and_seek or args.skip_full_runs):
+        try:
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+        except Exception:
+            report = {}
+
+    rss_start = get_process_rss_mb()
+    t_start = time.time()
+
+    if not args.skip_layers_and_seek:
+        per_event = await benchmark_per_event_layers(capture_dir, sample_limit=1000)
+        seek_wal = await benchmark_seek_wal_and_snapshot(seek_runs=args.seek_runs)
+        report["per_event_layer_benchmarks_ms"] = per_event
+        report["seek_wal_and_api_benchmarks"] = seek_wal
+
+    if not args.skip_full_runs and args.full_runs > 0:
+        multi_run = await benchmark_full_pipeline_multi_runs(num_runs=args.full_runs)
+        report["multi_run_full_pipeline_benchmarks_ms"] = multi_run
+
+    rss_end = get_process_rss_mb()
+    total_bench_time = time.time() - t_start
+
+    report["timestamp_utc"] = datetime.now(UTC).isoformat()
+    report["total_benchmark_duration_seconds"] = round(total_bench_time, 2)
+    report["resource_footprint"] = {
+        "python_rss_start_mb": rss_start,
+        "python_rss_end_mb": rss_end,
+        "docker_containers": capture_docker_stats(),
+    }
+
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(f"\n[OK] Latency report saved to {report_path}")
-
-    # Print summary tables to stdout
-    print("\n" + "=" * 90)
-    print("PULSE PIPELINE LATENCY SUMMARY: PER-EVENT PROCESSING (MILLISECONDS)")
-    print("=" * 90)
-    print(f"{'Layer / Component':<42} | {'Min (ms)':<10} | {'Avg (ms)':<10} | {'Max (ms)':<10} | {'P95 (ms)':<10} | {'Samples':<8}")
-    print("-" * 90)
-    for layer_name, stats in per_event_metrics.items():
-        print(f"{layer_name:<42} | {stats['min']:<10.4f} | {stats['avg']:<10.4f} | {stats['max']:<10.4f} | {stats['p95']:<10.4f} | {stats['count']:<8}")
-
-    print("\n" + "=" * 90)
-    print(f"PULSE PIPELINE LATENCY SUMMARY: FULL-SESSION REPLAY ACROSS {multi_run_metrics['num_runs']} RUNS (MILLISECONDS)")
-    print("=" * 90)
-    print(f"{'Stage Name':<42} | {'Min (ms)':<10} | {'Avg (ms)':<10} | {'Max (ms)':<10} | {'StdDev':<10}")
-    print("-" * 90)
-    for stage_name, stats in multi_run_metrics["stages"].items():
-        print(f"{stage_name:<42} | {stats['min']:<10.2f} | {stats['avg']:<10.2f} | {stats['max']:<10.2f} | {stats['stdev']:<10.2f}")
-    print("-" * 90)
-    tot = multi_run_metrics["full_pipeline_total"]
-    print(f"{'FULL PIPELINE END-TO-END (TOTAL)':<42} | {tot['min']:<10.2f} | {tot['avg']:<10.2f} | {tot['max']:<10.2f} | {tot['stdev']:<10.2f}")
-    print(f"{'FULL PIPELINE END-TO-END (SECONDS)':<42} | {tot['min']/1000:<10.2f} | {tot['avg']/1000:<10.2f} | {tot['max']/1000:<10.2f} | {tot['stdev']/1000:<10.2f}")
-    print("=" * 90)
+    print(f"\n[OK] Phase H benchmark report saved to {report_path} (elapsed {total_bench_time:.1f}s)")
 
 
 if __name__ == "__main__":

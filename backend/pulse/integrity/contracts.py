@@ -39,7 +39,17 @@ def _lap_time_contract() -> dict[str, Any]:
                 "kind": "evidence",
                 "scope_class": "DRIVER_LAP",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["PITWALL", "TRACINGINSIGHTS", "CAR_SENSOR", "GPS", "FIA_OFFICIAL"],
+                "admissible_source_origins": [
+                    "PITWALL",
+                    "TRACINGINSIGHTS",
+                    "CAR_SENSOR",
+                    "GPS",
+                    "FIA_OFFICIAL",
+                    "FASTF1_RESEARCH",
+                    "JOLPICA_OPEN",
+                    "LAB_ARCHIVE",
+                    "SYNTHETIC_SIM",
+                ],
                 "agreement": {"metric": "abs_diff", "unit": "s", "tolerance": 0.15},
                 "freshness": {"soft_age_s": 10, "hard_age_s": 30},
                 "slot": {"deadline_s": 15, "allowed_lateness_s": 60},
@@ -70,7 +80,7 @@ def _lap_time_contract() -> dict[str, Any]:
             {"id": "lap_time_bounds", "kind": "bounds", "operands": ["lap_record"], "lo": 1.0, "hi": 300.0},
         ],
         "fault_model": {"diagnosis_budget": 1, "resilience_requirement": 0, "report_k": 1},
-        "limitations": [],
+        "limitations": ["SINGLE_SOURCE_FEED_CAPABLE: corroboration informational unless multi-origin telemetry is attached"],
     }
 
 
@@ -89,27 +99,35 @@ def _pit_speed_contract() -> dict[str, Any]:
                 "kind": "evidence",
                 "scope_class": "SECTOR",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["PITWALL", "TRACINGINSIGHTS", "FIA_OFFICIAL"],
+                "admissible_source_origins": [
+                    "PITWALL",
+                    "TRACINGINSIGHTS",
+                    "FIA_OFFICIAL",
+                    "FASTF1_RESEARCH",
+                    "JOLPICA_OPEN",
+                    "LAB_ARCHIVE",
+                    "SYNTHETIC_SIM",
+                ],
                 "agreement": {"metric": "abs_diff", "unit": "kph", "tolerance": 0.5},
                 "freshness": {"soft_age_s": 5, "hard_age_s": 15},
                 "slot": {"deadline_s": 10, "allowed_lateness_s": 30},
-                "corroboration": {"mode": "INFORMATIONAL"},
+                "corroboration": {"mode": "MANDATORY", "min_source_depth": 1, "min_processing_depth": 0},
             },
             "vehicle_speed": {
                 "kind": "evidence",
                 "scope_class": "SECTOR",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["CAR_SENSOR"],
+                "admissible_source_origins": ["CAR_SENSOR", "SYNTHETIC_SIM"],
                 "agreement": {"metric": "abs_diff", "unit": "kph", "tolerance": 0.5},
                 "freshness": {"soft_age_s": 5, "hard_age_s": 15},
                 "slot": {"deadline_s": 10, "allowed_lateness_s": 30},
-                "corroboration": {"mode": "INFORMATIONAL"},
+                "corroboration": {"mode": "MANDATORY", "min_source_depth": 1, "min_processing_depth": 0},
             },
             "configured_distance": {
                 "kind": "evidence",
-                "scope_class": "SESSION",
+                "scope_class": "SECTOR",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["TIMING_CONFIG"],
+                "admissible_source_origins": ["TIMING_CONFIG", "SYNTHETIC_SIM"],
                 "agreement": {"metric": "discrete_equality", "unit": "cm"},
                 "freshness": {},
                 "slot": {"deadline_s": 60, "allowed_lateness_s": 120},
@@ -139,9 +157,10 @@ def _pit_speed_contract() -> dict[str, Any]:
         "constraints": [
             {"id": "speed_ratio", "kind": "ratio", "operands": ["timing_speed", "vehicle_speed"], "tolerance": 0.03},
             {"id": "distance_check", "kind": "abs_diff", "operands": ["configured_distance", "track_geometry"], "tolerance": 10.0},
+            {"id": "pit_speed_bounds", "kind": "bounds", "operands": ["timing_speed"], "lo": 0.0, "hi": 80.5, "uncertainty": 0.15},
         ],
         "fault_model": {"diagnosis_budget": 1, "resilience_requirement": 1, "report_k": 1},
-        "limitations": [],
+        "limitations": ["MULTI_ORIGIN_CROSS_CHECK: requires distinct PITWALL and CAR_SENSOR origins for k>=1 resilience"],
     }
 
 
@@ -160,7 +179,16 @@ def _sector_time_contract() -> dict[str, Any]:
                 "kind": "evidence",
                 "scope_class": "SECTOR",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["PITWALL", "TRACINGINSIGHTS", "CAR_SENSOR", "FIA_OFFICIAL"],
+                "admissible_source_origins": [
+                    "PITWALL",
+                    "TRACINGINSIGHTS",
+                    "CAR_SENSOR",
+                    "FIA_OFFICIAL",
+                    "FASTF1_RESEARCH",
+                    "JOLPICA_OPEN",
+                    "LAB_ARCHIVE",
+                    "SYNTHETIC_SIM",
+                ],
                 "agreement": {"metric": "abs_diff", "unit": "s", "tolerance": 0.1},
                 "freshness": {"soft_age_s": 10, "hard_age_s": 30},
                 "slot": {"deadline_s": 15, "allowed_lateness_s": 45},
@@ -171,7 +199,7 @@ def _sector_time_contract() -> dict[str, Any]:
             {"id": "sector_time_bounds", "kind": "bounds", "operands": ["sector_record"], "lo": 0.5, "hi": 120.0},
         ],
         "fault_model": {"diagnosis_budget": 0, "resilience_requirement": 0, "report_k": 1},
-        "limitations": [],
+        "limitations": ["SINGLE_SOURCE_ASSURANCE_LIMIT: sector timing is single-feed when FOM optical backup is absent"],
     }
 
 
@@ -190,7 +218,15 @@ def _driver_position_contract() -> dict[str, Any]:
                 "kind": "evidence",
                 "scope_class": "DRIVER_LAP",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["PITWALL", "TRACINGINSIGHTS", "FIA_OFFICIAL"],
+                "admissible_source_origins": [
+                    "PITWALL",
+                    "TRACINGINSIGHTS",
+                    "FIA_OFFICIAL",
+                    "FASTF1_RESEARCH",
+                    "JOLPICA_OPEN",
+                    "LAB_ARCHIVE",
+                    "SYNTHETIC_SIM",
+                ],
                 "agreement": {"metric": "discrete_equality", "unit": "enum"},
                 "freshness": {"soft_age_s": 15, "hard_age_s": 45},
                 "slot": {"deadline_s": 20, "allowed_lateness_s": 60},
@@ -199,7 +235,7 @@ def _driver_position_contract() -> dict[str, Any]:
         },
         "constraints": [],
         "fault_model": {"diagnosis_budget": 0, "resilience_requirement": 0, "report_k": 1},
-        "limitations": [],
+        "limitations": ["SINGLE_SOURCE_ASSURANCE_LIMIT: position report depends on single upstream timing feed"],
     }
 
 
@@ -218,7 +254,15 @@ def _weather_contract() -> dict[str, Any]:
                 "kind": "evidence",
                 "scope_class": "SESSION",
                 "time_class_required": "ABSOLUTE_UTC",
-                "admissible_source_origins": ["WEATHER_SERVICE", "PITWALL", "FIA_OFFICIAL"],
+                "admissible_source_origins": [
+                    "WEATHER_SERVICE",
+                    "PITWALL",
+                    "FIA_OFFICIAL",
+                    "FASTF1_RESEARCH",
+                    "JOLPICA_OPEN",
+                    "LAB_ARCHIVE",
+                    "SYNTHETIC_SIM",
+                ],
                 "agreement": {"metric": "abs_diff", "unit": "celsius", "tolerance": 1.0},
                 "freshness": {"soft_age_s": 60, "hard_age_s": 120},
                 "slot": {"deadline_s": 30, "allowed_lateness_s": 120},
@@ -227,7 +271,7 @@ def _weather_contract() -> dict[str, Any]:
         },
         "constraints": [],
         "fault_model": {"diagnosis_budget": 0, "resilience_requirement": 0, "report_k": 1},
-        "limitations": [],
+        "limitations": ["SINGLE_SOURCE_ASSURANCE_LIMIT: circuit weather telemetry lacks redundant station checks"],
     }
 
 

@@ -154,6 +154,8 @@ export function ReplayControls({
           </span>
         </div>
         <input
+          id="replay-timeline-scrubber"
+          name="replay_timeline_scrubber"
           type="range"
           className="timeline-slider"
           min={0}

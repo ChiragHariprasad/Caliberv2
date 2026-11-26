@@ -14,10 +14,10 @@ import type {
 
 const API_ROOT = '/api';
 
-async function fetchJson<T>(path: string): Promise<T | null> {
+async function fetchJson<T>(path: string, timeoutMs = 15000): Promise<T | null> {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const response = await fetch(`${API_ROOT}${path}`, {
       headers: { Accept: 'application/json' },
       signal: controller.signal,
@@ -30,10 +30,10 @@ async function fetchJson<T>(path: string): Promise<T | null> {
   }
 }
 
-async function postJson<T>(path: string, body?: any): Promise<T | null> {
+async function postJson<T>(path: string, body?: any, timeoutMs = 15000): Promise<T | null> {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const response = await fetch(`${API_ROOT}${path}`, {
       method: 'POST',
       headers: {
@@ -137,7 +137,7 @@ export async function seekReplay(params: {
     target_lap: params.targetLap,
     target_index: params.targetIndex,
     target_elapsed_ms: params.targetElapsedMs,
-  });
+  }, 45000);
 }
 
 export async function setReplaySpeed(speed: number): Promise<ReplayStatusData | null> {

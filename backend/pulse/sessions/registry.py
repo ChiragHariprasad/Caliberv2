@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class SessionMetadata(BaseModel):
-    """Authoritative metadata describing a race session and its data availability."""
+    """Authoritative metadata describing a race session, its provenance regime, and data availability."""
     session_id: str
     season: int
     grand_prix_name: str
@@ -18,6 +18,11 @@ class SessionMetadata(BaseModel):
     total_laps: int = 0
     source_provenance: str
     availability_status: str  # "AVAILABLE_HISTORICAL", "AVAILABLE_SIMULATION", "NO_SESSION_DATA"
+    dataset_classification: str = "SYNTHETIC_SIMULATOR"
+    data_regime: str = "SYNTHETIC"  # "SYNTHETIC", "LAB", "PUBLIC", "PREVIEW", "INSTITUTIONAL"
+    is_synthetic: bool = True
+    licence_reference: str = "PULSE-SYNTHETIC-SIM-INTERNAL"
+    timing_baseline: str = "Deterministic Simulator Stream"
     description: str = ""
 
 
@@ -41,7 +46,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=3600000,
         total_laps=78,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Full 78-lap Monaco Grand Prix with second-by-second micro-sector telemetry, VSC deployment, and pit window compression.",
     ),
@@ -64,7 +69,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=3600000,
         total_laps=52,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Full 52-lap British Grand Prix with second-by-second continuous telemetry, pit stops, and safety car neutralisation.",
     ),
@@ -87,7 +92,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=3600000,
         total_laps=53,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Full 53-lap Japanese Grand Prix at Suzuka with second-by-second high-density telemetry across all 20 drivers.",
     ),
@@ -110,7 +115,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=58,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Landmark 2021 season finale: Safety Car unlapping procedure dispute (Art 48.12) & final lap title battle.",
     ),
@@ -133,7 +138,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=44,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Extreme rain event at Spa-Francorchamps: Safety Car formation laps, red flags, and half-points classification.",
     ),
@@ -156,7 +161,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=50,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Inaugural high-speed Jeddah Corniche street race: multiple red flags and Lap 37 69-bar brake telemetry incident.",
     ),
@@ -179,7 +184,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=71,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Red Bull Ring: 1,200+ track limit violations, post-race petition for review, and amended classification.",
     ),
@@ -202,7 +207,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=58,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Chaotic Melbourne race with 3 red flags, late standing restart collisions, and countback procession to the flag.",
     ),
@@ -225,7 +230,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=56,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="Austin COTA: Lap 52 Turn 12 apex ownership battle, driving standards guidelines, and penalty assessment.",
     ),
@@ -248,7 +253,7 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         entry_list_count=20,
         session_duration_ms=1800000,
         total_laps=50,
-        source_provenance="FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+        source_provenance="PULSE_LAB_REPLAY_CAPTURE",
         availability_status="AVAILABLE_HISTORICAL",
         description="High-speed Las Vegas Strip street circuit: water valve cover track failure and 350+ km/h slipstream racing.",
     ),
@@ -285,6 +290,45 @@ SESSION_REGISTRY: dict[str, SessionMetadata] = {
         description="Circuit geometry asset available. No historical capture or simulated session data loaded.",
     ),
 }
+
+
+def _apply_honest_session_provenance() -> None:
+    """Enforce accurate regime, classification, licence, and baseline timing metadata per session."""
+    for sid, meta in SESSION_REGISTRY.items():
+        if sid in {"f1-2026-monaco-sim", "f1-2026-suzuka-race"}:
+            meta.source_provenance = "PULSE_SYNTHETIC_SIMULATOR"
+            meta.availability_status = "AVAILABLE_SIMULATION"
+            meta.dataset_classification = "SYNTHETIC_SIMULATOR"
+            meta.data_regime = "SYNTHETIC"
+            meta.is_synthetic = True
+            meta.licence_reference = "PULSE-SYNTHETIC-SIM-INTERNAL"
+            meta.timing_baseline = "Deterministic Synthetic Simulator (No Live Timing Loop)"
+        elif sid == "f1-2023-silverstone-race":
+            meta.source_provenance = "JOLPICA_OPEN_AND_SYNTHETIC_TELEMETRY"
+            meta.availability_status = "AVAILABLE_HISTORICAL"
+            meta.dataset_classification = "LAB_HYBRID_CAPTURE"
+            meta.data_regime = "LAB"
+            meta.is_synthetic = True
+            meta.licence_reference = "CC-BY-NC-4.0 / PULSE-LAB"
+            meta.timing_baseline = "Composed Jolpica Archive + Synthetic Telemetry Stream"
+        elif meta.availability_status == "NO_SESSION_DATA":
+            meta.source_provenance = "PREVIEW_GEOMETRY_CATALOGUE"
+            meta.dataset_classification = "GEOMETRY_PREVIEW"
+            meta.data_regime = "PREVIEW"
+            meta.is_synthetic = False
+            meta.licence_reference = "PULSE-GEOMETRY-CATALOGUE"
+            meta.timing_baseline = "Homologated Circuit Geometry Preview (No Live Timing)"
+        else:
+            meta.source_provenance = "PULSE_LAB_REPLAY_CAPTURE"
+            meta.availability_status = "AVAILABLE_HISTORICAL"
+            meta.dataset_classification = "LAB_SYNTHETIC_CAPTURE"
+            meta.data_regime = "LAB"
+            meta.is_synthetic = True
+            meta.licence_reference = "PULSE-LAB-REPLAY-INTERNAL"
+            meta.timing_baseline = "Lab Windowed Replay Stream (Derived from FastF1/Ergast Metadata)"
+
+
+_apply_honest_session_provenance()
 
 
 def list_sessions() -> list[SessionMetadata]:

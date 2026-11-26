@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import type { SIAAssessment } from '../../types/calibre';
 import { InfoIcon, ShieldIcon, AlertTriangleIcon, CheckCircleIcon } from '../icons';
 
 interface EntanglementGraphProps {
@@ -6,6 +7,7 @@ interface EntanglementGraphProps {
   contractId?: string;
   corroborationDepth?: number;
   hasCommonCause?: boolean;
+  verdict?: SIAAssessment | null;
   className?: string;
 }
 
@@ -22,204 +24,116 @@ interface GraphNode {
   ruleRef: string;
 }
 
-const NODES_SOURCE_AXIS: Record<string, GraphNode> = {
-  'src-fom': {
-    id: 'src-fom',
-    name: 'FOM_OPTICAL_LOOP',
-    category: 'SOURCE_ORIGIN',
-    x: 80,
-    y: 120,
-    upstream: [],
-    failureDomain: 'Trackside optical transponder loop infrastructure',
-    closure: ['FOM_OPTICAL_LOOP'],
-    commonCauseExposure: 0.65,
-    ruleRef: 'Rule AR-2: Shared optical loop limits corroboration depth if uncorroborated.',
-  },
-  'src-ecu': {
-    id: 'src-ecu',
-    name: 'CAN_BUS_GATEWAY',
-    category: 'SOURCE_ORIGIN',
-    x: 80,
-    y: 280,
-    upstream: [],
-    failureDomain: 'In-car ECU CAN-bus serial telemetry transceiver',
-    closure: ['CAN_BUS_GATEWAY'],
-    commonCauseExposure: 0.15,
-    ruleRef: 'Independent onboard physical telemetry source.',
-  },
-  'src-reg': {
-    id: 'src-reg',
-    name: 'FIA_GEOMETRY_REGIME',
-    category: 'SOURCE_ORIGIN',
-    x: 80,
-    y: 440,
-    upstream: [],
-    failureDomain: 'Static regulatory circuit gate distance specification',
-    closure: ['FIA_GEOMETRY_REGIME'],
-    commonCauseExposure: 0.0,
-    ruleRef: 'Immutable reference origin for distance checks.',
-  },
-  'prov-pitwall': {
-    id: 'prov-pitwall',
-    name: 'PROVIDER: PITWALL',
-    category: 'PROVIDER',
-    x: 280,
-    y: 160,
-    upstream: ['src-fom'],
-    failureDomain: 'High-speed trackside decoding adapter',
-    closure: ['FOM_OPTICAL_LOOP', 'PROVIDER_PITWALL'],
-    commonCauseExposure: 0.45,
-    ruleRef: 'Admissible origin for timing_speed and sector records.',
-  },
-  'prov-tracing': {
-    id: 'prov-tracing',
-    name: 'PROVIDER: CAN_TELEMETRY',
-    category: 'PROVIDER',
-    x: 280,
-    y: 360,
-    upstream: ['src-ecu'],
-    failureDomain: 'ECU serial packet telemetry decoder',
-    closure: ['CAN_BUS_GATEWAY', 'PROVIDER_CAN'],
-    commonCauseExposure: 0.10,
-    ruleRef: 'Admissible origin for vehicle_speed and throttle telemetry.',
-  },
-  'atom-timing': {
-    id: 'atom-timing',
-    name: 'atm-timing-spd-01',
-    category: 'EVIDENCE_ATOM',
-    x: 480,
-    y: 160,
-    upstream: ['prov-pitwall'],
-    failureDomain: 'Measured value: 79.2 km/h at Gate G02',
-    closure: ['FOM_OPTICAL_LOOP', 'PROVIDER_PITWALL'],
-    commonCauseExposure: 0.45,
-    ruleRef: 'Content hash: blake3:93ef25d6314c46e9 · Quality: HEALTHY',
-  },
-  'atom-vehicle': {
-    id: 'atom-vehicle',
-    name: 'atm-vehicle-spd-02',
-    category: 'EVIDENCE_ATOM',
-    x: 480,
-    y: 360,
-    upstream: ['prov-tracing'],
-    failureDomain: 'Measured value: 78.8 km/h at timestamp T0',
-    closure: ['CAN_BUS_GATEWAY', 'PROVIDER_CAN'],
-    commonCauseExposure: 0.10,
-    ruleRef: 'Content hash: blake3:ba024b6bebe1a64f · Quality: HEALTHY',
-  },
-  'dec-target': {
-    id: 'dec-target',
-    name: 'pit_speed@16 (DECISION)',
-    category: 'DECISION',
-    x: 680,
-    y: 260,
-    upstream: ['atom-timing', 'atom-vehicle'],
-    failureDomain: 'Final verdict evaluation under pit_speed contract',
-    closure: ['FOM_OPTICAL_LOOP', 'CAN_BUS_GATEWAY', 'FIA_GEOMETRY_REGIME'],
-    commonCauseExposure: 0.25,
-    ruleRef: 'D=2 Independent corroboration achieved across disjoint origin closures.',
-  },
-};
+const buildLiveGraphNodes = (
+  decisionId: string,
+  contractId: string,
+  verdict: SIAAssessment | null | undefined,
+  axis: 'SOURCE' | 'PROCESSING',
+): Record<string, GraphNode> => {
+  const nodes: Record<string, GraphNode> = {};
+  if (!verdict || !verdict.roles || Object.keys(verdict.roles).length === 0) {
+    nodes['dec-empty'] = {
+      id: 'dec-empty',
+      name: decisionId || 'Awaiting evaluation',
+      category: 'DECISION',
+      x: 360,
+      y: 220,
+      upstream: [],
+      failureDomain: `No live evidence atoms admitted yet for contract ${contractId}`,
+      closure: [],
+      commonCauseExposure: 0,
+      ruleRef: 'Start or seek replay to populate real source and processing lineage DAGs.',
+    };
+    return nodes;
+  }
 
-const NODES_PROCESSING_AXIS: Record<string, GraphNode> = {
-  'proc-flink': {
-    id: 'proc-flink',
-    name: 'FLINK_STREAM_JOB_01',
-    category: 'PROCESSING_ORIGIN',
-    x: 100,
-    y: 140,
-    upstream: [],
-    failureDomain: 'Distributed stateful streaming normalizer container',
-    closure: ['FLINK_STREAM_JOB_01'],
-    commonCauseExposure: 0.30,
-    ruleRef: 'Normalizer origin for raw optical event deduplication.',
-  },
-  'proc-inproc': {
-    id: 'proc-inproc',
-    name: 'IN_PROCESS_SEQUENCER',
-    category: 'PROCESSING_ORIGIN',
-    x: 100,
-    y: 340,
-    upstream: [],
-    failureDomain: 'Local Python async memory bus sequencer',
-    closure: ['IN_PROCESS_SEQUENCER'],
-    commonCauseExposure: 0.05,
-    ruleRef: 'Direct in-memory queue dispatch.',
-  },
-  'pipe-j1': {
-    id: 'pipe-j1',
-    name: 'J1_EVENT_SEQUENCER',
-    category: 'PROVIDER',
-    x: 320,
-    y: 180,
-    upstream: ['proc-flink'],
-    failureDomain: 'Event time ordering and monotonic stamp validation',
-    closure: ['FLINK_STREAM_JOB_01', 'J1_EVENT_SEQUENCER'],
-    commonCauseExposure: 0.20,
-    ruleRef: 'Guarantees monotonic knowledge time progression.',
-  },
-  'pipe-j2': {
-    id: 'pipe-j2',
-    name: 'J2_EVALUATOR_BRIDGE',
-    category: 'PROVIDER',
-    x: 320,
-    y: 340,
-    upstream: ['proc-inproc'],
-    failureDomain: 'SIA bridge translation and atom admission',
-    closure: ['IN_PROCESS_SEQUENCER', 'J2_EVALUATOR_BRIDGE'],
-    commonCauseExposure: 0.05,
-    ruleRef: 'Converts EventEnvelope to SIA EvidenceAtom.',
-  },
-  'atom-proc-1': {
-    id: 'atom-proc-1',
-    name: 'atm-ordered-stream',
-    category: 'EVIDENCE_ATOM',
-    x: 520,
-    y: 180,
-    upstream: ['pipe-j1'],
-    failureDomain: 'Sequenced timing event stream partition',
-    closure: ['FLINK_STREAM_JOB_01', 'J1_EVENT_SEQUENCER'],
-    commonCauseExposure: 0.20,
-    ruleRef: 'Processed with exactly-once deterministic semantics.',
-  },
-  'atom-proc-2': {
-    id: 'atom-proc-2',
-    name: 'atm-admitted-atom',
-    category: 'EVIDENCE_ATOM',
-    x: 520,
-    y: 340,
-    upstream: ['pipe-j2'],
-    failureDomain: 'Admitted SIA evidence tuple',
-    closure: ['IN_PROCESS_SEQUENCER', 'J2_EVALUATOR_BRIDGE'],
-    commonCauseExposure: 0.05,
-    ruleRef: 'Admitted at knowledge time K without delay.',
-  },
-  'dec-target-proc': {
-    id: 'dec-target-proc',
-    name: 'pit_speed@16 (EVALUATION)',
+  const critSet = new Set((verdict.resilience?.critical_origins || []).map(String));
+  const exposure = typeof verdict.common_cause_exposure === 'number' ? verdict.common_cause_exposure : critSet.size > 0 ? 1.0 : 0.0;
+  const origins =
+    axis === 'SOURCE'
+      ? (verdict.source_origins || []).map((o) => `S:${o}`)
+      : (verdict.processing_origins || []).map((p) => `P:${p}`);
+  const uniqOrigins = origins.length > 0 ? origins : [axis === 'SOURCE' ? 'S:UNASSIGNED' : 'P:DIRECT_ADMISSION'];
+
+  uniqOrigins.forEach((orig, idx) => {
+    const id = `orig-${idx}`;
+    const y = Math.min(460, 80 + idx * (360 / Math.max(1, uniqOrigins.length)));
+    const isSpof = critSet.has(orig);
+    nodes[id] = {
+      id,
+      name: orig.replace(/^[SP]:/, ''),
+      category: axis === 'SOURCE' ? 'SOURCE_ORIGIN' : 'PROCESSING_ORIGIN',
+      x: 80,
+      y,
+      upstream: [],
+      failureDomain: isSpof
+        ? `Single-point-of-failure origin dependency (${orig})`
+        : `Registered SIA dependency closure (${orig})`,
+      closure: [orig],
+      commonCauseExposure: isSpof ? Math.max(0.5, exposure) : 0.0,
+      ruleRef: isSpof ? 'Flagged in resilience.critical_origins' : 'Evaluated dependency origin',
+    };
+  });
+
+  const roleEntries = Object.entries(verdict.roles);
+  const atomIds: string[] = [];
+  roleEntries.forEach(([rName, rRaw], idx) => {
+    const r = rRaw as any;
+    const atom = Array.isArray(r?.atoms_detail) ? r.atoms_detail[0] : null;
+    const deps: string[] = Array.isArray(r?.dependencies) ? r.dependencies : [];
+    const matchingOrigIds = uniqOrigins
+      .map((o, i) => (deps.includes(o) ? `orig-${i}` : null))
+      .filter((x): x is string => x !== null);
+    const id = `role-${idx}`;
+    atomIds.push(id);
+    const y = Math.min(460, 100 + idx * (340 / Math.max(1, roleEntries.length)));
+    const hashLabel = verdict.verdict_hash ? `sha256:${verdict.verdict_hash.slice(0, 14)}…` : 'unhashed';
+    nodes[id] = {
+      id,
+      name: atom ? `${rName} (${atom.value} ${atom.unit || ''})` : `${rName} [${r?.kind || 'role'}]`,
+      category: 'EVIDENCE_ATOM',
+      x: 380,
+      y,
+      upstream: matchingOrigIds.length > 0 ? matchingOrigIds : ['orig-0'],
+      failureDomain: atom ? `Atom ${String(atom.atom_id).slice(0, 12)} · ${atom.quality_grade}` : 'Awaiting role evidence',
+      closure: deps,
+      commonCauseExposure: exposure,
+      ruleRef: `Verdict digest: ${hashLabel} · State: ${verdict.integrity_state}`,
+    };
+  });
+
+  nodes['dec-target'] = {
+    id: 'dec-target',
+    name: `${decisionId} (${verdict.integrity_state})`,
     category: 'DECISION',
-    x: 700,
-    y: 260,
-    upstream: ['atom-proc-1', 'atom-proc-2'],
-    failureDomain: 'SIA Core v3 hash-chain sealed verdict',
-    closure: ['FLINK_STREAM_JOB_01', 'IN_PROCESS_SEQUENCER'],
-    commonCauseExposure: 0.12,
-    ruleRef: 'Processing closure is disjoint across telemetry and timing channels.',
-  },
+    x: 660,
+    y: 230,
+    upstream: atomIds,
+    failureDomain: verdict.primary_binding_witness || `Evaluated under ${contractId}`,
+    closure: Array.from(critSet),
+    commonCauseExposure: exposure,
+    ruleRef: `Corroboration D=${verdict.corroboration_depth ?? 0} · Required k=${verdict.resilience?.required_k ?? 0}`,
+  };
+
+  return nodes;
 };
 
 export const EntanglementGraph: React.FC<EntanglementGraphProps> = ({
-  decisionId = 'dec-pit_speed-d16',
-  contractId = 'pit_speed',
-  corroborationDepth = 2,
+  decisionId = '',
+  contractId = 'lap_time',
+  corroborationDepth = 0,
   hasCommonCause = false,
+  verdict,
   className = '',
 }) => {
   const [axis, setAxis] = useState<'SOURCE' | 'PROCESSING'>('SOURCE');
-  const [selectedNodeId, setSelectedNodeId] = useState<string>('src-fom');
+  const [selectedNodeId, setSelectedNodeId] = useState<string>('dec-target');
   const [zoomLevel, setZoomLevel] = useState<number>(1.0);
 
-  const activeNodes = axis === 'SOURCE' ? NODES_SOURCE_AXIS : NODES_PROCESSING_AXIS;
+  const activeNodes = useMemo(
+    () => buildLiveGraphNodes(decisionId, contractId, verdict, axis),
+    [decisionId, contractId, verdict, axis],
+  );
   const selectedNode = activeNodes[selectedNodeId] || Object.values(activeNodes)[0];
 
   const handleZoomIn = () => setZoomLevel((z) => Math.min(1.6, z + 0.15));
@@ -270,7 +184,9 @@ export const EntanglementGraph: React.FC<EntanglementGraphProps> = ({
             <span className="brief-sub text-slate-400">Contract: {contractId}</span>
             <div className="brief-stat-row">
               <span>Corroboration: <strong>D={corroborationDepth}</strong></span>
-              <span className="text-emerald-400 font-semibold">[OK] DISJOINT</span>
+              <span className={`${hasCommonCause ? 'text-amber-400' : 'text-emerald-400'} font-semibold`}>
+                {hasCommonCause ? 'COMMON-CAUSE SPOF' : 'DISJOINT'}
+              </span>
             </div>
           </div>
 

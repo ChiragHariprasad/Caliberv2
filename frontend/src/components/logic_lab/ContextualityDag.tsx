@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import type { ContractDefinition, SIAAssessment } from '../../types/calibre';
 import { StateBadge } from '../shared/StateBadge';
 import { InfoIcon, ShieldIcon, CheckCircleIcon, AlertTriangleIcon } from '../icons';
 
@@ -6,6 +7,9 @@ interface ContextualityDagProps {
   atomId?: string;
   roleId?: string;
   decisionId?: string;
+  verdict?: SIAAssessment | null;
+  allVerdicts?: SIAAssessment[];
+  contracts?: ContractDefinition[];
   className?: string;
 }
 
@@ -19,112 +23,88 @@ interface ContractEvaluationDetail {
   explanation: string;
 }
 
-const SAMPLE_ATOMS = [
-  {
-    id: 'atm-spd-88f2',
-    role: 'timing_speed',
-    value: '79.2 km/h',
-    source: 'FOM_OPTICAL_LOOP',
-    timestamp: '2026-05-24T14:15:32.420Z',
-    contracts: ['C03_pit_speed', 'C01_lap_time', 'C04_kinematics'],
-  },
-  {
-    id: 'atm-pos-44a1',
-    role: 'track_coordinate',
-    value: 'Sector 1 Pit In (s=142.4m)',
-    source: 'GPS_HIGH_FREQUENCY',
-    timestamp: '2026-05-24T14:15:32.418Z',
-    contracts: ['C06_position', 'C03_pit_speed', 'C08_incident_timing'],
-  },
-  {
-    id: 'atm-temp-09a',
-    role: 'track_temperature',
-    value: '35.4 °C',
-    source: 'TRACK_METEOROLOGY_STATION',
-    timestamp: '2026-05-24T14:15:00.000Z',
-    contracts: ['C09_weather', 'C10_weather_advisory'],
-  },
-];
-
-const CONTRACT_DETAILS: Record<string, ContractEvaluationDetail> = {
-  C03_pit_speed: {
-    id: 'C03_pit_speed',
-    name: 'Pit-Lane Speed Limit Verification',
-    scope: 'SECTOR (Sector 1 Pit Lane)',
-    state: 'HEALTHY',
-    constraints: ['measured_speed <= 80.0 km/h', 'guard_band_margin >= 0.5 km/h'],
-    outcome: 'SATISFIED (79.2 km/h within 80.0 km/h limit with 0.8 km/h margin)',
-    explanation:
-      'The speed reading of 79.2 km/h was verified against the pit lane speed limiter threshold under declared optical loop tolerances.',
-  },
-  C01_lap_time: {
-    id: 'C01_lap_time',
-    name: 'Lap-Time Sum Consistency',
-    scope: 'DRIVER_LAP (Lap 24)',
-    state: 'SUSPECT',
-    constraints: ['sector_sum_delta <= 15ms', 'microsector_monotonicity == true'],
-    outcome: 'DISCREPANCY (Loop delta of 22ms exceeds 15ms consistency guard-band)',
-    explanation:
-      'In this contract, the exact same optical reading participates as an entry milestone. It is flagged as SUSPECT here because a companion loop exhibited clock drift, demonstrating that contextuality isolates the verdict to this contract alone.',
-  },
-  C04_kinematics: {
-    id: 'C04_kinematics',
-    name: 'Vehicle Acceleration & Kinematics',
-    scope: 'DRIVER_LAP (Lap 24)',
-    state: 'HEALTHY',
-    constraints: ['longitudinal_g <= 5.5G', 'lateral_g <= 5.8G'],
-    outcome: 'SATISFIED (Deceleration profile conforms to physical tire-grip bounds)',
-    explanation:
-      'The deceleration into the speed trap was within kinematic feasibility limits of the Brembo carbon-carbon braking assembly.',
-  },
-  C06_position: {
-    id: 'C06_position',
-    name: 'Track Position & Marshalling Gate',
-    scope: 'DRIVER_LAP (Lap 24)',
-    state: 'HEALTHY',
-    constraints: ['centerline_offset <= 12.0m', 'pit_entry_flag == true'],
-    outcome: 'SATISFIED (Trajectory within pit entry delineation)',
-    explanation: 'Position coordinate confirms vehicle was strictly inside the designated pit lane entrance boundary.',
-  },
-  C08_incident_timing: {
-    id: 'C08_incident_timing',
-    name: 'Race Incident & Yellow Flag Timing',
-    scope: 'SESSION',
-    state: 'HEALTHY',
-    constraints: ['yellow_flag_speed_reduction >= 20%'],
-    outcome: 'SATISFIED (Vehicle was not in an active yellow zone)',
-    explanation: 'Pit entry sector was green at the moment of ingress.',
-  },
-  C09_weather: {
-    id: 'C09_weather',
-    name: 'Weather Reporting Consistency',
-    scope: 'SESSION',
-    state: 'HEALTHY',
-    constraints: ['track_temp >= air_temp', 'gradient_limit <= 2.0C/min'],
-    outcome: 'SATISFIED (Thermal gradient stable at +0.2 C/min)',
-    explanation: 'Thermal sensors across the circuit agree with trackside meteorological baseline.',
-  },
-  C10_weather_advisory: {
-    id: 'C10_weather_advisory',
-    name: 'Track Surface Grip Advisory',
-    scope: 'SESSION',
-    state: 'HEALTHY',
-    constraints: ['grip_coefficient >= 0.82'],
-    outcome: 'SATISFIED (Dry track conditions verified)',
-    explanation: 'Rain risk is 0.0% with consistent infrared track reflection.',
-  },
-};
-
 export const ContextualityDag: React.FC<ContextualityDagProps> = ({
-  atomId: initialAtomId = 'atm-spd-88f2',
+  decisionId = '',
+  verdict,
+  allVerdicts = [],
+  contracts = [],
   className = '',
 }) => {
-  const [selectedAtomId, setSelectedAtomId] = useState<string>(initialAtomId);
-  const [selectedContractId, setSelectedContractId] = useState<string>('C03_pit_speed');
+  const { liveAtoms, liveDetails } = useMemo(() => {
+    const atomMap = new Map<string, { id: string; role: string; value: string; source: string; timestamp: string; contracts: string[] }>();
+    const details: Record<string, ContractEvaluationDetail> = {};
 
-  const activeAtom = SAMPLE_ATOMS.find((a) => a.id === selectedAtomId) || SAMPLE_ATOMS[0];
-  const participatingContracts = activeAtom.contracts.map((cid) => CONTRACT_DETAILS[cid]).filter(Boolean);
-  const activeDetail = CONTRACT_DETAILS[selectedContractId] || participatingContracts[0];
+    const sourceList = allVerdicts.length > 0 ? allVerdicts : verdict ? [verdict] : [];
+    for (const v of sourceList) {
+      const cid = v.decision_instance_id;
+      const cSpec = contracts.find((c) => c.contract_id === v.contract?.id);
+      const consLabels =
+        (v.contract_constraints || []).map((cs: any) => `${cs.id} (${cs.kind})`) ||
+        (cSpec?.constraints || []).map((cs: any) => `${cs.id} (${cs.kind})`);
+      details[cid] = {
+        id: cid,
+        name: `${v.contract?.id || cid}`,
+        scope: JSON.stringify(v.scope || {}),
+        state: v.integrity_state,
+        constraints: consLabels.length > 0 ? consLabels : ['Role presence & admissibility bounds'],
+        outcome: `${v.integrity_state} (${v.primary_binding_witness || 'Evaluated'})`,
+        explanation:
+          (v.limitations && v.limitations.length > 0 ? v.limitations.join('; ') : null) ||
+          'Evaluated hermetically within contract scope bounds without cross-contract contamination.',
+      };
+
+      for (const [rName, rawRole] of Object.entries(v.roles || {})) {
+        const r = rawRole as any;
+        for (const a of r?.atoms_detail || []) {
+          const aid = String(a.atom_id);
+          const existing = atomMap.get(aid);
+          if (existing) {
+            if (!existing.contracts.includes(cid)) existing.contracts.push(cid);
+          } else {
+            atomMap.set(aid, {
+              id: aid.slice(0, 14),
+              role: a.role_id || rName,
+              value: a.value !== undefined ? `${a.value} ${a.unit || ''}`.trim() : '—',
+              source: a.source_origins?.[0] || 'Unknown',
+              timestamp: a.observed_at || '—',
+              contracts: [cid],
+            });
+          }
+        }
+      }
+    }
+
+    return {
+      liveAtoms: Array.from(atomMap.values()).slice(0, 8),
+      liveDetails: details,
+    };
+  }, [allVerdicts, verdict, contracts]);
+
+  const [selectedAtomId, setSelectedAtomId] = useState<string>('');
+  const [selectedContractId, setSelectedContractId] = useState<string>(decisionId);
+
+  const activeAtom =
+    liveAtoms.find((a) => a.id === selectedAtomId) ||
+    liveAtoms[0] || {
+      id: 'awaiting-atom',
+      role: 'none',
+      value: '—',
+      source: 'Awaiting stream evaluation',
+      timestamp: '—',
+      contracts: [],
+    };
+  const participatingContracts = activeAtom.contracts.map((cid) => liveDetails[cid]).filter(Boolean);
+  const activeDetail =
+    liveDetails[selectedContractId] ||
+    participatingContracts[0] || {
+      id: 'none',
+      name: 'No evaluated decision instance',
+      scope: 'Start or seek replay to inspect real atom-to-contract contextuality.',
+      state: 'UNKNOWN' as const,
+      constraints: [],
+      outcome: 'Pending evaluation',
+      explanation: 'Real atoms admitted during replay will appear here mapped across participating contracts.',
+    };
 
   return (
     <div className={`contextuality-workspace ${className}`}>
@@ -146,20 +126,22 @@ export const ContextualityDag: React.FC<ContextualityDagProps> = ({
         <div className="atom-selector-bar">
           <span className="atom-sel-label">SELECT EVIDENCE ATOM:</span>
           <div className="atom-pills-group">
-            {SAMPLE_ATOMS.map((atom) => (
+            {liveAtoms.length > 0 ? liveAtoms.map((atom) => (
               <button
                 key={atom.id}
                 type="button"
-                className={`atom-select-pill ${atom.id === selectedAtomId ? 'is-selected-atom' : ''}`}
+                className={`atom-select-pill ${atom.id === activeAtom.id ? 'is-selected-atom' : ''}`}
                 onClick={() => {
                   setSelectedAtomId(atom.id);
-                  setSelectedContractId(atom.contracts[0]);
+                  if (atom.contracts[0]) setSelectedContractId(atom.contracts[0]);
                 }}
               >
                 <span className="atom-pill-id font-mono">{atom.id}</span>
                 <span className="atom-pill-role">[{atom.role}]</span>
               </button>
-            ))}
+            )) : (
+              <span className="text-xs text-slate-400">No evidence atoms admitted yet (start replay to populate live atoms).</span>
+            )}
           </div>
         </div>
 

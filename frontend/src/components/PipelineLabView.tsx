@@ -41,6 +41,25 @@ export function PipelineLabView() {
     return () => clearInterval(interval);
   }, []);
 
+  const agentMetricsList = pipelineData ? Object.values(pipelineData.agents.metrics || {}) : [];
+  const medianAgentP50 = (() => {
+    const vals = agentMetricsList
+      .map((m) => Number(m.p50_latency_ms))
+      .filter((v) => Number.isFinite(v) && v >= 0)
+      .sort((a, b) => a - b);
+    if (vals.length === 0) return null;
+    return vals[Math.floor(vals.length / 2)];
+  })();
+  const selectedRunDrops = (selectedRun?.stages || []).reduce(
+    (acc, s) => acc + Number(s.drop_count ?? s.drops ?? 0),
+    0,
+  );
+  const headerStatusText = selectedRun
+    ? `${selectedRun.status} · ${selectedRun.stages_passed}/${selectedRun.stages_count} STAGES RECONCILED`
+    : pipelineData?.kafka.connected
+      ? `KAFKA ONLINE · ${pipelineData.kafka.processed_events} EVENTS PROCESSED`
+      : 'AWAITING PIPELINE TELEMETRY';
+
   return (
     <div className="pipeline-lab-view">
       <div className="view-intro-bar">
@@ -50,7 +69,7 @@ export function PipelineLabView() {
         </div>
         <div className="pipeline-health-badge">
           <span className="pulse-ping" />
-          <span>PIPELINE HEALTHY · 10/10 STAGES RECONCILED</span>
+          <span>{headerStatusText}</span>
         </div>
       </div>
 
@@ -61,7 +80,7 @@ export function PipelineLabView() {
             <p className="eyebrow">Real-Time Streaming Topology</p>
             <h3>Execution Flow: Ingestion → Normalization → Multi-Agent → Serving</h3>
           </div>
-          <span className="subtle-chip">Apache Flink 1.18.1 · Apache Kafka 3.6</span>
+          <span className="subtle-chip">Apache Flink 1.18.1 · Confluent Kafka KRaft (7.7)</span>
         </div>
 
         <div className="pipeline-nodes-flow">
@@ -70,11 +89,13 @@ export function PipelineLabView() {
             <span className="node-icon"><RadioIcon size={18} /></span>
             <h4>RAW INGESTION</h4>
             <div className="node-metrics">
-              <span>Mode: <strong>{pipelineData?.kafka.transport ?? 'KAFKA'}</strong></span>
-              <span>Events: <strong>{pipelineData?.kafka.processed_events ?? 9}</strong></span>
-              <span>Loss: <strong>0 drops</strong></span>
+              <span>Mode: <strong>{pipelineData?.kafka.transport ?? '—'}</strong></span>
+              <span>Events: <strong>{pipelineData?.kafka.processed_events ?? 0}</strong></span>
+              <span>Loss: <strong>{selectedRunDrops} drops</strong></span>
             </div>
-            <span className="node-status-tag tag-healthy">HEALTHY</span>
+            <span className="node-status-tag tag-healthy">
+              {pipelineData?.kafka.connected ? 'HEALTHY' : 'STANDBY'}
+            </span>
           </div>
 
           <div className="flow-arrow">&rarr;</div>
@@ -84,11 +105,13 @@ export function PipelineLabView() {
             <span className="node-icon"><CircleDotIcon size={18} /></span>
             <h4>KAFKA BROKER</h4>
             <div className="node-metrics">
-              <span>Cluster: <strong>localhost:9092</strong></span>
-              <span>Topics: <strong>14 active</strong></span>
+              <span>Cluster: <strong style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>{pipelineData?.kafka.bootstrap_servers ?? '—'}</strong></span>
+              <span>Topics: <strong>{pipelineData?.kafka.topic_count ?? '—'} catalogued</strong></span>
               <span>Duplicates: <strong>{pipelineData?.kafka.duplicate_events ?? 0}</strong></span>
             </div>
-            <span className="node-status-tag tag-healthy">ONLINE</span>
+            <span className="node-status-tag tag-healthy">
+              {pipelineData?.kafka.connected ? 'ONLINE' : 'OFFLINE'}
+            </span>
           </div>
 
           <div className="flow-arrow">&rarr;</div>
@@ -98,23 +121,25 @@ export function PipelineLabView() {
             <span className="node-icon"><ZapIcon size={18} /></span>
             <h4>FLINK ENGINE</h4>
             <div className="node-metrics">
-              <span>Job: <strong>{pipelineData?.flink.status ?? 'RUNNING'}</strong></span>
-              <span>Checkpoints: <strong>{pipelineData?.flink.checkpoints_completed ?? 193}</strong></span>
-              <span>Failures: <strong>0</strong></span>
+              <span>Job: <strong>{pipelineData?.flink.status ?? 'UNKNOWN'}</strong></span>
+              <span>Checkpoints: <strong>{pipelineData?.flink.checkpoints_completed ?? 0}</strong></span>
+              <span>In / Out: <strong>{pipelineData?.flink.read_records ?? 0} / {pipelineData?.flink.write_records ?? 0}</strong></span>
             </div>
-            <span className="node-status-tag tag-active">CHECKPOINTING</span>
+            <span className="node-status-tag tag-active">
+              {pipelineData?.flink.status === 'RUNNING' ? 'CHECKPOINTING' : (pipelineData?.flink.status ?? 'CHECKING')}
+            </span>
           </div>
 
           <div className="flow-arrow">&rarr;</div>
 
-          {/* Node 4: 5 Specialist Agents */}
+          {/* Node 4: Specialist & Integrity Agents */}
           <div className="pipeline-node node-agents">
             <span className="node-icon"><ShieldIcon size={18} /></span>
-            <h4>5 SPECIALIST AGENTS</h4>
+            <h4>SPECIALIST & SIA AGENTS</h4>
             <div className="node-metrics">
-              <span>Active: <strong>{pipelineData?.agents.total_registered ?? 5}/5</strong></span>
-              <span>Findings: <strong>{pipelineData?.findings_count ?? 9}</strong></span>
-              <span>p50 Latency: <strong>~2.1ms</strong></span>
+              <span>Registered: <strong>{pipelineData?.agents.total_registered ?? 0}</strong></span>
+              <span>Findings: <strong>{pipelineData?.findings_count ?? 0}</strong></span>
+              <span>Median p50: <strong>{medianAgentP50 !== null ? `${medianAgentP50.toFixed(2)}ms` : '—'}</strong></span>
             </div>
             <span className="node-status-tag tag-healthy">PROCESSING</span>
           </div>
@@ -126,8 +151,8 @@ export function PipelineLabView() {
             <span className="node-icon"><BrainIcon size={18} /></span>
             <h4>FUSION ENGINE</h4>
             <div className="node-metrics">
-              <span>Assessments: <strong>{pipelineData?.assessments_count ?? 4}</strong></span>
-              <span>Revisions: <strong>v1 &rarr; v2 &rarr; v3</strong></span>
+              <span>Assessments: <strong>{pipelineData?.assessments_count ?? 0}</strong></span>
+              <span>Lineage: <strong>{lineageEvents.length} trace events</strong></span>
               <span>Horizon: <strong>2 Laps</strong></span>
             </div>
             <span className="node-status-tag tag-active">SYNTHESIZED</span>
@@ -199,33 +224,25 @@ export function PipelineLabView() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(selectedRun.stages && selectedRun.stages.length > 0
-                    ? selectedRun.stages.map((s: any) => ({
-                        name: s.stage_name,
-                        status: s.status,
-                        io: `${s.inputs_expected ?? '—'} / ${s.outputs_actual ?? '—'}`,
-                        drops: s.drops ?? 0,
-                      }))
-                    : [
-                        { name: '1. PREFLIGHT', status: 'PASSED', io: '0 / 1', drops: 0 },
-                        { name: '2. RAW_SCENARIO_INGEST_KAFKA', status: 'PASSED', io: '9 / 9', drops: 0 },
-                        { name: '3. FLINK_STREAM_NORMALIZATION', status: 'PASSED', io: '9 / 9', drops: 0 },
-                        { name: '4. AGENT_1_EVENT_CONTROL', status: 'PASSED', io: '4 / 5', drops: 0 },
-                        { name: '5. AGENT_2_TRACK_STATE', status: 'PASSED', io: '2 / 2', drops: 0 },
-                        { name: '6. AGENT_3_VEHICLE_RESPONSE', status: 'PASSED', io: '1 / 1', drops: 0 },
-                        { name: '7. AGENT_4_TYRE_STRATEGY', status: 'PASSED', io: '2 / 1', drops: 0 },
-                        { name: '8. AGENT_5_CONSEQUENCE_FUSION', status: 'PASSED', io: '9 / 4', drops: 0 },
-                        { name: '9. FAULT_INJECTION_AND_DATA_QUALITY', status: 'PASSED', io: '2 / 2', drops: 0 },
-                        { name: '10. STATE_STORE_LINEAGE_AND_API', status: 'PASSED', io: '14 / 14', drops: 0 },
-                      ]
-                  ).map((s: { name: string; status: string; io: string; drops: number }) => (
-                    <tr key={s.name}>
-                      <td><code>{s.name}</code></td>
-                      <td><span className={`stage-pass-tag ${s.status === 'PASSED' ? '' : 'stage-fail-tag'}`}>{s.status}</span></td>
-                      <td>{s.io}</td>
-                      <td><strong>{s.drops}</strong></td>
+                  {selectedRun.stages && selectedRun.stages.length > 0 ? (
+                    selectedRun.stages.map((s) => {
+                      const inCnt = s.input_count ?? s.inputs_expected ?? '—';
+                      const outCnt = s.output_count ?? s.outputs_actual ?? '—';
+                      const drops = s.drop_count ?? s.drops ?? 0;
+                      return (
+                        <tr key={s.stage_name}>
+                          <td><code>{s.stage_name}</code></td>
+                          <td><span className={`stage-pass-tag ${s.status === 'PASSED' ? '' : 'stage-fail-tag'}`}>{s.status}</span></td>
+                          <td>{inCnt} / {outCnt}</td>
+                          <td><strong>{drops}</strong></td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No stage reconciliation telemetry recorded for this verification run.</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

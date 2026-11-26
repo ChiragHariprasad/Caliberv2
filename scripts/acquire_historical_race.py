@@ -409,7 +409,7 @@ def main():
             event_id=f"evt-silv-{len(envelopes) + 1:05d}",
             event_type=evt_type,
             source=SourceRef(
-                provider="JOLPICA_F1_AND_FIA_OFFICIAL",
+                provider="JOLPICA_OPEN_AND_LAB_SYNTHETIC",
                 adapter="historical_capture_adapter",
                 source_record_id=record_id or f"rec-{len(envelopes) + 1}",
                 capture_id="pulse-capture-f1-2023-silverstone-race-v1",
@@ -525,7 +525,7 @@ def main():
         "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
         "data_regime": "LAB",
         "regime": "LAB",
-        "provider": "JOLPICA_F1_AND_FIA_OFFICIAL",
+        "provider": "JOLPICA_OPEN_AND_LAB_SYNTHETIC",
         "session_id": "f1-2023-r10-race",
         "meeting_id": "silverstone-2023",
         "session_name": "Formula 1 Aramco British Grand Prix 2023",
