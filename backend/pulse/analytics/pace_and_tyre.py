@@ -191,7 +191,18 @@ class RollingCleanAirPaceEstimator:
     3. Conformal-calibrated empirical 95% prediction intervals using causal MAD + past absolute errors.
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        *,
+        enable_fuel_comp: bool = True,
+        enable_track_evo: bool = True,
+        enable_compound_effects: bool = True,
+        fast_restart_recovery: bool = True,
+    ) -> None:
+        self.enable_fuel_comp = enable_fuel_comp
+        self.enable_track_evo = enable_track_evo
+        self.enable_compound_effects = enable_compound_effects
+        self.fast_restart_recovery = fast_restart_recovery
         self._sessions: dict[str, dict[int, _DriverPaceMemory]] = {}
         self._session_compound_laps: dict[str, dict[str, deque[float]]] = {}
         self._session_total_laps: dict[str, int] = {}
@@ -244,6 +255,8 @@ class RollingCleanAirPaceEstimator:
         return self._cum_evo.get(session_id, 0.0)
 
     def _advance_track_evo(self, session_id: str, current_lap: int, fuel_burn: float) -> None:
+        if not self.enable_track_evo:
+            return
         # Advance only up to current_lap - 1 so all cars on prior completed laps have been observed
         ready_lap = current_lap - 1
         prev_processed = self._evo_last_lap.get(session_id, 1)
@@ -264,7 +277,9 @@ class RollingCleanAirPaceEstimator:
                         diffs.append((t_curr - t_prev) + fuel_burn)
             if len(diffs) >= 4:
                 med = statistics.median(diffs)
-                if abs(med) > 0.20:
+                # Ignore restart/SC discontinuities > 5.0s; track rubber/weather evolution shifts incrementally
+                upper = 5.0 if self.fast_restart_recovery else 999.0
+                if 0.20 < abs(med) <= upper:
                     cum += max(-1.5, min(1.5, med))
             by_lap.pop(ln - 3, None)
         self._cum_evo[session_id] = cum
@@ -279,22 +294,25 @@ class RollingCleanAirPaceEstimator:
         stint_id: int | None = None,
     ) -> BaselinePrediction:
         total_laps = self._session_total_laps.get(session_id)
-        fuel_burn, fuel_source = estimate_fuel_burn_rate(total_laps)
-        comp = normalize_compound(compound)
+        if self.enable_fuel_comp:
+            fuel_burn, fuel_source = estimate_fuel_burn_rate(total_laps)
+        else:
+            fuel_burn, fuel_source = 0.0, "FUEL_COMP_DISABLED"
+        comp = normalize_compound(compound) if self.enable_compound_effects else "UNKNOWN"
         mem = self._get_driver(session_id, driver_number)
 
         stint_changed = (
             (stint_id is not None and mem.last_stint_id is not None and stint_id != mem.last_stint_id)
-            or (comp != "UNKNOWN" and mem.last_compound != "UNKNOWN" and comp != mem.last_compound)
+            or (self.enable_compound_effects and comp != "UNKNOWN" and mem.last_compound != "UNKNOWN" and comp != mem.last_compound)
         )
         history = [] if stint_changed else list(mem.stint_laps)[-5:]
 
         ref_lap = target_lap if target_lap is not None else ((history[-1][0] + 1) if history else 2)
-        evo_target = self._get_evo(session_id, ref_lap)
+        evo_target = self._get_evo(session_id, ref_lap) if self.enable_track_evo else 0.0
 
         if len(history) >= 2:
             adjusted = [
-                sec - fuel_burn * (ref_lap - lp) + (evo_target - self._get_evo(session_id, lp))
+                sec - fuel_burn * (ref_lap - lp) + (evo_target - (self._get_evo(session_id, lp) if self.enable_track_evo else 0.0))
                 for lp, sec in history
             ]
             pred = statistics.median(adjusted)
@@ -400,12 +418,12 @@ class RollingCleanAirPaceEstimator:
         )
         counts[resolved_status.value] = counts.get(resolved_status.value, 0) + 1
 
-        comp = normalize_compound(compound)
+        comp = normalize_compound(compound) if self.enable_compound_effects else "UNKNOWN"
         mem = self._get_driver(session_id, driver_number)
         st_num = stint_id if stint_id is not None else (mem.last_stint_id or 1)
 
         if (stint_id is not None and mem.last_stint_id is not None and stint_id != mem.last_stint_id) or (
-            comp != "UNKNOWN" and mem.last_compound != "UNKNOWN" and comp != mem.last_compound
+            self.enable_compound_effects and comp != "UNKNOWN" and mem.last_compound != "UNKNOWN" and comp != mem.last_compound
         ):
             mem.stint_laps.clear()
             mem.pending_shift_laps.clear()
@@ -426,13 +444,20 @@ class RollingCleanAirPaceEstimator:
             and prior_prediction.baseline_sec is not None
             and prior_prediction.status == "STINT_ROLLING_CALIBRATED"
         ):
-            mem.abs_errors.append(abs(lap_sec - prior_prediction.baseline_sec))
+            ae = abs(lap_sec - prior_prediction.baseline_sec)
+            if (not self.fast_restart_recovery) or ae <= 8.0:
+                mem.abs_errors.append(ae)
 
-        # Guard clean baseline window from single-lap anomalies while adapting to real 2-lap pace regime shifts (e.g. drying track / red-flag tyre change)
+        # Guard clean baseline window from single-lap anomalies while adapting cleanly on restarts / weather shifts
         if is_confirmed_clean_air and resolved_flag is True:
             if mem.stint_laps:
                 cur_med = statistics.median([s for _, s in mem.stint_laps])
-                if abs(lap_sec - cur_med) <= 4.0 or len(mem.stint_laps) < 2:
+                if self.fast_restart_recovery and lap_sec < cur_med - 6.0:
+                    # Fast return to green racing pace after slow formation/restart lap: reset immediately
+                    mem.stint_laps.clear()
+                    mem.stint_laps.append((lap_number, lap_sec))
+                    mem.pending_shift_laps.clear()
+                elif abs(lap_sec - cur_med) <= 4.0 or ((not self.fast_restart_recovery) and len(mem.stint_laps) < 2):
                     mem.stint_laps.append((lap_number, lap_sec))
                     mem.pending_shift_laps.clear()
                 else:
@@ -447,14 +472,15 @@ class RollingCleanAirPaceEstimator:
                 mem.stint_laps.append((lap_number, lap_sec))
                 mem.pending_shift_laps.clear()
 
-            if comp != "UNKNOWN":
+            if self.enable_compound_effects and comp != "UNKNOWN":
                 comp_hist = self._session_compound_laps.setdefault(session_id, {}).setdefault(comp, deque(maxlen=60))
                 comp_hist.append(lap_sec)
 
-            by_lap = self._lap_driver_obs.setdefault(session_id, {}).setdefault(lap_number, {})
-            by_lap[driver_number] = (lap_sec, st_num)
-            fuel_burn, _ = estimate_fuel_burn_rate(self._session_total_laps.get(session_id))
-            self._advance_track_evo(session_id, lap_number, fuel_burn)
+            if self.enable_track_evo:
+                by_lap = self._lap_driver_obs.setdefault(session_id, {}).setdefault(lap_number, {})
+                by_lap[driver_number] = (lap_sec, st_num)
+                fuel_burn = estimate_fuel_burn_rate(self._session_total_laps.get(session_id))[0] if self.enable_fuel_comp else 0.0
+                self._advance_track_evo(session_id, lap_number, fuel_burn)
 
 
 @dataclass

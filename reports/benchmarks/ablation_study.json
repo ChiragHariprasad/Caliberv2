@@ -1,0 +1,109 @@
+{
+  "generated_at_utc": "2026-11-26T15:42:46.861695+00:00",
+  "protocol": {
+    "calibration_races": [
+      "2021 British Grand Prix",
+      "2021 Saudi Arabian Grand Prix",
+      "2022 Monaco Grand Prix"
+    ],
+    "holdout_races": [
+      "2021 Abu Dhabi Grand Prix",
+      "2022 Japanese Grand Prix"
+    ],
+    "edge_case_races": [
+      "2021 Belgian Grand Prix"
+    ],
+    "leakage_guard": "Strictly causal crossing-order stream; lap_start intervals use same-lap prior cars only; regression coefficients fit only on LORO/calibration training folds.",
+    "calibration_regression_params": {
+      "beta_age": -0.07343,
+      "beta_prog": 1.0,
+      "half_w95": 3.473
+    }
+  },
+  "ablation_study": {
+    "pace_components": {
+      "full_revised": {
+        "n_target_laps": 2008,
+        "n_predicted": 1560,
+        "coverage_fraction": 0.7769,
+        "mae_sec": 0.5094,
+        "rmse_sec": 0.9043,
+        "median_ae_sec": 0.282,
+        "pi95_coverage": 0.8994,
+        "mean_pi95_width_sec": 2.5523,
+        "calibration_gap_from_95pct": -0.0506
+      },
+      "no_clean_air_filter": {
+        "n_target_laps": 2008,
+        "n_predicted": 1758,
+        "coverage_fraction": 0.8755,
+        "mae_sec": 0.5452,
+        "rmse_sec": 1.4542,
+        "median_ae_sec": 0.2885,
+        "pi95_coverage": 0.9044,
+        "mean_pi95_width_sec": 2.7331,
+        "calibration_gap_from_95pct": -0.0456
+      },
+      "no_fuel_comp": {
+        "n_target_laps": 2008,
+        "n_predicted": 1560,
+        "coverage_fraction": 0.7769,
+        "mae_sec": 0.5141,
+        "rmse_sec": 0.8968,
+        "median_ae_sec": 0.3105,
+        "pi95_coverage": 0.9032,
+        "mean_pi95_width_sec": 2.5543,
+        "calibration_gap_from_95pct": -0.0468
+      },
+      "no_track_evo": {
+        "n_target_laps": 2008,
+        "n_predicted": 1560,
+        "coverage_fraction": 0.7769,
+        "mae_sec": 0.6418,
+        "rmse_sec": 1.1256,
+        "median_ae_sec": 0.302,
+        "pi95_coverage": 0.9045,
+        "mean_pi95_width_sec": 2.9776,
+        "calibration_gap_from_95pct": -0.0455
+      },
+      "no_compound_effects": {
+        "n_target_laps": 2008,
+        "n_predicted": 1742,
+        "coverage_fraction": 0.8675,
+        "mae_sec": 0.9829,
+        "rmse_sec": 3.8053,
+        "median_ae_sec": 0.322,
+        "pi95_coverage": 0.8668,
+        "mean_pi95_width_sec": 3.0352,
+        "calibration_gap_from_95pct": -0.0832
+      }
+    },
+    "shrinkage_estimation": {
+      "n_stint_laps": 277,
+      "unpooled_ols_mae_sec": 0.6851,
+      "shrinkage_posterior_mae_sec": 0.4772,
+      "delta_mae_sec": -0.2079
+    },
+    "sia_gating_and_consequence_fusion": {
+      "n_scenarios": 10,
+      "pre_phase_i_no_calibration_gate": {
+        "tp": 2,
+        "fp": 7,
+        "fn": 0,
+        "tn": 1,
+        "precision": 0.2222,
+        "recall": 1.0,
+        "fpr": 0.875
+      },
+      "phase_i_strict_sia_and_fusion_gate": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 8,
+        "precision": 1.0,
+        "recall": 1.0,
+        "fpr": 0.0
+      }
+    }
+  }
+}
