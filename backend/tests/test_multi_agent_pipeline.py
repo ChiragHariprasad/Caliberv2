@@ -207,7 +207,22 @@ async def test_agent_5_asynchronous_fusion_and_revisions():
     assert v1.assessment_version == 1
     assert v1.status == FindingStatus.PROVISIONAL
 
-    # 2. Agent 4 tyre strategy arrives later -> superseding v2
+    # 2. Agent 4 tyre strategy arrives later with empirical calibration + SIA HEALTHY/FINAL -> superseding v2 CONFIRMED
+    await fusion.on_finding(
+        "pulse.agent.integrity.findings.v1",
+        "silverstone:81",
+        Finding(
+            finding_id="f-sia-81",
+            agent_id="agent-06-integrity",
+            finding_type="INTEGRITY_ASSESSMENT",
+            session_id="silverstone-2026",
+            run_id="run-01",
+            subject=Subject(driver_number=81),
+            as_of_event_time=now,
+            interpretation=Interpretation.DERIVED,
+            result={"integrity_state": "HEALTHY", "finality_status": "FINAL"},
+        ),
+    )
     strat_f = Finding(
         finding_id="f-strat-01",
         agent_id="agent-04-tyre-strategy",
@@ -217,12 +232,15 @@ async def test_agent_5_asynchronous_fusion_and_revisions():
         subject=Subject(driver_number=81),
         trigger_event_id="evt-vsc-piastri",
         as_of_event_time=now,
-        interpretation=Interpretation.DERIVED,
+        interpretation=Interpretation.PREDICTED,
+        assessment_status=FindingStatus.CONFIRMED,
         result={
             "driver_number": 81,
             "target_compound": "H",
             "stint_age_current": 18,
             "net_time_saving_sec": 10.5,
+            "calibration_status": "EMPIRICAL_PIT_CALIBRATED+DRIVER_STINT_CALIBRATED",
+            "sample_count": 8,
         },
         evidence_refs=["evt-vsc-piastri", "stint-med-18"],
     )
@@ -231,6 +249,7 @@ async def test_agent_5_asynchronous_fusion_and_revisions():
     v2 = fusion.latest_assessments[81]
     assert v2.assessment_version == 2
     assert v2.status == FindingStatus.CONFIRMED
+    assert v1.status == FindingStatus.SUPERSEDED
     assert v2.supersedes_assessment_id == v1.assessment_id
     assert v1.assessment_id in v2.evidence_refs
 

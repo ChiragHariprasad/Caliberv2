@@ -10,8 +10,17 @@ from pulse.analytics.pace_and_tyre import (
     FuelCompensatedDegradationModel,
     RollingCleanAirPaceEstimator,
     normalize_compound,
+    resolve_clean_air_status,
 )
-from pulse.contracts import Completeness, EventEnvelope, Finding, FindingStatus, Interpretation, Subject
+from pulse.contracts import (
+    CleanAirStatus,
+    Completeness,
+    EventEnvelope,
+    Finding,
+    FindingStatus,
+    Interpretation,
+    Subject,
+)
 from pulse.topics import AGENT_TOPICS
 
 logger = logging.getLogger("pulse.agents.vehicle_response")
@@ -165,12 +174,12 @@ class VehicleResponseAgent(BaseAgent):
             pos = int(pos_raw) if isinstance(pos_raw, (int, float)) and int(pos_raw) > 0 else None
 
             observed_interval = interval_val if interval_val is not None else self.driver_intervals.get(dn)
-            if observed_interval is not None:
-                clean_air: bool | None = observed_interval >= 1.8
-            elif pos == 1:
-                clean_air = True
-            else:
-                clean_air = None
+            is_pit = bool(payload.get("in_pit") or payload.get("pit_in_time") or payload.get("pit_out_time"))
+            clean_air_status, clean_air = resolve_clean_air_status(
+                position=pos,
+                interval_sec=observed_interval,
+                is_pit=is_pit,
+            )
 
             # Strictly causal prediction BEFORE observing current lap
             pred = self.pace_estimator.predict_baseline(
@@ -217,7 +226,6 @@ class VehicleResponseAgent(BaseAgent):
                 reason = "NOMINAL_AERO_STABILITY"
                 interpretation = Interpretation.OBSERVED
 
-            is_pit = bool(payload.get("in_pit") or payload.get("pit_in_time") or payload.get("pit_out_time"))
             self.pace_estimator.observe_lap(
                 session_id=session_id,
                 driver_number=dn,
@@ -225,7 +233,10 @@ class VehicleResponseAgent(BaseAgent):
                 lap_sec=lap_seconds,
                 stint_id=stint_id,
                 compound=compound,
-                clean_air=(clean_air is not False) and (not is_pit),
+                clean_air=(clean_air_status == CleanAirStatus.CLEAN_AIR_CONFIRMED) and (not is_pit),
+                clean_air_status=clean_air_status,
+                position=pos,
+                interval_sec=observed_interval,
                 neutralised=self.vsc_active,
                 total_laps=total_laps,
                 prior_prediction=pred,
@@ -249,6 +260,17 @@ class VehicleResponseAgent(BaseAgent):
 
             if classification != prev_class or evt_cnt == 1 or evt_cnt % 15 == 0:
                 self._driver_last_classification[dn] = classification
+                can_confirm = (
+                    pred.baseline_sec is not None
+                    and pred.status == "STINT_ROLLING_CALIBRATED"
+                    and clean_air_status != CleanAirStatus.CLEAN_AIR_UNKNOWN
+                    and pred.sample_count >= 5
+                )
+                vr_status = (
+                    FindingStatus.OBSERVED
+                    if (interpretation == Interpretation.OBSERVED and clean_air_status != CleanAirStatus.CLEAN_AIR_UNKNOWN)
+                    else (FindingStatus.CONFIRMED if can_confirm else FindingStatus.PROVISIONAL)
+                )
                 finding = Finding(
                     finding_id=f"f-vr-{uuid4().hex[:8]}",
                     agent_id=self.agent_id,
@@ -259,10 +281,11 @@ class VehicleResponseAgent(BaseAgent):
                     trigger_event_id=event.event_id,
                     as_of_event_time=event.time.event_time_utc,
                     model_version=self.model_version,
-                    assessment_status=FindingStatus.CONFIRMED if pred.baseline_sec is not None else FindingStatus.PROVISIONAL,
+                    assessment_status=vr_status,
                     interpretation=interpretation,
                     uncertainty={
                         "baseline_status": pred.status,
+                        "clean_air_status": clean_air_status.value,
                         "ci95_low_sec": pred.ci95_low_sec,
                         "ci95_high_sec": pred.ci95_high_sec,
                         "uncertainty_sec": pred.uncertainty_sec,
@@ -283,6 +306,7 @@ class VehicleResponseAgent(BaseAgent):
                         "pace_z_score": z_score,
                         "classification": classification,
                         "clean_air": clean_air,
+                        "clean_air_status": clean_air_status.value,
                         "interval_to_ahead_sec": observed_interval,
                         "stint_laps_observed": self.driver_stint_laps.get(dn),
                         "neutralisation_active": self.vsc_active,

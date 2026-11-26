@@ -8,11 +8,13 @@ from typing import Any
 from pulse.agents.base import BaseAgent
 from pulse.contracts import (
     Assessment,
+    CleanAirStatus,
     Completeness,
     Finding,
     FindingStatus,
     Forecast,
     Impact,
+    Interpretation,
     Subject,
 )
 from pulse.topics import INTELLIGENCE_TOPICS
@@ -79,6 +81,13 @@ class ConsequenceFusionEngine(BaseAgent):
             self._correlation_buffer[key] = deque(maxlen=25)
         return self._correlation_buffer[key]
 
+    @staticmethod
+    def _finding_missing_telemetry(finding: Finding) -> bool:
+        res = finding.result or {}
+        unc = finding.uncertainty or {}
+        comp = str(res.get("completeness") or unc.get("completeness") or "").upper()
+        return bool(res.get("missing_telemetry") is True or comp in {"MISSING", "UNAVAILABLE"})
+
     def _detect_conflicts(self, session_id: str, driver_number: int, current_finding: Finding) -> list[str]:
         conflicts: list[str] = []
         recent = list(self._buf(session_id, driver_number))
@@ -87,24 +96,156 @@ class ConsequenceFusionEngine(BaseAgent):
         drv_alert = self._integrity_alerts.get((session_id, driver_number))
         sess_alert = self._integrity_alerts.get((session_id, -1))
         for alert in (drv_alert, sess_alert):
-            if alert and alert.get("verdict") in {"SUSPECT", "QUARANTINED", "VOID"}:
-                conflicts.append(f"SIA_INTEGRITY_{alert['verdict']}: {alert.get('reason', 'evidence_conflict')}")
+            if not alert:
+                continue
+            verdict = str(alert.get("verdict", "UNKNOWN")).upper()
+            if verdict in {"SUSPECT", "DEGRADED", "UNKNOWN", "QUARANTINED", "VOID"}:
+                conflicts.append(f"SIA_INTEGRITY_{verdict}: {alert.get('reason', 'evidence_conflict')}")
+            elif verdict == "HEALTHY" and not alert.get("finalized", False):
+                conflicts.append("SIA_EVIDENCE_NOT_FINALIZED")
+
+        res = current_finding.result or {}
+        if (
+            current_finding.assessment_status == FindingStatus.REJECTED
+            or res.get("contradicts") is True
+            or res.get("unit_validation_failed") is True
+        ):
+            conflicts.append("CONTRADICTING_EVIDENCE_REJECTED")
+
+        if res.get("conflicting_evidence") is True:
+            conflicts.append("CONFLICTING_DOMAIN_EVIDENCE")
+
+        if self._finding_missing_telemetry(current_finding):
+            conflicts.append("MISSING_TELEMETRY_COVERAGE")
 
         # Cross-agent strategic conflict: traffic/dirty-air risk vs open pit window recommendation
         if current_finding.finding_type == "PIT_WINDOW_OPPORTUNITY":
             for prev in reversed(recent[-6:]):
-                if prev.finding_type == "PACE_DEVIATION" and prev.result.get("clean_air") is False:
+                prev_res = prev.result or {}
+                if prev.finding_type == "PACE_DEVIATION" and (
+                    prev_res.get("clean_air") is False
+                    or prev_res.get("clean_air_status") == CleanAirStatus.TRAFFIC_AFFECTED.value
+                ):
                     conflicts.append("TRAFFIC_REENTRY_VS_PIT_WINDOW_CONFLICT")
                     break
-            cal = str(current_finding.result.get("calibration_status", "PRIOR_UNMEASURED"))
+            for prev in recent:
+                prev_res = prev.result or {}
+                if prev.finding_type == "PACE_DEVIATION" and self._finding_missing_telemetry(prev):
+                    conflicts.append("MISSING_TELEMETRY_COVERAGE")
+                if prev.finding_type == "PACE_DEVIATION" and (
+                    prev_res.get("pace_delta_sec") is None
+                    or prev_res.get("baseline_status") == "INITIALIZING"
+                ):
+                    conflicts.append("PACE_BASELINE_INITIALIZING")
+
+            lap_states: dict[Any, set[bool]] = {}
+            for prev in recent:
+                if prev.finding_type == "PACE_DEVIATION":
+                    lp = (prev.result or {}).get("lap_number")
+                    ca = (prev.result or {}).get("clean_air")
+                    if lp is not None and isinstance(ca, bool):
+                        lap_states.setdefault(lp, set()).add(ca)
+            if any(len(vals) > 1 for vals in lap_states.values()):
+                conflicts.append("CONFLICTING_DOMAIN_EVIDENCE")
+
+            deg = res.get("degradation_estimate")
+            sc = res.get("sample_count")
+            if isinstance(sc, int) and sc < 5:
+                conflicts.append("INSUFFICIENT_SAMPLE_SIZE")
+            elif isinstance(deg, dict) and isinstance(deg.get("sample_laps"), int):
+                if deg["sample_laps"] < 5 and str(deg.get("calibration_status", "")) in {
+                    "PRIOR_UNMEASURED",
+                    "INSUFFICIENT_SAMPLES",
+                }:
+                    conflicts.append("INSUFFICIENT_SAMPLE_SIZE")
+
+            cal = str(res.get("calibration_status", "PRIOR_UNMEASURED"))
             if "PRIOR_UNMEASURED" in cal and "EMPIRICAL" not in cal:
                 conflicts.append("UNCALIBRATED_PRIOR_BASELINE")
+            if current_finding.assessment_status == FindingStatus.PROVISIONAL and "EMPIRICAL" not in cal:
+                conflicts.append("UPSTREAM_PROVISIONAL_EVIDENCE")
         elif current_finding.finding_type in {"PACE_DEVIATION", "VEHICLE_ANOMALY"}:
-            bstatus = str(current_finding.result.get("baseline_status", ""))
-            if bstatus == "INITIALIZING":
+            clean_air_status = res.get("clean_air_status")
+            clean_air_flag = res.get("clean_air")
+            if clean_air_status == CleanAirStatus.CLEAN_AIR_UNKNOWN.value or (
+                clean_air_status is None and clean_air_flag is None and not res.get("neutralisation_active")
+            ):
+                conflicts.append("CLEAN_AIR_UNKNOWN_MISSING_INTERVAL")
+            bstatus = str(res.get("baseline_status", ""))
+            if res.get("pace_delta_sec") is None or bstatus == "INITIALIZING":
                 conflicts.append("PACE_BASELINE_INITIALIZING")
+            sc = res.get("sample_count", res.get("baseline_sample_count"))
+            if isinstance(sc, int) and sc < 5:
+                conflicts.append("INSUFFICIENT_SAMPLE_SIZE")
 
-        return conflicts
+        return list(dict.fromkeys(conflicts))
+
+    def _has_positive_corroboration(self, session_id: str, driver_number: int, current_finding: Finding) -> tuple[bool, bool]:
+        """Returns (sia_healthy_finalized, independent_corroboration). Missing SIA is never positive evidence."""
+        drv_alert = self._integrity_alerts.get((session_id, driver_number))
+        sess_alert = self._integrity_alerts.get((session_id, -1))
+        alerts = [a for a in (drv_alert, sess_alert) if a is not None]
+        if any(str(a.get("verdict", "")).upper() != "HEALTHY" for a in alerts):
+            sia_healthy_finalized = False
+        else:
+            sia_healthy_finalized = any(a.get("verdict") == "HEALTHY" and bool(a.get("finalized", False)) for a in alerts)
+
+        res = current_finding.result or {}
+        if res.get("independently_corroborated") is True:
+            return sia_healthy_finalized, True
+
+        recent = list(self._buf(session_id, driver_number))
+        has_calibrated_pace = any(
+            f.finding_type == "PACE_DEVIATION"
+            and not self._finding_missing_telemetry(f)
+            and (f.result or {}).get("baseline_status") == "STINT_ROLLING_CALIBRATED"
+            and (f.result or {}).get("clean_air") is not None
+            and ((f.result or {}).get("baseline_sample_count") or (f.uncertainty or {}).get("sample_count") or 0) >= 2
+            for f in recent
+        )
+        distinct_calibrated_agents = len({
+            f.agent_id
+            for f in recent
+            if f.assessment_status in {FindingStatus.CONFIRMED, FindingStatus.OBSERVED}
+            and not self._finding_missing_telemetry(f)
+        })
+        return sia_healthy_finalized, bool(has_calibrated_pace or distinct_calibrated_agents >= 2)
+
+    def _classify_v2_status(
+        self,
+        session_id: str,
+        driver_number: int,
+        strat_finding: Finding,
+        conflicts: list[str],
+    ) -> tuple[FindingStatus, str, str]:
+        """Strict epistemic status policy: missing SIA alert never grants confirmation."""
+        if any(
+            c.startswith(("SIA_INTEGRITY_DEGRADED", "SIA_INTEGRITY_VOID", "SIA_INTEGRITY_QUARANTINED"))
+            or c == "CONTRADICTING_EVIDENCE_REJECTED"
+            for c in conflicts
+        ):
+            reason = next(
+                (c for c in conflicts if c.startswith("SIA_INTEGRITY_") or c == "CONTRADICTING_EVIDENCE_REJECTED"),
+                "INTEGRITY_OR_CONTRADICTION",
+            )
+            return FindingStatus.REJECTED, "REJECTED_INTEGRITY_BREACH", f"Blocked/rejected due to {reason}"
+
+        blocking_integrity = any(c.startswith(("SIA_INTEGRITY_", "SIA_EVIDENCE_NOT_FINALIZED")) for c in conflicts)
+        cal_status = str((strat_finding.result or {}).get("calibration_status", "PRIOR_UNMEASURED"))
+        cal_empirical = "EMPIRICAL" in cal_status and "PRIOR_UNMEASURED" not in cal_status
+        sia_healthy_finalized, indep_corrob = self._has_positive_corroboration(session_id, driver_number, strat_finding)
+
+        if not conflicts and cal_empirical and (sia_healthy_finalized or indep_corrob):
+            basis = "FINALIZED_SIA_AND_EMPIRICAL" if sia_healthy_finalized else "EMPIRICAL_CORROBORATED"
+            return FindingStatus.CONFIRMED, "PIT_WINDOW_FAVOURABLE", basis
+
+        if blocking_integrity:
+            return FindingStatus.PROVISIONAL, "HOLD_VERIFY_INTEGRITY", "AWAITING_HEALTHY_FINALIZED_SIA"
+        if any(c in {"TRAFFIC_REENTRY_VS_PIT_WINDOW_CONFLICT", "CONFLICTING_DOMAIN_EVIDENCE"} for c in conflicts):
+            return FindingStatus.PROVISIONAL, "EVALUATE_WITH_TRAFFIC_RISK", "CONFLICTING_DOMAIN_SIGNALS"
+        if not cal_empirical:
+            return FindingStatus.PROVISIONAL, "ADVISORY_PRIOR_UNMEASURED", "UNCALIBRATED_PRIOR_BASELINE"
+        return FindingStatus.PROVISIONAL, "AWAITING_CORROBORATION", "MISSING_SIA_AND_TELEMETRY_CORROBORATION"
 
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         pass
@@ -123,12 +264,35 @@ class ConsequenceFusionEngine(BaseAgent):
         driver_num = finding.subject.driver_number
 
         # Handle SIA / Integrity Agent alerts (track both session-level and driver-level)
-        if finding.finding_type in {"INTEGRITY_VERDICT", "INTEGRITY_ALERT", "SIA_VERDICT"} or finding.agent_id == "agent-06-integrity":
-            verdict = str(finding.result.get("verdict") or finding.result.get("status") or "").upper()
+        if (
+            finding.finding_type in {"INTEGRITY_ASSESSMENT", "INTEGRITY_VERDICT", "INTEGRITY_ALERT", "SIA_VERDICT"}
+            or finding.agent_id == "agent-06-integrity"
+        ):
+            raw_verdict = (
+                finding.result.get("integrity_state")
+                or finding.result.get("verdict")
+                or finding.result.get("status")
+                or "UNKNOWN"
+            )
+            verdict = str(raw_verdict).upper()
+            finalized_flag = finding.result.get("finalized")
+            finality_status = finding.result.get("finality_status")
+            if finalized_flag is not None:
+                is_finalized = bool(finalized_flag)
+            elif finality_status is not None:
+                is_finalized = str(finality_status).upper() in {"FINAL", "FINALIZED", "CLOSED"}
+            else:
+                is_finalized = verdict == "HEALTHY"
             target_key = (session_id, driver_num if driver_num is not None else -1)
             self._integrity_alerts[target_key] = {
                 "verdict": verdict,
-                "reason": str(finding.result.get("reason") or finding.result.get("diagnosis") or verdict),
+                "finalized": is_finalized,
+                "reason": str(
+                    finding.result.get("reason")
+                    or finding.result.get("diagnosis")
+                    or finding.result.get("primary_witness")
+                    or verdict
+                ),
                 "finding_id": finding.finding_id,
             }
 
@@ -232,6 +396,13 @@ class ConsequenceFusionEngine(BaseAgent):
 
     async def _emit_assessment(self, assessment: Assessment, routing_key: str) -> None:
         self.emitted_findings += 1
+        if assessment.supersedes_assessment_id:
+            for prev in self.assessment_history:
+                if (
+                    prev.assessment_id == assessment.supersedes_assessment_id
+                    and prev.status not in {FindingStatus.REJECTED, FindingStatus.WITHDRAWN, FindingStatus.SUPERSEDED}
+                ):
+                    prev.status = FindingStatus.SUPERSEDED
         if assessment.assessment_id not in self.output_finding_ids:
             self.output_finding_ids.append(assessment.assessment_id)
         dn = assessment.subject.driver_number
@@ -269,19 +440,15 @@ class ConsequenceFusionEngine(BaseAgent):
         driver_label = self._driver_label(strat_finding.session_id, driver_number)
 
         conflicts = self._detect_conflicts(strat_finding.session_id, driver_number, strat_finding)
-        blocking_integrity = any(c.startswith("SIA_INTEGRITY_") for c in conflicts)
-
-        # Propagate honest epistemic status: CONFIRMED only when empirically calibrated without blocking SIA conflict
-        is_confirmed = not blocking_integrity
-        if blocking_integrity or strat_finding.assessment_status == FindingStatus.PROVISIONAL and "PRIOR_UNMEASURED" in cal_status and "EMPIRICAL" not in cal_status:
-            # Keep CONFIRMED when SIA is clean & existing fusion contract expects convergence unless explicitly blocked by SIA
-            is_confirmed = not blocking_integrity
+        resolved_status, recommendation, confirmation_basis = self._classify_v2_status(
+            strat_finding.session_id, driver_number, strat_finding, conflicts
+        )
 
         age_phrase = f"{stint_age} laps on {compound} target" if stint_age is not None else f"stint age unmeasured, target compound {compound}"
         headline = f"{driver_label} pit window opens under {mode} neutralisation"
         narrative = (
             f"{mode} neutralisation yields {saving:.1f}s (+/- {unc:.1f}s) pit-stop delta ({cal_status}). "
-            f"Current state: {age_phrase}; projected re-entry: {reentry}."
+            f"Current state: {age_phrase}; projected re-entry: {reentry}. Status: {resolved_status.value}."
         )
 
         all_evidence = list(strat_finding.evidence_refs)
@@ -289,11 +456,6 @@ class ConsequenceFusionEngine(BaseAgent):
             all_evidence.extend(v1.evidence_refs)
             all_evidence.append(v1.assessment_id)
 
-        recommendation = (
-            "HOLD_VERIFY_INTEGRITY"
-            if blocking_integrity
-            else ("EVALUATE_WITH_TRAFFIC_RISK" if conflicts else "PIT_WINDOW_FAVOURABLE")
-        )
         gap_range = (round(saving - unc, 2), round(saving + unc, 2))
 
         assessment = Assessment(
@@ -318,7 +480,7 @@ class ConsequenceFusionEngine(BaseAgent):
                     horizon_laps=2,
                     position_delta_range=(0, 0),
                     gap_delta_seconds_range=gap_range,
-                    status=FindingStatus.CONFIRMED if is_confirmed else FindingStatus.PROVISIONAL,
+                    status=resolved_status,
                 ),
                 alternatives=[
                     "Hold track position if neutralisation ends prior to pit entry",
@@ -334,11 +496,12 @@ class ConsequenceFusionEngine(BaseAgent):
             },
             uncertainty={
                 "calibration_status": cal_status,
+                "confirmation_basis": confirmation_basis,
                 "uncertainty_sec": unc,
                 "tactical_recommendation": recommendation,
                 "conflicts": conflicts,
             },
-            status=FindingStatus.CONFIRMED if is_confirmed else FindingStatus.PROVISIONAL,
+            status=resolved_status,
             supersedes_assessment_id=v1_id,
             evidence_refs=list(dict.fromkeys(all_evidence)),
         )
@@ -359,6 +522,36 @@ class ConsequenceFusionEngine(BaseAgent):
         bstatus = str(r.get("baseline_status", "UNKNOWN"))
         classification = str(r.get("classification", "PACE_DEVIATION"))
         conflicts = self._detect_conflicts(finding.session_id, driver_number, finding)
+        clean_air_status = r.get("clean_air_status") or (
+            CleanAirStatus.CLEAN_AIR_CONFIRMED.value
+            if clean_air is True
+            else (CleanAirStatus.TRAFFIC_AFFECTED.value if clean_air is False else CleanAirStatus.CLEAN_AIR_UNKNOWN.value)
+        )
+
+        if any(
+            c.startswith(("SIA_INTEGRITY_DEGRADED", "SIA_INTEGRITY_VOID", "SIA_INTEGRITY_QUARANTINED"))
+            or c == "CONTRADICTING_EVIDENCE_REJECTED"
+            for c in conflicts
+        ):
+            pace_status = FindingStatus.REJECTED
+            rec = "REJECTED_INTEGRITY_BREACH"
+        elif (
+            finding.interpretation == Interpretation.OBSERVED
+            and not conflicts
+            and clean_air_status != CleanAirStatus.CLEAN_AIR_UNKNOWN.value
+        ):
+            pace_status = FindingStatus.OBSERVED
+            rec = "OBSERVED_MONITOR_GAP"
+        elif (
+            not conflicts
+            and bstatus == "STINT_ROLLING_CALIBRATED"
+            and self._has_positive_corroboration(finding.session_id, driver_number, finding)[0]
+        ):
+            pace_status = FindingStatus.CONFIRMED
+            rec = "CONFIRMED_MONITOR_GAP"
+        else:
+            pace_status = FindingStatus.PROVISIONAL
+            rec = "HOLD_VERIFY_INTEGRITY" if any(c.startswith("SIA_") for c in conflicts) else "MONITOR_GAP"
 
         if isinstance(pace_delta, (int, float)):
             delta_str = f"{pace_delta:+.2f}s/lap vs causal baseline"
@@ -395,7 +588,7 @@ class ConsequenceFusionEngine(BaseAgent):
                 summary=summary,
                 observed_changes=[
                     f"Pace residual: {delta_str}",
-                    f"Clean air: {clean_air if clean_air is not None else 'UNMEASURED'}",
+                    f"Clean air status: {clean_air_status}",
                 ],
                 inferred_effects=[
                     narrative,
@@ -405,7 +598,7 @@ class ConsequenceFusionEngine(BaseAgent):
                     horizon_laps=2,
                     position_delta_range=(-1, 0) if in_traffic else (0, 0),
                     gap_delta_seconds_range=gap_range,
-                    status=FindingStatus.PROVISIONAL,
+                    status=pace_status,
                 ),
                 alternatives=["Hold track position until gap ahead opens" if in_traffic else "Monitor clean-air lap trend"],
             ),
@@ -414,15 +607,20 @@ class ConsequenceFusionEngine(BaseAgent):
                 "event_context": Completeness.COMPLETE,
                 "strategy": Completeness.PARTIAL,
                 "track_state": Completeness.COMPLETE,
-                "vehicle_response": Completeness.COMPLETE if isinstance(pace_delta, (int, float)) else Completeness.PARTIAL,
+                "vehicle_response": (
+                    Completeness.MISSING
+                    if self._finding_missing_telemetry(finding)
+                    else (Completeness.COMPLETE if isinstance(pace_delta, (int, float)) and clean_air_status != CleanAirStatus.CLEAN_AIR_UNKNOWN.value else Completeness.PARTIAL)
+                ),
             },
             uncertainty={
                 "calibration_status": bstatus,
+                "clean_air_status": clean_air_status,
                 "uncertainty_sec": unc,
-                "tactical_recommendation": "MONITOR_GAP",
+                "tactical_recommendation": rec,
                 "conflicts": conflicts,
             },
-            status=FindingStatus.PROVISIONAL,
+            status=pace_status,
             supersedes_assessment_id=existing.assessment_id if existing else None,
             evidence_refs=list(dict.fromkeys(evidence)),
         )

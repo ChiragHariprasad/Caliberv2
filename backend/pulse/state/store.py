@@ -339,10 +339,17 @@ class StateStore:
         self._notify_listeners("AGENT_STATUS_UPDATED", self.get_agent_metrics())
 
     def record_assessment(self, assessment: Assessment) -> None:
-        """Stores fused driver consequence assessment and emits SSE update."""
+        """Stores fused driver consequence assessment, updates superseded revisions, and emits SSE update."""
         if assessment.assessment_id in self._assessment_ids:
             return
         self._assessment_ids.add(assessment.assessment_id)
+        if assessment.supersedes_assessment_id:
+            for prev in self.assessment_history:
+                if (
+                    prev.assessment_id == assessment.supersedes_assessment_id
+                    and prev.status not in {FindingStatus.REJECTED, FindingStatus.WITHDRAWN, FindingStatus.SUPERSEDED}
+                ):
+                    prev.status = FindingStatus.SUPERSEDED
         dn = assessment.subject.driver_number
         if dn:
             self.latest_assessments[dn] = assessment

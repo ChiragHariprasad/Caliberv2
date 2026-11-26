@@ -1,7 +1,14 @@
 export type DataMode = 'SIMULATED' | 'REPLAY' | 'LIVE';
 export type PipelineStatus = 'CONNECTED' | 'PROCESSING' | 'DEGRADED' | 'FAILED';
 export type ImpactTone = 'positive' | 'negative' | 'neutral';
-export type FindingState = 'PROVISIONAL' | 'CONFIRMED' | 'UNRESOLVED' | 'SUPERSEDED' | 'WITHDRAWN';
+export type FindingState =
+  | 'OBSERVED'
+  | 'PROVISIONAL'
+  | 'CONFIRMED'
+  | 'REJECTED'
+  | 'SUPERSEDED'
+  | 'UNRESOLVED'
+  | 'WITHDRAWN';
 export type DriverStatus = 'ACTIVE' | 'PIT_LANE' | 'RETIRED' | 'DNS' | 'INACTIVE';
 export type PositionMode = 'MEASURED_GPS' | 'TIMING_ESTIMATED' | 'INTERPOLATED_DISPLAY';
 

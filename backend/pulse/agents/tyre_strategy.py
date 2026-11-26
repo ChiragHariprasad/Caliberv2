@@ -11,8 +11,17 @@ from pulse.analytics.pace_and_tyre import (
     PitWindowStrategySimulator,
     RollingCleanAirPaceEstimator,
     normalize_compound,
+    resolve_clean_air_status,
 )
-from pulse.contracts import Completeness, EventEnvelope, Finding, FindingStatus, Interpretation, Subject
+from pulse.contracts import (
+    CleanAirStatus,
+    Completeness,
+    EventEnvelope,
+    Finding,
+    FindingStatus,
+    Interpretation,
+    Subject,
+)
 from pulse.topics import AGENT_TOPICS
 
 logger = logging.getLogger("pulse.agents.tyre_strategy")
@@ -209,6 +218,11 @@ class TyreStrategyAgent(BaseAgent):
                         neutralised=neut,
                     )
 
+                clean_air_status, clean_air_flag = resolve_clean_air_status(
+                    position=pos,
+                    interval_sec=interval_val,
+                    is_pit=is_pit,
+                )
                 self.pace_tracker.observe_lap(
                     session_id,
                     dn,
@@ -216,7 +230,10 @@ class TyreStrategyAgent(BaseAgent):
                     lap_sec,
                     stint_id=stint_id,
                     compound=comp,
-                    clean_air=(interval_val is None or interval_val >= 1.8) and (not is_pit),
+                    clean_air=(clean_air_status == CleanAirStatus.CLEAN_AIR_CONFIRMED) and (not is_pit),
+                    clean_air_status=clean_air_status,
+                    position=pos,
+                    interval_sec=interval_val,
                     neutralised=neut,
                     total_laps=total_laps,
                     prior_prediction=pred,
@@ -338,8 +355,8 @@ class TyreStrategyAgent(BaseAgent):
                         )
 
                     is_calibrated = (
-                        deg_est.calibration_status != "PRIOR_UNMEASURED"
-                        or "EMPIRICAL_PIT_CALIBRATED" in strat["calibration_status"]
+                        deg_est.calibration_status not in {"PRIOR_UNMEASURED", "INSUFFICIENT_SAMPLES"}
+                        and "EMPIRICAL_PIT_CALIBRATED" in strat["calibration_status"]
                     )
                     finding = Finding(
                         finding_id=f"f-strat-{uuid4().hex[:8]}",
@@ -357,6 +374,9 @@ class TyreStrategyAgent(BaseAgent):
                             "uncertainty_sec": strat["uncertainty_sec"],
                             "calibration_status": strat["calibration_status"],
                             "slope_se_sec_per_lap": deg_est.slope_se_sec_per_lap,
+                            "strategy_scope": strat["strategy_scope"],
+                            "is_globally_optimal": strat["is_globally_optimal"],
+                            "model_limitations": strat["model_limitations"],
                         },
                         result={
                             "driver_number": target_dn,
@@ -378,6 +398,9 @@ class TyreStrategyAgent(BaseAgent):
                                 "degradation_calibration": deg_est.calibration_status,
                                 "fuel_burn_sec_per_lap": deg_est.fuel_burn_sec_per_lap,
                                 "uncertainty_basis": "EMPIRICAL_MAD_AND_SLOPE_SE" if is_calibrated else "UNMEASURED_F1_PRIOR",
+                                "strategy_scope": strat["strategy_scope"],
+                                "is_globally_optimal": strat["is_globally_optimal"],
+                                "model_limitations": strat["model_limitations"],
                                 "data_provenance": event.source.provider,
                             },
                         },

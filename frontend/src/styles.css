@@ -1292,14 +1292,31 @@ body {
   text-transform: uppercase;
 }
 
+.finding-state--observed {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--f1-blue);
+}
+
 .finding-state--confirmed {
   background: rgba(16, 185, 129, 0.15);
   color: var(--f1-green);
 }
 
-.finding-state--provisional {
+.finding-state--provisional,
+.finding-state--unresolved {
   background: rgba(255, 208, 0, 0.15);
   color: var(--f1-caution);
+}
+
+.finding-state--rejected,
+.finding-state--withdrawn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.finding-state--superseded {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-muted);
 }
 
 .superseded-badge {
@@ -2785,7 +2802,13 @@ section {
   border-radius: 4px;
 }
 
-.status-provisional {
+.status-observed {
+  background: rgba(56, 139, 253, 0.2);
+  color: #58a6ff;
+}
+
+.status-provisional,
+.status-unresolved {
   background: rgba(210, 153, 34, 0.2);
   color: #d29922;
 }
@@ -2793,6 +2816,17 @@ section {
 .status-confirmed {
   background: rgba(46, 160, 67, 0.2);
   color: #3fb950;
+}
+
+.status-rejected,
+.status-withdrawn {
+  background: rgba(248, 81, 73, 0.2);
+  color: #f85149;
+}
+
+.status-superseded {
+  background: rgba(139, 148, 158, 0.2);
+  color: #8b949e;
 }
 
 .audit-forecast-box {

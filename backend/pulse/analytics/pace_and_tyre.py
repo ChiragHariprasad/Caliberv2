@@ -17,6 +17,8 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Any
 
+from pulse.contracts import CleanAirStatus
+
 # Generic physical priors (explicitly tagged as UNMEASURED_PRIOR whenever used)
 DEFAULT_FUEL_BURN_SEC_PER_LAP = 0.060
 DEFAULT_USABLE_FUEL_KG = 100.0
@@ -68,6 +70,38 @@ def estimate_fuel_burn_rate(total_laps: int | None) -> tuple[float, str]:
         rate = (DEFAULT_USABLE_FUEL_KG / float(total_laps)) * FUEL_SENSITIVITY_SEC_PER_KG
         return round(min(max(rate, 0.045), 0.095), 4), "CIRCUIT_LAP_COUNT_MODEL"
     return DEFAULT_FUEL_BURN_SEC_PER_LAP, "GENERIC_FUEL_PRIOR"
+
+
+def resolve_clean_air_status(
+    clean_air: bool | None = None,
+    clean_air_status: CleanAirStatus | str | None = None,
+    *,
+    is_pit: bool = False,
+    position: int | None = None,
+    interval_sec: float | None = None,
+    threshold_sec: float = 1.8,
+) -> tuple[CleanAirStatus, bool | None]:
+    """Resolve tri-state clean-air classification without equating missing interval data to clean air."""
+    if is_pit:
+        return CleanAirStatus.TRAFFIC_AFFECTED, False
+    if clean_air_status is not None:
+        norm = clean_air_status if isinstance(clean_air_status, CleanAirStatus) else CleanAirStatus(str(clean_air_status))
+        if norm == CleanAirStatus.CLEAN_AIR_CONFIRMED:
+            return CleanAirStatus.CLEAN_AIR_CONFIRMED, True
+        if norm == CleanAirStatus.TRAFFIC_AFFECTED:
+            return CleanAirStatus.TRAFFIC_AFFECTED, False
+        return CleanAirStatus.CLEAN_AIR_UNKNOWN, None
+    if interval_sec is not None and math.isfinite(interval_sec):
+        if interval_sec >= threshold_sec:
+            return CleanAirStatus.CLEAN_AIR_CONFIRMED, True
+        return CleanAirStatus.TRAFFIC_AFFECTED, False
+    if position == 1:
+        return CleanAirStatus.CLEAN_AIR_CONFIRMED, True
+    if clean_air is True:
+        return CleanAirStatus.CLEAN_AIR_CONFIRMED, True
+    if clean_air is False:
+        return CleanAirStatus.TRAFFIC_AFFECTED, False
+    return CleanAirStatus.CLEAN_AIR_UNKNOWN, None
 
 
 def safe_ols_slope(x: list[float], y: list[float]) -> tuple[float, float, float] | None:
@@ -166,6 +200,7 @@ class RollingCleanAirPaceEstimator:
         self._track_evo_index: dict[str, dict[int, float]] = {}
         self._cum_evo: dict[str, float] = {}
         self._evo_last_lap: dict[str, int] = {}
+        self._clean_air_counts: dict[tuple[str, int], dict[str, int]] = {}
 
     def reset(self, session_id: str | None = None) -> None:
         if session_id is None:
@@ -176,6 +211,7 @@ class RollingCleanAirPaceEstimator:
             self._track_evo_index.clear()
             self._cum_evo.clear()
             self._evo_last_lap.clear()
+            self._clean_air_counts.clear()
         else:
             self._sessions.pop(session_id, None)
             self._session_compound_laps.pop(session_id, None)
@@ -184,6 +220,18 @@ class RollingCleanAirPaceEstimator:
             self._track_evo_index.pop(session_id, None)
             self._cum_evo.pop(session_id, None)
             self._evo_last_lap.pop(session_id, None)
+            for k in [key for key in self._clean_air_counts if key[0] == session_id]:
+                self._clean_air_counts.pop(k, None)
+
+    def get_clean_air_summary(self, session_id: str, driver_number: int) -> dict[str, int]:
+        counts = self._clean_air_counts.get((session_id, driver_number))
+        if counts is None:
+            return {
+                CleanAirStatus.CLEAN_AIR_CONFIRMED.value: 0,
+                CleanAirStatus.TRAFFIC_AFFECTED.value: 0,
+                CleanAirStatus.CLEAN_AIR_UNKNOWN.value: 0,
+            }
+        return dict(counts)
 
     def _get_driver(self, session_id: str, driver_number: int) -> _DriverPaceMemory:
         sess = self._sessions.setdefault(session_id, {})
@@ -322,7 +370,10 @@ class RollingCleanAirPaceEstimator:
         *,
         stint_id: int | None = None,
         compound: Any = None,
-        clean_air: bool = True,
+        clean_air: bool | None = None,
+        clean_air_status: CleanAirStatus | str | None = None,
+        position: int | None = None,
+        interval_sec: float | None = None,
         neutralised: bool = False,
         total_laps: int | None = None,
         prior_prediction: BaselinePrediction | None = None,
@@ -331,6 +382,23 @@ class RollingCleanAirPaceEstimator:
             self._session_total_laps[session_id] = int(total_laps)
         if lap_sec is None or not math.isfinite(lap_sec) or lap_sec <= 35.0 or lap_sec >= 300.0:
             return
+
+        resolved_status, resolved_flag = resolve_clean_air_status(
+            clean_air=clean_air,
+            clean_air_status=clean_air_status,
+            position=position,
+            interval_sec=interval_sec,
+        )
+        is_confirmed_clean_air = resolved_status == CleanAirStatus.CLEAN_AIR_CONFIRMED
+        counts = self._clean_air_counts.setdefault(
+            (session_id, driver_number),
+            {
+                CleanAirStatus.CLEAN_AIR_CONFIRMED.value: 0,
+                CleanAirStatus.TRAFFIC_AFFECTED.value: 0,
+                CleanAirStatus.CLEAN_AIR_UNKNOWN.value: 0,
+            },
+        )
+        counts[resolved_status.value] = counts.get(resolved_status.value, 0) + 1
 
         comp = normalize_compound(compound)
         mem = self._get_driver(session_id, driver_number)
@@ -348,12 +416,12 @@ class RollingCleanAirPaceEstimator:
         if comp != "UNKNOWN":
             mem.last_compound = comp
 
-        # Only learn clean green-flag flying laps > lap 1 into baseline
+        # Only learn confirmed clean green-flag flying laps > lap 1 into baseline (never CLEAN_AIR_UNKNOWN)
         if neutralised or lap_number <= 1:
             return
 
         if (
-            clean_air
+            is_confirmed_clean_air
             and prior_prediction is not None
             and prior_prediction.baseline_sec is not None
             and prior_prediction.status == "STINT_ROLLING_CALIBRATED"
@@ -361,7 +429,7 @@ class RollingCleanAirPaceEstimator:
             mem.abs_errors.append(abs(lap_sec - prior_prediction.baseline_sec))
 
         # Guard clean baseline window from single-lap anomalies while adapting to real 2-lap pace regime shifts (e.g. drying track / red-flag tyre change)
-        if clean_air:
+        if is_confirmed_clean_air and resolved_flag is True:
             if mem.stint_laps:
                 cur_med = statistics.median([s for _, s in mem.stint_laps])
                 if abs(lap_sec - cur_med) <= 4.0 or len(mem.stint_laps) < 2:
@@ -523,7 +591,7 @@ class FuelCompensatedDegradationModel:
         raw_ys = [o[2] for o in stint.observations]
         med_y = statistics.median(raw_ys)
         inliers = [o for o in stint.observations if abs(o[2] - med_y) <= 3.5]
-        if len(inliers) < 5:
+        if len(inliers) < 5 or (inliers[-1][0] - inliers[0][0]) < 3:
             return None
         l0 = inliers[0][0]
         ages = [float(o[1]) for o in inliers]
@@ -574,15 +642,17 @@ class FuelCompensatedDegradationModel:
             pool_slope = sum(sl / (se * se) for sl, se in pool_fits) / sum_w
 
         if drv_fit is None and not pool_fits:
+            n_obs = len(active.observations) if active else 0
+            cal_tag = "INSUFFICIENT_SAMPLES" if n_obs > 0 else "PRIOR_UNMEASURED"
             return DegradationEstimate(
                 compound=comp,
                 slope_sec_per_lap=round(prior_slope, 4),
                 raw_uncompensated_slope_sec_per_lap=None,
                 slope_se_sec_per_lap=PRIOR_DEG_SLOPE_SE,
-                n_driver_laps=len(active.observations) if active else 0,
+                n_driver_laps=n_obs,
                 n_session_stints=0,
                 fuel_burn_sec_per_lap=fuel_burn,
-                calibration_status="PRIOR_UNMEASURED",
+                calibration_status=cal_tag,
             )
 
         num = prior_slope * prior_prec
@@ -790,6 +860,28 @@ class PitWindowStrategySimulator:
         drv_info = self._field_state.get(session_id, {}).get(driver_number, {})
         gap_to_p2 = drv_info.get("interval_sec")
 
+        model_limitations: list[str] = [
+            "Advisory heuristic over uniform 100 kg fuel approximation; not a globally optimal mixed-integer strategy solver",
+            "Assumes static opponent pit-response (no reactive undercut/overcut game theory)",
+            "Neutralisation end lap (SC/VSC duration) is unknown causal horizon",
+        ]
+        pit_window_viable = True
+        if remaining_laps is None:
+            model_limitations.append("Remaining race distance unknown; degradation horizon defaulted to 10 laps")
+        elif remaining_laps <= 2:
+            pit_window_viable = False
+            model_limitations.append("END_OF_RACE_HORIZON_TOO_SHORT: remaining distance <= 2 laps")
+        if gap_to_p2 is None:
+            model_limitations.append("Missing interval_to_ahead telemetry for defender margin")
+        if "UNMEASURED" in reentry_str or "PARTIAL" in reentry_str:
+            model_limitations.append("Insufficient live field gaps for exact re-entry traffic penalty estimation")
+        if "PRIOR_UNMEASURED" in pit_cal:
+            model_limitations.append("Using generic uncalibrated prior pit-lane transit loss")
+        if deg_estimate is None or deg_estimate.calibration_status in {"PRIOR_UNMEASURED", "INSUFFICIENT_SAMPLES"}:
+            model_limitations.append("Tyre degradation slope lacks sufficient clean stint samples (>= 5 laps, span >= 3)")
+        if current_compound in {"UNKNOWN", "I", "W"}:
+            model_limitations.append("Wet/intermediate or unknown compound crossover highly sensitive to track evolution")
+
         scenarios = [
             {
                 "label": "OPTIMISTIC (-1.5 sigma)",
@@ -811,7 +903,7 @@ class PitWindowStrategySimulator:
             },
         ]
 
-        overall_cal = pit_cal if (deg_estimate is None or deg_estimate.calibration_status == "PRIOR_UNMEASURED") else f"{pit_cal}+{deg_estimate.calibration_status}"
+        overall_cal = pit_cal if (deg_estimate is None or deg_estimate.calibration_status in {"PRIOR_UNMEASURED", "INSUFFICIENT_SAMPLES"}) else f"{pit_cal}+{deg_estimate.calibration_status}"
         return {
             "target_compound": target_compound,
             "stint_age_current": stint_age,
@@ -826,4 +918,9 @@ class PitWindowStrategySimulator:
             "projected_reentry_pos": reentry_pos,
             "gap_to_p2_sec": gap_to_p2,
             "scenarios": scenarios,
+            "strategy_scope": "ADVISORY_LOCAL_PIT_WINDOW_ONLY",
+            "is_globally_optimal": False,
+            "pit_window_viable": pit_window_viable,
+            "sample_count": deg_estimate.n_driver_laps if deg_estimate is not None else 0,
+            "model_limitations": model_limitations,
         }
