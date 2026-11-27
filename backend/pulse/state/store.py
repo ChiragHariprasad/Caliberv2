@@ -409,6 +409,11 @@ class StateStore:
         self._listeners.append(queue)
         return queue
 
+    def try_add_listener(self, max_listeners: int) -> asyncio.Queue[dict[str, Any]] | None:
+        if len(self._listeners) >= max_listeners:
+            return None
+        return self.add_listener()
+
     def remove_listener(self, queue: asyncio.Queue[dict[str, Any]]) -> None:
         if queue in self._listeners:
             self._listeners.remove(queue)

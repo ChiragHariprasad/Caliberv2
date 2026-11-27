@@ -5,6 +5,13 @@ from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+DEFAULT_LOCAL_CORS_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
+_LOCAL_DEV_ENVS = frozenset({"development", "dev", "local", "test"})
+_EXTERNAL_ENVS = frozenset({"production", "prod", "staging", "external"})
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+_WEAK_API_KEYS = frozenset({"changeme", "default", "secret", "password", "test", "pulse", "demo", "dev-key"})
+
+
 class Settings(BaseSettings):
     """Runtime configuration. Kafka is the default operational transport."""
 
@@ -15,6 +22,17 @@ class Settings(BaseSettings):
     )
 
     env: str = "development"
+    host: str = Field(
+        default="127.0.0.1",
+        description="Bind host for HTTP server (non-loopback requires API key & explicit CORS)",
+        validation_alias=AliasChoices("PULSE_HOST", "HOST"),
+    )
+    port: int = Field(
+        default=8000,
+        ge=1,
+        le=65535,
+        validation_alias=AliasChoices("PULSE_PORT", "PORT"),
+    )
     log_level: str = "INFO"
     transport_mode: str = Field(
         default="KAFKA",
@@ -54,11 +72,16 @@ class Settings(BaseSettings):
         description="SQLite WAL persistence path for SIA Core v3 ledger & hash chains (None disables disk WAL)",
         validation_alias=AliasChoices("PULSE_SIA_WAL_PATH", "SIA_WAL_PATH"),
     )
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000"
+    cors_origins: str = DEFAULT_LOCAL_CORS_ORIGINS
     control_api_key: str = Field(
         default="",
-        description="Optional API key required for mutating control routes when non-empty",
+        description="API key required for mutating control routes when non-empty or required by posture",
         validation_alias=AliasChoices("PULSE_API_KEY", "PULSE_CONTROL_API_KEY"),
+    )
+    require_control_auth: bool = Field(
+        default=False,
+        description="Fail closed on startup and control mutations unless a strong control API key is configured",
+        validation_alias=AliasChoices("PULSE_REQUIRE_CONTROL_AUTH", "PULSE_REQUIRE_AUTH"),
     )
     max_sse_listeners: int = Field(default=64, ge=1, le=500)
     default_replay_speed: float = Field(default=1.0, gt=0, le=32)
@@ -72,6 +95,56 @@ class Settings(BaseSettings):
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
+    @property
+    def is_local_dev_env(self) -> bool:
+        return self.env.strip().lower() in _LOCAL_DEV_ENVS
+
+    @property
+    def is_external_env(self) -> bool:
+        return self.env.strip().lower() in _EXTERNAL_ENVS
+
+    @property
+    def is_non_loopback_host(self) -> bool:
+        return self.host.strip().lower() not in _LOOPBACK_HOSTS
+
+    @property
+    def requires_control_auth(self) -> bool:
+        return bool(self.require_control_auth or not self.is_local_dev_env or self.is_non_loopback_host)
+
+    def validate_security_posture(self) -> None:
+        """Fail closed when auth is required or when exposed externally with local dev defaults."""
+        origins = self.cors_origin_list
+        if "*" in origins:
+            raise ValueError("Security configuration error: wildcard CORS origin '*' is forbidden with credentialed endpoints")
+        if not origins:
+            raise ValueError("Security configuration error: PULSE_CORS_ORIGINS cannot be empty")
+
+        key = (self.control_api_key or "").strip()
+        if self.requires_control_auth:
+            if not key:
+                raise ValueError(
+                    "Security configuration error: PULSE_API_KEY / PULSE_CONTROL_API_KEY must be configured "
+                    f"when authentication is required (env={self.env!r}, host={self.host!r}, "
+                    f"require_control_auth={self.require_control_auth})"
+                )
+            if len(key) < 16 or key.lower() in _WEAK_API_KEYS:
+                raise ValueError(
+                    "Security configuration error: PULSE_API_KEY / PULSE_CONTROL_API_KEY must be at least "
+                    "16 non-placeholder characters when authentication is required"
+                )
+
+        if self.is_external_env or self.is_non_loopback_host:
+            if self.cors_origins.strip() == DEFAULT_LOCAL_CORS_ORIGINS:
+                raise ValueError(
+                    "Security configuration error: externally exposed or non-loopback configuration cannot "
+                    "run with default permissive local-development CORS origins; set explicit PULSE_CORS_ORIGINS"
+                )
+        if self.is_external_env:
+            if any("localhost" in o.lower() or "127.0.0.1" in o or "[::1]" in o for o in origins):
+                raise ValueError(
+                    "Security configuration error: localhost CORS origins are forbidden in production/staging/external env"
+                )
 
 
 @lru_cache

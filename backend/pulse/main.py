@@ -45,6 +45,7 @@ logger = logging.getLogger("pulse.main")
 async def lifespan(app: FastAPI):
     """Application lifespan: manages Kafka broker, stream normalizer, 5 specialist agents, and scenario runner."""
     settings = get_settings()
+    settings.validate_security_posture()
     bus = get_event_bus()
     broker = get_kafka_broker()
     normalizer = StreamNormalizer()
@@ -381,6 +382,7 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    settings.validate_security_posture()
     app = FastAPI(
         title="PULSE Race Intelligence API",
         description="F1 Event Consequence Engine with Specialist Agents, Flink Stream Normalization & SIA Integrity Engine",
@@ -416,4 +418,11 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("pulse.main:app", host="0.0.0.0", port=8000, reload=True)
+    s = get_settings()
+    s.validate_security_posture()
+    uvicorn.run(
+        "pulse.main:app",
+        host=s.host,
+        port=s.port,
+        reload=(s.is_local_dev_env and not s.is_non_loopback_host),
+    )

@@ -10,12 +10,19 @@ from pulse.config import get_settings
 def require_control_api_key(request: Request) -> None:
     """Enforce X-PULSE-API-Key / Bearer token on mutating control endpoints when configured.
 
-    When Settings.control_api_key is empty (default local research workstation mode),
-    requests pass through without friction. When set (e.g., controlled shared demo),
-    control routes reject unauthenticated callers with HTTP 401.
+    When authentication is required (non-local env, non-loopback host, or
+    Settings.require_control_auth=True), requests fail closed unless a key is configured
+    and matched. In default local loopback development mode with no key set, requests
+    pass through without friction.
     """
-    expected = (get_settings().control_api_key or "").strip()
+    settings = get_settings()
+    expected = (settings.control_api_key or "").strip()
     if not expected:
+        if settings.requires_control_auth:
+            raise HTTPException(
+                status_code=503,
+                detail="Control plane unavailable: authentication required but no control API key is configured",
+            )
         return
 
     provided = request.headers.get("X-PULSE-API-Key", "").strip()

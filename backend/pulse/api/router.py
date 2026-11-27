@@ -525,33 +525,30 @@ async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str,
 async def event_stream(request: Request, limit: int | None = Query(default=None)) -> StreamingResponse:
     """Continuous Server-Sent Events (SSE) delivering real-time telemetry and intelligence updates."""
     store = get_state_store()
-    if len(store._listeners) >= get_settings().max_sse_listeners:
+    queue = store.try_add_listener(get_settings().max_sse_listeners)
+    if queue is None:
         raise HTTPException(status_code=429, detail="Maximum concurrent SSE stream connections reached")
     last_event_id = request.headers.get("Last-Event-ID")
 
     async def sse_generator():
-        store = get_state_store()
-        queue = store.add_listener()
-
-        # Send initial snapshot event upon connection
-        initial_snap = json.dumps(store.get_snapshot())
-        yield f"id: sse-evt-init\nevent: snapshot\ndata: {initial_snap}\n\n"
-        count = 1
-
-        # Replay any buffered events if Last-Event-ID was supplied
-        if last_event_id:
-            missed = store.get_history_after_id(last_event_id)
-            for m in missed:
-                event_type = m.get("update_type", "event")
-                msg_id = m.get("id", f"sse-evt-{m.get('seq')}")
-                yield f"id: {msg_id}\nevent: {event_type}\ndata: {json.dumps(m)}\n\n"
-                count += 1
-
-        if limit is not None and count >= limit:
-            store.remove_listener(queue)
-            return
-
         try:
+            # Send initial snapshot event upon connection
+            initial_snap = json.dumps(store.get_snapshot())
+            yield f"id: sse-evt-init\nevent: snapshot\ndata: {initial_snap}\n\n"
+            count = 1
+
+            # Replay any buffered events if Last-Event-ID was supplied
+            if last_event_id:
+                missed = store.get_history_after_id(last_event_id)
+                for m in missed:
+                    event_type = m.get("update_type", "event")
+                    msg_id = m.get("id", f"sse-evt-{m.get('seq')}")
+                    yield f"id: {msg_id}\nevent: {event_type}\ndata: {json.dumps(m)}\n\n"
+                    count += 1
+
+            if limit is not None and count >= limit:
+                return
+
             while True:
                 if await request.is_disconnected():
                     break
