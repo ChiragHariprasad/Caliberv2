@@ -8,7 +8,8 @@ PULSE strictly enforces empirical provenance tracking across every stored datase
 
 | Source Class | Actual Repository Contents | Allowed Analytical Use | Explicit Restrictions |
 | :--- | :--- | :--- | :--- |
-| **Offline Cached FastF1 Sessions** (`data/fastf1_cache/`) | **6 complete race datasets** with lap times, timestamps, sectors, pit in/out, tyre compounds & track status: `2021 Britain` (949 valid laps), `2021 Belgium` (58 laps), `2021 Saudi Arabia` (802 laps), `2021 Abu Dhabi` (998 laps), `2022 Monaco` (1,158 laps), `2022 Japan` (485 laps) | Pace validation, LORO cross-validation, holdout evaluation, ablation studies, causal interval reconstruction | Reconstructed intervals from `LapStartTime`; never labeled as live official FIA feeds |
+| **Offline Cached FastF1 Sessions** (`data/fastf1_cache/`) | **6 complete race datasets (`2021–2022`)** with lap times, weather, compounds & track status: `2021 Britain` (949 valid laps), `2021 Belgium` (58 laps), `2021 Saudi Arabia` (802 laps), `2021 Abu Dhabi` (998 laps), `2022 Monaco` (1,158 laps), `2022 Japan` (485 laps) | Calibration/holdout pace validation, LORO cross-validation, ablation studies, causal interval reconstruction | Reconstructed intervals from `LapStartTime`; never labeled as live official FIA feeds |
+| **Offline Cached OpenF1 Historical Sessions** (`data/openf1_cache/`) | **11 complete race JSON bundles (`2023–2024`)** fetched via free public historical OpenF1 REST API (`/laps`, `/stints`, `/pit`, `/weather`, `/race_control`, `/drivers`): `2023` (`Austria` 1,351 valid laps, `Great Britain` 970, `Netherlands` 1,323, `Singapore` 1,083, `Japan` 878); `2024` (`Saudi Arabia` 900, `Monaco` 1,217, `Canada` 1,267, `Great Britain` 959, `Monza` 1,008, `Brazil` 1,116) | Unseen external `2023–2024` zero-tuning holdout, 15-fold walk-forward, 16-race LORO, and wet/compound/SC stratifications | Loaded strictly offline from `data/openf1_cache/*.json`; intervals reconstructed causally in crossing order from prior same-lap cars; `2023 Monaco` excluded due to missing `/pit`; never labeled live official FIA feeds |
 | **Summary Historical Metadata** (`data/f1_corpus/2023_*`, `2024_*`) | 4 directories (`Australia`, `Austria`, `Las Vegas`, `United States 2024`) containing Jolpica summary metadata (`0` per-lap `lap_time_seconds` rows) | Metadata & incident cross-reference only | Excluded from lap-time pace modeling (`valid_lt = 0`) |
 | **Replay Capture Archives** (`captures/*/envelopes.jsonl`) | Pre-recorded race & stress-test streams (`f1-2023-silverstone-race` `72,642` events, `f1-2026-monaco-sim` `72,926` events, `f1-2026-suzuka-race` `72,617` events, etc.) | Pipeline throughput, deterministic replay, SIA chain & UI testing | Explicitly marked `SYNTHETIC` / `REPLAY` / `LAB` via [registry.py](../backend/pulse/sessions/registry.py) |
 
@@ -44,13 +45,15 @@ Clean-air baseline estimation cannot assume missing interval telemetry equals fr
 
 ---
 
-## 4. Scientific Validation Protocol ([baseline_comparison.py](../backend/pulse/analytics/baseline_comparison.py))
+## 4. Scientific Validation Protocol ([baseline_comparison.py](../backend/pulse/analytics/baseline_comparison.py) & [generalization_phase_j.py](../backend/pulse/analytics/generalization_phase_j.py))
 
-All 6 pace baselines are compared over **identical green-flag, non-pit, `CLEAN_AIR_CONFIRMED` flying laps (`lap >= 2`)** across:
-- **Calibration / Development Split:** `2021 British GP`, `2021 Saudi Arabian GP`, `2022 Monaco GP`.
-- **Temporal Held-Out Test Split:** `2021 Abu Dhabi GP`, `2022 Japanese GP`.
-- **Edge-Case Stress Check:** `2021 Belgian GP` (`3` total laps behind Safety Car -> `0` green targets predicted, zero spurious output).
-- **Leave-One-Race-Out (LORO) Validation:** Cross-validated across all 5 full-distance races (`regression_params` refit solely on the 4 training races per fold).
+All 6 pace baselines are evaluated strictly causally (`predict_baseline()` prior to `observe_lap()`) over **green-flag, non-pit, `CLEAN_AIR_CONFIRMED` flying laps (`lap >= 2`)**:
+- **Calibration / Development Split:** `2021 British GP`, `2021 Saudi Arabian GP`, `2022 Monaco GP` *(Phase I `fast_restart_recovery` and conformal parameters set here only)*.
+- **Temporal Held-Out Test Split (`2021–2022`):** `2021 Abu Dhabi GP`, `2022 Japanese GP`.
+- **Unseen External Generalization Split (`2023–2024`, Zero Parameter Tuning):** All **11** offline cached OpenF1 races (`2023–2024`).
+- **Chronological Walk-Forward (`15` Folds) & 16-Race LORO:** Expanding strictly chronological training folds across `2021–2024` plus full 16-race leave-one-race-out cross-validation (`regression_params` refit solely on training races).
+- **Edge-Case Stress Check:** `2021 Belgian GP` (`3` total laps behind Safety Car -> `13` green-flagged target candidates evaluated as `0` predicted laps, zero spurious extrapolation).
+- **Correlated-Error Uncertainty & Common-Support Protocol (Phase J):** Within-stint lap residuals exhibit positive lag-1 autocorrelation (`+0.38`–`+0.40`). Therefore, confidence intervals for MAE, RMSE, PI95 coverage, and paired `revised - existing` MAE deltas are computed using **2,000-replicate cluster/block bootstrap** (stint clusters `driver x stint_id x session` as primary unit, plus race/session cluster checks), alongside both unaligned per-model totals, **abstention isolation**, and strict **paired 6-way common-support intersections**.
 
 | Model | Definition | Primary Role |
 | :--- | :--- | :--- |

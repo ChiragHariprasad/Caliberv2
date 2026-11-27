@@ -1,7 +1,7 @@
-# PULSE — Canonical Architecture Decision Log (`ADR-01` – `PULSE-ADR-016`)
+# PULSE — Canonical Architecture Decision Log (`ADR-01` – `PULSE-ADR-017`)
 
-**Status:** Canonical Living Registry (Migrated & Updated Phase I)  
-**Policy:** Historical CALIBRE decisions (`ADR-01`–`ADR-12`) are preserved with their original rationale while supersession tags link directly to reconstructed Phase H/I decisions (`PULSE-ADR-009`–`PULSE-ADR-016`). Rejected alternatives are explicitly recorded so abandoned refactors are not repeated.
+**Status:** Canonical Living Registry (Migrated & Updated Phase J)  
+**Policy:** Historical CALIBRE decisions (`ADR-01`–`ADR-12`) are preserved with their original rationale while supersession tags link directly to reconstructed Phase H/I/J decisions (`PULSE-ADR-009`–`PULSE-ADR-017`). Rejected alternatives are explicitly recorded so abandoned refactors are not repeated.
 
 ---
 
@@ -54,17 +54,22 @@
 - **Context:** 6-baseline LORO evaluation revealed why Phase H Japan `PI95` fell to `83.28%` and standing-restart laps spiked rolling averages: `RollingCleanAirPaceEstimator` averaged `len==1` standing-restart laps (e.g., Silverstone Lap 4 `160.13s`) with flying pace (`92.805s`), while `_advance_track_evo` drifted on `>5s` restart gaps.
 - **Decision:** Guard fast restart transitions cleanly without future leakage (`fast_restart_recovery=True`), lifting LORO 5-race `PI95` to `93.91%` (`MAE 0.5094s`) and held-out 2022 Japan `PI95` to `95.18%` (`MAE 0.5730s`).
 
-### `PULSE-ADR-014` — Optional Control-Plane Auth, Restricted CORS & Bounded SSE Listeners
-- **Status:** Accepted (Phase I, Commit `a24ff6c`)
-- **Context:** FastAPI originally exposed `allow_origins=["*"]`, unauthenticated control routes (`start`, `pause`, `seek`, `reset`, `lab-scenario`), unvalidated `session_id` path strings, and unbounded SSE subscriber queues.
-- **Decision:** Add [`backend/pulse/api/security.py`](../../backend/pulse/api/security.py) (`require_control_api_key` via `X-PULSE-API-Key` or `Authorization: Bearer <token>` when `PULSE_CONTROL_API_KEY` is configured), restrict CORS to `settings.cors_origin_list`, enforce `[a-zA-Z0-9._-]+` `session_id` validation, and enforce `max_sse_listeners=64` (returning HTTP `429` above capacity).
+### `PULSE-ADR-014` — Fail-Closed Control-Plane Auth, Restricted CORS & Atomic Bounded SSE Listeners
+- **Status:** Accepted & Hardened (Phase I `a24ff6c` -> Phase J `148a6b5`)
+- **Context:** FastAPI originally exposed `allow_origins=["*"]`, unauthenticated control routes (`start`, `pause`, `seek`, `reset`, `lab-scenario`), unvalidated `session_id` path strings, and unbounded SSE subscriber queues; Phase J additionally identified risks of non-dev or non-loopback deployments running with empty keys, wildcard CORS, or race conditions on concurrent SSE connects.
+- **Decision:** Add [`backend/pulse/api/security.py`](../../backend/pulse/api/security.py) (`require_control_api_key` via `X-PULSE-API-Key` or `Authorization: Bearer <token>`, failing closed with HTTP `503` if auth is required with empty key), enforce `validate_security_posture()` at startup/lifespan (`PULSE_HOST` defaults to `127.0.0.1`; non-dev `PULSE_ENV` including `shared-demo`, `PULSE_REQUIRE_CONTROL_AUTH=true`, or non-loopback bind requires non-placeholder `>=16`-char `PULSE_API_KEY` and forbids wildcard `*` or unmodified localhost CORS defaults), enforce `[a-zA-Z0-9._-]+` `session_id` validation, and enforce atomic `StateStore.try_add_listener(64)` (`HTTP 429`).
 
 ### `PULSE-ADR-015` — Unified Three-Broker KRaft + Flink `v3` Pipeline Across All 9 Raw Topics
 - **Status:** Accepted (Phase H/I)
 - **Context:** Legacy Flink `v2` dropped `71,960` car-telemetry position events and Stage 3 in `orchestrator.py` stubbed normalization instead of consuming `pulse.norm.*`; `zstd` encoding crashed Flink container deserializers.
-- **Decision:** Standardize on `pulse-canonical-normalizer-v3` (`18` RUNNING vertices / `36` subtasks covering all `9` `RAW_TOPICS`), default `CalibreProducer` compression to `gzip`, run real Flink Stage 3 consumption/watermarks, and keep host clients exclusively on external listeners (`localhost:19092..19094`).
+- **Decision:** Standardize on `pulse-canonical-normalizer-v3` (`18` RUNNING vertices / `36` subtasks on `4` TaskManager slots covering all `9` `RAW_TOPICS`), default `CalibreProducer` and `KafkaBroker` compression to `gzip`, run real Flink Stage 3 consumption/watermarks, and keep host clients exclusively on external listeners (`localhost:19092..19094`) while Docker internal traffic uses `kafka-1..3:29092`.
 
 ### `PULSE-ADR-016` — Defer Patent Filing & Reject Uncorroborated Commercial Data Claims
-- **Status:** Accepted (Phase I · **Action Deferred / Rejected**)
+- **Status:** Accepted & Re-Affirmed (Phase I `f5fbc6a` -> Phase J)
 - **Context:** Claim-level review of verified Google Patents (`US6020851A`, `US8713073B2`, `US10614239B2`, `US11567823B2`, `US11747360B2`, `US20180089328A1`, `US10445698B2`, `US11943123B1`) and Indian Patents Act Section 3(k) + 2025 CRI Guidelines.
-- **Decision:** **Do not file** broad PULSE (`1.5/10`) or standalone SIA software (`2.5/10`) claims; defer any filing until/unless a physical hardware/network interlock architecture (`~4.0/10`) receives formal FTO clearance from patent counsel. Continue strict `SYNTHETIC`/`LAB`/`PREVIEW` separation without F1TV scraping.
+- **Decision:** **Do not file** broad PULSE (`1.5/10`) or standalone SIA software (`2.5/10`) claims; Phase J external validation and distributed tests support **academic research dissemination**, not patent filing. Continue strict `SYNTHETIC`/`LAB`/`PREVIEW` separation without F1TV scraping.
+
+### `PULSE-ADR-017` — Explicit Bottleneck Attribution, Cluster-Bootstrap CIs & Client Seek Timeout (`120s`)
+- **Status:** Accepted (Phase J `31a323b`, `c28c88f`, `232f9a3`)
+- **Context:** Phase I benchmarks left three ambiguities: (1) `14.69s` standalone cold seek vs `70.88s` 5-trial subprocess mean and `45s` frontend timeout risk; (2) raw Kafka throughput (`12k+ msg/s`) vs full Flink+6-Agent+SIA WAL E2E throughput; and (3) i.i.d. variance assumptions on positively autocorrelated within-stint laps (`lag-1 ACF = +0.38..+0.40`) plus wet-weather under-coverage.
+- **Decision:** Record `7`-boundary replay timing (`89.04%` SIA+WAL attribution) and raise `frontend/src/api.ts` `seekReplay` timeout from `45,000ms` to `120,000ms`; distinguish Tier 1 broker capacity from Tier 2 `9.67 ev/s` unbatched SIA WAL E2E throughput rather than hiding synchronous WAL fsync costs; report `2,000`-replicate stint/session block bootstrap CIs and surface wet `PI95 = 91.28%` under-coverage explicitly instead of post-hoc tuning on `2023–2024` test races.

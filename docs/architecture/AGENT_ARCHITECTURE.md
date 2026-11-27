@@ -17,7 +17,7 @@ sequenceDiagram
     participant DB as StateStore & SSE
 
     Norm->>A12: VSC_DEPLOYED / WEATHER_UPDATE
-    A12->>A5: DRIVER_EVENT_EXPOSURE (PROVISIONAL)
+    A12->>A5: RACE_EVENT_LIFECYCLE / TRACK_CONDITION_STATE (PROVISIONAL)
     A5->>DB: Emit v1 Assessment (PROVISIONAL)
     Norm->>A3: LAP_COMPLETED / CAR_TELEMETRY
     A3->>A5: PACE_DEVIATION (clean_air_status, baseline, sample_count)
@@ -34,12 +34,12 @@ sequenceDiagram
 
 | Agent ID | Class / Module | Subscribed Inputs | Emitted Topic & Finding Types | Key Constraints & Phase I Hardening |
 | :--- | :--- | :--- | :--- | :--- |
-| **`agent-01-event-control`** | `EventControlAgent` ([event_control.py](../../backend/pulse/agents/event_control.py)) | `RACE_CONTROL_MSG`, `VSC_*`, `SC_*`, `RED_FLAG`, `DRIVER_RETIRED` | `pulse.agent.event_context.findings.v1` (`DRIVER_EVENT_EXPOSURE`, flag lifecycle) | Never invents artificial stewarding rulings; preserves `PROVISIONAL` vs FIA `CONFIRMED` notices |
-| **`agent-02-track-state`** | `TrackStateAgent` ([track_state.py](../../backend/pulse/agents/track_state.py)) | `WEATHER_UPDATE`, sector & track status events | `pulse.agent.track_state.findings.v1` (`TRACK_STATE_UPDATE`) | Tracks air/track temp, wet/drying grip regime, neutralised flags |
+| **`agent-01-event-control`** | `EventControlAgent` ([event_control.py](../../backend/pulse/agents/event_control.py)) | `SESSION_STARTED`, `RACE_CONTROL_*`, `VSC_*`, `SAFETY_CAR_*`, `RED_FLAG`, `YELLOW_FLAG`, `GREEN_FLAG*`, `DRIVER_RETIRED`, `STEWARD_DECISION` | `pulse.agent.event_context.findings.v1` (`RACE_EVENT_LIFECYCLE`, `DRIVER_EVENT_EXPOSURE`, `DRIVER_RETIREMENT`, `STEWARD_ACTION`) | Never invents artificial stewarding rulings; preserves `PROVISIONAL` vs FIA `CONFIRMED` notices |
+| **`agent-02-track-state`** | `TrackStateAgent` ([track_state.py](../../backend/pulse/agents/track_state.py)) | `WEATHER_UPDATE`, sector & track status events | `pulse.agent.track_state.findings.v1` (`TRACK_CONDITION_STATE`, `WEATHER_TRANSITION`) | Tracks air/track temp, wet/drying grip regime, neutralised flags |
 | **`agent-03-vehicle-response`** | `VehicleResponseAgent` ([vehicle_response.py](../../backend/pulse/agents/vehicle_response.py)) | `LAP_COMPLETED`, `CAR_TELEMETRY`, flag/session start | `pulse.agent.vehicle_response.findings.v1` (`PACE_DEVIATION`) | Strictly causal `predict_baseline()` BEFORE `observe_lap()`; emits tri-state `clean_air_status` (`CLEAN_AIR_UNKNOWN` blocks `CONFIRMED` & never trains baselines) |
 | **`agent-04-tyre-strategy`** | `TyreStrategyAgent` ([tyre_strategy.py](../../backend/pulse/agents/tyre_strategy.py)) | `PIT_ENTRY`, `PIT_EXIT`, `TYRE_FITTED`, `LAP_COMPLETED`, `VSC`/`SC` | `pulse.agent.tyre_strategy.findings.v1` (`DEGRADATION_ANALYSIS`, `PIT_WINDOW_OPPORTUNITY`) | Requires `>= 5` clean inliers & lap span `>= 3`; marks `INSUFFICIENT_SAMPLES`; attaches explicit `strategy_scope="ADVISORY_LOCAL_PIT_WINDOW_ONLY"` & `is_globally_optimal=False` |
 | **`agent-05-fusion`** | `ConsequenceFusionEngine` ([fusion.py](../../backend/pulse/agents/fusion.py)) | All finding topics + SIA integrity topic (`deque(maxlen=25)` per `(session, driver)`) | `pulse.intelligence.driver_impact.v1` (`Assessment` v1 -> v2 -> ...) | Enforces 5-status epistemic policy (`OBSERVED`, `PROVISIONAL`, `CONFIRMED`, `REJECTED`, `SUPERSEDED`); missing SIA alert never grants `CONFIRMED` |
-| **`agent-06-integrity`** | `IntegrityAgent` ([agent.py](../../backend/pulse/integrity/agent.py)) | Normalized driver laps, pit events, track status, weather, session t0 | `INTEGRITY_ASSESSMENT` -> `pulse.integrity.*` & `StateStore` | Evaluates 5 F1 YAML contracts (`lap_time`, `pit_speed`, `sector_time`, `driver_position`, `weather_observation`) over `sia_core_v3` SQLite WAL |
+| **`agent-06-integrity`** | `IntegrityAgent` ([agent.py](../../backend/pulse/integrity/agent.py)) | Normalized driver laps, pit events, track status, weather, session t0 | `pulse.agent.integrity.findings.v1` (`INTEGRITY_ASSESSMENT`) & `StateStore` | Evaluates 5 Python contract specs in [contracts.py](../../backend/pulse/integrity/contracts.py) (`lap_time`, `pit_speed`, `sector_time`, `driver_position`, `weather_observation`) over `sia_core_v3` SQLite WAL *(no YAML contract files exist at runtime)* |
 
 ---
 

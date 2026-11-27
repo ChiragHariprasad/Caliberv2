@@ -1,7 +1,7 @@
 # PULSE Current System Architecture
 
 **System:** PULSE — Predictive Unified Live Stream & Integrity Engine (formerly CALIBRE)  
-**Branch / Baseline:** `pulse-reconstruction` (built on Phase H baseline `0017377`)  
+**Branch / Baseline:** `pulse-phase-j-rc` *(branched from preserved Phase I checkpoint `f5fbc6a` on `pulse-reconstruction`)*  
 **Primary Domain:** Formula 1 race telemetry, neutralisation events, pace estimation, tyre degradation, strategy advisory, and causal evidence integrity.
 
 ---
@@ -12,7 +12,7 @@ PULSE separates **domain-independent cryptographic evidence verification** (`sia
 
 | Runtime Mode (`PULSE_TRANSPORT_MODE`) | Ingestion & Transport | Flink Normalizer | Primary Purpose |
 | :--- | :--- | :--- | :--- |
-| **`KAFKA`** (Production / Distributed) | 3-broker KRaft Kafka (`localhost:19092-19094` host, `9092` internal) | Active Flink 1.18.1 SQL v3 (`pulse-canonical-normalizer-v3`) | Multi-broker fault tolerance, EOS transactions, partitioned fan-out |
+| **`KAFKA`** (Production / Distributed) | 3-broker KRaft Kafka (`localhost:19092-19094` host, `kafka-1..3:29092` internal) | Active Flink 1.18.1 SQL v3 (`pulse-canonical-normalizer-v3`) | Multi-broker fault tolerance, EOS transactions, partitioned fan-out |
 | **`MEMORY`** (Local Research / Test) | In-process `PulseEventBus` + `StreamNormalizer` | Bypassed via deterministic Python normalizer | Reproducible offline FastAPI runs, pytest integration & replay benchmarks |
 | **`SIMULATOR`** | `ScenarioRunner` -> `PulseEventBus` | Bypassed | Synthetic stress scenarios and UI interactive exploration without live Kafka |
 
@@ -38,7 +38,7 @@ flowchart LR
         AG <-->|"Idempotent Sink / Snapshot"| STORE["StateStore & RaceStateProjector"]
     end
     CORE -->|"REST API + Bounded SSE (/api/stream)"| UI["React 19 + TypeScript Cockpit"]
-    SEC["Control Auth Guard (CORS + Optional PULSE_API_KEY)"] -.->|"Protects POST Mutators"| CORE
+    SEC["Control Auth Guard (Fail-Closed CORS + PULSE_API_KEY)"] -.->|"Protects POST Mutators"| CORE
 ```
 
 ### 2.2 End-to-End Streaming Dataflow
@@ -46,10 +46,10 @@ flowchart LR
 ```mermaid
 flowchart LR
     ENV["captures/*/envelopes.jsonl"] -->|"Driver-Affine Key"| RAW["9 Raw Topics (pulse.raw.*)"]
-    RAW -->|"Watermark + Unit Validation"| FLK["Flink SQL normalizer-v3 (18 vertices, 36 tasks)"]
-    FLK -->|"Valid Records"| NORM["5 Normalized Topics (pulse.normalised.*)"]
-    FLK -->|"Malformed / Schema Violation"| DLQ["Dead-Letter Topics (pulse.dlq.*)"]
+    RAW -->|"Watermark + Unit Validation"| FLK["Flink SQL normalizer-v3 (18 vertices, 36 subtasks / 4 slots)"]
+    FLK -->|"Valid Records (WHERE event_id & event_type NOT NULL)"| NORM["5 Normalized Topics (pulse.norm.*)"]
     NORM -->|"Consumer Group (enable_auto_commit=False)"| DISP["Backend Consumer & Stream Dispatcher"]
+    DISP -->|"Poison Consumer Record"| DLQ["Consumer DLQ (calibre.dlq / pulse.dlq)"]
     DISP -->|"Telemetry, Laps, Weather, Flags"| SPEC["Agents 01-04"]
     DISP -->|"Reference & Evidence Atoms"| SIAAG["Agent 06 IntegrityEngine"]
     SPEC -->|"Domain Findings"| FUS["Agent 05 ConsequenceFusionEngine"]
@@ -89,8 +89,8 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A1["Agent 01: EventControlAgent"] -->|"DRIVER_EVENT_EXPOSURE"| A5["Agent 05: ConsequenceFusionEngine"]
-    A2["Agent 02: TrackStateAgent"] -->|"TRACK_STATE_UPDATE"| A5
+    A1["Agent 01: EventControlAgent"] -->|"RACE_EVENT_LIFECYCLE / DRIVER_EVENT_EXPOSURE"| A5["Agent 05: ConsequenceFusionEngine"]
+    A2["Agent 02: TrackStateAgent"] -->|"TRACK_CONDITION_STATE / WEATHER_TRANSITION"| A5
     A3["Agent 03: VehicleResponseAgent"] -->|"PACE_DEVIATION (clean_air_status, baseline)"| A5
     A4["Agent 04: TyreStrategyAgent"] -->|"DEGRADATION_ANALYSIS / PIT_WINDOW_OPPORTUNITY"| A5
     A6["Agent 06: IntegrityAgent (SIA v3)"] -->|"INTEGRITY_ASSESSMENT (state, finality_status)"| A5
@@ -123,12 +123,12 @@ stateDiagram-v2
 ```mermaid
 flowchart TD
     subgraph DockerNet["Docker Compose (kafka-net / KRaft Cluster)"]
-        K1["kafka-1 (kraft controller+broker, host 19092)"]
-        K2["kafka-2 (kraft controller+broker, host 19093)"]
-        K3["kafka-3 (kraft controller+broker, host 19094)"]
+        K1["kafka-1 (19092 ext / 29092 int)"]
+        K2["kafka-2 (19093 ext / 29092 int)"]
+        K3["kafka-3 (19094 ext / 29092 int)"]
         KUI["kafka-ui (8080)"]
         FJM["flink-jobmanager (8081)"]
-        FTM["flink-taskmanager (36 slots)"]
+        FTM["flink-taskmanager (4 slots / 36 subtasks)"]
         K1 <--> K2
         K2 <--> K3
         K1 <--> K3
@@ -160,8 +160,8 @@ flowchart TD
 | Specialist Agents 01-05 | [backend/pulse/agents/](../../backend/pulse/agents/fusion.py) | Event control, track state, vehicle response, tyre strategy, strict epistemic consequence fusion |
 | SIA Bridge & Agent 06 | [backend/pulse/integrity/](../../backend/pulse/integrity/agent.py) | Maps canonical events into SIA contracts/decisions and publishes `INTEGRITY_ASSESSMENT` findings |
 | Kafka & Flink Layer | [backend/pulse/stream/](../../backend/pulse/stream/kafka_io.py) | 70-topic cluster topology manager, `DriverSlots` partitioner, Flink SQL v3 lifecycle manager, EOS consumer |
-| State & Replay | [store.py](../../backend/pulse/state/store.py), [controller.py](../../backend/pulse/replay/controller.py) | Deterministic checkpointed seek, SSE fan-out (`max_sse_listeners=64`), session isolation |
-| REST API & Security | [router.py](../../backend/pulse/api/router.py), [security.py](../../backend/pulse/api/security.py), [config.py](../../backend/pulse/config.py) | Strict CORS origin list, optional `PULSE_API_KEY` mutator guard, regex session validation |
+| State & Replay | [store.py](../../backend/pulse/state/store.py), [controller.py](../../backend/pulse/replay/controller.py) | Deterministic checkpointed seek (`120s` client timeout), atomic SSE fan-out (`max_sse_listeners=64`), session isolation |
+| REST API & Security | [router.py](../../backend/pulse/api/router.py), [security.py](../../backend/pulse/api/security.py), [config.py](../../backend/pulse/config.py) | Fail-closed startup/runtime posture guard, CORS allowlist, mandatory non-dev/shared-demo `PULSE_API_KEY`, regex session validation |
 | Frontend Cockpit | [frontend/src/](../../frontend/src/App.tsx) | React 19 + TypeScript UI for Trackside Mission Control, Integrity Matrix, SIA Logic Lab, Agents & Replay Audit |
 
 ---
@@ -169,7 +169,7 @@ flowchart TD
 ## 4. Security & Deployment Boundaries
 
 | Tier | CORS Policy | Mutator Auth (`PULSE_API_KEY`) | Transport / Exposure | Appropriate Use |
-| :--- | :--- | :--- | :--- | :--- |
-| **Local Workstation** (default) | Restricted via `Settings.cors_origin_list` (`localhost:5173`, `127.0.0.1:5173`, `localhost:3000`) | Optional empty default (frictionless local dev & automated pytest) | Bound on `127.0.0.1`, plaintext HTTP/Kafka | Local single-user development, profiling, research runs |
-| **Controlled Shared Demo** | Explicit allowlist via `PULSE_CORS_ORIGINS` | Required on all `POST` control/select/lab routes via `X-PULSE-API-Key` or `Authorization: Bearer` | Reverse proxy TLS termination recommended; `max_sse_listeners=64` active | Controlled lab demos behind trusted LAN/VPN |
-| **Production Multi-Tenant** *(Not Implemented)* | Strictly allowlisted origins | OIDC/JWT + RBAC + audit trails required | TLS mTLS/SASL-SSL on Kafka, Flink auth, encrypted disk WAL | Requires external secrets manager, SASL/TLS Kafka & horizontal store beyond current scope |
+|---|---|---|---|---|
+| **Local Workstation** (default `PULSE_ENV=development`) | Restricted via `Settings.cors_origin_list` (`localhost:5173`, `127.0.0.1:5173`, `localhost:3000`); wildcard `*` raises startup error | Optional when bound strictly to loopback (`127.0.0.1`/`localhost`) and `PULSE_REQUIRE_CONTROL_AUTH=false`; runtime guard still fails closed (`HTTP 503`) if `requires_control_auth` is `True` with empty key | Defaults `host="127.0.0.1"`, plaintext HTTP/Kafka | Local single-user development, profiling, research runs |
+| **Controlled Shared Demo** (`PULSE_ENV=shared-demo` or `PULSE_REQUIRE_CONTROL_AUTH=true` or non-loopback `host`) | Explicit non-wildcard allowlist via `PULSE_CORS_ORIGINS` (must not stay default `localhost` origins when non-loopback/external) | **Fails closed at startup** (`validate_security_posture()`) unless non-placeholder `>=16`-char `PULSE_API_KEY` is configured; enforced on all `10` `POST` mutators via `X-PULSE-API-Key` or `Authorization: Bearer` | Reverse proxy TLS termination required externally; atomic `store.try_add_listener(64)` active (`HTTP 429`) | Controlled academic/lab demonstrations behind trusted LAN/VPN |
+| **Multi-Tenant / Public Production** *(Not Claimed / Not Implemented)* | Explicit tenant-scoped origins | Single shared symmetric key only — no per-user OIDC/JWT, RBAC, or multi-tenant audit trail | Unencrypted local Kafka/Flink containers & unencrypted local SQLite WAL | Explicitly **NOT production multi-tenant ready**; requires external KMS, SASL-SSL/mTLS Kafka, OIDC/RBAC, and distributed persistence |

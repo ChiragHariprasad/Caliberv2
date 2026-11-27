@@ -1,6 +1,6 @@
 # PULSE — Research Literature, F1 Data Governance & Claim-Level Patentability Analysis
 
-**Audit Date:** 2026-11-26  
+**Audit Date:** 2026-11-26 *(Phase J Re-Affirmed: 2026-11-27)*  
 **Scope:** Peer-reviewed motorsport strategy research, Formula 1 data source & licensing boundaries, Google Patents primary-source Independent Claim 1 audit, and Indian Patents Act Section 3(k) / 2025 CRI Guidelines legal assessment.
 
 ---
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | **Official F1 Digital Products** (`formula1.com`, F1TV, SignalR Live Timing) | Proprietary live timing, multi-car telemetry, FOM feeds | Strictly prohibits scraping, bots, paywall bypass, and automated Text & Data Mining (TDM). | **Never accessed, scraped, or bypassed.** Missing CAN-bus channels remain `UNAVAILABLE`. |
 | **FastF1 (v3.9.0+)** | ~3–4 Hz resampled car telemetry, laps, sectors, `LapStartTime`, weather, race control | Unofficial community wrapper over public replay endpoints; redistribution of proprietary payloads restricted. | Used **strictly offline** from workspace cache (`data/fastf1_cache/`) across held-out/calibration validation (`2021–2022`). |
-| **OpenF1** (`api.openf1.org`) & **Jolpica-F1** (`api.jolpi.ca/ergast/f1/`) | Community REST/WebSocket (2023+ OpenF1; 1950+ Jolpica CC BY-NC-SA lap/pit summaries) | Lacks surveyed timing-loop transponder pulses and high-rate ECU traces; non-official. | Mapped transparently into `LAB` / `PUBLIC` data regimes with explicit `F1_FOM_TIMING` upstream closure. |
+| **OpenF1** (`api.openf1.org`) & **Jolpica-F1** (`api.jolpi.ca/ergast/f1/`) | Community REST/WebSocket (2023+ OpenF1; 1950+ Jolpica CC BY-NC-SA lap/pit summaries) | Lacks surveyed timing-loop transponder pulses and high-rate ECU traces; non-official. | Phase J caches **11** free historical `2023–2024` OpenF1 race bundles strictly offline (`data/openf1_cache/`) with causal crossing-order reconstruction and `F1_FOM_TIMING` upstream depth `1`. |
 | **`SYNTHETIC` / `LAB` / `PREVIEW`** (Runtime Sessions) | Scenario replays, fault-injected stress harnesses, geometry previews | Zero independent hardware redundancy (`source depth = 1` on public feeds). | `_apply_honest_session_provenance()` labels all 12 registry entries truthfully (`PULSE_SYNTHETIC_SIMULATOR`, `JOLPICA_OPEN_AND_SYNTHETIC_TELEMETRY`, `PULSE_LAB_REPLAY_CAPTURE`, `PREVIEW_GEOMETRY_CATALOGUE`). |
 
 ---
@@ -69,5 +69,5 @@ Earlier project notes (`COMPREHENSIVE_SYSTEM_AUDIT_2026.md`) cited five patents 
 
 ---
 
-## 5. Verdict
-In accordance with Rule 16 and `PULSE-ADR-016`, **no patent application should be filed on PULSE or standalone SIA in its current Phase I software state**. Prior-art density across temporal databases (`US8713073B2`), journaled ledgers (`US10614239B2`), metrics quarantine (`US20180089328A1`), and common-cause fault trees (`US11567823B2`) leaves narrow headroom that requires physical/network control coupling and formal registered-attorney FTO analysis prior to any submission.
+## 5. Verdict & Phase J Release Re-Assessment
+In accordance with Rule 16 and `PULSE-ADR-016`, **no patent application should be filed on PULSE or standalone SIA in its current Phase J software state**. Passing external `2023–2024` validation, replay boundary decomposition, fail-closed security gates, and live Kafka failover tests increases **academic credibility and systems maturity**, **not patentability**. Prior-art density across temporal databases (`US8713073B2`), journaled ledgers (`US10614239B2`), metrics quarantine (`US20180089328A1`), and common-cause fault trees (`US11567823B2`) leaves narrow headroom under Indian Section 3(k) / `2025` CRI technical-effect requirements unless physical/network actuation gating and formal registered-attorney FTO clearance are established. The defensible research contribution lies in **open academic publication, reproducible benchmarking, and software systems engineering**, rather than patent filing.
