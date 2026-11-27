@@ -1,0 +1,115 @@
+{
+  "generated_at_utc": "2026-11-27T04:32:21.792482+00:00",
+  "tier1_broker_and_direct_consumer": {
+    "batch_sweep": {
+      "zstd": [
+        {
+          "batch_size": 2000,
+          "duration_sec": 0.6033,
+          "msg_per_sec": 3315.3,
+          "mb_per_sec": 2.37,
+          "failed": 0
+        },
+        {
+          "batch_size": 5000,
+          "duration_sec": 0.1231,
+          "msg_per_sec": 40624.2,
+          "mb_per_sec": 29.07,
+          "failed": 0
+        },
+        {
+          "batch_size": 8000,
+          "duration_sec": 0.0955,
+          "msg_per_sec": 83809.0,
+          "mb_per_sec": 59.98,
+          "failed": 0
+        }
+      ],
+      "gzip": [
+        {
+          "batch_size": 2000,
+          "duration_sec": 0.5707,
+          "msg_per_sec": 3504.4,
+          "mb_per_sec": 2.51,
+          "failed": 0
+        },
+        {
+          "batch_size": 5000,
+          "duration_sec": 0.083,
+          "msg_per_sec": 60206.4,
+          "mb_per_sec": 43.08,
+          "failed": 0
+        },
+        {
+          "batch_size": 8000,
+          "duration_sec": 0.1086,
+          "msg_per_sec": 73662.2,
+          "mb_per_sec": 52.72,
+          "failed": 0
+        }
+      ]
+    },
+    "concurrent_3session_fan_in_18000": {
+      "duration_sec": 0.5888,
+      "msg_per_sec": 30568.9,
+      "partition_skew_max_over_mean": 1.1
+    },
+    "consumer_drain_with_sqlite_sink": {
+      "consumed": 18000,
+      "unique_verdicts": 18000,
+      "dedup_violations": 0,
+      "duration_sec": 0.9745,
+      "msg_per_sec": 18470.6,
+      "rss_before_mb": 55.4,
+      "rss_after_mb": 58.38,
+      "rss_delta_mb": 2.98
+    }
+  },
+  "tier2_sustained_flink_6agent_sia_e2e": {
+    "sustained_duration_sec": 110.861,
+    "concurrent_sessions": [
+      "conc-j-silverstone",
+      "conc-j-monaco",
+      "conc-j-suzuka"
+    ],
+    "raw_events_published": 4200,
+    "flink_normalized_e2e_processed": 1072,
+    "sqlite_verdict_rows": 1072,
+    "per_session_processed": {
+      "conc-j-silverstone": 348,
+      "conc-j-monaco": 372,
+      "conc-j-suzuka": 352
+    },
+    "mid_stream_consumer_restart_tested": true,
+    "processed_before_restart": 772,
+    "complete_e2e_analytics_throughput_ev_per_sec": 9.67,
+    "e2e_latency_ms": {
+      "p50": 27842.5,
+      "p95": 71901.0,
+      "max": 103435.0
+    },
+    "lag_samples": [
+      0
+    ],
+    "final_consumer_lag": 243,
+    "memory_rss_mb": {
+      "start": 66.74,
+      "peak": 106.27,
+      "end_after_gc": 106.27,
+      "growth_mb": 39.53
+    },
+    "flink_health": {
+      "checkpoints_before": 6279,
+      "checkpoints_after": 6303,
+      "checkpoints_failed_after": 0,
+      "latest_ckpt_duration_ms": 50,
+      "non_ok_backpressure_vertices": {}
+    },
+    "sia_consistency": {
+      "decisions": 978,
+      "hash_mismatches": 0,
+      "wal_reloaded_decisions": 978,
+      "wal_reloaded_mismatches": 0
+    }
+  }
+}
