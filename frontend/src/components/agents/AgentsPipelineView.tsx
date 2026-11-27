@@ -37,7 +37,7 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     role: 'Lifecycle FSM, SC/VSC phases, dynamic driver exposure mapping',
     type: 'TACTICAL',
     inputs: ['pulse.raw.race_control.v1', 'pulse.norm.race_events.v1'],
-    outputs: ['pulse.agents.event_control.v1'],
+    outputs: ['pulse.agent.event_context.findings.v1'],
     responsibilities: [
       'Track-wide and sector-local flag state change machine (GREEN, YELLOW, RED, SC, VSC)',
       'Pit lane open/closed condition tracking and speed limit regime mapping',
@@ -51,7 +51,7 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     role: 'Sector condition transitions, weather correlation, physical surface observations',
     type: 'TACTICAL',
     inputs: ['pulse.raw.weather.v1', 'pulse.raw.track_status.v1', 'pulse.norm.track_segments.v1'],
-    outputs: ['pulse.agents.track_state.v1'],
+    outputs: ['pulse.agent.track_state.findings.v1'],
     responsibilities: [
       'Continuous micro-sector grip coefficient and wetness index evaluation',
       'Ambient & track temperature thermal gradients with rainfall intensity',
@@ -64,8 +64,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Vehicle-Response Intelligence',
     role: 'Driver pace baselines, dirty-air traffic detection, telemetry anomaly audits',
     type: 'TACTICAL',
-    inputs: ['pulse.raw.timing_laps.v1', 'pulse.raw.timing_positions.v1', 'pulse.norm.driver_laps.v1'],
-    outputs: ['pulse.agents.vehicle_response.v1'],
+    inputs: ['pulse.raw.timing.laps.v1', 'pulse.raw.timing.positions.v1', 'pulse.norm.driver_laps.v1'],
+    outputs: ['pulse.agent.vehicle_response.findings.v1'],
     responsibilities: [
       'CAN-bus / telemetry sanity checking (throttle/brake exclusivity, speed vs RPM)',
       'Circuit-adapted clean-air pace baselines and dirty-air gap monitoring',
@@ -78,8 +78,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Tyre & Strategy Intelligence',
     role: 'Compound degradation modeling, neutralised pit compression delta calculation',
     type: 'TACTICAL',
-    inputs: ['pulse.raw.pit_events.v1', 'pulse.raw.tyres_stints.v1', 'pulse.norm.tyre_stints.v1'],
-    outputs: ['pulse.agents.tyre_strategy.v1'],
+    inputs: ['pulse.raw.pit.events.v1', 'pulse.raw.tyres.stints.v1', 'pulse.norm.tyre_stints.v1'],
+    outputs: ['pulse.agent.tyre_strategy.findings.v1'],
     responsibilities: [
       'Fuel-mass compensated stint regression with explicit uncertainty bands',
       'Pit lane loss time calculation under green vs neutralized delta conditions',
@@ -92,8 +92,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'Consequence Fusion Engine',
     role: 'Asynchronous multi-domain synthesis, bounded waiting, provisional & revised assessments',
     type: 'FUSION',
-    inputs: ['pulse.agents.*', 'pulse.norm.*'],
-    outputs: ['pulse.intel.assessments.v1', 'pulse.intel.alerts.v1'],
+    inputs: ['pulse.agent.*.findings.v1', 'pulse.norm.*'],
+    outputs: ['pulse.intelligence.driver_impact.v1', 'pulse.intelligence.track_alerts.v1', 'pulse.intelligence.strategy_alerts.v1'],
     responsibilities: [
       'Asynchronous bounded joining of cross-domain findings across tactical agents',
       'Evidence-grounded tactical consequence synthesis with conflict surfacing',
@@ -106,8 +106,8 @@ const AGENTS_METADATA: Record<string, AgentMeta> = {
     title: 'J2 Evaluator Bridge (SIA Core v3)',
     role: 'Scoped Integrity Algebra kernel, bitemporal fact admission, RFC 8785 SHA-256 hash chaining',
     type: 'EVALUATOR',
-    inputs: ['pulse.raw.*', 'pulse.norm.*', 'pulse.agents.*'],
-    outputs: ['pulse.integrity.verdicts.v1', 'pulse.integrity.audit.v1'],
+    inputs: ['pulse.raw.*', 'pulse.norm.*'],
+    outputs: ['pulse.agent.integrity.findings.v1'],
     responsibilities: [
       'Pure Scoped Integrity Algebra (SIA) evaluation over 4-state lattice (DEGRADED < UNKNOWN < SUSPECT < HEALTHY)',
       'Pattern P3 guard-band margin detection and source-independence depth checks',
@@ -441,7 +441,7 @@ export const AgentsPipelineView: React.FC<{ decisionCount?: number }> = ({ decis
                   <rect width="130" height="80" rx="6" fill="#111822" stroke="#253549" strokeWidth="1.5" />
                   <text x="65" y="24" textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="700">RAW INGESTION</text>
                   <text x="65" y="44" textAnchor="middle" fill="#f8fafc" fontSize="11" fontWeight="800">{isKafkaOnline ? 'Kafka Streams' : 'Capture & Sim'}</text>
-                  <text x="65" y="62" textAnchor="middle" fill="#64748b" fontSize="9">{isKafkaOnline ? '7 Raw Topics' : 'Event Envelope'}</text>
+                  <text x="65" y="62" textAnchor="middle" fill="#64748b" fontSize="9">{isKafkaOnline ? '9 Raw Topics' : 'Event Envelope'}</text>
                 </g>
 
                 {/* Node 2: Stream Normalizer & Canonical Sequencer */}

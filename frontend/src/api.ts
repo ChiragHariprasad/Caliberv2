@@ -137,7 +137,7 @@ export async function seekReplay(params: {
     target_lap: params.targetLap,
     target_index: params.targetIndex,
     target_elapsed_ms: params.targetElapsedMs,
-  }, 45000);
+  }, 120000);
 }
 
 export async function setReplaySpeed(speed: number): Promise<ReplayStatusData | null> {
