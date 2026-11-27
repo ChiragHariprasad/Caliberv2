@@ -93,6 +93,9 @@ class CausalLapRecord:
     is_pit: bool
     neutralised: bool
     total_laps: int
+    team_name: str = "UNKNOWN"
+    is_wet: bool = False
+    post_restart_lap: bool = False
 
 
 @dataclass
@@ -103,6 +106,14 @@ class LapPredictionPoint:
     confidence: float
     actual_sec: float
     clean_air_status: CleanAirStatus
+    session_id: str = ""
+    driver_number: int = 0
+    stint_id: int = 1
+    lap_number: int = 0
+    compound: str = "UNKNOWN"
+    team_name: str = "UNKNOWN"
+    is_wet: bool = False
+    post_restart_lap: bool = False
 
 
 def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> dict[str, Any]:
@@ -133,10 +144,28 @@ def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> d
     for ln in lap_starts_by_lap:
         lap_starts_by_lap[ln].sort(key=lambda item: item[0])
 
+    # Causal rainfall intervals from FastF1 weather_data (strictly <= lap completion Time)
+    from bisect import bisect_right
+    rain_times: list[float] = []
+    rain_flags: list[bool] = []
+    w_df = getattr(session, "weather_data", None)
+    if w_df is not None and not w_df.empty and "Time" in w_df.columns and "Rainfall" in w_df.columns:
+        for w_row in w_df.sort_values("Time").itertuples():
+            wt = getattr(w_row, "Time", None)
+            if wt is not None and str(wt) != "NaT":
+                try:
+                    rain_times.append(float(wt.total_seconds()))
+                    rain_flags.append(bool(getattr(w_row, "Rainfall", False)))
+                except Exception:
+                    continue
+
     # Sort strictly in causal crossing order using Time (completion timestamp), breaking ties by LapNumber
     laps_df = laps_df.sort_values(by=["LapNumber", "Time"], na_position="last")
     records: list[CausalLapRecord] = []
     sess_id = f"{year}_{gp_name.lower().replace(' ', '_')}"
+    last_neut_lap = 0
+    saw_red_flag = False
+    saw_sc_or_vsc = False
 
     for row in laps_df.itertuples():
         lt = getattr(row, "LapTime", None)
@@ -149,6 +178,17 @@ def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> d
         if not math.isfinite(lap_sec) or lap_sec <= 35.0 or lap_sec >= 300.0:
             continue
 
+        cur_rainfall = False
+        comp_td = getattr(row, "Time", None)
+        if comp_td is not None and str(comp_td) != "NaT" and rain_times:
+            try:
+                comp_sec = float(comp_td.total_seconds())
+                r_idx = bisect_right(rain_times, comp_sec) - 1
+                if r_idx >= 0:
+                    cur_rainfall = rain_flags[r_idx]
+            except Exception:
+                pass
+
         dn = int(row.DriverNumber)
         lap_num = int(row.LapNumber)
         stint_raw = getattr(row, "Stint", None)
@@ -158,6 +198,7 @@ def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> d
         tyre_age = int(age_raw) if age_raw is not None and not math.isnan(float(age_raw)) else lap_num
         pos_raw = getattr(row, "Position", None)
         pos = int(pos_raw) if pos_raw is not None and not math.isnan(float(pos_raw)) else None
+        team_name = str(getattr(row, "Team", None) or "UNKNOWN")
 
         is_pit_in = getattr(row, "PitInTime", None)
         is_pit_out = getattr(row, "PitOutTime", None)
@@ -166,6 +207,14 @@ def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> d
         )
         ts = str(getattr(row, "TrackStatus", "1") or "1")
         neut = any(code in ts for code in ("4", "5", "6", "7"))
+        if "5" in ts:
+            saw_red_flag = True
+        if any(c in ts for c in ("4", "6", "7")):
+            saw_sc_or_vsc = True
+        if neut:
+            last_neut_lap = max(last_neut_lap, lap_num)
+        post_restart = (not neut) and (last_neut_lap > 0) and (0 < (lap_num - last_neut_lap) <= 5)
+        is_wet = bool(cur_rainfall or comp in {"INTERMEDIATE", "WET"})
 
         # Causal interval reconstruction from lap-start timestamps on same lap (never peeking future laps)
         interval_sec: float | None = None
@@ -196,10 +245,23 @@ def load_fastf1_causal_laps(cache_dir: str | Path, year: int, gp_name: str) -> d
                 is_pit=is_pit,
                 neutralised=neut,
                 total_laps=total_laps,
+                team_name=team_name,
+                is_wet=is_wet,
+                post_restart_lap=post_restart,
             )
         )
 
-    return {"session_id": sess_id, "year": year, "gp_name": gp_name, "total_laps": total_laps, "records": records}
+    return {
+        "session_id": sess_id,
+        "year": year,
+        "gp_name": gp_name,
+        "total_laps": total_laps,
+        "source": "FastF1",
+        "had_red_flag": saw_red_flag,
+        "had_sc_or_vsc": saw_sc_or_vsc or saw_red_flag,
+        "had_wet_laps": any(r.is_wet for r in records),
+        "records": records,
+    }
 
 
 class _BaselineState:
@@ -272,6 +334,7 @@ def evaluate_all_baselines_on_race(
     race: dict[str, Any],
     *,
     regression_params: tuple[float, float, float] | None = None,
+    return_points: bool = False,
 ) -> dict[str, Any]:
     """
     Evaluate all 6 baselines on identical green-flag non-pit flying laps (lap >= 2).
@@ -465,12 +528,24 @@ def evaluate_all_baselines_on_race(
     summary = {}
     for model_name, pts in outputs.items():
         summary[model_name] = _summarize_predictions(pts)
-    return {
+    out_dict: dict[str, Any] = {
         "session_id": race["session_id"],
         "total_laps": race["total_laps"],
         "models": summary,
         "revised_failure_cases_sample": failure_cases[:10],
     }
+    if return_points:
+        # Enrich point metadata identically across models for cluster bootstrap & stratification
+        target_meta = [
+            (r.session_id, r.driver_number, r.stint_id, r.lap_number, r.compound, r.team_name, r.is_wet, r.post_restart_lap)
+            for r in records
+            if (not r.neutralised) and (not r.is_pit) and (r.lap_number >= 2) and (r.clean_air_status == CleanAirStatus.CLEAN_AIR_CONFIRMED)
+        ]
+        for pts in outputs.values():
+            for pt, meta in zip(pts, target_meta):
+                pt.session_id, pt.driver_number, pt.stint_id, pt.lap_number, pt.compound, pt.team_name, pt.is_wet, pt.post_restart_lap = meta
+        out_dict["points"] = outputs
+    return out_dict
 
 
 def _summarize_predictions(pts: list[LapPredictionPoint]) -> dict[str, Any]:
