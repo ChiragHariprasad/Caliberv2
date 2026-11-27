@@ -32,6 +32,7 @@ AGENT_TOPICS = {
     "vehicle_response": "pulse.agent.vehicle_response.findings.v1",
     "tyre_strategy": "pulse.agent.tyre_strategy.findings.v1",
     "race_impact": "pulse.agent.race_impact.findings.v1",
+    "integrity": "pulse.agent.integrity.findings.v1",
 }
 
 INTELLIGENCE_TOPICS = {
@@ -49,23 +50,32 @@ OPS_TOPICS = {
 
 def raw_topic_for_event(event_type: str) -> str:
     event_type = event_type.upper()
-    if event_type in {"VSC_DEPLOYED", "VSC_ENDING", "VSC_ENDED", "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED", "RED_FLAG", "YELLOW_FLAG", "INCIDENT_NOTICE"}:
+    if event_type in {
+        "VSC_DEPLOYED", "VSC_ENDING", "VSC_ENDED",
+        "SAFETY_CAR_DEPLOYED", "SAFETY_CAR_ENDING", "SAFETY_CAR_ENDED",
+        "RED_FLAG", "YELLOW_FLAG", "INCIDENT_NOTICE", "TRACK_STATUS_GREEN",
+        "RACE_CONTROL_NOTICE", "RACE_CONTROL_MESSAGE", "CHEQUERED_FLAG",
+        "GREEN_FLAG", "STEWARD_DECISION", "DRIVER_RETIRED", "DRIVER_DNS",
+        "SESSION_STARTED", "SESSION_ENTRY_LIST", "SESSION_CHEQUERED"
+    }:
         return RAW_TOPICS["race_control"]
+    if event_type in {"SESSION_STATUS", "SESSION_STATUS_UPDATE"}:
+        return RAW_TOPICS["session_status"]
     if event_type in {"TRACK_STATUS_UPDATE", "SEGMENT_STATUS_UPDATE"}:
         return RAW_TOPICS["track_status"]
     if event_type in {"LAP_COMPLETED", "SECTOR_COMPLETED"}:
         return RAW_TOPICS["timing_laps"]
-    if event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE"}:
+    if event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE", "DRIVER_TELEMETRY"}:
         return RAW_TOPICS["timing_positions"]
-    if event_type == "CAR_TELEMETRY_SAMPLE":
+    if event_type in {"CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
         return RAW_TOPICS["telemetry_car"]
     if event_type == "WEATHER_OBSERVATION":
         return RAW_TOPICS["weather"]
     if event_type in {"TYRE_FITTED", "STINT_UPDATE"}:
         return RAW_TOPICS["tyres_stints"]
-    if event_type in {"PIT_ENTRY", "PIT_STOP", "PIT_EXIT"}:
+    if event_type in {"PIT_ENTRY", "PIT_STOP", "PIT_STOP_RECORDED", "PIT_EXIT"}:
         return RAW_TOPICS["pit_events"]
-    return RAW_TOPICS["session_status"]
+    return RAW_TOPICS["race_control"]
 
 
 def routing_key(session_instance_id: str, driver_number: int | None = None, segment_id: str | None = None) -> str:

@@ -1,0 +1,18 @@
+{
+  "race_id": "2023_las_vegas",
+  "year": 2023,
+  "round": 21,
+  "official_event_name": "Las Vegas Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "las_vegas",
+  "circuit_key": "las_vegas_2023",
+  "session_date_utc": "2023-11-19T06:00:00Z",
+  "primary_controversy": "FP1 water valve cover track failure; lack of regulatory penalty discretion",
+  "key_drivers": [
+    "55"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "JOLPICA_F1_ERGAST",
+  "acquired_at_utc": "2026-11-13T18:19:46.469707+00:00",
+  "provider": "JOLPICA_F1_OPEN_DATA"
+}

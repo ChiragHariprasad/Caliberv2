@@ -409,7 +409,7 @@ def main():
             event_id=f"evt-silv-{len(envelopes) + 1:05d}",
             event_type=evt_type,
             source=SourceRef(
-                provider="JOLPICA_F1_AND_FIA_OFFICIAL",
+                provider="JOLPICA_OPEN_AND_LAB_SYNTHETIC",
                 adapter="historical_capture_adapter",
                 source_record_id=record_id or f"rec-{len(envelopes) + 1}",
                 capture_id="pulse-capture-f1-2023-silverstone-race-v1",
@@ -523,7 +523,9 @@ def main():
 
     manifest = {
         "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
-        "provider": "JOLPICA_F1_AND_FIA_OFFICIAL",
+        "data_regime": "LAB",
+        "regime": "LAB",
+        "provider": "JOLPICA_OPEN_AND_LAB_SYNTHETIC",
         "session_id": "f1-2023-r10-race",
         "meeting_id": "silverstone-2023",
         "session_name": "Formula 1 Aramco British Grand Prix 2023",
@@ -558,7 +560,7 @@ def main():
             "telemetry_compliance": "Fully compliant with F1 TV Terms of Service: no scraping, no credential harvesting, no reverse-engineering",
         },
         "source_file_inventory": file_inventory,
-        "provenance_status": "VERIFIED_HISTORICAL_CAPTURE",
+        "provenance_status": "LAB_HISTORICAL_CAPTURE",
     }
 
     manifest_path = CAPTURE_DIR / "capture_manifest.json"

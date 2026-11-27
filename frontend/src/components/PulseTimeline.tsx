@@ -15,8 +15,8 @@ export function PulseTimeline({ events }: PulseTimelineProps) {
         <span className="subtle-chip">Event time</span>
       </div>
       <div className="timeline-list">
-        {events.map((event) => (
-          <article key={event.id} className={`timeline-item timeline-item--${event.type} ${event.active ? 'timeline-item--active' : ''}`}>
+        {events.map((event, idx) => (
+          <article key={event.id ? `${event.id}-${idx}` : `timeline-${idx}`} className={`timeline-item timeline-item--${event.type} ${event.active ? 'timeline-item--active' : ''}`}>
             <time>{event.time}</time>
             <span className="timeline-node" aria-hidden="true" />
             <div>

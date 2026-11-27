@@ -4,18 +4,24 @@ from pathlib import Path
 import pytest
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent
-SCREENSHOTS_DIR = WORKSPACE_ROOT / "docs" / "screenshots"
+SCREENSHOTS_DIR = WORKSPACE_ROOT / "reports" / "browser-validation" / "screenshots"
 
 
 def test_captured_cockpit_screenshots_exist_and_non_empty():
-    """Verify that all 6 required high-resolution cockpit screenshots were generated."""
+    """Verify that all required high-resolution cockpit screenshots were generated."""
     expected_screenshots = [
-        "01_cockpit_monaco.png",
-        "02_driver_telemetry_modal.png",
-        "03_race_control_stewarding.png",
-        "04_agent_operations.png",
-        "05_pipeline_lab.png",
-        "06_cockpit_silverstone.png",
+        "01_cockpit_overview.png",
+        "02_replay_running.png",
+        "03_replay_paused.png",
+        "04_replay_seek.png",
+        "05_replay_reset.png",
+        "06_race_control_view.png",
+        "07_agent_operations_view.png",
+        "08_pipeline_lab_view.png",
+        "09_driver_telemetry_modal.png",
+        "10_evidence_drawer.png",
+        "11_silverstone_session.png",
+        "12_monaco_restored.png",
     ]
 
     assert SCREENSHOTS_DIR.exists(), f"Screenshots directory missing at {SCREENSHOTS_DIR}"

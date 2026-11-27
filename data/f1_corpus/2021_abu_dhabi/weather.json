@@ -1,0 +1,1101 @@
+[
+  {
+    "utc_timestamp": "P0DT0H0M3.778S",
+    "air_temp_c": 25.6,
+    "track_temp_c": 33.0,
+    "humidity_pct": 53.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H1M3.777S",
+    "air_temp_c": 25.6,
+    "track_temp_c": 32.8,
+    "humidity_pct": 52.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H2M3.779S",
+    "air_temp_c": 25.6,
+    "track_temp_c": 32.7,
+    "humidity_pct": 53.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H3M3.772S",
+    "air_temp_c": 25.7,
+    "track_temp_c": 32.7,
+    "humidity_pct": 53.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H4M3.783S",
+    "air_temp_c": 25.7,
+    "track_temp_c": 32.7,
+    "humidity_pct": 53.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H5M3.809S",
+    "air_temp_c": 25.7,
+    "track_temp_c": 32.7,
+    "humidity_pct": 52.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H6M3.807S",
+    "air_temp_c": 25.5,
+    "track_temp_c": 32.3,
+    "humidity_pct": 52.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H7M3.826S",
+    "air_temp_c": 25.5,
+    "track_temp_c": 32.3,
+    "humidity_pct": 52.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H8M3.823S",
+    "air_temp_c": 25.4,
+    "track_temp_c": 32.2,
+    "humidity_pct": 52.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H9M3.826S",
+    "air_temp_c": 25.4,
+    "track_temp_c": 32.2,
+    "humidity_pct": 52.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H10M3.84S",
+    "air_temp_c": 25.5,
+    "track_temp_c": 32.2,
+    "humidity_pct": 52.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H11M3.837S",
+    "air_temp_c": 25.5,
+    "track_temp_c": 32.2,
+    "humidity_pct": 52.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H12M3.857S",
+    "air_temp_c": 25.4,
+    "track_temp_c": 31.9,
+    "humidity_pct": 53.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H13M3.872S",
+    "air_temp_c": 25.4,
+    "track_temp_c": 31.0,
+    "humidity_pct": 53.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H14M3.869S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 31.0,
+    "humidity_pct": 55.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H15M3.872S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 31.0,
+    "humidity_pct": 55.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H16M3.869S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 30.9,
+    "humidity_pct": 55.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H17M3.869S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 30.9,
+    "humidity_pct": 56.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H18M3.868S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 30.9,
+    "humidity_pct": 56.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H19M3.884S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 30.8,
+    "humidity_pct": 56.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H20M3.885S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.8,
+    "humidity_pct": 56.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H21M3.901S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.9,
+    "humidity_pct": 56.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H22M3.918S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 30.9,
+    "humidity_pct": 55.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H23M3.925S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 30.8,
+    "humidity_pct": 56.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H24M3.915S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.7,
+    "humidity_pct": 56.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H25M3.931S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.6,
+    "humidity_pct": 56.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H26M3.948S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 30.6,
+    "humidity_pct": 56.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H27M3.946S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 31.0,
+    "humidity_pct": 56.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H28M3.948S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 31.0,
+    "humidity_pct": 55.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H29M3.952S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 30.9,
+    "humidity_pct": 55.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H30M3.948S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 30.5,
+    "humidity_pct": 56.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H31M3.947S",
+    "air_temp_c": 25.3,
+    "track_temp_c": 30.1,
+    "humidity_pct": 55.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H32M3.963S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 30.1,
+    "humidity_pct": 56.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H33M3.961S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 29.9,
+    "humidity_pct": 56.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H34M3.991S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 30.2,
+    "humidity_pct": 55.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H35M3.993S",
+    "air_temp_c": 25.2,
+    "track_temp_c": 30.3,
+    "humidity_pct": 55.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H36M3.998S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 30.3,
+    "humidity_pct": 55.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H37M3.993S",
+    "air_temp_c": 25.1,
+    "track_temp_c": 30.2,
+    "humidity_pct": 55.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H38M3.994S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.0,
+    "humidity_pct": 55.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H39M3.997S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.2,
+    "humidity_pct": 55.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H40M3.996S",
+    "air_temp_c": 25.0,
+    "track_temp_c": 30.3,
+    "humidity_pct": 54.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H41M3.999S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.5,
+    "humidity_pct": 54.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H42M3.995S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.5,
+    "humidity_pct": 55.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H43M3.994S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.8,
+    "humidity_pct": 54.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H44M3.994S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 30.3,
+    "humidity_pct": 54.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H45M4.012S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.9,
+    "humidity_pct": 53.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H46M4.027S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.9,
+    "humidity_pct": 53.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H47M4.025S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.9,
+    "humidity_pct": 54.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H48M4.029S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.7,
+    "humidity_pct": 54.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H49M4.031S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.6,
+    "humidity_pct": 54.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H50M4.028S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.3,
+    "humidity_pct": 54.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H51M4.025S",
+    "air_temp_c": 24.9,
+    "track_temp_c": 29.5,
+    "humidity_pct": 55.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H52M4.025S",
+    "air_temp_c": 24.8,
+    "track_temp_c": 29.5,
+    "humidity_pct": 55.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H53M4.039S",
+    "air_temp_c": 24.8,
+    "track_temp_c": 29.5,
+    "humidity_pct": 56.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H54M4.026S",
+    "air_temp_c": 24.8,
+    "track_temp_c": 29.5,
+    "humidity_pct": 56.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H55M4.027S",
+    "air_temp_c": 24.8,
+    "track_temp_c": 29.4,
+    "humidity_pct": 56.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H56M4.027S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 29.4,
+    "humidity_pct": 56.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H57M4.026S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 29.1,
+    "humidity_pct": 57.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H58M4.027S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 29.1,
+    "humidity_pct": 57.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT0H59M4.026S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 28.5,
+    "humidity_pct": 57.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H0M4.028S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 28.6,
+    "humidity_pct": 57.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H1M4.028S",
+    "air_temp_c": 24.7,
+    "track_temp_c": 28.7,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H2M4.025S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.7,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H3M4.027S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.4,
+    "humidity_pct": 58.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H4M4.026S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.4,
+    "humidity_pct": 58.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H5M4.042S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.7,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H6M4.03S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.7,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H7M4.044S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.4,
+    "humidity_pct": 57.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H8M4.042S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.4,
+    "humidity_pct": 57.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H9M4.041S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.4,
+    "humidity_pct": 58.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H10M4.048S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.4,
+    "humidity_pct": 58.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H11M4.042S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.2,
+    "humidity_pct": 58.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H12M4.066S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.2,
+    "humidity_pct": 58.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H13M4.073S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.1,
+    "humidity_pct": 58.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H14M4.095S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.1,
+    "humidity_pct": 58.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H15M4.105S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.1,
+    "humidity_pct": 58.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H16M4.104S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.1,
+    "humidity_pct": 58.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H17M4.119S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 28.4,
+    "humidity_pct": 57.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H18M4.138S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.4,
+    "humidity_pct": 57.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H19M4.138S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.2,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H20M4.135S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.2,
+    "humidity_pct": 57.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H21M4.153S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 28.2,
+    "humidity_pct": 58.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H22M4.151S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 27.9,
+    "humidity_pct": 59.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H23M4.16S",
+    "air_temp_c": 24.6,
+    "track_temp_c": 27.9,
+    "humidity_pct": 59.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H24M4.152S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 27.8,
+    "humidity_pct": 59.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H25M4.174S",
+    "air_temp_c": 24.5,
+    "track_temp_c": 27.8,
+    "humidity_pct": 59.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H26M4.181S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.8,
+    "humidity_pct": 59.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H27M4.199S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.6,
+    "humidity_pct": 59.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H28M4.198S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.6,
+    "humidity_pct": 59.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H29M4.204S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.5,
+    "humidity_pct": 59.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H30M4.198S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.7,
+    "humidity_pct": 59.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H31M4.202S",
+    "air_temp_c": 24.4,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H32M4.224S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 59.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H33M4.237S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 59.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H34M4.244S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 59.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H35M4.271S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.6,
+    "humidity_pct": 59.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H36M4.245S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 59.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H37M4.259S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H38M4.264S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H39M4.26S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H40M4.264S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H41M4.267S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 60.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H42M4.292S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.5,
+    "humidity_pct": 61.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H43M4.276S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.3,
+    "humidity_pct": 61.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H44M4.274S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.3,
+    "humidity_pct": 61.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H45M4.472S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.3,
+    "humidity_pct": 61.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H46M4.275S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.2,
+    "humidity_pct": 61.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H47M4.279S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.3,
+    "humidity_pct": 61.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H48M4.282S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.3,
+    "humidity_pct": 61.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H49M4.276S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.2,
+    "humidity_pct": 61.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H50M4.276S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.2,
+    "humidity_pct": 61.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H51M4.275S",
+    "air_temp_c": 24.3,
+    "track_temp_c": 27.2,
+    "humidity_pct": 61.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H52M4.281S",
+    "air_temp_c": 24.1,
+    "track_temp_c": 27.2,
+    "humidity_pct": 61.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H53M4.275S",
+    "air_temp_c": 24.1,
+    "track_temp_c": 27.0,
+    "humidity_pct": 62.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H54M4.277S",
+    "air_temp_c": 24.2,
+    "track_temp_c": 27.0,
+    "humidity_pct": 62.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H55M4.276S",
+    "air_temp_c": 24.2,
+    "track_temp_c": 26.9,
+    "humidity_pct": 62.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H56M4.278S",
+    "air_temp_c": 24.2,
+    "track_temp_c": 26.8,
+    "humidity_pct": 62.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H57M4.279S",
+    "air_temp_c": 24.2,
+    "track_temp_c": 26.6,
+    "humidity_pct": 63.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H58M4.277S",
+    "air_temp_c": 23.9,
+    "track_temp_c": 26.6,
+    "humidity_pct": 63.0,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT1H59M4.28S",
+    "air_temp_c": 23.9,
+    "track_temp_c": 26.6,
+    "humidity_pct": 63.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H0M4.278S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.6,
+    "humidity_pct": 63.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H1M4.276S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.4,
+    "humidity_pct": 64.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H2M4.285S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.4,
+    "humidity_pct": 64.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H3M4.277S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H4M4.279S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H5M4.285S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.4,
+    "humidity_pct": 64.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H6M4.276S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.4,
+    "humidity_pct": 64.4,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H7M4.278S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H8M4.277S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H9M4.273S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H10M4.281S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H11M4.28S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H12M4.276S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H13M4.284S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H14M4.279S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H15M4.303S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H16M4.276S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.3,
+    "humidity_pct": 64.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H17M4.276S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.2,
+    "humidity_pct": 64.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H18M4.277S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.2,
+    "humidity_pct": 64.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H19M4.283S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.2,
+    "humidity_pct": 64.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H20M4.275S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 26.2,
+    "humidity_pct": 64.7,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H21M4.279S",
+    "air_temp_c": 23.8,
+    "track_temp_c": 25.9,
+    "humidity_pct": 64.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H22M4.277S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.9,
+    "humidity_pct": 64.3,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H23M4.275S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 26.0,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H24M4.282S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 26.0,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H25M4.305S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H26M4.334S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.5,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H27M4.326S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.9,
+    "humidity_pct": 64.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H28M4.324S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.9,
+    "humidity_pct": 64.1,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H29M4.332S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H30M4.324S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.6,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H31M4.322S",
+    "air_temp_c": 23.7,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H32M4.327S",
+    "air_temp_c": 23.6,
+    "track_temp_c": 25.8,
+    "humidity_pct": 64.9,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H33M4.331S",
+    "air_temp_c": 23.5,
+    "track_temp_c": 25.7,
+    "humidity_pct": 65.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H34M4.324S",
+    "air_temp_c": 23.5,
+    "track_temp_c": 25.7,
+    "humidity_pct": 65.2,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H35M4.323S",
+    "air_temp_c": 23.5,
+    "track_temp_c": 25.7,
+    "humidity_pct": 64.8,
+    "rainfall": 0
+  },
+  {
+    "utc_timestamp": "P0DT2H36M4.326S",
+    "air_temp_c": 23.5,
+    "track_temp_c": 25.7,
+    "humidity_pct": 64.8,
+    "rainfall": 0
+  }
+]

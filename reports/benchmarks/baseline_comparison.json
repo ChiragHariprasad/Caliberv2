@@ -1,0 +1,1873 @@
+{
+  "protocol": {
+    "calibration_races": [
+      "2021 British Grand Prix",
+      "2021 Saudi Arabian Grand Prix",
+      "2022 Monaco Grand Prix"
+    ],
+    "holdout_races": [
+      "2021 Abu Dhabi Grand Prix",
+      "2022 Japanese Grand Prix"
+    ],
+    "edge_case_races": [
+      "2021 Belgian Grand Prix"
+    ],
+    "leakage_guard": "Strictly causal crossing-order stream; lap_start intervals use same-lap prior cars only; regression coefficients fit only on LORO/calibration training folds.",
+    "calibration_regression_params": {
+      "beta_age": -0.07343,
+      "beta_prog": 1.0,
+      "half_w95": 3.473
+    }
+  },
+  "calibration_split": [
+    {
+      "session_id": "2021_british_grand_prix",
+      "total_laps": 52,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 469,
+          "n_predicted": 436,
+          "coverage_fraction": 0.9296,
+          "mae_sec": 0.6655,
+          "rmse_sec": 4.6383,
+          "median_ae_sec": 0.203,
+          "pi95_coverage": 0.9335,
+          "mean_pi95_width_sec": 17.2179,
+          "calibration_gap_from_95pct": -0.0165
+        },
+        "rolling_5_median": {
+          "n_target_laps": 469,
+          "n_predicted": 421,
+          "coverage_fraction": 0.8977,
+          "mae_sec": 0.5858,
+          "rmse_sec": 2.461,
+          "median_ae_sec": 0.307,
+          "pi95_coverage": 0.924,
+          "mean_pi95_width_sec": 3.4121,
+          "calibration_gap_from_95pct": -0.026
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 1.392,
+          "rmse_sec": 5.0776,
+          "median_ae_sec": 0.3205,
+          "pi95_coverage": 0.9359,
+          "mean_pi95_width_sec": 11.0916,
+          "calibration_gap_from_95pct": -0.0141
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 1.4215,
+          "rmse_sec": 5.0308,
+          "median_ae_sec": 0.324,
+          "pi95_coverage": 0.9231,
+          "mean_pi95_width_sec": 8.184,
+          "calibration_gap_from_95pct": -0.0269
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 2.2449,
+          "rmse_sec": 6.997,
+          "median_ae_sec": 0.254,
+          "pi95_coverage": 0.9564,
+          "mean_pi95_width_sec": 34.4575,
+          "calibration_gap_from_95pct": 0.0064
+        },
+        "revised_pulse": {
+          "n_target_laps": 469,
+          "n_predicted": 373,
+          "coverage_fraction": 0.7953,
+          "mae_sec": 0.3872,
+          "rmse_sec": 0.7685,
+          "median_ae_sec": 0.227,
+          "pi95_coverage": 0.933,
+          "mean_pi95_width_sec": 2.1974,
+          "calibration_gap_from_95pct": -0.017
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 47,
+          "lap": 19,
+          "compound": "M",
+          "pred_sec": 95.526,
+          "actual_sec": 97.027,
+          "error_sec": 1.501,
+          "pi_half_width": 0.837
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 18,
+          "lap": 22,
+          "compound": "M",
+          "pred_sec": 92.977,
+          "actual_sec": 93.817,
+          "error_sec": 0.84,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 14,
+          "lap": 23,
+          "compound": "M",
+          "pred_sec": 93.036,
+          "actual_sec": 95.154,
+          "error_sec": 2.118,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 9,
+          "lap": 24,
+          "compound": "M",
+          "pred_sec": 95.567,
+          "actual_sec": 94.736,
+          "error_sec": -0.831,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 10,
+          "lap": 27,
+          "compound": "M",
+          "pred_sec": 92.439,
+          "actual_sec": 93.201,
+          "error_sec": 0.762,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 22,
+          "lap": 29,
+          "compound": "M",
+          "pred_sec": 92.376,
+          "actual_sec": 93.574,
+          "error_sec": 1.198,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 31,
+          "lap": 29,
+          "compound": "H",
+          "pred_sec": 92.67,
+          "actual_sec": 94.35,
+          "error_sec": 1.68,
+          "pi_half_width": 0.762
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 9,
+          "lap": 30,
+          "compound": "H",
+          "pred_sec": 94.845,
+          "actual_sec": 96.036,
+          "error_sec": 1.191,
+          "pi_half_width": 1.088
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 47,
+          "lap": 30,
+          "compound": "H",
+          "pred_sec": 94.975,
+          "actual_sec": 97.139,
+          "error_sec": 2.164,
+          "pi_half_width": 1.89
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 4,
+          "lap": 31,
+          "compound": "H",
+          "pred_sec": 92.397,
+          "actual_sec": 93.668,
+          "error_sec": 1.271,
+          "pi_half_width": 1.017
+        }
+      ]
+    },
+    {
+      "session_id": "2021_saudi_arabian_grand_prix",
+      "total_laps": 50,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 291,
+          "n_predicted": 274,
+          "coverage_fraction": 0.9416,
+          "mae_sec": 0.7561,
+          "rmse_sec": 3.7413,
+          "median_ae_sec": 0.2965,
+          "pi95_coverage": 0.9708,
+          "mean_pi95_width_sec": 14.1106,
+          "calibration_gap_from_95pct": 0.0208
+        },
+        "rolling_5_median": {
+          "n_target_laps": 291,
+          "n_predicted": 267,
+          "coverage_fraction": 0.9175,
+          "mae_sec": 0.6877,
+          "rmse_sec": 2.0369,
+          "median_ae_sec": 0.3485,
+          "pi95_coverage": 0.8989,
+          "mean_pi95_width_sec": 3.7842,
+          "calibration_gap_from_95pct": -0.0511
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 1.6314,
+          "rmse_sec": 5.3459,
+          "median_ae_sec": 0.3725,
+          "pi95_coverage": 0.9188,
+          "mean_pi95_width_sec": 12.8496,
+          "calibration_gap_from_95pct": -0.0312
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 1.6647,
+          "rmse_sec": 5.2634,
+          "median_ae_sec": 0.426,
+          "pi95_coverage": 0.9231,
+          "mean_pi95_width_sec": 8.9874,
+          "calibration_gap_from_95pct": -0.0269
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 2.5475,
+          "rmse_sec": 7.3042,
+          "median_ae_sec": 0.278,
+          "pi95_coverage": 0.9274,
+          "mean_pi95_width_sec": 26.3399,
+          "calibration_gap_from_95pct": -0.0226
+        },
+        "revised_pulse": {
+          "n_target_laps": 291,
+          "n_predicted": 223,
+          "coverage_fraction": 0.7663,
+          "mae_sec": 0.4578,
+          "rmse_sec": 0.8117,
+          "median_ae_sec": 0.248,
+          "pi95_coverage": 0.9372,
+          "mean_pi95_width_sec": 2.7985,
+          "calibration_gap_from_95pct": -0.0128
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 6,
+          "lap": 26,
+          "compound": "H",
+          "pred_sec": 95.054,
+          "actual_sec": 96.619,
+          "error_sec": 1.565,
+          "pi_half_width": 0.914
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 10,
+          "lap": 33,
+          "compound": "H",
+          "pred_sec": 93.362,
+          "actual_sec": 94.34,
+          "error_sec": 0.978,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 31,
+          "lap": 34,
+          "compound": "H",
+          "pred_sec": 92.67,
+          "actual_sec": 93.659,
+          "error_sec": 0.989,
+          "pi_half_width": 0.899
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 33,
+          "lap": 37,
+          "compound": "M",
+          "pred_sec": 90.901,
+          "actual_sec": 95.677,
+          "error_sec": 4.776,
+          "pi_half_width": 0.902
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 18,
+          "lap": 37,
+          "compound": "M",
+          "pred_sec": 93.577,
+          "actual_sec": 95.178,
+          "error_sec": 1.601,
+          "pi_half_width": 1.432
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 7,
+          "lap": 41,
+          "compound": "M",
+          "pred_sec": 93.902,
+          "actual_sec": 95.527,
+          "error_sec": 1.625,
+          "pi_half_width": 1.512
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 5,
+          "lap": 43,
+          "compound": "M",
+          "pred_sec": 93.925,
+          "actual_sec": 94.954,
+          "error_sec": 1.029,
+          "pi_half_width": 0.903
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 7,
+          "lap": 46,
+          "compound": "M",
+          "pred_sec": 93.317,
+          "actual_sec": 97.705,
+          "error_sec": 4.388,
+          "pi_half_width": 2.732
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 22,
+          "lap": 48,
+          "compound": "H",
+          "pred_sec": 92.536,
+          "actual_sec": 93.621,
+          "error_sec": 1.085,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 44,
+          "lap": 49,
+          "compound": "H",
+          "pred_sec": 90.988,
+          "actual_sec": 93.707,
+          "error_sec": 2.719,
+          "pi_half_width": 1.849
+        }
+      ]
+    },
+    {
+      "session_id": "2022_monaco_grand_prix",
+      "total_laps": 64,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 502,
+          "n_predicted": 459,
+          "coverage_fraction": 0.9143,
+          "mae_sec": 1.1722,
+          "rmse_sec": 2.7486,
+          "median_ae_sec": 0.603,
+          "pi95_coverage": 0.9325,
+          "mean_pi95_width_sec": 7.3545,
+          "calibration_gap_from_95pct": -0.0175
+        },
+        "rolling_5_median": {
+          "n_target_laps": 502,
+          "n_predicted": 431,
+          "coverage_fraction": 0.8586,
+          "mae_sec": 1.7567,
+          "rmse_sec": 2.7834,
+          "median_ae_sec": 1.261,
+          "pi95_coverage": 0.8376,
+          "mean_pi95_width_sec": 7.4885,
+          "calibration_gap_from_95pct": -0.1124
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 2.0284,
+          "rmse_sec": 3.728,
+          "median_ae_sec": 1.178,
+          "pi95_coverage": 0.8316,
+          "mean_pi95_width_sec": 9.9979,
+          "calibration_gap_from_95pct": -0.1184
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 3.0796,
+          "rmse_sec": 4.5822,
+          "median_ae_sec": 2.1733,
+          "pi95_coverage": 0.772,
+          "mean_pi95_width_sec": 10.3371,
+          "calibration_gap_from_95pct": -0.178
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 1.6642,
+          "rmse_sec": 4.0221,
+          "median_ae_sec": 0.558,
+          "pi95_coverage": 0.9093,
+          "mean_pi95_width_sec": 18.4908,
+          "calibration_gap_from_95pct": -0.0407
+        },
+        "revised_pulse": {
+          "n_target_laps": 502,
+          "n_predicted": 365,
+          "coverage_fraction": 0.7271,
+          "mae_sec": 0.8265,
+          "rmse_sec": 1.3507,
+          "median_ae_sec": 0.517,
+          "pi95_coverage": 0.9342,
+          "mean_pi95_width_sec": 5.4758,
+          "calibration_gap_from_95pct": -0.0158
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 10,
+          "lap": 8,
+          "compound": "I",
+          "pred_sec": 96.505,
+          "actual_sec": 98.733,
+          "error_sec": 2.228,
+          "pi_half_width": 1.418
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 6,
+          "lap": 10,
+          "compound": "H",
+          "pred_sec": 96.655,
+          "actual_sec": 104.874,
+          "error_sec": 8.219,
+          "pi_half_width": 1.765
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 31,
+          "lap": 11,
+          "compound": "W",
+          "pred_sec": 98.694,
+          "actual_sec": 96.863,
+          "error_sec": -1.831,
+          "pi_half_width": 1.75
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 31,
+          "lap": 12,
+          "compound": "W",
+          "pred_sec": 98.015,
+          "actual_sec": 95.796,
+          "error_sec": -2.219,
+          "pi_half_width": 1.716
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 3,
+          "lap": 12,
+          "compound": "W",
+          "pred_sec": 98.087,
+          "actual_sec": 100.341,
+          "error_sec": 2.254,
+          "pi_half_width": 1.783
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 3,
+          "lap": 13,
+          "compound": "W",
+          "pred_sec": 97.686,
+          "actual_sec": 100.065,
+          "error_sec": 2.379,
+          "pi_half_width": 1.94
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 77,
+          "lap": 19,
+          "compound": "W",
+          "pred_sec": 93.944,
+          "actual_sec": 92.732,
+          "error_sec": -1.212,
+          "pi_half_width": 0.969
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 5,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 91.783,
+          "actual_sec": 86.97,
+          "error_sec": -4.813,
+          "pi_half_width": 2.011
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 18,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 91.221,
+          "actual_sec": 87.633,
+          "error_sec": -3.588,
+          "pi_half_width": 1.357
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 6,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 91.696,
+          "actual_sec": 99.08,
+          "error_sec": 7.384,
+          "pi_half_width": 1.988
+        }
+      ]
+    }
+  ],
+  "holdout_split": [
+    {
+      "session_id": "2021_abu_dhabi_grand_prix",
+      "total_laps": 58,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 513,
+          "n_predicted": 494,
+          "coverage_fraction": 0.963,
+          "mae_sec": 0.3312,
+          "rmse_sec": 0.5634,
+          "median_ae_sec": 0.1675,
+          "pi95_coverage": 0.9089,
+          "mean_pi95_width_sec": 2.0865,
+          "calibration_gap_from_95pct": -0.0411
+        },
+        "rolling_5_median": {
+          "n_target_laps": 513,
+          "n_predicted": 477,
+          "coverage_fraction": 0.9298,
+          "mae_sec": 0.3534,
+          "rmse_sec": 0.5297,
+          "median_ae_sec": 0.24,
+          "pi95_coverage": 0.9329,
+          "mean_pi95_width_sec": 1.7556,
+          "calibration_gap_from_95pct": -0.0171
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3415,
+          "rmse_sec": 0.5254,
+          "median_ae_sec": 0.233,
+          "pi95_coverage": 0.933,
+          "mean_pi95_width_sec": 1.6997,
+          "calibration_gap_from_95pct": -0.017
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.426,
+          "rmse_sec": 0.7043,
+          "median_ae_sec": 0.2415,
+          "pi95_coverage": 0.9122,
+          "mean_pi95_width_sec": 4.222,
+          "calibration_gap_from_95pct": -0.0378
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3495,
+          "rmse_sec": 0.5721,
+          "median_ae_sec": 0.19,
+          "pi95_coverage": 0.9261,
+          "mean_pi95_width_sec": 1.9629,
+          "calibration_gap_from_95pct": -0.0239
+        },
+        "revised_pulse": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3495,
+          "rmse_sec": 0.5721,
+          "median_ae_sec": 0.19,
+          "pi95_coverage": 0.9446,
+          "mean_pi95_width_sec": 2.4322,
+          "calibration_gap_from_95pct": -0.0054
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 4,
+          "lap": 14,
+          "compound": "S",
+          "pred_sec": 89.964,
+          "actual_sec": 90.775,
+          "error_sec": 0.811,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 11,
+          "lap": 15,
+          "compound": "S",
+          "pred_sec": 88.701,
+          "actual_sec": 89.581,
+          "error_sec": 0.88,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 63,
+          "lap": 16,
+          "compound": "M",
+          "pred_sec": 90.716,
+          "actual_sec": 91.729,
+          "error_sec": 1.013,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 6,
+          "lap": 17,
+          "compound": "M",
+          "pred_sec": 90.837,
+          "actual_sec": 91.891,
+          "error_sec": 1.054,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 55,
+          "lap": 18,
+          "compound": "S",
+          "pred_sec": 89.47,
+          "actual_sec": 90.907,
+          "error_sec": 1.437,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 63,
+          "lap": 18,
+          "compound": "M",
+          "pred_sec": 90.766,
+          "actual_sec": 92.536,
+          "error_sec": 1.77,
+          "pi_half_width": 1.074
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 11,
+          "lap": 20,
+          "compound": "S",
+          "pred_sec": 90.001,
+          "actual_sec": 94.359,
+          "error_sec": 4.358,
+          "pi_half_width": 2.271
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 6,
+          "lap": 20,
+          "compound": "M",
+          "pred_sec": 91.332,
+          "actual_sec": 92.317,
+          "error_sec": 0.985,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 44,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 88.15,
+          "actual_sec": 90.485,
+          "error_sec": 2.335,
+          "pi_half_width": 1.247
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 14,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 91.016,
+          "actual_sec": 89.633,
+          "error_sec": -1.383,
+          "pi_half_width": 1.268
+        }
+      ]
+    },
+    {
+      "session_id": "2022_japanese_grand_prix",
+      "total_laps": 29,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 233,
+          "n_predicted": 203,
+          "coverage_fraction": 0.8712,
+          "mae_sec": 1.4894,
+          "rmse_sec": 6.5315,
+          "median_ae_sec": 0.442,
+          "pi95_coverage": 0.9557,
+          "mean_pi95_width_sec": 48.9249,
+          "calibration_gap_from_95pct": 0.0057
+        },
+        "rolling_5_median": {
+          "n_target_laps": 233,
+          "n_predicted": 182,
+          "coverage_fraction": 0.7811,
+          "mae_sec": 1.7466,
+          "rmse_sec": 7.4042,
+          "median_ae_sec": 0.4788,
+          "pi95_coverage": 0.8242,
+          "mean_pi95_width_sec": 5.4633,
+          "calibration_gap_from_95pct": -0.1258
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 1.0791,
+          "rmse_sec": 5.0248,
+          "median_ae_sec": 0.509,
+          "pi95_coverage": 0.8144,
+          "mean_pi95_width_sec": 3.6023,
+          "calibration_gap_from_95pct": -0.1356
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 2.0635,
+          "rmse_sec": 5.3157,
+          "median_ae_sec": 1.5427,
+          "pi95_coverage": 0.8862,
+          "mean_pi95_width_sec": 8.8458,
+          "calibration_gap_from_95pct": -0.0638
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 0.9507,
+          "rmse_sec": 4.9857,
+          "median_ae_sec": 0.436,
+          "pi95_coverage": 0.8802,
+          "mean_pi95_width_sec": 3.9242,
+          "calibration_gap_from_95pct": -0.0698
+        },
+        "revised_pulse": {
+          "n_target_laps": 233,
+          "n_predicted": 166,
+          "coverage_fraction": 0.7124,
+          "mae_sec": 0.573,
+          "rmse_sec": 0.7791,
+          "median_ae_sec": 0.431,
+          "pi95_coverage": 0.9518,
+          "mean_pi95_width_sec": 3.7164,
+          "calibration_gap_from_95pct": 0.0018
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 1,
+          "lap": 14,
+          "compound": "I",
+          "pred_sec": 105.871,
+          "actual_sec": 106.813,
+          "error_sec": 0.942,
+          "pi_half_width": 0.828
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 6,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 109.459,
+          "actual_sec": 111.084,
+          "error_sec": 1.625,
+          "pi_half_width": 1.328
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 63,
+          "lap": 21,
+          "compound": "I",
+          "pred_sec": 108.833,
+          "actual_sec": 107.004,
+          "error_sec": -1.829,
+          "pi_half_width": 0.98
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 3,
+          "lap": 22,
+          "compound": "I",
+          "pred_sec": 110.769,
+          "actual_sec": 109.177,
+          "error_sec": -1.592,
+          "pi_half_width": 1.101
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 47,
+          "lap": 22,
+          "compound": "I",
+          "pred_sec": 109.347,
+          "actual_sec": 111.956,
+          "error_sec": 2.609,
+          "pi_half_width": 1.11
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 16,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 108.824,
+          "actual_sec": 110.087,
+          "error_sec": 1.263,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 20,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 110.637,
+          "actual_sec": 112.046,
+          "error_sec": 1.409,
+          "pi_half_width": 1.3
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 10,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 105.703,
+          "actual_sec": 108.888,
+          "error_sec": 3.185,
+          "pi_half_width": 1.356
+        }
+      ]
+    }
+  ],
+  "edge_case_belgium_2021": [
+    {
+      "session_id": "2021_belgian_grand_prix",
+      "total_laps": 3,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        },
+        "rolling_5_median": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        },
+        "revised_pulse": {
+          "n_target_laps": 13,
+          "n_predicted": 0,
+          "mae_sec": null,
+          "rmse_sec": null,
+          "pi95_coverage": null,
+          "mean_pi95_width_sec": null,
+          "calibration_gap_from_95pct": null
+        }
+      },
+      "revised_failure_cases_sample": []
+    }
+  ],
+  "loro_validation": [
+    {
+      "session_id": "2021_british_grand_prix",
+      "total_laps": 52,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 469,
+          "n_predicted": 436,
+          "coverage_fraction": 0.9296,
+          "mae_sec": 0.6655,
+          "rmse_sec": 4.6383,
+          "median_ae_sec": 0.203,
+          "pi95_coverage": 0.9335,
+          "mean_pi95_width_sec": 17.2179,
+          "calibration_gap_from_95pct": -0.0165
+        },
+        "rolling_5_median": {
+          "n_target_laps": 469,
+          "n_predicted": 421,
+          "coverage_fraction": 0.8977,
+          "mae_sec": 0.5858,
+          "rmse_sec": 2.461,
+          "median_ae_sec": 0.307,
+          "pi95_coverage": 0.924,
+          "mean_pi95_width_sec": 3.4121,
+          "calibration_gap_from_95pct": -0.026
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 1.392,
+          "rmse_sec": 5.0776,
+          "median_ae_sec": 0.3205,
+          "pi95_coverage": 0.9359,
+          "mean_pi95_width_sec": 11.0916,
+          "calibration_gap_from_95pct": -0.0141
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 1.416,
+          "rmse_sec": 5.0338,
+          "median_ae_sec": 0.3328,
+          "pi95_coverage": 0.9231,
+          "mean_pi95_width_sec": 7.9042,
+          "calibration_gap_from_95pct": -0.0269
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 469,
+          "n_predicted": 390,
+          "coverage_fraction": 0.8316,
+          "mae_sec": 2.2449,
+          "rmse_sec": 6.997,
+          "median_ae_sec": 0.254,
+          "pi95_coverage": 0.9564,
+          "mean_pi95_width_sec": 34.4575,
+          "calibration_gap_from_95pct": 0.0064
+        },
+        "revised_pulse": {
+          "n_target_laps": 469,
+          "n_predicted": 373,
+          "coverage_fraction": 0.7953,
+          "mae_sec": 0.3872,
+          "rmse_sec": 0.7685,
+          "median_ae_sec": 0.227,
+          "pi95_coverage": 0.933,
+          "mean_pi95_width_sec": 2.1974,
+          "calibration_gap_from_95pct": -0.017
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 47,
+          "lap": 19,
+          "compound": "M",
+          "pred_sec": 95.526,
+          "actual_sec": 97.027,
+          "error_sec": 1.501,
+          "pi_half_width": 0.837
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 18,
+          "lap": 22,
+          "compound": "M",
+          "pred_sec": 92.977,
+          "actual_sec": 93.817,
+          "error_sec": 0.84,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 14,
+          "lap": 23,
+          "compound": "M",
+          "pred_sec": 93.036,
+          "actual_sec": 95.154,
+          "error_sec": 2.118,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 9,
+          "lap": 24,
+          "compound": "M",
+          "pred_sec": 95.567,
+          "actual_sec": 94.736,
+          "error_sec": -0.831,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 10,
+          "lap": 27,
+          "compound": "M",
+          "pred_sec": 92.439,
+          "actual_sec": 93.201,
+          "error_sec": 0.762,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 22,
+          "lap": 29,
+          "compound": "M",
+          "pred_sec": 92.376,
+          "actual_sec": 93.574,
+          "error_sec": 1.198,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 31,
+          "lap": 29,
+          "compound": "H",
+          "pred_sec": 92.67,
+          "actual_sec": 94.35,
+          "error_sec": 1.68,
+          "pi_half_width": 0.762
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 9,
+          "lap": 30,
+          "compound": "H",
+          "pred_sec": 94.845,
+          "actual_sec": 96.036,
+          "error_sec": 1.191,
+          "pi_half_width": 1.088
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 47,
+          "lap": 30,
+          "compound": "H",
+          "pred_sec": 94.975,
+          "actual_sec": 97.139,
+          "error_sec": 2.164,
+          "pi_half_width": 1.89
+        },
+        {
+          "race": "2021_british_grand_prix",
+          "driver": 4,
+          "lap": 31,
+          "compound": "H",
+          "pred_sec": 92.397,
+          "actual_sec": 93.668,
+          "error_sec": 1.271,
+          "pi_half_width": 1.017
+        }
+      ],
+      "loro_regression_params": {
+        "beta_age": -0.06864,
+        "beta_prog": 1.0,
+        "half_w95": 3.149
+      }
+    },
+    {
+      "session_id": "2021_saudi_arabian_grand_prix",
+      "total_laps": 50,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 291,
+          "n_predicted": 274,
+          "coverage_fraction": 0.9416,
+          "mae_sec": 0.7561,
+          "rmse_sec": 3.7413,
+          "median_ae_sec": 0.2965,
+          "pi95_coverage": 0.9708,
+          "mean_pi95_width_sec": 14.1106,
+          "calibration_gap_from_95pct": 0.0208
+        },
+        "rolling_5_median": {
+          "n_target_laps": 291,
+          "n_predicted": 267,
+          "coverage_fraction": 0.9175,
+          "mae_sec": 0.6877,
+          "rmse_sec": 2.0369,
+          "median_ae_sec": 0.3485,
+          "pi95_coverage": 0.8989,
+          "mean_pi95_width_sec": 3.7842,
+          "calibration_gap_from_95pct": -0.0511
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 1.6314,
+          "rmse_sec": 5.3459,
+          "median_ae_sec": 0.3725,
+          "pi95_coverage": 0.9188,
+          "mean_pi95_width_sec": 12.8496,
+          "calibration_gap_from_95pct": -0.0312
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 1.6786,
+          "rmse_sec": 5.2722,
+          "median_ae_sec": 0.4563,
+          "pi95_coverage": 0.9231,
+          "mean_pi95_width_sec": 8.5716,
+          "calibration_gap_from_95pct": -0.0269
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 291,
+          "n_predicted": 234,
+          "coverage_fraction": 0.8041,
+          "mae_sec": 2.5475,
+          "rmse_sec": 7.3042,
+          "median_ae_sec": 0.278,
+          "pi95_coverage": 0.9274,
+          "mean_pi95_width_sec": 26.3399,
+          "calibration_gap_from_95pct": -0.0226
+        },
+        "revised_pulse": {
+          "n_target_laps": 291,
+          "n_predicted": 223,
+          "coverage_fraction": 0.7663,
+          "mae_sec": 0.4578,
+          "rmse_sec": 0.8117,
+          "median_ae_sec": 0.248,
+          "pi95_coverage": 0.9372,
+          "mean_pi95_width_sec": 2.7985,
+          "calibration_gap_from_95pct": -0.0128
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 6,
+          "lap": 26,
+          "compound": "H",
+          "pred_sec": 95.054,
+          "actual_sec": 96.619,
+          "error_sec": 1.565,
+          "pi_half_width": 0.914
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 10,
+          "lap": 33,
+          "compound": "H",
+          "pred_sec": 93.362,
+          "actual_sec": 94.34,
+          "error_sec": 0.978,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 31,
+          "lap": 34,
+          "compound": "H",
+          "pred_sec": 92.67,
+          "actual_sec": 93.659,
+          "error_sec": 0.989,
+          "pi_half_width": 0.899
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 33,
+          "lap": 37,
+          "compound": "M",
+          "pred_sec": 90.901,
+          "actual_sec": 95.677,
+          "error_sec": 4.776,
+          "pi_half_width": 0.902
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 18,
+          "lap": 37,
+          "compound": "M",
+          "pred_sec": 93.577,
+          "actual_sec": 95.178,
+          "error_sec": 1.601,
+          "pi_half_width": 1.432
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 7,
+          "lap": 41,
+          "compound": "M",
+          "pred_sec": 93.902,
+          "actual_sec": 95.527,
+          "error_sec": 1.625,
+          "pi_half_width": 1.512
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 5,
+          "lap": 43,
+          "compound": "M",
+          "pred_sec": 93.925,
+          "actual_sec": 94.954,
+          "error_sec": 1.029,
+          "pi_half_width": 0.903
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 7,
+          "lap": 46,
+          "compound": "M",
+          "pred_sec": 93.317,
+          "actual_sec": 97.705,
+          "error_sec": 4.388,
+          "pi_half_width": 2.732
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 22,
+          "lap": 48,
+          "compound": "H",
+          "pred_sec": 92.536,
+          "actual_sec": 93.621,
+          "error_sec": 1.085,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_saudi_arabian_grand_prix",
+          "driver": 44,
+          "lap": 49,
+          "compound": "H",
+          "pred_sec": 90.988,
+          "actual_sec": 93.707,
+          "error_sec": 2.719,
+          "pi_half_width": 1.849
+        }
+      ],
+      "loro_regression_params": {
+        "beta_age": -0.0684,
+        "beta_prog": 1.0,
+        "half_w95": 3.16
+      }
+    },
+    {
+      "session_id": "2022_monaco_grand_prix",
+      "total_laps": 64,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 502,
+          "n_predicted": 459,
+          "coverage_fraction": 0.9143,
+          "mae_sec": 1.1722,
+          "rmse_sec": 2.7486,
+          "median_ae_sec": 0.603,
+          "pi95_coverage": 0.9325,
+          "mean_pi95_width_sec": 7.3545,
+          "calibration_gap_from_95pct": -0.0175
+        },
+        "rolling_5_median": {
+          "n_target_laps": 502,
+          "n_predicted": 431,
+          "coverage_fraction": 0.8586,
+          "mae_sec": 1.7567,
+          "rmse_sec": 2.7834,
+          "median_ae_sec": 1.261,
+          "pi95_coverage": 0.8376,
+          "mean_pi95_width_sec": 7.4885,
+          "calibration_gap_from_95pct": -0.1124
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 2.0284,
+          "rmse_sec": 3.728,
+          "median_ae_sec": 1.178,
+          "pi95_coverage": 0.8316,
+          "mean_pi95_width_sec": 9.9979,
+          "calibration_gap_from_95pct": -0.1184
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 3.1399,
+          "rmse_sec": 4.6445,
+          "median_ae_sec": 2.2277,
+          "pi95_coverage": 0.7176,
+          "mean_pi95_width_sec": 9.7548,
+          "calibration_gap_from_95pct": -0.2324
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 502,
+          "n_predicted": 386,
+          "coverage_fraction": 0.7689,
+          "mae_sec": 1.6642,
+          "rmse_sec": 4.0221,
+          "median_ae_sec": 0.558,
+          "pi95_coverage": 0.9093,
+          "mean_pi95_width_sec": 18.4908,
+          "calibration_gap_from_95pct": -0.0407
+        },
+        "revised_pulse": {
+          "n_target_laps": 502,
+          "n_predicted": 365,
+          "coverage_fraction": 0.7271,
+          "mae_sec": 0.8265,
+          "rmse_sec": 1.3507,
+          "median_ae_sec": 0.517,
+          "pi95_coverage": 0.9342,
+          "mean_pi95_width_sec": 5.4758,
+          "calibration_gap_from_95pct": -0.0158
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 10,
+          "lap": 8,
+          "compound": "I",
+          "pred_sec": 96.505,
+          "actual_sec": 98.733,
+          "error_sec": 2.228,
+          "pi_half_width": 1.418
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 6,
+          "lap": 10,
+          "compound": "H",
+          "pred_sec": 96.655,
+          "actual_sec": 104.874,
+          "error_sec": 8.219,
+          "pi_half_width": 1.765
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 31,
+          "lap": 11,
+          "compound": "W",
+          "pred_sec": 98.694,
+          "actual_sec": 96.863,
+          "error_sec": -1.831,
+          "pi_half_width": 1.75
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 31,
+          "lap": 12,
+          "compound": "W",
+          "pred_sec": 98.015,
+          "actual_sec": 95.796,
+          "error_sec": -2.219,
+          "pi_half_width": 1.716
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 3,
+          "lap": 12,
+          "compound": "W",
+          "pred_sec": 98.087,
+          "actual_sec": 100.341,
+          "error_sec": 2.254,
+          "pi_half_width": 1.783
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 3,
+          "lap": 13,
+          "compound": "W",
+          "pred_sec": 97.686,
+          "actual_sec": 100.065,
+          "error_sec": 2.379,
+          "pi_half_width": 1.94
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 77,
+          "lap": 19,
+          "compound": "W",
+          "pred_sec": 93.944,
+          "actual_sec": 92.732,
+          "error_sec": -1.212,
+          "pi_half_width": 0.969
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 5,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 91.783,
+          "actual_sec": 86.97,
+          "error_sec": -4.813,
+          "pi_half_width": 2.011
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 18,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 91.221,
+          "actual_sec": 87.633,
+          "error_sec": -3.588,
+          "pi_half_width": 1.357
+        },
+        {
+          "race": "2022_monaco_grand_prix",
+          "driver": 6,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 91.696,
+          "actual_sec": 99.08,
+          "error_sec": 7.384,
+          "pi_half_width": 1.988
+        }
+      ],
+      "loro_regression_params": {
+        "beta_age": -0.06356,
+        "beta_prog": 1.0,
+        "half_w95": 2.677
+      }
+    },
+    {
+      "session_id": "2021_abu_dhabi_grand_prix",
+      "total_laps": 58,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 513,
+          "n_predicted": 494,
+          "coverage_fraction": 0.963,
+          "mae_sec": 0.3312,
+          "rmse_sec": 0.5634,
+          "median_ae_sec": 0.1675,
+          "pi95_coverage": 0.9089,
+          "mean_pi95_width_sec": 2.0865,
+          "calibration_gap_from_95pct": -0.0411
+        },
+        "rolling_5_median": {
+          "n_target_laps": 513,
+          "n_predicted": 477,
+          "coverage_fraction": 0.9298,
+          "mae_sec": 0.3534,
+          "rmse_sec": 0.5297,
+          "median_ae_sec": 0.24,
+          "pi95_coverage": 0.9329,
+          "mean_pi95_width_sec": 1.7556,
+          "calibration_gap_from_95pct": -0.0171
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3415,
+          "rmse_sec": 0.5254,
+          "median_ae_sec": 0.233,
+          "pi95_coverage": 0.933,
+          "mean_pi95_width_sec": 1.6997,
+          "calibration_gap_from_95pct": -0.017
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.5587,
+          "rmse_sec": 0.8875,
+          "median_ae_sec": 0.3015,
+          "pi95_coverage": 0.9053,
+          "mean_pi95_width_sec": 4.4479,
+          "calibration_gap_from_95pct": -0.0447
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3495,
+          "rmse_sec": 0.5721,
+          "median_ae_sec": 0.19,
+          "pi95_coverage": 0.9261,
+          "mean_pi95_width_sec": 1.9629,
+          "calibration_gap_from_95pct": -0.0239
+        },
+        "revised_pulse": {
+          "n_target_laps": 513,
+          "n_predicted": 433,
+          "coverage_fraction": 0.8441,
+          "mae_sec": 0.3495,
+          "rmse_sec": 0.5721,
+          "median_ae_sec": 0.19,
+          "pi95_coverage": 0.9446,
+          "mean_pi95_width_sec": 2.4322,
+          "calibration_gap_from_95pct": -0.0054
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 4,
+          "lap": 14,
+          "compound": "S",
+          "pred_sec": 89.964,
+          "actual_sec": 90.775,
+          "error_sec": 0.811,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 11,
+          "lap": 15,
+          "compound": "S",
+          "pred_sec": 88.701,
+          "actual_sec": 89.581,
+          "error_sec": 0.88,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 63,
+          "lap": 16,
+          "compound": "M",
+          "pred_sec": 90.716,
+          "actual_sec": 91.729,
+          "error_sec": 1.013,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 6,
+          "lap": 17,
+          "compound": "M",
+          "pred_sec": 90.837,
+          "actual_sec": 91.891,
+          "error_sec": 1.054,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 55,
+          "lap": 18,
+          "compound": "S",
+          "pred_sec": 89.47,
+          "actual_sec": 90.907,
+          "error_sec": 1.437,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 63,
+          "lap": 18,
+          "compound": "M",
+          "pred_sec": 90.766,
+          "actual_sec": 92.536,
+          "error_sec": 1.77,
+          "pi_half_width": 1.074
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 11,
+          "lap": 20,
+          "compound": "S",
+          "pred_sec": 90.001,
+          "actual_sec": 94.359,
+          "error_sec": 4.358,
+          "pi_half_width": 2.271
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 6,
+          "lap": 20,
+          "compound": "M",
+          "pred_sec": 91.332,
+          "actual_sec": 92.317,
+          "error_sec": 0.985,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 44,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 88.15,
+          "actual_sec": 90.485,
+          "error_sec": 2.335,
+          "pi_half_width": 1.247
+        },
+        {
+          "race": "2021_abu_dhabi_grand_prix",
+          "driver": 14,
+          "lap": 21,
+          "compound": "H",
+          "pred_sec": 91.016,
+          "actual_sec": 89.633,
+          "error_sec": -1.383,
+          "pi_half_width": 1.268
+        }
+      ],
+      "loro_regression_params": {
+        "beta_age": -0.1,
+        "beta_prog": 1.0,
+        "half_w95": 3.503
+      }
+    },
+    {
+      "session_id": "2022_japanese_grand_prix",
+      "total_laps": 29,
+      "models": {
+        "previous_lap": {
+          "n_target_laps": 233,
+          "n_predicted": 203,
+          "coverage_fraction": 0.8712,
+          "mae_sec": 1.4894,
+          "rmse_sec": 6.5315,
+          "median_ae_sec": 0.442,
+          "pi95_coverage": 0.9557,
+          "mean_pi95_width_sec": 48.9249,
+          "calibration_gap_from_95pct": 0.0057
+        },
+        "rolling_5_median": {
+          "n_target_laps": 233,
+          "n_predicted": 182,
+          "coverage_fraction": 0.7811,
+          "mae_sec": 1.7466,
+          "rmse_sec": 7.4042,
+          "median_ae_sec": 0.4788,
+          "pi95_coverage": 0.8242,
+          "mean_pi95_width_sec": 5.4633,
+          "calibration_gap_from_95pct": -0.1258
+        },
+        "rolling_clean_air_median": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 1.0791,
+          "rmse_sec": 5.0248,
+          "median_ae_sec": 0.509,
+          "pi95_coverage": 0.8144,
+          "mean_pi95_width_sec": 3.6023,
+          "calibration_gap_from_95pct": -0.1356
+        },
+        "circuit_normalized_regression": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 2.0155,
+          "rmse_sec": 5.2939,
+          "median_ae_sec": 1.5114,
+          "pi95_coverage": 0.8802,
+          "mean_pi95_width_sec": 8.0004,
+          "calibration_gap_from_95pct": -0.0698
+        },
+        "existing_fuel_compensated": {
+          "n_target_laps": 233,
+          "n_predicted": 167,
+          "coverage_fraction": 0.7167,
+          "mae_sec": 0.9507,
+          "rmse_sec": 4.9857,
+          "median_ae_sec": 0.436,
+          "pi95_coverage": 0.8802,
+          "mean_pi95_width_sec": 3.9242,
+          "calibration_gap_from_95pct": -0.0698
+        },
+        "revised_pulse": {
+          "n_target_laps": 233,
+          "n_predicted": 166,
+          "coverage_fraction": 0.7124,
+          "mae_sec": 0.573,
+          "rmse_sec": 0.7791,
+          "median_ae_sec": 0.431,
+          "pi95_coverage": 0.9518,
+          "mean_pi95_width_sec": 3.7164,
+          "calibration_gap_from_95pct": 0.0018
+        }
+      },
+      "revised_failure_cases_sample": [
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 1,
+          "lap": 14,
+          "compound": "I",
+          "pred_sec": 105.871,
+          "actual_sec": 106.813,
+          "error_sec": 0.942,
+          "pi_half_width": 0.828
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 6,
+          "lap": 20,
+          "compound": "I",
+          "pred_sec": 109.459,
+          "actual_sec": 111.084,
+          "error_sec": 1.625,
+          "pi_half_width": 1.328
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 63,
+          "lap": 21,
+          "compound": "I",
+          "pred_sec": 108.833,
+          "actual_sec": 107.004,
+          "error_sec": -1.829,
+          "pi_half_width": 0.98
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 3,
+          "lap": 22,
+          "compound": "I",
+          "pred_sec": 110.769,
+          "actual_sec": 109.177,
+          "error_sec": -1.592,
+          "pi_half_width": 1.101
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 47,
+          "lap": 22,
+          "compound": "I",
+          "pred_sec": 109.347,
+          "actual_sec": 111.956,
+          "error_sec": 2.609,
+          "pi_half_width": 1.11
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 16,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 108.824,
+          "actual_sec": 110.087,
+          "error_sec": 1.263,
+          "pi_half_width": 0.756
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 20,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 110.637,
+          "actual_sec": 112.046,
+          "error_sec": 1.409,
+          "pi_half_width": 1.3
+        },
+        {
+          "race": "2022_japanese_grand_prix",
+          "driver": 10,
+          "lap": 24,
+          "compound": "I",
+          "pred_sec": 105.703,
+          "actual_sec": 108.888,
+          "error_sec": 3.185,
+          "pi_half_width": 1.356
+        }
+      ],
+      "loro_regression_params": {
+        "beta_age": -0.04569,
+        "beta_prog": 0.43751,
+        "half_w95": 2.924
+      }
+    }
+  ],
+  "loro_aggregate_comparison": {
+    "previous_lap": {
+      "n_predicted": 1866,
+      "weighted_mae_sec": 0.8046,
+      "weighted_rmse_sec": 3.6967,
+      "weighted_pi95_coverage": 0.9346,
+      "weighted_pi95_width_sec": 13.7789,
+      "calibration_gap_from_95pct": -0.0154,
+      "calibrated_at_95pct_within_2pct": true
+    },
+    "rolling_5_median": {
+      "n_predicted": 1778,
+      "weighted_mae_sec": 0.9414,
+      "weighted_rmse_sec": 3.102,
+      "weighted_pi95_coverage": 0.8915,
+      "weighted_pi95_width_sec": 4.2217,
+      "calibration_gap_from_95pct": -0.0585,
+      "calibrated_at_95pct_within_2pct": false
+    },
+    "rolling_clean_air_median": {
+      "n_predicted": 1610,
+      "weighted_mae_sec": 1.2644,
+      "weighted_rmse_sec": 4.0527,
+      "weighted_pi95_coverage": 0.895,
+      "weighted_pi95_width_sec": 7.7822,
+      "calibration_gap_from_95pct": -0.055,
+      "calibrated_at_95pct_within_2pct": false
+    },
+    "circuit_normalized_regression": {
+      "n_predicted": 1610,
+      "weighted_mae_sec": 1.6991,
+      "weighted_rmse_sec": 4.2975,
+      "weighted_pi95_coverage": 0.8646,
+      "weighted_pi95_width_sec": 7.5253,
+      "calibration_gap_from_95pct": -0.0854,
+      "calibrated_at_95pct_within_2pct": false
+    },
+    "existing_fuel_compensated": {
+      "n_predicted": 1610,
+      "weighted_mae_sec": 1.5057,
+      "weighted_rmse_sec": 5.1145,
+      "weighted_pi95_coverage": 0.9248,
+      "weighted_pi95_width_sec": 17.5433,
+      "calibration_gap_from_95pct": -0.0252,
+      "calibrated_at_95pct_within_2pct": false
+    },
+    "revised_pulse": {
+      "n_predicted": 1560,
+      "weighted_mae_sec": 0.5094,
+      "weighted_rmse_sec": 0.9043,
+      "weighted_pi95_coverage": 0.9391,
+      "weighted_pi95_width_sec": 3.2772,
+      "calibration_gap_from_95pct": -0.0109,
+      "calibrated_at_95pct_within_2pct": true
+    }
+  },
+  "generated_at_utc": "2026-11-26T15:42:46.861695+00:00"
+}

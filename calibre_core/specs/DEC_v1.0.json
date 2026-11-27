@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Decision Evidence Contract Specification (DEC v1.0)",
+  "description": "Versioned declarative specification of evidence roles, scopes, formulas, constraints, and deadlines.",
+  "type": "object",
+  "required": [
+    "contract_id",
+    "version",
+    "epoch",
+    "decision_type",
+    "decision_scope",
+    "formula",
+    "roles",
+    "constraints",
+    "fault_model"
+  ],
+  "properties": {
+    "contract_id": { "type": "string" },
+    "version": { "type": "string" },
+    "epoch": { "type": "integer", "minimum": 1 },
+    "decision_type": { "type": "string" },
+    "decision_scope": {
+      "type": "object",
+      "required": ["scope_class"],
+      "properties": {
+        "scope_class": {
+          "type": "string",
+          "enum": ["SESSION", "DRIVER_SESSION", "DRIVER_LAP", "SECTOR", "ZONE"]
+        }
+      }
+    },
+    "formula": { "type": "string" },
+    "simultaneity_window_s": { "type": "number", "minimum": 0 },
+    "roles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["kind", "scope_class", "time_class_required"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["evidence", "reference"] },
+          "scope_class": { "type": "string" },
+          "time_class_required": { "type": "string" },
+          "fact_type": { "type": "string" },
+          "admissible_source_origins": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "agreement": { "type": "object" },
+          "freshness": { "type": "object" },
+          "slot": { "type": "object" },
+          "corroboration": { "type": "object" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "operands"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["bounds", "abs_diff", "ratio", "equals", "linear", "interval"] },
+          "operands": { "type": "array", "items": { "type": "string" } },
+          "tolerance": { "type": "number" },
+          "lo": { "type": "number" },
+          "hi": { "type": "number" },
+          "uncertainty": { "type": "number" }
+        }
+      }
+    },
+    "fault_model": {
+      "type": "object",
+      "required": ["diagnosis_budget", "resilience_requirement"],
+      "properties": {
+        "diagnosis_budget": { "type": "integer", "minimum": 0 },
+        "resilience_requirement": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
+

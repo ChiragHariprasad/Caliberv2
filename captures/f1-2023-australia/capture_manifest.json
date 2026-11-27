@@ -1,0 +1,16 @@
+{
+  "capture_id": "f1-2023-australia",
+  "data_regime": "LAB",
+  "regime": "LAB",
+  "provenance_status": "LAB_SYNTHETIC_WINDOWED_REPLAY",
+  "provider": "PULSE_LAB_REPLAY_CAPTURE",
+  "session_id": "f1-2023-australia",
+  "session_name": "Australian Grand Prix 2023",
+  "circuit_id": "albert_park",
+  "total_laps": 58,
+  "duration_seconds": 600,
+  "dataset_classification": "LAB_SYNTHETIC_CAPTURE",
+  "is_synthetic": true,
+  "licence_reference": "PULSE-LAB-REPLAY-INTERNAL",
+  "raw_archive_note": "Legacy raw envelopes preserved verbatim; runtime loader normalizes synthetic/lab provenance honestly."
+}

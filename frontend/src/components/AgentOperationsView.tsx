@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { fetchAgentsMetrics, fetchFindings } from '../api';
 import type { AgentFinding, AgentTelemetry } from '../types';
-import { BrainIcon, CarIcon, CircleDotIcon, CloseIcon, CloudRainIcon, FlagIcon } from './icons';
+import { BrainIcon, CarIcon, CircleDotIcon, CloseIcon, CloudRainIcon, FlagIcon, ScaleIcon } from './icons';
 
 interface AgentOperationsViewProps {
   onSelectAgentFinding?: (finding: AgentFinding) => void;
@@ -32,6 +32,11 @@ const AGENT_METADATA: Record<string, { title: string; role: string; renderIcon: 
     title: 'Consequence Fusion Engine',
     role: 'Asynchronous multi-domain synthesis, bounded waiting, provisional & revised assessments',
     renderIcon: () => <BrainIcon size={18} className="agent-svg-icon" />,
+  },
+  'agent-06-integrity': {
+    title: 'Evidence Integrity Engine (SIA v3)',
+    role: 'Scoped Integrity Algebra, RFC 8785 canonical hashing, bitemporal verdict validation',
+    renderIcon: () => <ScaleIcon size={18} className="agent-svg-icon" />,
   },
 };
 
@@ -71,11 +76,11 @@ export function AgentOperationsView({ onSelectAgentFinding }: AgentOperationsVie
         </div>
         <div className="live-status-pill">
           <span className="pulse-ping" />
-          <span>5/5 AGENTS REGISTERED & ACTIVE</span>
+          <span>{agentIds.length}/{agentIds.length} AGENTS REGISTERED & ACTIVE</span>
         </div>
       </div>
 
-      {/* 5 Specialist Agent Cards Grid */}
+      {/* Specialist Agent Cards Grid */}
       <div className="agent-cards-grid">
         {agentIds.map((agentId) => {
           const meta = AGENT_METADATA[agentId];

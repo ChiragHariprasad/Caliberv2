@@ -1,0 +1,21 @@
+{
+  "race_id": "2022_monaco",
+  "year": 2022,
+  "round": 7,
+  "official_event_name": "Monaco Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "monaco",
+  "circuit_key": "monaco_2022",
+  "session_date_utc": "2022-05-29T13:00:00",
+  "primary_controversy": "Pit exit line touching vs crossing; start system electrical outage",
+  "key_drivers": [
+    "11",
+    "33",
+    "16",
+    "55"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "F1_FOM_TIMING",
+  "acquired_at_utc": "2026-11-13T18:15:15.594936+00:00",
+  "fastf1_version": "3.9.0"
+}

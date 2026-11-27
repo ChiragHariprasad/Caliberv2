@@ -126,13 +126,21 @@ def test_driver_retires_lifecycle():
 
 
 def test_pit_lane_entry_and_exit_transitions():
-    """Verify PIT_ENTRY and PIT_EXIT state and speed transitions."""
+    """Verify PIT_ENTRY and PIT_EXIT state and speed transitions without fabricated speeds."""
     projector = RaceStateProjector()
 
-    # Enter Pit Lane
-    env_in = make_envelope("PIT_ENTRY", driver_number=16)
-    projector.apply_event(env_in)
+    # Enter Pit Lane without explicit speed telemetry -> speed unavailable (never fabricated 60.0)
+    env_in_no_speed = make_envelope("PIT_ENTRY", driver_number=16)
+    projector.apply_event(env_in_no_speed)
     assert projector.drivers[16]["status"] == "PIT_LANE"
+    assert projector.drivers[16]["telemetry"]["speed"]["quality"] == "UNAVAILABLE"
+    assert projector.drivers[16]["telemetry"]["speed"]["value"] is None
+
+    # Enter Pit Lane with observed speed telemetry -> records observed speed
+    env_in_obs = make_envelope("PIT_ENTRY", driver_number=16, payload={"speed": 60.0, "gear": 2})
+    projector.apply_event(env_in_obs)
+    assert projector.drivers[16]["status"] == "PIT_LANE"
+    assert projector.drivers[16]["telemetry"]["speed"]["quality"] == "AVAILABLE"
     assert projector.drivers[16]["telemetry"]["speed"]["value"] == 60.0
 
     # Exit Pit Lane

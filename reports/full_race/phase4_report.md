@@ -6,11 +6,11 @@
 > **FINAL QUALIFICATION DECISION**: **`VERIFIED`**
 > The PULSE race intelligence platform and five-agent streaming architecture have successfully executed and qualified a complete 52-lap historical Formula 1 Grand Prix session (**2023 British Grand Prix, Silverstone, 9 July 2023**) with **100% stage-by-stage event reconciliation** across Kafka, Flink, and the five specialist agents.
 
-- **Capture ID**: `pulse-capture-f1-2023-silverstone-race-v1`
-- **Session**: `Formula 1 Aramco British Grand Prix 2023` (Round 10, 2023)
+- **Capture ID**: `f1-2023-silverstone-race`
+- **Session**: `Formula 1 British Grand Prix` (Round None, None)
 - **Execution Mode**: `REPLAY`
 - **Transport Backbone**: Real Apache Kafka broker (`localhost:9092`), zero in-memory fallbacks (`VERIFIED`)
-- **Stream Processor**: Apache Flink 1.19 cluster job (`pulse-canonical-normalizer-v2`, 14 tasks running, checkpoints completed) (`VERIFIED`)
+- **Stream Processor**: Apache Flink 1.18.1 cluster job (`pulse-canonical-normalizer-v2`, 14 tasks running, checkpoints completed) (`VERIFIED`)
 - **Session Drivers**: Exactly 20 official classified drivers dynamically loaded (`VERIFIED`)
 - **Total Canonical Records**: 943 envelopes processed across 52 laps (`VERIFIED`)
 - **Unexplained Record Disappearance**: 0 records (0.00% drop rate) (`VERIFIED`)
@@ -64,14 +64,6 @@
 
 | Filename | Records | Byte Size | SHA-256 Checksum | Integrity Status |
 |---|---|---|---|---|
-| `session_info.json` | — | 528 bytes | `be876c9774ffe80b...` | **`VERIFIED`** |
-| `entry_list.json` | — | 7874 bytes | `cf2a53d0bb566f7d...` | **`VERIFIED`** |
-| `pit_stops.json` | — | 4266 bytes | `47e866f886eca831...` | **`VERIFIED`** |
-| `laps.json` | — | 148857 bytes | `58cb20a2585e80c6...` | **`VERIFIED`** |
-| `race_control_log.json` | — | 5267 bytes | `db06eb8c1bbab5e1...` | **`VERIFIED`** |
-| `weather.json` | — | 893 bytes | `0e9732c6338958b9...` | **`VERIFIED`** |
-| `telemetry_status.json` | — | 624 bytes | `7bef0a6d3cf1480d...` | **`VERIFIED`** |
-| `envelopes.jsonl` | — | 1014107 bytes | `78bc3be8b59e3e0c...` | **`VERIFIED`** |
 
 - **Primary Ingestion Provider**: `JOLPICA_F1_AND_FIA_OFFICIAL` (Open Data CC-BY-NC 4.0 & Public FIA Bulletins).
 - **Total Ingested Envelopes**: 943 canonical `EventEnvelope` records chronologically ordered.
@@ -82,18 +74,18 @@
 
 | Stage Name | Status | In | Out | Drop | Latency (ms) | Reconciliation |
 |---|---|---|---|---|---|---|
-| `0.VALIDATE_CAPTURE_MANIFEST` | **`PASSED`** | 8 | 8 | 0 | 2.88 | **`100.0%`** |
-| `1.PREFLIGHT` | **`PASSED`** | 0 | 1 | 0 | 1108.52 | **`100.0%`** |
-| `2.HISTORICAL_CAPTURE_INGEST_KAFKA` | **`PASSED`** | 943 | 943 | 0 | 133.79 | **`100.0%`** |
-| `3.FLINK_STREAM_NORMALIZATION` | **`PASSED`** | 943 | 943 | 0 | 432.93 | **`100.0%`** |
-| `4.AGENT_1_EVENT_CONTROL` | **`PASSED`** | 11 | 20 | 0 | 25.52 | **`100.0%`** |
-| `5.AGENT_2_TRACK_STATE` | **`PASSED`** | 4 | 4 | 0 | 6.00 | **`100.0%`** |
-| `6.AGENT_3_VEHICLE_RESPONSE` | **`PASSED`** | 903 | 903 | 0 | 978.46 | **`100.0%`** |
-| `7.AGENT_4_TYRE_STRATEGY` | **`PASSED`** | 26 | 2 | 0 | 6.03 | **`100.0%`** |
-| `8.AGENT_5_CONSEQUENCE_FUSION` | **`PASSED`** | 929 | 912 | 0 | 1136.80 | **`100.0%`** |
-| `9.FAULT_INJECTION_AND_DATA_QUALITY` | **`PASSED`** | 2 | 2 | 0 | 2.79 | **`100.0%`** |
-| `10.RACE_INTELLIGENCE_EVALUATION` | **`PASSED`** | 10 | 10 | 0 | 0.36 | **`100.0%`** |
-| `11.STATE_STORE_LINEAGE_AND_API` | **`PASSED`** | 1841 | 1841 | 0 | 222.13 | **`100.0%`** |
+| `0.VALIDATE_CAPTURE_MANIFEST` | **`PASSED`** | 0 | 0 | 0 | 0.81 | **`100.0%`** |
+| `1.PREFLIGHT` | **`PASSED`** | 0 | 1 | 0 | 1203.68 | **`100.0%`** |
+| `2.HISTORICAL_CAPTURE_INGEST_KAFKA` | **`PASSED`** | 72642 | 72642 | 0 | 97922.30 | **`100.0%`** |
+| `3.FLINK_STREAM_NORMALIZATION` | **`PASSED`** | 72642 | 72642 | 0 | 4306.64 | **`100.0%`** |
+| `4.AGENT_1_EVENT_CONTROL` | **`PASSED`** | 13 | 17 | 0 | 1072.17 | **`100.0%`** |
+| `5.AGENT_2_TRACK_STATE` | **`PASSED`** | 8 | 8 | 0 | 517.76 | **`100.0%`** |
+| `6.AGENT_3_VEHICLE_RESPONSE` | **`PASSED`** | 600 | 244 | 0 | 11710.11 | **`100.0%`** |
+| `7.AGENT_4_TYRE_STRATEGY` | **`PASSED`** | 663 | 68 | 0 | 3440.06 | **`100.0%`** |
+| `8.AGENT_5_CONSEQUENCE_FUSION` | **`PASSED`** | 337 | 248 | 0 | 12089.72 | **`100.0%`** |
+| `9.FAULT_INJECTION_AND_DATA_QUALITY` | **`PASSED`** | 2 | 2 | 0 | 67.26 | **`100.0%`** |
+| `10.RACE_INTELLIGENCE_EVALUATION` | **`PASSED`** | 10 | 13 | 0 | 0.62 | **`100.0%`** |
+| `11.STATE_STORE_LINEAGE_AND_API` | **`PASSED`** | 585 | 585 | 0 | 1743.34 | **`100.0%`** |
 
 ---
 
@@ -101,32 +93,30 @@
 
 | Agent Name | Inputs | Processed | Findings Emitted | Valid No-Finding | Insufficient Data | Latency | Status |
 |---|---|---|---|---|---|---|---|
-| **Race Event & Control Intelligence** | 11 | 11 | 20 | 0 | 0 | 0.94 ms | **`VERIFIED`** |
-| **Track-State Intelligence** | 4 | 4 | 4 | 0 | 0 | 1.07 ms | **`VERIFIED`** |
-| **Vehicle-Response Intelligence** | 904 | 903 | 903 | 0 | 1 | 0.01 ms | **`VERIFIED`** |
-| **Tyre & Strategy Intelligence** | 26 | 26 | 2 | 24 | 0 | 0.01 ms | **`VERIFIED`** |
-| **Race Consequence & Forecast Intelligence** | 930 | 930 | 0 | 15 | 0 | 2.20 ms | **`VERIFIED`** |
+| **Race Event & Control Intelligence** | 13 | 13 | 17 | 0 | 0 | 59.22 ms | **`VERIFIED`** |
+| **Track-State Intelligence** | 8 | 8 | 8 | 0 | 0 | 61.66 ms | **`VERIFIED`** |
+| **Vehicle-Response Intelligence** | 601 | 600 | 244 | 356 | 1 | 0.01 ms | **`VERIFIED`** |
+| **Tyre Strategy & Degradation** | 663 | 663 | 68 | 601 | 0 | 0.01 ms | **`VERIFIED`** |
+| **Race Consequence & Forecast Intelligence** | 338 | 338 | 249 | 81 | 0 | 66.44 ms | **`VERIFIED`** |
+| **SIA Integrity Engine** | 0 | 0 | 0 | 0 | 0 | 0.00 ms | **`VERIFIED`** |
 
 ---
 
 ## PART F — Race Intelligence Accuracy Evaluation
 
-### 1. FIA Official Notices Detection Precision and Recall
+### 1. Official Notice Event Coverage
 
-- **Total Official FIA Notices**: 10
-- **Detected by PULSE Agent 1**: 10
-- **Precision**: **100.0%** (`VERIFIED`)
-- **Recall**: **100.0%** (`VERIFIED`)
+- **Total Logged Notices**: 10
+- **Unique Trigger Events Processed**: 13
+- **Notice Coverage Ratio**: 1.3
 
-### 2. Strategy Prediction & Tyre Degradation Benchmarks
+### 2. Runtime Strategy Telemetry Summary
 
-| Prediction Target | Scenario / Context | Predicted | Observed Historical | Delta Error | Confidence | Evaluation |
-|---|---|---|---|---|---|---|
-| **VSC / Safety Car Pit Loss Saving** | Lap 33 Magnussen Neutralisation | 10.5 s | 10.4 s | 0.10 s | 95.0% | **`VERIFIED`** |
-| **Podium Projection (Car 44)** | Hamilton Safety Car Pit Window | P3 | P3 | 0 positions | 91.0% | **`VERIFIED`** |
-| **Race Win Projection (Car 1)** | Verstappen Lead Retention | P1 | P1 | 0 positions | 98.0% | **`VERIFIED`** |
-| **Hard Tyre Degradation Gradient** | Compound H Degradation Slope | 0.040 s/lap | 0.042 s/lap | 0.002 s/lap | 92.0% | **`VERIFIED`** |
-| **Medium Tyre Degradation Gradient** | Compound M Degradation Slope | 0.080 s/lap | 0.078 s/lap | 0.002 s/lap | 94.0% | **`VERIFIED`** |
+| Metric | Value | Uncertainty | Calibration |
+|---|---|---|---|
+| **VSC / SC Pit Loss Saving (Median)** | 13.16 s | +/- 3.0 s | `PRIOR_UNMEASURED+DRIVER_STINT_CALIBRATED` |
+
+> Empirical out-of-sample FastF1 accuracy benchmarks are generated independently in `reports/f1_scientific_eval.json`.
 
 ---
 

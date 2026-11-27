@@ -1,0 +1,102 @@
+[
+  {
+    "file": "albert_park.json",
+    "source_id": "au-1953",
+    "centreline_vertices": 145,
+    "corner_markers_preserved": 6,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "fd5e88df56f72a3e9e53346b61051d51cac89093bc1278e37e53eb3779179123"
+  },
+  {
+    "file": "cota.json",
+    "source_id": "us-2012",
+    "centreline_vertices": 170,
+    "corner_markers_preserved": 7,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "34fd9e36ad82090ee4b3ff48c60f4d75c3878d374f2a33b330e726a9b67f9c54"
+  },
+  {
+    "file": "jeddah.json",
+    "source_id": "sa-2021",
+    "centreline_vertices": 151,
+    "corner_markers_preserved": 4,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "b7d2788a915ba7ddacde761ea089c7826976d1bd71b2c86da913def7ad2a616f"
+  },
+  {
+    "file": "las_vegas.json",
+    "source_id": "us-2023",
+    "centreline_vertices": 99,
+    "corner_markers_preserved": 5,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "6348b9fe0e3a1e3726b95bf85fc9759540fd575f32bb828ab37e619681041f57"
+  },
+  {
+    "file": "monaco.json",
+    "source_id": "mc-1929",
+    "centreline_vertices": 159,
+    "corner_markers_preserved": 19,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "b53f2e0599afabbcc576d73e8d2b24b2921e300f3066a5eeb88081b96296b034"
+  },
+  {
+    "file": "red_bull_ring.json",
+    "source_id": "at-1969",
+    "centreline_vertices": 80,
+    "corner_markers_preserved": 6,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "e15d5f49231bfb8d080165b40fdecc5db6ec0d1dd28e66e58ebff0dc7c9bb42e"
+  },
+  {
+    "file": "silverstone.json",
+    "source_id": "gb-1948",
+    "centreline_vertices": 134,
+    "corner_markers_preserved": 18,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "aca02e32126a78acd6fb461cf96a2d2ae564085c13c68f02a5d2e56876064412"
+  },
+  {
+    "file": "spa.json",
+    "source_id": "be-1925",
+    "centreline_vertices": 152,
+    "corner_markers_preserved": 11,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "13d6229b3a168b67d1815a103069d98dc0b7ef641e3ac93dcd35e28b47475f1d"
+  },
+  {
+    "file": "suzuka.json",
+    "source_id": "jp-1962",
+    "centreline_vertices": 171,
+    "corner_markers_preserved": 18,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "d5dc76b2e52a609101f1957d0488c1edd7f30bcb2b590dfde39abda1acd348d4"
+  },
+  {
+    "file": "yas_marina.json",
+    "source_id": "ae-2009",
+    "centreline_vertices": 132,
+    "corner_markers_preserved": 6,
+    "pit_lane_geometry": "not supplied by source; cleared",
+    "drs_zones": "not supplied by source; cleared",
+    "track_boundaries": "not supplied by source; cleared",
+    "checksum_sha256": "a2db93b5d60f31a341d23e6f39d4fd5aa97d1d1bf941f103a48c1bb5267902dc"
+  }
+]

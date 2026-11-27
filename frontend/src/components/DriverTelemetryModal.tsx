@@ -14,12 +14,21 @@ export function DriverTelemetryModal({ driverNumber, onClose }: DriverTelemetryM
   useEffect(() => {
     if (!driverNumber) return;
     let active = true;
+    let inFlight = false;
+    setLoading(true);
+    setTelemetry(null);
 
     const load = async () => {
-      const data = await fetchDriverTelemetry(driverNumber);
-      if (active) {
-        setTelemetry(data);
-        setLoading(false);
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const data = await fetchDriverTelemetry(driverNumber);
+        if (active && data) {
+          setTelemetry(data);
+        }
+      } finally {
+        if (active) setLoading(false);
+        inFlight = false;
       }
     };
 
@@ -209,9 +218,20 @@ export function DriverTelemetryModal({ driverNumber, onClose }: DriverTelemetryM
               <div className="gauge-card">
                 <span className="gauge-label">TYRE COMPOUND & AGE</span>
                 <span className="gauge-val">
-                  <strong>{channels.tyre_compound?.value ?? '—'}</strong> <small>({channels.stint_age?.value ?? 0} Laps)</small>
+                  {channels.tyre_compound?.quality === 'AVAILABLE' && channels.tyre_compound.value ? (
+                    <>
+                      <strong>{channels.tyre_compound.value}</strong>{' '}
+                      <small>
+                        {channels.stint_age?.quality === 'AVAILABLE' && channels.stint_age.value !== undefined
+                          ? `(${channels.stint_age.value} Laps)`
+                          : '(Laps UNAVAILABLE)'}
+                      </small>
+                    </>
+                  ) : (
+                    <span className="val-unavailable">UNAVAILABLE</span>
+                  )}
                 </span>
-                <span className="gauge-meta">{channels.tyre_compound?.source}</span>
+                <span className="gauge-meta">{channels.tyre_compound?.source ?? 'CAN-BUS_TELEMETRY'}</span>
               </div>
             </div>
 

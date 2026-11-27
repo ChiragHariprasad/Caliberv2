@@ -14,11 +14,15 @@ import type {
 
 const API_ROOT = '/api';
 
-async function fetchJson<T>(path: string): Promise<T | null> {
+async function fetchJson<T>(path: string, timeoutMs = 15000): Promise<T | null> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const response = await fetch(`${API_ROOT}${path}`, {
       headers: { Accept: 'application/json' },
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
@@ -26,8 +30,10 @@ async function fetchJson<T>(path: string): Promise<T | null> {
   }
 }
 
-async function postJson<T>(path: string, body?: any): Promise<T | null> {
+async function postJson<T>(path: string, body?: any, timeoutMs = 15000): Promise<T | null> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const response = await fetch(`${API_ROOT}${path}`, {
       method: 'POST',
       headers: {
@@ -35,7 +41,9 @@ async function postJson<T>(path: string, body?: any): Promise<T | null> {
         Accept: 'application/json',
       },
       body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
@@ -129,7 +137,7 @@ export async function seekReplay(params: {
     target_lap: params.targetLap,
     target_index: params.targetIndex,
     target_elapsed_ms: params.targetElapsedMs,
-  });
+  }, 120000);
 }
 
 export async function setReplaySpeed(speed: number): Promise<ReplayStatusData | null> {
@@ -274,7 +282,9 @@ export function connectEventStream(
       const url = `${API_ROOT}/stream`;
       eventSource = new EventSource(url);
 
-      cbs.onConnectionChange?.('CONNECTED');
+      eventSource.onopen = () => {
+        cbs.onConnectionChange?.('CONNECTED');
+      };
 
       eventSource.addEventListener('snapshot', (e: MessageEvent) => {
         try {
@@ -395,3 +405,7 @@ export function connectEventStream(
     }
   };
 }
+
+// Re-export CALIBRE & SIA Core v3 Integrity API client
+export * from './api/integrity';
+

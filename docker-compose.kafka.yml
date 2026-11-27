@@ -1,0 +1,110 @@
+x-kafka-env: &kafka-env
+  CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+  KAFKA_PROCESS_ROLES: "broker,controller"
+  KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093"
+  KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+  KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+  KAFKA_DEFAULT_REPLICATION_FACTOR: "3"
+  KAFKA_MIN_INSYNC_REPLICAS: "2"
+  KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "3"
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "3"
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "2"
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+  KAFKA_LOG_RETENTION_HOURS: "168"
+
+x-kafka-health: &kafka-health
+  test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:29092 > /dev/null 2>&1"]
+  interval: 10s
+  timeout: 10s
+  retries: 12
+  start_period: 20s
+
+services:
+  kafka-1:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: kafka-1
+    hostname: kafka-1
+    ports: ["19092:9092"]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: "1"
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-1:29092,EXTERNAL://localhost:19092"
+    volumes: ["kafka-1-data:/var/lib/kafka/data"]
+    healthcheck: *kafka-health
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: kafka-2
+    hostname: kafka-2
+    ports: ["19093:9092"]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: "2"
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-2:29092,EXTERNAL://localhost:19093"
+    volumes: ["kafka-2-data:/var/lib/kafka/data"]
+    healthcheck: *kafka-health
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: kafka-3
+    hostname: kafka-3
+    ports: ["19094:9092"]
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: "3"
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka-3:29092,EXTERNAL://localhost:19094"
+    volumes: ["kafka-3-data:/var/lib/kafka/data"]
+    healthcheck: *kafka-health
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    ports: ["8080:8080"]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: calibre
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka-1:29092,kafka-2:29092,kafka-3:29092"
+    depends_on:
+      kafka-1: {condition: service_healthy}
+
+  flink-jobmanager:
+    image: flink:1.18.1-scala_2.12-java11
+    container_name: calibre-flink-jobmanager
+    hostname: flink-jobmanager
+    ports: ["8081:8081"]
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        parallelism.default: 2
+    volumes:
+      - ./docker/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:/opt/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:ro
+    depends_on:
+      kafka-1: {condition: service_healthy}
+
+  flink-taskmanager:
+    image: flink:1.18.1-scala_2.12-java11
+    container_name: calibre-flink-taskmanager
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: 4
+        parallelism.default: 2
+    volumes:
+      - ./docker/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:/opt/flink/lib/flink-sql-connector-kafka-3.1.0-1.18.jar:ro
+    depends_on:
+      - flink-jobmanager
+
+volumes:
+  kafka-1-data:
+  kafka-2-data:
+  kafka-3-data:
+

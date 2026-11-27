@@ -1,0 +1,16 @@
+[
+  {
+    "utc_timestamp": "2023-11-19T06:00:00Z",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "SESSION STARTED"
+  },
+  {
+    "utc_timestamp": "2023-11-19T06:00:00Z",
+    "lap": null,
+    "category": "Notice",
+    "flag": "CLEAR",
+    "message": "Controversy Focus: FP1 water valve cover track failure; lack of regulatory penalty discretion"
+  }
+]

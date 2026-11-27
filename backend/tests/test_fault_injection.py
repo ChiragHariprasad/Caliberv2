@@ -30,6 +30,21 @@ from pulse.stream.kafka_client import KafkaBroker
 from pulse.topics import AGENT_TOPICS, NORMALISED_TOPICS, RAW_TOPICS
 
 
+@pytest.fixture(autouse=True)
+def check_cluster_online():
+    import socket
+    settings = get_settings()
+    try:
+        host, port = settings.kafka_bootstrap_servers.split(",")[0].split(":")
+        with socket.create_connection((host, int(port)), timeout=0.2):
+            pass
+    except Exception:
+        pytest.skip("Kafka broker is offline (Docker offline)")
+    flink_mgr = get_flink_manager()
+    if not flink_mgr.client.is_cluster_online():
+        pytest.skip("Flink cluster is offline (Docker offline)")
+
+
 def create_test_envelope(event_id: str, event_type: str = "VSC_DEPLOYED", session_id: str = "fault-test-session") -> EventEnvelope:
     now = utc_now()
     return EventEnvelope(

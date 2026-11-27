@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import logging
+import math
 import time
 from abc import ABC, abstractmethod
+from collections import deque
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -21,9 +23,12 @@ class AgentExecutionMetrics(BaseModel):
     name: str
     model_version: str
     run_id: str | None = None
+    runtime_status: str = "OPERATIONAL"
+    events_received: int = 0
     inputs_received: int = 0
     eligible_inputs: int = 0
     successfully_processed: int = 0
+    processed_inputs: int = 0
     findings_emitted: int = 0
     valid_no_finding_outcomes: int = 0
     insufficient_data_outcomes: int = 0
@@ -31,6 +36,8 @@ class AgentExecutionMetrics(BaseModel):
     failures: int = 0
     retries: int = 0
     processing_latency_ms: float = 0.0
+    p50_latency_ms: float = 0.0
+    p95_latency_ms: float = 0.0
     last_processed_event_id: str | None = None
     last_outcome: str = "INITIALIZED"
     output_finding_ids: list[str] = Field(default_factory=list)
@@ -66,6 +73,7 @@ class BaseAgent(ABC):
         self.failures = 0
         self.retries = 0
         self.last_latency_ms = 0.0
+        self._latency_samples_ms: deque[float] = deque(maxlen=256)
         self.last_processed_event_id: str | None = None
         self.last_outcome: str = "INITIALIZED"
         self.output_finding_ids: list[str] = []
@@ -94,6 +102,8 @@ class BaseAgent(ABC):
         """Records the terminal execution outcome for the current event."""
         self.last_outcome = outcome
         self.last_latency_ms = latency_ms
+        if latency_ms > 0:
+            self._latency_samples_ms.append(latency_ms)
         if outcome == "FINDING_EMITTED":
             self.successfully_processed += 1
         elif outcome == "NO_FINDING":
@@ -116,8 +126,8 @@ class BaseAgent(ABC):
         try:
             from pulse.state.store import get_state_store
             get_state_store().record_finding(finding)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to record finding %s in state store: %s", finding.finding_id, e)
         logger.debug(
             "Agent [%s] emitted finding [%s] of type %s",
             self.agent_id,
@@ -126,26 +136,44 @@ class BaseAgent(ABC):
         )
 
     def get_metrics(self) -> AgentExecutionMetrics:
-        """Returns run-scoped execution transparency metrics."""
+        """Returns run-scoped execution transparency metrics with empirical latency percentiles."""
+        lat = round(self.last_latency_ms, 2)
+        samples = sorted(self._latency_samples_ms)
+        if samples:
+            n = len(samples)
+            p50 = round(samples[min(n - 1, max(0, math.ceil(0.50 * n) - 1))], 2)
+            p95 = round(samples[min(n - 1, max(0, math.ceil(0.95 * n) - 1))], 2)
+        else:
+            p50 = 0.0
+            p95 = 0.0
         return AgentExecutionMetrics(
             agent_id=self.agent_id,
             name=self.name,
             model_version=self.model_version,
             run_id=self.run_id,
+            runtime_status="OPERATIONAL" if self.is_active else "IDLE",
+            events_received=self.inputs_received,
             inputs_received=self.inputs_received,
             eligible_inputs=self.eligible_inputs,
             successfully_processed=self.successfully_processed,
+            processed_inputs=self.successfully_processed,
             findings_emitted=self.emitted_findings,
             valid_no_finding_outcomes=self.valid_no_finding_outcomes,
             insufficient_data_outcomes=self.insufficient_data_outcomes,
             filtered_inputs=self.filtered_inputs,
             failures=self.failures,
             retries=self.retries,
-            processing_latency_ms=self.last_latency_ms,
+            processing_latency_ms=lat,
+            p50_latency_ms=p50,
+            p95_latency_ms=p95,
             last_processed_event_id=self.last_processed_event_id,
             last_outcome=self.last_outcome,
             output_finding_ids=list(self.output_finding_ids),
         )
+
+    def reset(self) -> None:
+        """Resets run-scoped domain state and metrics."""
+        self.reset_metrics()
 
     def reset_metrics(self) -> None:
         """Resets run-scoped metrics."""
@@ -159,6 +187,7 @@ class BaseAgent(ABC):
         self.failures = 0
         self.retries = 0
         self.last_latency_ms = 0.0
+        self._latency_samples_ms.clear()
         self.last_processed_event_id = None
         self.last_outcome = "RESET"
         self.output_finding_ids.clear()

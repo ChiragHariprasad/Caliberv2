@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Admission Log Specification (LOG v1.0)",
+  "description": "Deterministic ordered sequence of admitted evidence atoms, reference facts, guard facts, and ticks.",
+  "type": "object",
+  "required": ["seq", "knowledge_time", "entry_type", "payload"],
+  "properties": {
+    "seq": { "type": "integer", "minimum": 0 },
+    "knowledge_time": { "type": "integer", "description": "Monotonic integer microsecond instant." },
+    "entry_type": {
+      "type": "string",
+      "enum": ["ATOM", "FACT", "GUARD", "TICK", "CONFIG", "SCHEDULE", "VOID"]
+    },
+    "payload": { "type": "object" }
+  }
+}
+

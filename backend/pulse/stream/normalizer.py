@@ -18,6 +18,13 @@ class StreamNormalizer:
         self.duplicate_count = 0
         self.invalid_count = 0
 
+    def reset(self) -> None:
+        """Clears seen events and resets processing counters for fresh playback/seek."""
+        self._seen_events.clear()
+        self.processed_count = 0
+        self.duplicate_count = 0
+        self.invalid_count = 0
+
     def process(self, raw_data: dict[str, Any] | EventEnvelope) -> tuple[EventEnvelope | None, str | None]:
         """Validates envelope and returns (canonical_envelope, target_topic).
 
@@ -52,7 +59,11 @@ class StreamNormalizer:
             target_topic = NORMALISED_TOPICS["race_events"]
         elif event_type in {"LAP_COMPLETED", "SECTOR_COMPLETED"}:
             target_topic = NORMALISED_TOPICS["driver_laps"]
-        elif event_type in {"POSITION_UPDATE", "INTERVAL_UPDATE", "TYRE_FITTED", "PIT_STOP"}:
+        elif event_type in {
+            "POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY",
+            "CAR_TELEMETRY_SAMPLE", "INTERVAL_UPDATE", "TYRE_FITTED", "PIT_STOP",
+            "PIT_SPEED", "SPEED_TRAP", "PIT_ENTRY", "PIT_EXIT"
+        }:
             target_topic = NORMALISED_TOPICS["driver_state"]
         elif event_type in {"TRACK_STATUS_UPDATE", "WEATHER_OBSERVATION"}:
             target_topic = NORMALISED_TOPICS["track_segments"]

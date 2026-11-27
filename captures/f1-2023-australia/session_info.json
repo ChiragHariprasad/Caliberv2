@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2023-australia",
+  "meeting_id": "f1-2023-australia",
+  "session_name": "Australian Grand Prix 2023",
+  "circuit_id": "albert_park",
+  "total_laps": 58,
+  "total_drivers": 20,
+  "duration_seconds": 600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

@@ -40,26 +40,8 @@ DRIVER_META: dict[int, dict[str, str]] = {
 
 
 def _generate_synthetic_telemetry_history(base_speed: float, gear: int, rpm: int) -> list[dict[str, Any]]:
-    """Generates a realistic 20-point historical telemetry trace for the driver time-series plot."""
-    history = []
-    for i in range(20):
-        t_offset = -(20 - i) * 0.5  # -10s to 0s in 0.5s increments
-        noise = (i % 3 - 1) * 3.5
-        spd = max(60.0, min(330.0, base_speed + noise + ((i % 5) * 4.0)))
-        throttle = min(100.0, max(0.0, 95.0 + ((i % 4) - 2) * 5.0)) if spd > 180 else 40.0
-        brake = 0.0 if throttle > 20 else 85.0
-        g = max(1, min(8, gear + (1 if i > 12 else 0)))
-        r = max(4000, min(12500, int(rpm + (i % 6 - 3) * 200)))
-        history.append({
-            "time_offset_s": round(t_offset, 1),
-            "speed": round(spd, 1),
-            "throttle": round(throttle, 1),
-            "brake": round(brake, 1),
-            "gear": g,
-            "rpm": r,
-            "drs": 1 if spd > 250 else 0,
-        })
-    return history
+    """Retained for API compatibility; returns empty list until real stream telemetry arrives."""
+    return []
 
 
 class RaceStateProjector:
@@ -83,19 +65,24 @@ class RaceStateProjector:
 
         # Full 20-driver initial grid state
         self.drivers: dict[int, dict[str, Any]] = self._init_full_grid()
+        self._driver_last_lap_num: dict[int, int] = {}
 
-        # Circuit Sectors
-        self.sectors: list[dict[str, Any]] = [
-            {"id": "s1", "label": "Sector 1", "condition": "Dry · clear", "tone": "dry", "confidence": 96},
-            {"id": "s2", "label": "Sector 2", "condition": "Dry · active", "tone": "dry", "confidence": 98},
-            {"id": "s3", "label": "Sector 3", "condition": "Dry · clear", "tone": "dry", "confidence": 92},
-        ]
+        # Circuit Sectors (honest unmeasured state until weather/track events arrive)
+        self.sectors: list[dict[str, Any]] = []
+        self.reset_sectors()
 
         # Analytical Timeline (PULSE Domain)
         self.timeline: list[dict[str, Any]] = []
 
         # Official Race Control & Stewarding Notices (Official Domain)
         self.official_notices: list[dict[str, Any]] = self._init_official_notices()
+
+    def reset_sectors(self) -> None:
+        self.sectors = [
+            {"id": "s1", "label": "Sector 1", "condition": "Awaiting weather telemetry", "tone": "dry", "confidence": 0},
+            {"id": "s2", "label": "Sector 2", "condition": "Awaiting weather telemetry", "tone": "dry", "confidence": 0},
+            {"id": "s3", "label": "Sector 3", "condition": "Awaiting weather telemetry", "tone": "dry", "confidence": 0},
+        ]
 
     @property
     def driver_registry(self) -> dict[int, dict[str, Any]]:
@@ -133,16 +120,16 @@ class RaceStateProjector:
             quality = "UNAVAILABLE" if is_retired else "AVAILABLE"
 
             channels = {
-                "speed": {"value": None if is_retired else spd, "unit": "km/h", "source": "CAN_BUS/ECU", "freshness_ms": 110, "quality": quality},
-                "throttle": {"value": None if is_retired else (98.0 if spd > 100 else 0.0), "unit": "%", "source": "CAN_BUS/ECU", "freshness_ms": 110, "quality": quality},
-                "brake": {"value": None if is_retired else (0.0 if spd > 100 else 60.0), "unit": "%", "source": "HYDRAULIC_PRESSURE", "freshness_ms": 110, "quality": quality},
-                "gear": {"value": None if is_retired else gear, "unit": "GEAR", "source": "GEARBOX_SENSOR", "freshness_ms": 110, "quality": quality},
-                "rpm": {"value": None if is_retired else rpm, "unit": "RPM", "source": "ENGINE_CRANK", "freshness_ms": 110, "quality": quality},
-                "drs": {"value": None if is_retired else (1 if spd > 250 else 0), "unit": "STATUS", "source": "FIA_DRS_TELEMETRY", "freshness_ms": 110, "quality": quality},
-                "tyre_compound": {"value": tyre, "unit": "COMPOUND", "source": "TYRE_RFID", "freshness_ms": 250, "quality": "AVAILABLE"},
-                "stint_age": {"value": tyre_age, "unit": "LAPS", "source": "TIMING_LOOPS", "freshness_ms": 250, "quality": "AVAILABLE"},
-                "gap": {"value": gap, "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 90, "quality": "AVAILABLE"},
-                "interval": {"value": interval, "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 90, "quality": "AVAILABLE"},
+                "speed": {"value": None, "unit": "km/h", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "throttle": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "brake": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "gear": {"value": None, "unit": "GEAR", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "rpm": {"value": None, "unit": "RPM", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "drs": {"value": None, "unit": "STATUS", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                "tyre_compound": {"value": tyre, "unit": "COMPOUND", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                "stint_age": {"value": tyre_age, "unit": "LAPS", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                "gap": {"value": gap, "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 90, "quality": "AVAILABLE"},
+                "interval": {"value": interval, "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 90, "quality": "AVAILABLE"},
             }
 
             tone = "positive" if pos <= 3 else ("negative" if pos >= 15 or is_retired else "neutral")
@@ -164,9 +151,11 @@ class RaceStateProjector:
                 "progress": progress,
                 "positionMode": "TIMING_ESTIMATED",
                 "freshnessSeconds": 0.25,
+                "momentum": max(15, min(95, round(92 - (pos - 1) * 3.8, 1))),
+                "momentumHistory": [],
                 "impact": {"tone": tone, "label": label},
                 "telemetry": channels,
-                "history": [] if is_retired else _generate_synthetic_telemetry_history(spd, gear, rpm),
+                "history": [],
             }
 
         return drivers
@@ -199,18 +188,18 @@ class RaceStateProjector:
                 gear = 0 if is_inactive else entry.get("gear", 6)
                 rpm = 0 if is_inactive else entry.get("rpm", 10500)
                 channels = {
-                    "speed": {"value": None if is_inactive else spd, "unit": "km/h", "source": "TIMING_LOOP", "freshness_ms": 100, "quality": quality},
-                    "throttle": {"value": None if is_inactive else 90.0, "unit": "%", "source": "CAN_BUS/ECU", "freshness_ms": 100, "quality": quality},
-                    "brake": {"value": None if is_inactive else 0.0, "unit": "%", "source": "HYDRAULIC_PRESSURE", "freshness_ms": 100, "quality": quality},
-                    "gear": {"value": None if is_inactive else gear, "unit": "GEAR", "source": "GEARBOX_SENSOR", "freshness_ms": 100, "quality": quality},
-                    "rpm": {"value": None if is_inactive else rpm, "unit": "RPM", "source": "ENGINE_CRANK", "freshness_ms": 100, "quality": quality},
-                    "drs": {"value": None if is_inactive else 0, "unit": "STATUS", "source": "FIA_DRS_TELEMETRY", "freshness_ms": 100, "quality": quality},
-                    "tyre_compound": {"value": entry.get("tyre", "M"), "unit": "COMPOUND", "source": "TYRE_RFID", "freshness_ms": 250, "quality": "AVAILABLE"},
-                    "stint_age": {"value": entry.get("tyreAge", 0), "unit": "LAPS", "source": "TIMING_LOOPS", "freshness_ms": 250, "quality": "AVAILABLE"},
-                    "gap": {"value": entry.get("gap", "—"), "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
-                    "interval": {"value": entry.get("interval", "—"), "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
+                    "speed": {"value": None, "unit": "km/h", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "throttle": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "brake": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "gear": {"value": None, "unit": "GEAR", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "rpm": {"value": None, "unit": "RPM", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "drs": {"value": None, "unit": "STATUS", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "tyre_compound": {"value": entry.get("tyre", "M"), "unit": "COMPOUND", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                    "stint_age": {"value": entry.get("tyreAge", 0), "unit": "LAPS", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                    "gap": {"value": entry.get("gap", "—"), "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 100, "quality": "AVAILABLE"},
+                    "interval": {"value": entry.get("interval", "—"), "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 100, "quality": "AVAILABLE"},
                 }
-                history = [] if (is_inactive or self.data_mode != "SIMULATED") else _generate_synthetic_telemetry_history(spd, gear, rpm)
+                history = []
 
             tone = "positive" if pos <= 3 else ("negative" if pos >= 15 or is_inactive else "neutral")
             label = entry.get("label") or ("Did Not Start" if status == "DNS" else ("Retired" if status == "RETIRED" else "Running"))
@@ -232,88 +221,18 @@ class RaceStateProjector:
                 "progress": entry.get("progress", 0.0),
                 "positionMode": entry.get("positionMode", "TIMING_ESTIMATED"),
                 "freshnessSeconds": entry.get("freshnessSeconds", 0.3),
+                "momentum": max(15, min(95, round(92 - (pos - 1) * 3.8, 1))),
+                "momentumHistory": [],
                 "impact": {"tone": tone, "label": label},
                 "telemetry": channels,
                 "history": history,
             }
         self.drivers = new_drivers
+        self._driver_last_lap_num.clear()
 
     def _init_official_notices(self) -> list[dict[str, Any]]:
-        """Initialises historical official FIA Race Control messages and stewards' decisions."""
-        return [
-            {
-                "notice_id": "RC-NOTE-006",
-                "timestamp_utc": "2026-05-24T13:12:34Z",
-                "category": "SAFETY_CAR",
-                "flag": "YELLOW",
-                "title": "VIRTUAL SAFETY CAR DEPLOYED",
-                "detail": "Virtual Safety Car deployed due to stopped car at exit of Nouvelle Chicane.",
-                "driver_numbers": [16, 4, 1, 44],
-                "regulatory_reference": "FIA F1 Sporting Regulations Art 56.4",
-                "source": "FIA Race Control Central / Official Noticeboard",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-            {
-                "notice_id": "RC-NOTE-005",
-                "timestamp_utc": "2026-05-24T13:11:50Z",
-                "category": "INCIDENT",
-                "flag": "YELLOW",
-                "title": "INCIDENT NOTED — TURN 10",
-                "detail": "Turn 10 incident involving Car 31 (OCO) noted by Race Control.",
-                "driver_numbers": [31],
-                "regulatory_reference": "FIA F1 Sporting Regulations Art 54.1",
-                "source": "FIA Stewards Bulletin",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-            {
-                "notice_id": "RC-NOTE-004",
-                "timestamp_utc": "2026-05-24T13:08:12Z",
-                "category": "INVESTIGATION",
-                "flag": "CLEAR",
-                "title": "STEWARDS INVESTIGATION — PIT LANE SPEED",
-                "detail": "Car 30 (LAW) under investigation for alleged pit lane speeding (Pit Lane Speed limit: 60 km/h).",
-                "driver_numbers": [30],
-                "regulatory_reference": "FIA F1 Sporting Regulations Art 34.7",
-                "source": "FIA Stewards Panel",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-            {
-                "notice_id": "RC-NOTE-003",
-                "timestamp_utc": "2026-05-24T12:45:00Z",
-                "category": "FLAG",
-                "flag": "GREEN",
-                "title": "RACE START — GREEN FLAG",
-                "detail": "Formation lap completed. Standing start approved. Green flag racing.",
-                "driver_numbers": [],
-                "regulatory_reference": "FIA F1 Sporting Regulations Art 44.1",
-                "source": "FIA Race Director",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-            {
-                "notice_id": "RC-NOTE-002",
-                "timestamp_utc": "2026-05-24T12:30:00Z",
-                "category": "WEATHER",
-                "flag": "CLEAR",
-                "title": "OFFICIAL WEATHER REPORT",
-                "detail": "Air Temp: 22.4°C · Track Temp: 34.2°C · Humidity: 58% · Rain Risk: 10%.",
-                "driver_numbers": [],
-                "regulatory_reference": "Meteo France Official Track Forecast",
-                "source": "Official FIA Meteorological Service",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-            {
-                "notice_id": "RC-NOTE-001",
-                "timestamp_utc": "2026-05-24T12:00:00Z",
-                "category": "GRID",
-                "flag": "CLEAR",
-                "title": "OFFICIAL STARTING GRID CONFIRMED",
-                "detail": "All 20 cars passed technical scrutineering and parc fermé inspections.",
-                "driver_numbers": [],
-                "regulatory_reference": "FIA Technical Regulations Art 3",
-                "source": "FIA Technical Delegate",
-                "status": "OFFICIAL_PUBLISHED",
-            },
-        ]
+        """No fabricated future FIA notices on boot; populated solely from ingested session events."""
+        return []
 
     def apply_event(self, envelope: EventEnvelope) -> None:
         self.last_event_time = envelope.time.event_time_utc
@@ -415,23 +334,142 @@ class RaceStateProjector:
                 "FIA F1 Sporting Regulations Art 55",
             )
 
-        elif event_type == "POSITION_UPDATE":
-            dn = envelope.subject.driver_number
+        elif event_type in {"POSITION_UPDATE", "DRIVER_TELEMETRY", "CAR_TELEMETRY", "CAR_TELEMETRY_SAMPLE"}:
+            dn = envelope.subject.driver_number or p.get("driver_number")
             if dn:
                 self._ensure_driver(dn)
-                if "position" in p:
-                    self.drivers[dn]["position"] = p["position"]
+                mode_u = str(self.data_mode).upper()
+                src_tag = envelope.source.adapter or ("SYNTHETIC_STREAM" if mode_u in {"SIMULATED", "SYNTHETIC"} else "TELEMETRY_STREAM")
+                try:
+                    lag_ms = int((envelope.time.ingest_time_utc - envelope.time.event_time_utc).total_seconds() * 1000)
+                except Exception:
+                    lag_ms = 120
+                fresh_ms = max(25, min(2500, lag_ms)) if 0 < lag_ms < 60_000 else 120
+
+                if "position" in p and p["position"] is not None:
+                    new_pos = int(p["position"])
+                    old_pos = self.drivers[dn].get("position")
+                    if new_pos != old_pos and 1 <= new_pos <= 22:
+                        for other_dn, other in self.drivers.items():
+                            if (
+                                other_dn != dn
+                                and other.get("position") == new_pos
+                                and other.get("status") not in {"RETIRED", "DNS"}
+                            ):
+                                if isinstance(old_pos, int) and 1 <= old_pos <= 22:
+                                    other["position"] = old_pos
+                                break
+                    self.drivers[dn]["position"] = new_pos
                 if "gap" in p:
                     self.drivers[dn]["gap"] = p["gap"]
+                    if "gap" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["gap"]["value"] = p["gap"]
+                        self.drivers[dn]["telemetry"]["gap"]["source"] = src_tag
+                        self.drivers[dn]["telemetry"]["gap"]["freshness_ms"] = fresh_ms
+                        self.drivers[dn]["telemetry"]["gap"]["quality"] = "AVAILABLE" if p["gap"] is not None else "UNAVAILABLE"
                 if "interval" in p:
                     self.drivers[dn]["interval"] = p["interval"]
+                    if "interval" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["interval"]["value"] = p["interval"]
+                        self.drivers[dn]["telemetry"]["interval"]["source"] = src_tag
+                        self.drivers[dn]["telemetry"]["interval"]["freshness_ms"] = fresh_ms
+                        self.drivers[dn]["telemetry"]["interval"]["quality"] = "AVAILABLE" if p["interval"] is not None else "UNAVAILABLE"
                 if "progress" in p:
                     self.drivers[dn]["progress"] = p["progress"]
+                if "lap" in p:
+                    self.drivers[dn]["lap"] = p["lap"]
+                    self.current_lap = max(self.current_lap, p["lap"])
+                if "tyre" in p:
+                    self.drivers[dn]["tyre"] = p["tyre"]
+                    if "tyre_compound" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["value"] = p["tyre"]
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["source"] = src_tag
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["freshness_ms"] = fresh_ms
+                        self.drivers[dn]["telemetry"]["tyre_compound"]["quality"] = "AVAILABLE"
+                if "tyre_age" in p:
+                    self.drivers[dn]["tyreAge"] = p["tyre_age"]
+                    if "stint_age" in self.drivers[dn].get("telemetry", {}):
+                        self.drivers[dn]["telemetry"]["stint_age"]["value"] = p["tyre_age"]
+                        self.drivers[dn]["telemetry"]["stint_age"]["source"] = src_tag
+                        self.drivers[dn]["telemetry"]["stint_age"]["freshness_ms"] = fresh_ms
+                        self.drivers[dn]["telemetry"]["stint_age"]["quality"] = "AVAILABLE"
+                if "status" in p and p["status"]:
+                    self.drivers[dn]["status"] = p["status"]
+
+                # Update telemetry channels with honest stream source, freshness, and quality flags
+                tel = self.drivers[dn].get("telemetry", {})
+                if "speed" in p and "speed" in tel:
+                    tel["speed"]["value"] = p["speed"]
+                    tel["speed"]["source"] = src_tag if p["speed"] is not None else "AWAITING_STREAM"
+                    tel["speed"]["freshness_ms"] = fresh_ms if p["speed"] is not None else 0
+                    tel["speed"]["quality"] = "AVAILABLE" if p["speed"] is not None else "UNAVAILABLE"
+                if "throttle" in p and "throttle" in tel:
+                    tel["throttle"]["value"] = p["throttle"]
+                    tel["throttle"]["source"] = src_tag if p["throttle"] is not None else "AWAITING_STREAM"
+                    tel["throttle"]["freshness_ms"] = fresh_ms if p["throttle"] is not None else 0
+                    tel["throttle"]["quality"] = "AVAILABLE" if p["throttle"] is not None else "UNAVAILABLE"
+                if "brake" in p and "brake" in tel:
+                    tel["brake"]["value"] = p["brake"]
+                    tel["brake"]["source"] = src_tag if p["brake"] is not None else "AWAITING_STREAM"
+                    tel["brake"]["freshness_ms"] = fresh_ms if p["brake"] is not None else 0
+                    tel["brake"]["quality"] = "AVAILABLE" if p["brake"] is not None else "UNAVAILABLE"
+                if "gear" in p and "gear" in tel:
+                    tel["gear"]["value"] = p["gear"]
+                    tel["gear"]["source"] = src_tag if p["gear"] is not None else "AWAITING_STREAM"
+                    tel["gear"]["freshness_ms"] = fresh_ms if p["gear"] is not None else 0
+                    tel["gear"]["quality"] = "AVAILABLE" if p["gear"] is not None else "UNAVAILABLE"
+                if "rpm" in p:
+                    if "rpm" in tel:
+                        tel["rpm"]["value"] = p["rpm"]
+                        tel["rpm"]["source"] = src_tag if p["rpm"] is not None else "AWAITING_STREAM"
+                        tel["rpm"]["freshness_ms"] = fresh_ms if p["rpm"] is not None else 0
+                        tel["rpm"]["quality"] = "AVAILABLE" if p["rpm"] is not None else "UNAVAILABLE"
+                    if "engine_rpm" in tel:
+                        tel["engine_rpm"]["value"] = p["rpm"]
+                        tel["engine_rpm"]["source"] = src_tag if p["rpm"] is not None else "AWAITING_STREAM"
+                        tel["engine_rpm"]["freshness_ms"] = fresh_ms if p["rpm"] is not None else 0
+                        tel["engine_rpm"]["quality"] = "AVAILABLE" if p["rpm"] is not None else "UNAVAILABLE"
+                if "drs" in p:
+                    if "drs" in tel:
+                        tel["drs"]["value"] = p["drs"]
+                        tel["drs"]["source"] = src_tag if p["drs"] is not None else "AWAITING_STREAM"
+                        tel["drs"]["freshness_ms"] = fresh_ms if p["drs"] is not None else 0
+                        tel["drs"]["quality"] = "AVAILABLE" if p["drs"] is not None else "UNAVAILABLE"
+                    if "drs_status" in tel:
+                        tel["drs_status"]["value"] = p["drs"]
+                        tel["drs_status"]["source"] = src_tag if p["drs"] is not None else "AWAITING_STREAM"
+                        tel["drs_status"]["freshness_ms"] = fresh_ms if p["drs"] is not None else 0
+                        tel["drs_status"]["quality"] = "AVAILABLE" if p["drs"] is not None else "UNAVAILABLE"
+
+                # Append to history point for telemetry modal charts
+                if "speed" in p and p["speed"] is not None:
+                    if "history" not in self.drivers[dn]:
+                        self.drivers[dn]["history"] = []
+                    self.drivers[dn]["history"].append({
+                        "time_offset_s": 0.0,
+                        "speed": p["speed"],
+                        "throttle": p.get("throttle", 0),
+                        "brake": p.get("brake", 0),
+                        "gear": p.get("gear", 0),
+                        "rpm": p.get("rpm", 0),
+                        "drs": p.get("drs", 0),
+                    })
+                    if len(self.drivers[dn]["history"]) > 30:
+                        self.drivers[dn]["history"].pop(0)
+                    hist_len = len(self.drivers[dn]["history"])
+                    for idx_h, pt in enumerate(self.drivers[dn]["history"]):
+                        pt["time_offset_s"] = round(-(hist_len - 1 - idx_h) * 0.5, 1)
 
         elif event_type == "LAP_COMPLETED":
             dn = envelope.subject.driver_number
             if dn:
                 self._ensure_driver(dn)
+                lap_num = p.get("lap") or p.get("lap_number")
+                if isinstance(lap_num, int):
+                    prev_lap = self._driver_last_lap_num.get(dn, 0)
+                    if lap_num < prev_lap:
+                        return
+                    self._driver_last_lap_num[dn] = lap_num
                 if "last_lap_seconds" in p:
                     self.drivers[dn]["lastLap"] = p["last_lap_seconds"]
                 elif "lap_time" in p:
@@ -457,9 +495,24 @@ class RaceStateProjector:
 
                 lap_val = p.get("lap")
                 if lap_val:
+                    self.drivers[dn]["lap"] = int(lap_val)
                     self.current_lap = max(self.current_lap, int(lap_val))
                 elif dn in {1, 16, 44}:
                     self.current_lap = max(self.current_lap, self.drivers[dn]["tyreAge"])
+
+                pos = self.drivers[dn].get("position", 10)
+                lap_num = self.drivers[dn].get("lap", self.current_lap)
+                self.drivers[dn]["progress"] = round(((lap_num * 0.17 + (21 - pos) * 0.048)) % 1.0, 4)
+                # Track observed momentum history monotonically from real position/pace context
+                prev_pos = self.drivers[dn].get("_prev_momentum_pos", pos)
+                pos_gain_boost = (prev_pos - pos) * 6.0 if isinstance(prev_pos, (int, float)) else 0.0
+                self.drivers[dn]["_prev_momentum_pos"] = pos
+                mom_val = round(max(12.0, min(95.0, (90.0 - (pos - 1) * 3.6) + pos_gain_boost)), 1)
+                self.drivers[dn]["momentum"] = mom_val
+                mh = self.drivers[dn].setdefault("momentumHistory", [])
+                mh.append(mom_val)
+                if len(mh) > 8:
+                    mh.pop(0)
 
         elif event_type in {"RACE_CONTROL_NOTICE", "RACE_CONTROL_MESSAGE"}:
             cat = p.get("category", "NOTICE")
@@ -537,8 +590,15 @@ class RaceStateProjector:
             if dn:
                 self._ensure_driver(dn)
                 self.drivers[dn]["status"] = "PIT_LANE"
-                self.drivers[dn]["telemetry"]["speed"]["value"] = 60.0
-                self.drivers[dn]["telemetry"]["gear"]["value"] = 2
+                if "speed" in p or "speed_kph" in p:
+                    pit_spd = float(p.get("speed") if "speed" in p else p["speed_kph"])
+                    self.drivers[dn]["telemetry"]["speed"]["value"] = pit_spd
+                    self.drivers[dn]["telemetry"]["speed"]["quality"] = "AVAILABLE"
+                else:
+                    self.drivers[dn]["telemetry"]["speed"]["value"] = None
+                    self.drivers[dn]["telemetry"]["speed"]["quality"] = "UNAVAILABLE"
+                if "gear" in p:
+                    self.drivers[dn]["telemetry"]["gear"]["value"] = p["gear"]
                 self._add_timeline(envelope.event_id, f"Driver #{dn} Pit Entry", "Car entered pit lane.", "strategy")
 
         elif event_type == "PIT_EXIT":
@@ -606,7 +666,8 @@ class RaceStateProjector:
         elif event_type == "WEATHER_OBSERVATION":
             air = p.get("air_temp_c", 22.0)
             trk = p.get("track_temp_c", 33.5)
-            rain = p.get("rain_risk_percent", 10.0)
+            rain = float(p.get("rain_risk_percent", 10.0) or 0.0)
+            conf = round(max(65.0, min(98.0, 96.0 - rain * 0.2)), 1)
             for s in self.sectors:
                 if rain > 50:
                     s["condition"] = "Damp · Rain incoming"
@@ -614,6 +675,7 @@ class RaceStateProjector:
                 else:
                     s["condition"] = f"Dry · {trk:.1f}°C"
                     s["tone"] = "dry"
+                s["confidence"] = conf
 
         elif event_type == "TRACK_STATUS_UPDATE":
             sec_idx = p.get("sector_index", 0)
@@ -641,20 +703,22 @@ class RaceStateProjector:
                 "progress": 0.5,
                 "positionMode": "TIMING_ESTIMATED",
                 "freshnessSeconds": 0.3,
+                "momentum": 50.0,
+                "momentumHistory": [],
                 "impact": {"tone": "neutral", "label": "Running"},
                 "telemetry": {
-                    "speed": {"value": 260.0, "unit": "km/h", "source": "CAN_BUS/ECU", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "throttle": {"value": 90.0, "unit": "%", "source": "CAN_BUS/ECU", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "brake": {"value": 0.0, "unit": "%", "source": "HYDRAULIC_PRESSURE", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "gear": {"value": 6, "unit": "GEAR", "source": "GEARBOX_SENSOR", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "rpm": {"value": 11000, "unit": "RPM", "source": "ENGINE_CRANK", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "drs": {"value": 0, "unit": "STATUS", "source": "FIA_DRS_TELEMETRY", "freshness_ms": 120, "quality": "AVAILABLE"},
-                    "tyre_compound": {"value": "M", "unit": "COMPOUND", "source": "TYRE_RFID", "freshness_ms": 250, "quality": "AVAILABLE"},
-                    "stint_age": {"value": 0, "unit": "LAPS", "source": "TIMING_LOOPS", "freshness_ms": 250, "quality": "AVAILABLE"},
-                    "gap": {"value": "+0.000", "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
-                    "interval": {"value": "+0.000", "unit": "INTERVAL", "source": "TIMING_TRANSPONDER", "freshness_ms": 100, "quality": "AVAILABLE"},
+                    "speed": {"value": None, "unit": "km/h", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "throttle": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "brake": {"value": None, "unit": "%", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "gear": {"value": None, "unit": "GEAR", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "rpm": {"value": None, "unit": "RPM", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "drs": {"value": None, "unit": "STATUS", "source": "AWAITING_STREAM", "freshness_ms": 0, "quality": "UNAVAILABLE"},
+                    "tyre_compound": {"value": "M", "unit": "COMPOUND", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                    "stint_age": {"value": 0, "unit": "LAPS", "source": "ENTRY_LIST", "freshness_ms": 250, "quality": "AVAILABLE"},
+                    "gap": {"value": "+0.000", "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 100, "quality": "AVAILABLE"},
+                    "interval": {"value": "+0.000", "unit": "INTERVAL", "source": "ENTRY_LIST", "freshness_ms": 100, "quality": "AVAILABLE"},
                 },
-                "history": _generate_synthetic_telemetry_history(260.0, 6, 11000),
+                "history": [],
             }
 
     def _add_timeline(self, event_id: str, title: str, detail: str, event_type: str, active: bool = False) -> None:
@@ -685,7 +749,12 @@ class RaceStateProjector:
         detail: str,
         driver_numbers: list[int],
         regulatory_reference: str,
+        source: str | None = None,
+        status: str | None = None,
     ) -> None:
+        is_sim = self.data_mode in {"SIMULATED", "SYNTHETIC"}
+        resolved_source = source or ("PULSE Synthetic Simulator Feed" if is_sim else "Session Race Control Stream")
+        resolved_status = status or ("SIMULATED_NOTICE" if is_sim else "REPLAY_ARCHIVED_NOTICE")
         self.official_notices.insert(
             0,
             {
@@ -697,15 +766,24 @@ class RaceStateProjector:
                 "detail": detail,
                 "driver_numbers": driver_numbers,
                 "regulatory_reference": regulatory_reference,
-                "source": "FIA Race Control Central / Official Noticeboard",
-                "status": "OFFICIAL_PUBLISHED",
+                "source": resolved_source,
+                "status": resolved_status,
             },
         )
         if len(self.official_notices) > 50:
             self.official_notices.pop()
 
     def get_ordered_drivers(self) -> list[dict[str, Any]]:
-        return sorted(self.drivers.values(), key=lambda d: d.get("position", 99))
+        return sorted(
+            self.drivers.values(),
+            key=lambda d: (
+                1 if d.get("status") in {"RETIRED", "DNS"} else 0,
+                d.get("position", 99),
+                -(d.get("lap") or 0),
+                -(d.get("progress") or 0.0),
+                d.get("number", 99),
+            ),
+        )
 
     def get_driver_telemetry(self, driver_number: int) -> dict[str, Any] | None:
         driver = self.drivers.get(driver_number)

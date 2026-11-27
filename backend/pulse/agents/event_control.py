@@ -36,6 +36,19 @@ class EventControlAgent(BaseAgent):
             "FAILED": 0,
         }
 
+    def reset(self) -> None:
+        """Reset agent domain state and metrics for a fresh run."""
+        super().reset()
+        self.active_lifecycle = "NONE"
+        self.active_event_type = None
+        self.active_session_id = None
+        self.outcomes_count = {
+            "FINDING_EMITTED": 0,
+            "NO_FINDING": 0,
+            "FILTERED": 0,
+            "FAILED": 0,
+        }
+
     async def on_event(self, topic: str, key: str, event: Any) -> None:
         t0 = time.perf_counter()
         if isinstance(event, dict):
@@ -124,11 +137,13 @@ class EventControlAgent(BaseAgent):
                         if d not in affected_drivers:
                             affected_drivers.append(d)
 
-                for dn in affected_drivers:
+                for idx, dn in enumerate(affected_drivers):
                     driver_cfgs = event.payload.get("driver_exposures", {})
                     dn_cfg = driver_cfgs.get(str(dn), {})
-                    exposure_level = dn_cfg.get("exposure_level", "CRITICAL_OPPORTUNITY" if dn == 16 else "HIGH_TRAFFIC_RISK")
-                    pit_status = dn_cfg.get("pit_window_status", "OPEN" if dn == 16 else "EXPOSED")
+                    default_exposure = "CRITICAL_OPPORTUNITY" if (event.subject.driver_number == dn or idx == 0) else "HIGH_TRAFFIC_RISK"
+                    default_pit = "OPEN" if (event.subject.driver_number == dn or idx == 0) else "EVALUATE"
+                    exposure_level = dn_cfg.get("exposure_level", default_exposure)
+                    pit_status = dn_cfg.get("pit_window_status", default_pit)
                     finding_exp = Finding(
                         finding_id=f"finding-exp-{event.event_id}-{dn}",
                         agent_id=self.agent_id,

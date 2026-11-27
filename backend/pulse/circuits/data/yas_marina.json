@@ -1,0 +1,669 @@
+{
+  "circuit_id": "yas_marina",
+  "name": "Yas Marina Circuit",
+  "country": "United Arab Emirates",
+  "city": "Abu Dhabi",
+  "layout_id": "yas_marina-homologated-v1",
+  "layout_version": "2024.1",
+  "length_meters": 5281.0,
+  "track_direction": "COUNTER_CLOCKWISE",
+  "coordinate_reference_system": "LOCAL_NORMALIZED_1000",
+  "source_attribution": "bacinger/f1-circuits, circuits/ae-2009.geojson (OpenStreetMap-derived geometry; MIT License)",
+  "centreline": [
+    [
+      437.452,
+      401.382
+    ],
+    [
+      498.371,
+      393.125
+    ],
+    [
+      501.588,
+      392.051
+    ],
+    [
+      504.007,
+      389.534
+    ],
+    [
+      505.68,
+      386.056
+    ],
+    [
+      505.989,
+      382.606
+    ],
+    [
+      505.088,
+      378.987
+    ],
+    [
+      495.334,
+      337.534
+    ],
+    [
+      493.661,
+      333.01
+    ],
+    [
+      491.37,
+      329.673
+    ],
+    [
+      487.561,
+      326.478
+    ],
+    [
+      484.37,
+      324.894
+    ],
+    [
+      467.101,
+      319.522
+    ],
+    [
+      461.361,
+      316.609
+    ],
+    [
+      457.089,
+      313.697
+    ],
+    [
+      453.229,
+      310.049
+    ],
+    [
+      450.32,
+      306.628
+    ],
+    [
+      448.159,
+      303.772
+    ],
+    [
+      445.533,
+      297.495
+    ],
+    [
+      444.581,
+      292.716
+    ],
+    [
+      444.504,
+      287.513
+    ],
+    [
+      445.559,
+      281.349
+    ],
+    [
+      447.515,
+      274.874
+    ],
+    [
+      451.813,
+      258.389
+    ],
+    [
+      453.332,
+      246.173
+    ],
+    [
+      453.486,
+      237.492
+    ],
+    [
+      452.714,
+      229.971
+    ],
+    [
+      447.953,
+      191.289
+    ],
+    [
+      444.787,
+      166.915
+    ],
+    [
+      444.169,
+      164.087
+    ],
+    [
+      443.577,
+      161.797
+    ],
+    [
+      441.75,
+      159.45
+    ],
+    [
+      438.636,
+      156.877
+    ],
+    [
+      436.757,
+      156.226
+    ],
+    [
+      434.595,
+      156.0
+    ],
+    [
+      432.536,
+      156.339
+    ],
+    [
+      430.323,
+      157.216
+    ],
+    [
+      428.676,
+      158.884
+    ],
+    [
+      427.672,
+      160.439
+    ],
+    [
+      426.411,
+      163.041
+    ],
+    [
+      422.628,
+      174.295
+    ],
+    [
+      419.025,
+      190.582
+    ],
+    [
+      388.553,
+      281.434
+    ],
+    [
+      376.662,
+      316.609
+    ],
+    [
+      370.074,
+      336.233
+    ],
+    [
+      365.132,
+      351.446
+    ],
+    [
+      359.985,
+      370.334
+    ],
+    [
+      349.098,
+      405.114
+    ],
+    [
+      338.726,
+      436.444
+    ],
+    [
+      337.517,
+      439.498
+    ],
+    [
+      337.208,
+      441.789
+    ],
+    [
+      337.517,
+      443.118
+    ],
+    [
+      338.675,
+      444.447
+    ],
+    [
+      341.3,
+      444.531
+    ],
+    [
+      351.003,
+      443.372
+    ],
+    [
+      353.139,
+      443.372
+    ],
+    [
+      354.863,
+      445.436
+    ],
+    [
+      360.371,
+      466.361
+    ],
+    [
+      361.503,
+      470.291
+    ],
+    [
+      364.978,
+      478.972
+    ],
+    [
+      368.143,
+      485.193
+    ],
+    [
+      374.964,
+      495.118
+    ],
+    [
+      382.736,
+      504.166
+    ],
+    [
+      392.516,
+      512.564
+    ],
+    [
+      433.978,
+      545.28
+    ],
+    [
+      443.423,
+      552.943
+    ],
+    [
+      450.861,
+      558.259
+    ],
+    [
+      460.795,
+      564.677
+    ],
+    [
+      469.314,
+      569.598
+    ],
+    [
+      483.083,
+      576.242
+    ],
+    [
+      495.668,
+      581.898
+    ],
+    [
+      514.379,
+      590.748
+    ],
+    [
+      522.383,
+      593.972
+    ],
+    [
+      526.887,
+      594.0
+    ],
+    [
+      531.648,
+      593.039
+    ],
+    [
+      535.998,
+      590.522
+    ],
+    [
+      538.314,
+      588.288
+    ],
+    [
+      539.858,
+      586.083
+    ],
+    [
+      541.402,
+      582.831
+    ],
+    [
+      542.277,
+      579.664
+    ],
+    [
+      542.792,
+      576.723
+    ],
+    [
+      542.38,
+      571.86
+    ],
+    [
+      541.402,
+      568.325
+    ],
+    [
+      540.012,
+      564.904
+    ],
+    [
+      537.979,
+      561.85
+    ],
+    [
+      535.097,
+      559.079
+    ],
+    [
+      531.519,
+      556.675
+    ],
+    [
+      527.736,
+      555.007
+    ],
+    [
+      522.228,
+      554.215
+    ],
+    [
+      478.579,
+      550.709
+    ],
+    [
+      473.2,
+      550.002
+    ],
+    [
+      470.884,
+      549.493
+    ],
+    [
+      468.439,
+      548.617
+    ],
+    [
+      444.993,
+      533.969
+    ],
+    [
+      442.625,
+      532.188
+    ],
+    [
+      441.029,
+      530.152
+    ],
+    [
+      439.331,
+      525.798
+    ],
+    [
+      433.875,
+      500.264
+    ],
+    [
+      434.235,
+      498.256
+    ],
+    [
+      435.496,
+      496.899
+    ],
+    [
+      437.401,
+      496.362
+    ],
+    [
+      456.857,
+      493.449
+    ],
+    [
+      459.148,
+      492.488
+    ],
+    [
+      460.615,
+      491.725
+    ],
+    [
+      462.159,
+      490.141
+    ],
+    [
+      463.703,
+      487.229
+    ],
+    [
+      464.064,
+      483.638
+    ],
+    [
+      464.115,
+      465.965
+    ],
+    [
+      462.7,
+      462.939
+    ],
+    [
+      460.95,
+      461.13
+    ],
+    [
+      458.299,
+      460.112
+    ],
+    [
+      454.67,
+      459.32
+    ],
+    [
+      451.504,
+      458.896
+    ],
+    [
+      447.283,
+      458.754
+    ],
+    [
+      443.114,
+      459.065
+    ],
+    [
+      402.502,
+      465.315
+    ],
+    [
+      399.002,
+      465.569
+    ],
+    [
+      394.549,
+      465.399
+    ],
+    [
+      390.2,
+      464.636
+    ],
+    [
+      387.214,
+      463.646
+    ],
+    [
+      385.232,
+      461.837
+    ],
+    [
+      383.174,
+      459.631
+    ],
+    [
+      372.03,
+      439.385
+    ],
+    [
+      366.265,
+      430.082
+    ],
+    [
+      365.055,
+      427.339
+    ],
+    [
+      364.206,
+      423.692
+    ],
+    [
+      363.923,
+      420.581
+    ],
+    [
+      363.871,
+      416.849
+    ],
+    [
+      364.489,
+      414.304
+    ],
+    [
+      365.982,
+      412.466
+    ],
+    [
+      367.835,
+      411.533
+    ],
+    [
+      372.081,
+      410.77
+    ]
+  ],
+  "inner_boundary": [],
+  "outer_boundary": [],
+  "corners": [
+    {
+      "number": 1,
+      "name": "Turn 1",
+      "x": 497.473,
+      "y": 346.627,
+      "sector": 1,
+      "apex_speed_kmh": 135.0,
+      "track_progress": 0.08802
+    },
+    {
+      "number": 5,
+      "name": "North Hairpin",
+      "x": 435.383,
+      "y": 156.082,
+      "sector": 1,
+      "apex_speed_kmh": 80.0,
+      "track_progress": 0.26343
+    },
+    {
+      "number": 6,
+      "name": "Chicane In",
+      "x": 370.704,
+      "y": 334.355,
+      "sector": 2,
+      "apex_speed_kmh": 125.0,
+      "track_progress": 0.4139
+    },
+    {
+      "number": 9,
+      "name": "Marsa Corner (Banked)",
+      "x": 471.789,
+      "y": 570.792,
+      "sector": 2,
+      "apex_speed_kmh": 220.0,
+      "track_progress": 0.65642
+    },
+    {
+      "number": 12,
+      "name": "Hotel Section",
+      "x": 437.075,
+      "y": 515.242,
+      "sector": 3,
+      "apex_speed_kmh": 110.0,
+      "track_progress": 0.83034
+    },
+    {
+      "number": 16,
+      "name": "Final Corner",
+      "x": 364.983,
+      "y": 427.031,
+      "sector": 3,
+      "apex_speed_kmh": 190.0,
+      "track_progress": 0.98308
+    }
+  ],
+  "sectors": [
+    {
+      "sector_number": 1,
+      "start_progress": 0.0,
+      "end_progress": 0.33,
+      "checkpoint": [
+        404.938,
+        232.582
+      ]
+    },
+    {
+      "sector_number": 2,
+      "start_progress": 0.33,
+      "end_progress": 0.66,
+      "checkpoint": [
+        475.917,
+        572.784
+      ]
+    },
+    {
+      "sector_number": 3,
+      "start_progress": 0.66,
+      "end_progress": 1.0,
+      "checkpoint": [
+        372.081,
+        410.77
+      ]
+    }
+  ],
+  "pit_lane": {
+    "entry_point": null,
+    "exit_point": null,
+    "path": [],
+    "speed_limit_kmh": 80
+  },
+  "start_finish_line": [
+    [
+      435.84,
+      389.486
+    ],
+    [
+      439.064,
+      413.277
+    ]
+  ],
+  "drs_zones": [],
+  "view_box": {
+    "min_x": 200.0,
+    "min_y": 150.0,
+    "width": 480.0,
+    "height": 450.0
+  },
+  "geometry_source": {
+    "repository": "https://github.com/bacinger/f1-circuits",
+    "source_file": "circuits/ae-2009.geojson",
+    "source_id": "ae-2009",
+    "geometry_type": "LineString",
+    "underlying_map_data": "OpenStreetMap-derived",
+    "license": "MIT",
+    "coordinate_operation": "Local equirectangular projection, uniformly scaled into the existing view_box; no non-uniform stretching",
+    "source_vertex_count": 132
+  },
+  "geometry_notes": [
+    "The centreline is reprojected from the source GeoJSON vertices; the existing normalized coordinate system and view_box are retained.",
+    "The source repository supplies a centreline only. It does not supply surveyed inner/outer track boundaries, pit-lane geometry, DRS zones, or corner-name/apex metadata.",
+    "Existing named corner labels and apex-speed metadata are preserved; their marker positions are remapped by their previous along-track progress and are not independently verified against an official FIA corner map.",
+    "Pit-lane paths, DRS zones, and track-edge boundaries are left empty rather than retaining misaligned or unverified legacy geometry."
+  ],
+  "checksum_sha256": "a2db93b5d60f31a341d23e6f39d4fd5aa97d1d1bf941f103a48c1bb5267902dc"
+}

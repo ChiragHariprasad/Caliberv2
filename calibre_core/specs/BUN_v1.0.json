@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Evidence Bundle Specification (BUN v1.0)",
+  "description": "Schema for portable, self-verifying CALIBRE archive manifests (calibre-manifest.json).",
+  "type": "object",
+  "required": [
+    "schema",
+    "archive_id",
+    "created_at",
+    "canonicalization",
+    "pack",
+    "data_regime",
+    "time_scale",
+    "execution_profile",
+    "evaluator_capsule",
+    "reference_bindings",
+    "entries",
+    "manifest_digest"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "calibre.archive.manifest/1.0"
+    },
+    "archive_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the archived decision scope or corpus."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of bundle creation."
+    },
+    "canonicalization": {
+      "type": "string",
+      "const": "jcs-rfc8785-subset/1"
+    },
+    "pack": {
+      "type": "object",
+      "required": ["pack_id", "version", "scope_levels", "supported_regimes"],
+      "properties": {
+        "pack_id": { "type": "string" },
+        "version": { "type": "string" },
+        "scope_levels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "supported_regimes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["PUBLIC", "LICENSED", "INSTITUTIONAL", "LAB"]
+          }
+        }
+      }
+    },
+    "data_regime": {
+      "type": "string",
+      "enum": ["PUBLIC", "LICENSED", "INSTITUTIONAL", "LAB"]
+    },
+    "time_scale": {
+      "type": "object",
+      "required": ["scale", "leap_second_table_id", "leap_second_table_version"],
+      "properties": {
+        "scale": {
+          "type": "string",
+          "enum": ["UTC", "TAI", "GPS"]
+        },
+        "leap_second_table_id": { "type": "string" },
+        "leap_second_table_version": { "type": "string" }
+      }
+    },
+    "execution_profile": {
+      "type": "string",
+      "description": "Execution profile used for evaluation (e.g. batch-v1, streaming-v1)."
+    },
+    "evaluator_capsule": {
+      "type": "string",
+      "description": "Identifier and version of the deterministic evaluator capsule."
+    },
+    "reference_bindings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "media_type", "size_bytes", "digest"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Normalized relative path within the bundle archive."
+          },
+          "media_type": {
+            "type": "string",
+            "description": "MIME type of the entry payload."
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "Algorithm-tagged SHA-256 digest of entry payload bytes."
+          }
+        }
+      }
+    },
+    "manifest_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 digest over the canonical JSON representation of the manifest excluding manifest_digest itself."
+    }
+  }
+}
+

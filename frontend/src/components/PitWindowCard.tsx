@@ -8,19 +8,40 @@ interface PitWindowCardProps {
 
 export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
   const isVSC = activeEvent.toLowerCase().includes('vsc') || activeEvent.toLowerCase().includes('virtual');
+  const isSafetyCar = activeEvent.toLowerCase().includes('safety car') && !isVSC;
+  const isNeutralised = isVSC || isSafetyCar;
+
+  const standardLoss = 21.5;
+  const effectiveLoss = isSafetyCar ? 8.7 : (isVSC ? 11.0 : 21.5);
+  const savingDelta = standardLoss - effectiveLoss;
+  const vscWidthPct = Math.round((effectiveLoss / standardLoss) * 1000) / 10;
+  const savingWidthPct = 100 - vscWidthPct;
 
   return (
     <section className="panel pit-window-panel" aria-labelledby="pit-window-title">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Strategic Window Analysis · Agent 4 (v1.2.0)</p>
-          <h2 id="pit-window-title">{isVSC ? 'VSC Pit Loss Window Compression' : 'Pit Stop Loss & Delta Strategy'}</h2>
+          <h2 id="pit-window-title">
+            {isVSC
+              ? 'VSC Pit Loss Window Compression'
+              : isSafetyCar
+                ? 'Safety Car Cheap Pit Window'
+                : 'Pit Stop Loss & Delta Strategy'}
+          </h2>
         </div>
         <div className="pit-badge-group">
-          <span className="pit-opportunity-pill">
-            <ZapIcon size={14} className="sparkle-icon" />
-            <strong>+10.5s VSC DELTA SAVING</strong>
-          </span>
+          {isNeutralised ? (
+            <span className="pit-opportunity-pill">
+              <ZapIcon size={14} className="sparkle-icon" />
+              <strong>+{savingDelta.toFixed(1)}s {isSafetyCar ? 'SC' : 'VSC'} DELTA SAVING</strong>
+            </span>
+          ) : (
+            <span className="pit-standard-pill">
+              <ClockIcon size={14} className="sparkle-icon" />
+              <strong>GREEN FLAG · STANDARD STOP</strong>
+            </span>
+          )}
         </div>
       </div>
 
@@ -30,11 +51,11 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
           <div className="delta-bar-group">
             <div className="delta-label-row">
               <span className="bar-title">Standard Green Flag Pit Loss</span>
-              <span className="bar-time">21.5s total transit</span>
+              <span className="bar-time">{standardLoss.toFixed(1)}s total transit</span>
             </div>
             <div className="progress-track">
               <div className="progress-fill progress-fill--standard" style={{ width: '100%' }}>
-                <span>21.5s</span>
+                <span>{standardLoss.toFixed(1)}s</span>
               </div>
             </div>
           </div>
@@ -42,18 +63,23 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
           <div className="delta-bar-group delta-bar-group--highlight">
             <div className="delta-label-row">
               <span className="bar-title">
-                <strong>VSC Neutralised Pit Loss</strong>
-                <span className="saving-tag">DISCOUNTED</span>
+                <strong>{isSafetyCar ? 'Safety Car Pit Loss' : isVSC ? 'VSC Neutralised Pit Loss' : 'Current Projected Stop Loss'}</strong>
+                {isNeutralised && <span className="saving-tag">DISCOUNTED</span>}
               </span>
-              <span className="bar-time highlight-text">11.0s effective loss</span>
+              <span className="bar-time highlight-text">{effectiveLoss.toFixed(1)}s effective loss</span>
             </div>
             <div className="progress-track">
-              <div className="progress-fill progress-fill--vsc" style={{ width: '51.1%' }}>
-                <span>11.0s</span>
+              <div
+                className={`progress-fill ${isNeutralised ? 'progress-fill--vsc' : 'progress-fill--standard'}`}
+                style={{ width: `${vscWidthPct}%` }}
+              >
+                <span>{effectiveLoss.toFixed(1)}s</span>
               </div>
-              <div className="saving-indicator-marker" style={{ left: '51.1%', width: '48.9%' }}>
-                <span className="saving-text">SAVING: 10.5s Net Saved vs Rivals</span>
-              </div>
+              {isNeutralised && (
+                <div className="saving-indicator-marker" style={{ left: `${vscWidthPct}%`, width: `${savingWidthPct}%` }}>
+                  <span className="saving-text">SAVING: {savingDelta.toFixed(1)}s Net Saved vs Rivals</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -81,7 +107,11 @@ export function PitWindowCard({ strategies, activeEvent }: PitWindowCardProps) {
       </div>
 
       <div className="panel-footer-note">
-        <span>Calculation Lineage: Under VSC regulations, on-track delta cuts field speed by ~40% while pit lane remains regulated at 60 km/h, yielding a deterministic 10.5s pit loss compression.</span>
+        <span>
+          {isNeutralised
+            ? `Calculation Lineage: Under neutralisation regulations, on-track delta cuts field speed by ~40% while pit lane remains regulated at 60 km/h, yielding a deterministic ${savingDelta.toFixed(1)}s pit loss compression.`
+            : 'Calculation Lineage: Standard race conditions at full racing speeds. Pit lane transit penalty is ~21.5s total time loss.'}
+        </span>
       </div>
     </section>
   );

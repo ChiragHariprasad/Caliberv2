@@ -21,9 +21,16 @@ wheels/
 .installed.cfg
 *.egg
 .pytest_cache/
+.pytest-*/
+.docx-qa/
+.superpowers/
 .coverage
 htmlcov/
 .env
+.env.*
+.env.local
+!.env.example
+*.env
 
 # Node / Frontend
 node_modules/

@@ -1,0 +1,20 @@
+{
+  "race_id": "2021_belgium",
+  "year": 2021,
+  "round": 12,
+  "official_event_name": "Belgian Grand Prix",
+  "official_session_name": "Race",
+  "circuit_id": "spa",
+  "circuit_key": "spa_2021",
+  "session_date_utc": "2021-08-29T13:00:00",
+  "primary_controversy": "2-lap safety car procession in heavy rain to award half points",
+  "key_drivers": [
+    "33",
+    "63",
+    "44"
+  ],
+  "data_regime": "PUBLIC",
+  "declared_source_origin": "F1_FOM_TIMING",
+  "acquired_at_utc": "2026-11-13T18:12:26.906354+00:00",
+  "fastf1_version": "3.9.0"
+}

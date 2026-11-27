@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2023-silverstone-race",
+  "meeting_id": "f1-2023-silverstone-race",
+  "session_name": "Formula 1 British Grand Prix",
+  "circuit_id": "silverstone",
+  "total_laps": 52,
+  "total_drivers": 20,
+  "duration_seconds": 3600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

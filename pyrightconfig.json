@@ -1,0 +1,8 @@
+{
+  "extraPaths": [
+    ".",
+    "backend",
+    "sia_core_v3"
+  ]
+}
+

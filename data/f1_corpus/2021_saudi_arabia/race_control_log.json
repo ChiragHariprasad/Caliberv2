@@ -1,0 +1,688 @@
+[
+  {
+    "utc_timestamp": "2021-12-05T15:30:28",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "AIR TEMPERATURE 2 HOURS BEFORE THE RACE =  29 DEGREES"
+  },
+  {
+    "utc_timestamp": "2021-12-05T16:50:00",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:00:00",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "PIT EXIT CLOSED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:03:01",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 20"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:03:02",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 3"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:03:19",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 20"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:03:20",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 3"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:15:08",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "RISK OF RAIN FOR F1 RACE IS 0%"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:22:20",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 17"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:22:21",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 2"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:22:22",
+    "lap": 1,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS ENABLED IN ZONE 2"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:22:22",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 17"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:27:07",
+    "lap": 1,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS DISABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:33:45",
+    "lap": 1,
+    "category": "Flag",
+    "flag": "GREEN",
+    "message": "GREEN LIGHT - PIT EXIT OPEN"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:36:21",
+    "lap": 2,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 7 INCIDENT INVOLVING CARS 18 (STR) AND 63 (RUS) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:37:21",
+    "lap": 3,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:39:01",
+    "lap": 4,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 7 INCIDENT INVOLVING CARS 18 (STR) AND 63 (RUS) NO INVESTIGATION NECESSARY"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:41:37",
+    "lap": 6,
+    "category": "Other",
+    "flag": "None",
+    "message": "START INCIDENT INVOLVING CARS 31 (OCO) AND 22 (TSU) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:43:33",
+    "lap": 7,
+    "category": "CarEvent",
+    "flag": "None",
+    "message": "CAR 14 (ALO) MISSED THE APEX OF TURN 2"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:44:56",
+    "lap": 8,
+    "category": "Other",
+    "flag": "None",
+    "message": "START INCIDENT INVOLVING CARS 31 (OCO) AND 22 (TSU) NO INVESTIGATION NECESSARY"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:48:06",
+    "lap": 10,
+    "category": "Flag",
+    "flag": "YELLOW",
+    "message": "YELLOW IN TRACK SECTOR 14"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:48:07",
+    "lap": 10,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 1"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:48:17",
+    "lap": 10,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:57:00",
+    "lap": 13,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2021-12-05T17:57:00",
+    "lap": 13,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 14"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:04:59",
+    "lap": 14,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL RESUME AT 21:15"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:06:28",
+    "lap": 14,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:16:27",
+    "lap": 14,
+    "category": "Other",
+    "flag": "None",
+    "message": "SAFETY CAR WILL ENTER PITS: STANDING START"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:19:54",
+    "lap": 15,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 3"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:20:07",
+    "lap": 15,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 4"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:20:30",
+    "lap": 15,
+    "category": "Flag",
+    "flag": "RED",
+    "message": "RED FLAG"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:20:30",
+    "lap": 15,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 3"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:20:30",
+    "lap": 15,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 4"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:29:17",
+    "lap": 16,
+    "category": "Other",
+    "flag": "None",
+    "message": "RACE WILL RESUME AT 21:40"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:32:41",
+    "lap": 16,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:41:28",
+    "lap": 16,
+    "category": "Other",
+    "flag": "None",
+    "message": "SAFETY CAR WILL ENTER PITS: STANDING START"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:42:49",
+    "lap": 16,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 3 INCIDENT NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:48:41",
+    "lap": 19,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 3 INCIDENT WILL BE INVESTIGATED AFTER THE RACE"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:52:51",
+    "lap": 22,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:54:31",
+    "lap": 23,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:54:32",
+    "lap": 23,
+    "category": "Other",
+    "flag": "None",
+    "message": "DRS DISABLED IN ZONE 3"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:55:17",
+    "lap": 23,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:57:06",
+    "lap": 24,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR ENDING"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:57:17",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:57:17",
+    "lap": 24,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 2"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:57:21",
+    "lap": 24,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:59:10",
+    "lap": 25,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 2 INCIDENT INVOLVING CARS 5 (VET) AND 22 (TSU) NOTED - CAUSING A COLLISION"
+  },
+  {
+    "utc_timestamp": "2021-12-05T18:59:28",
+    "lap": 26,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 2 INCIDENT INVOLVING CARS 5 (VET) AND 22 (TSU) UNDER INVESTIGATION - CAUSING A COLLISION"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:00:24",
+    "lap": 26,
+    "category": "Other",
+    "flag": "None",
+    "message": "5 SECOND TIME PENALTY FOR CAR 22 (TSU) - CAUSING A COLLISION"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:00:32",
+    "lap": 26,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 22:00:32"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:00:47",
+    "lap": 27,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 22 (TSU) TIMED AT 22:00:47"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:01:18",
+    "lap": 27,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:01:42",
+    "lap": 27,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:01",
+    "lap": 27,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:15",
+    "lap": 27,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:15",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:15",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:15",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 8"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:02:50",
+    "lap": 28,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR ENDING"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:03:05",
+    "lap": 28,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:03:08",
+    "lap": 28,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:03:42",
+    "lap": 28,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:03:44",
+    "lap": 28,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:05:10",
+    "lap": 29,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:05:10",
+    "lap": 29,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:05:10",
+    "lap": 29,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 7"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:05:59",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 5"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:06:02",
+    "lap": 30,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:10:18",
+    "lap": 32,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:10:23",
+    "lap": 32,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 12"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:10:31",
+    "lap": 32,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 5"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:12:20",
+    "lap": 33,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR ENDING"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:12:26",
+    "lap": 33,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 4 INCIDENT INVOLVING CARS 5 (VET) AND 7 (RAI) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:12:31",
+    "lap": 33,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:12:40",
+    "lap": 33,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:12:48",
+    "lap": 33,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 7 (RAI) TIMED AT 22:12:47"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:13:03",
+    "lap": 33,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:13:26",
+    "lap": 33,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 6"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:15:40",
+    "lap": 35,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:16:59",
+    "lap": 36,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR DEPLOYED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:16:59",
+    "lap": 36,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 9"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:17:34",
+    "lap": 36,
+    "category": "SafetyCar",
+    "flag": "None",
+    "message": "VIRTUAL SAFETY CAR ENDING"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:17:46",
+    "lap": 36,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "TRACK CLEAR"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:17:49",
+    "lap": 36,
+    "category": "Drs",
+    "flag": "None",
+    "message": "DRS ENABLED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:19:00",
+    "lap": 37,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 1 INCIDENT INVOLVING CARS 33 (VER) AND 44 (HAM) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:20:39",
+    "lap": 38,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 25 INCIDENT INVOLVING CARS 44 (HAM) AND 33 (VER) NOTED"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:20:49",
+    "lap": 38,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 25 INCIDENT INVOLVING CARS 44 (HAM) AND 33 (VER) UNDER INVESTIGATION"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:27:46",
+    "lap": 43,
+    "category": "Other",
+    "flag": "None",
+    "message": "5 SECOND TIME PENALTY FOR CAR 33 (VER) - LEAVING THE TRACK AND GAINING AN ADVANTAGE"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:28:21",
+    "lap": 43,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 27 INCIDENT INVOLVING CARS 44 (HAM) AND 33 (VER) - WILL BE INVESTIGATED AFTER THE RACE"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:29:52",
+    "lap": 44,
+    "category": "Other",
+    "flag": "None",
+    "message": "TURN 4 INCIDENT INVOLVING CARS 5 (VET) AND 7 (RAI) NO INVESTIGATION NECESSARY"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:31:28",
+    "lap": 45,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 5 (VET) TIMED AT 22:31:28"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:32:15",
+    "lap": 45,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 5 (VET) TIMED AT 22:32:15"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:34:04",
+    "lap": 47,
+    "category": "Flag",
+    "flag": "BLUE",
+    "message": "WAVED BLUE FLAG FOR CAR 7 (RAI) TIMED AT 22:34:03"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:35:51",
+    "lap": 48,
+    "category": "Other",
+    "flag": "None",
+    "message": "TRACK SURFACE SLIPPERY IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:36:13",
+    "lap": 48,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 16"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:39:57",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "CHEQUERED",
+    "message": "CHEQUERED FLAG"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:45:25",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "DOUBLE YELLOW",
+    "message": "DOUBLE YELLOW IN TRACK SECTOR 17"
+  },
+  {
+    "utc_timestamp": "2021-12-05T19:48:42",
+    "lap": 50,
+    "category": "Flag",
+    "flag": "CLEAR",
+    "message": "CLEAR IN TRACK SECTOR 17"
+  }
+]

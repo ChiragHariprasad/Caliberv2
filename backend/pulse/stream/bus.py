@@ -4,6 +4,8 @@ import asyncio
 import logging
 from collections import defaultdict
 from collections.abc import Callable, Coroutine
+from contextlib import asynccontextmanager
+from contextvars import ContextVar
 from typing import Any
 
 from pulse.stream.kafka_client import KafkaBroker, get_kafka_broker
@@ -11,6 +13,7 @@ from pulse.stream.kafka_client import KafkaBroker, get_kafka_broker
 logger = logging.getLogger("pulse.bus")
 
 Handler = Callable[[str, str, Any], Coroutine[Any, Any, None]]
+_transport_suppressed: ContextVar[bool] = ContextVar("pulse_transport_suppressed", default=False)
 
 
 class PulseEventBus:
@@ -33,13 +36,31 @@ class PulseEventBus:
         else:
             self._handlers[topic].append(handler)
 
+    @asynccontextmanager
+    async def local_only(self):
+        """Dispatch locally without producing transport side effects.
+
+        Replay reconstruction uses this context while rebuilding prior state;
+        agent findings still reach fusion and the display store, but are not
+        published as a second Kafka execution of the same source evidence.
+        """
+        token = _transport_suppressed.set(True)
+        try:
+            yield
+        finally:
+            _transport_suppressed.reset(token)
+
     async def publish(self, topic: str, key: str, value: Any) -> None:
         # Publish compulsorily to Kafka
-        if self.broker.is_connected:
+        if self.broker.is_connected and not _transport_suppressed.get():
             try:
                 await self.broker.publish(topic, key, value)
             except Exception as e:
-                logger.error("Failed to publish to Kafka topic %s: %s", topic, e)
+                logger.error("Failed to publish to Kafka topic %s: %s", topic, e, exc_info=True)
+                # Do not dispatch locally after a transport failure. Doing so
+                # would make the in-memory projection claim progress for an
+                # event that is absent from the durable pipeline.
+                raise
 
         # Dispatch locally to subscribers
         handlers = list(self._handlers.get(topic, [])) + list(self._wildcard_handlers)

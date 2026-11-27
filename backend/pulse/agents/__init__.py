@@ -5,6 +5,13 @@ from pulse.agents.track_state import TrackStateAgent
 from pulse.agents.tyre_strategy import TyreStrategyAgent
 from pulse.agents.vehicle_response import VehicleResponseAgent
 
+
+def _get_integrity_agent():
+    """Lazy import to avoid circular dependency."""
+    from pulse.integrity.agent import IntegrityAgent
+    return IntegrityAgent
+
+
 __all__ = [
     "BaseAgent",
     "EventControlAgent",
@@ -13,4 +20,3 @@ __all__ = [
     "TyreStrategyAgent",
     "ConsequenceFusionEngine",
 ]
-

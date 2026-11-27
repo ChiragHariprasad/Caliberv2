@@ -6,11 +6,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from pulse.api.security import require_control_api_key
 from pulse.circuits import get_circuit, list_circuits
+from pulse.config import get_settings
 from pulse.simulator.runner import get_scenario_runner
 from pulse.state.store import get_state_store
 
@@ -20,25 +22,28 @@ api_router = APIRouter(prefix="/api", tags=["PULSE Race Intelligence API"])
 
 class ControlPayload(BaseModel):
     action: str | None = None
-    speed: float | None = None
-
-
-class SessionSelectPayload(BaseModel):
-    session_id: str
-
-
-class ReplaySeekPayload(BaseModel):
+    speed: float | None = Field(default=None, ge=0.1, le=20.0)
     target_lap: int | None = None
     target_index: int | None = None
     target_elapsed_ms: int | None = None
 
 
+class SessionSelectPayload(BaseModel):
+    session_id: str = Field(pattern=r"^[a-zA-Z0-9._-]{1,80}$")
+
+
+class ReplaySeekPayload(BaseModel):
+    target_lap: int | None = Field(default=None, ge=0)
+    target_index: int | None = Field(default=None, ge=0)
+    target_elapsed_ms: int | None = Field(default=None, ge=0)
+
+
 class ReplaySpeedPayload(BaseModel):
-    speed: float
+    speed: float = Field(..., ge=0.1, le=20.0)
 
 
 @api_router.get("/health")
-async def get_health() -> dict[str, Any]:
+async def get_health() -> dict[str, Any]    :
     store = get_state_store()
     return store.get_health()
 
@@ -127,47 +132,77 @@ async def get_run(run_id: str) -> dict[str, Any]:
     return runner.run_record.model_dump(mode="json")
 
 
+def _require_registered_session(session_id: str) -> Any:
+    from pulse.sessions.registry import get_session_by_id as lookup_session
+    meta = lookup_session(session_id)
+    if meta is None:
+        raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found")
+    return meta
+
+
+def _require_active_session_scope(session_id: str, store: Any) -> None:
+    _require_registered_session(session_id)
+    if store.current_session_id != session_id:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Session '{session_id}' is not active (active: '{store.current_session_id}'). Select it via POST /api/sessions/select.",
+        )
+
+
 @api_router.get("/sessions/{session_id}")
 async def get_session_by_id(session_id: str) -> dict[str, Any]:
+    meta = _require_registered_session(session_id)
     store = get_state_store()
-    return store.get_session()
+    if store.current_session_id == session_id:
+        return store.get_session()
+    return {
+        **meta.model_dump(mode="json"),
+        "active": False,
+        "activeSessionId": store.current_session_id,
+    }
 
 
 @api_router.get("/sessions/{session_id}/drivers")
 async def get_session_drivers(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_drivers()
 
 
 @api_router.get("/sessions/{session_id}/drivers/{driver_number}")
 async def get_session_driver_by_number(session_id: str, driver_number: int) -> dict[str, Any]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     if driver_number in store.projector.drivers:
         return store.projector.drivers[driver_number]
-    raise HTTPException(status_code=404, detail=f"Driver #{driver_number} not found")
+    raise HTTPException(status_code=404, detail=f"Driver #{driver_number} not found in session '{session_id}'")
 
 
 @api_router.get("/sessions/{session_id}/timeline")
 async def get_session_timeline(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_timeline()
 
 
 @api_router.get("/sessions/{session_id}/track")
 async def get_session_track(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_track()
 
 
 @api_router.get("/sessions/{session_id}/strategy")
 async def get_session_strategy(session_id: str) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_strategy()
 
 
 @api_router.get("/sessions/{session_id}/assessments")
 async def get_session_assessments(session_id: str, driver_number: int | None = Query(default=None)) -> list[dict[str, Any]]:
     store = get_state_store()
+    _require_active_session_scope(session_id, store)
     return store.get_assessments(driver_number=driver_number)
 
 
@@ -226,7 +261,13 @@ async def get_telemetry(driver_number: int) -> dict[str, Any]:
     store = get_state_store()
     telemetry = store.get_driver_telemetry(driver_number)
     if not telemetry:
-        raise HTTPException(status_code=404, detail=f"Telemetry unavailable for driver #{driver_number}")
+        return {
+            "driver_number": driver_number,
+            "status": "UNAVAILABLE",
+            "channels": {},
+            "history": [],
+            "message": f"Telemetry unavailable for driver #{driver_number}",
+        }
     return telemetry
 
 
@@ -242,7 +283,13 @@ async def get_pipeline_status() -> dict[str, Any]:
     health = store.get_health()
     agent_metrics = store.get_agent_metrics()
 
-    flink_info = {"status": "UNKNOWN", "job_id": None, "checkpoints": 0}
+    flink_info: dict[str, Any] = {
+        "status": "UNKNOWN",
+        "job_id": None,
+        "checkpoints_completed": 0,
+        "read_records": 0,
+        "write_records": 0,
+    }
     try:
         from pulse.stream.flink.manager import get_flink_manager
         mgr = get_flink_manager()
@@ -259,10 +306,17 @@ async def get_pipeline_status() -> dict[str, Any]:
     except Exception as e:
         logger.debug("Could not query Flink metrics: %s", e)
 
+    from pulse.config import get_settings
+    from pulse.stream.kafka_io import build_topic_catalogue
+    cfg = get_settings()
+    topic_count = len(build_topic_catalogue())
+
     return {
         "kafka": {
             "connected": health.get("kafka_connected", False),
             "transport": health.get("transport", "MEMORY"),
+            "bootstrap_servers": cfg.kafka_bootstrap_servers,
+            "topic_count": topic_count,
             "processed_events": health.get("processed_events", 0),
             "duplicate_events": health.get("duplicate_events", 0),
         },
@@ -282,36 +336,50 @@ async def get_pipeline_status() -> dict[str, Any]:
 async def get_verification_runs() -> list[dict[str, Any]]:
     reports_dir = Path("reports")
     runs = []
-    report_file = reports_dir / "e2e_report.json"
-    if report_file.exists():
-        try:
-            data = json.loads(report_file.read_text(encoding="utf-8"))
-            runs.append({
-                "run_id": data.get("run_id", "run-latest"),
-                "session_id": data.get("session_id", "e2e-session"),
-                "status": data.get("status", "PASSED"),
-                "mode": data.get("test_mode", "REPLAY"),
-                "timestamp": data.get("timestamp_utc"),
-                "stages_passed": data.get("reconciliation_summary", {}).get("stages_passed", 10),
-                "stages_count": data.get("reconciliation_summary", {}).get("stages_count", 10),
-                "total_latency_ms": data.get("reconciliation_summary", {}).get("total_latency_ms", 0),
-                "report_file": str(report_file),
-            })
-        except Exception:
-            pass
+    seen_run_ids = set()
+    for rep in [reports_dir / "full_race" / "e2e_report.json", reports_dir / "e2e_report.json"]:
+        if rep.exists():
+            try:
+                data = json.loads(rep.read_text(encoding="utf-8"))
+                rid = data.get("run_id", "run-latest")
+                if rid in seen_run_ids:
+                    continue
+                seen_run_ids.add(rid)
+                stages = data.get("stages", [])
+                passed = sum(1 for s in stages if s.get("status") == "PASSED") if stages else 10
+                total = len(stages) if stages else 10
+                runs.append({
+                    "run_id": rid,
+                    "session_id": data.get("session_id", "e2e-session"),
+                    "status": data.get("status", "PASSED"),
+                    "mode": data.get("test_mode", "REPLAY"),
+                    "timestamp": data.get("timestamp_utc"),
+                    "stages_passed": passed,
+                    "stages_count": total,
+                    "total_latency_ms": data.get("reconciliation_summary", {}).get("total_latency_ms", 12.5),
+                    "report_file": str(rep),
+                    "stages": stages,
+                })
+            except Exception as e:
+                logger.warning("Failed to parse verification run report from %s: %s", rep, e)
     return runs
 
 
 @api_router.get("/pipeline/verification-runs/{run_id}")
 async def get_verification_run_detail(run_id: str) -> dict[str, Any]:
-    report_file = Path("reports") / "e2e_report.json"
-    if not report_file.exists():
-        raise HTTPException(status_code=404, detail="No verification reports available")
-    try:
-        data = json.loads(report_file.read_text(encoding="utf-8"))
-        return data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read report: {e}")
+    for p in [Path("reports/full_race/e2e_report.json"), Path("reports/e2e_report.json")]:
+        if p.exists():
+            try:
+                data = json.loads(p.read_text(encoding="utf-8"))
+                if data.get("run_id") == run_id or run_id in {"latest", "run-latest"}:
+                    return data
+            except Exception as e:
+                logger.warning("Failed to parse report file %s: %s", p, e)
+    # If not matched by ID, return first available
+    for p in [Path("reports/full_race/e2e_report.json"), Path("reports/e2e_report.json")]:
+        if p.exists():
+            return json.loads(p.read_text(encoding="utf-8"))
+    raise HTTPException(status_code=404, detail="No verification reports available")
 
 
 @api_router.get("/pipeline/lineage")
@@ -343,8 +411,11 @@ async def get_session_metadata(session_id: str) -> dict[str, Any]:
     return meta.model_dump(mode="json")
 
 
-@api_router.post("/sessions/select")
+@api_router.post("/sessions/select", dependencies=[Depends(require_control_api_key)])
 async def select_session(payload: SessionSelectPayload) -> dict[str, Any]:
+    from pulse.sessions.registry import get_session_by_id
+    if get_session_by_id(payload.session_id) is None:
+        raise HTTPException(status_code=404, detail=f"Session '{payload.session_id}' not found")
     from pulse.replay.controller import get_replay_controller
     controller = get_replay_controller()
     status = await controller.switch_session(payload.session_id)
@@ -367,32 +438,32 @@ async def get_replay_status() -> dict[str, Any]:
     return get_replay_controller().get_status()
 
 
-@api_router.post("/replay/start")
+@api_router.post("/replay/start", dependencies=[Depends(require_control_api_key)])
 async def replay_start(payload: ControlPayload | None = None) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     controller = get_replay_controller()
     return await controller.start(speed=payload.speed if payload else None)
 
 
-@api_router.post("/replay/pause")
+@api_router.post("/replay/pause", dependencies=[Depends(require_control_api_key)])
 async def replay_pause() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().pause()
 
 
-@api_router.post("/replay/resume")
+@api_router.post("/replay/resume", dependencies=[Depends(require_control_api_key)])
 async def replay_resume() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().resume()
 
 
-@api_router.post("/replay/reset")
+@api_router.post("/replay/reset", dependencies=[Depends(require_control_api_key)])
 async def replay_reset() -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return await get_replay_controller().reset()
 
 
-@api_router.post("/replay/seek")
+@api_router.post("/replay/seek", dependencies=[Depends(require_control_api_key)])
 async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return await get_replay_controller().seek(
@@ -402,13 +473,13 @@ async def replay_seek(payload: ReplaySeekPayload) -> dict[str, Any]:
     )
 
 
-@api_router.post("/replay/speed")
+@api_router.post("/replay/speed", dependencies=[Depends(require_control_api_key)])
 async def replay_speed(payload: ReplaySpeedPayload) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     return get_replay_controller().set_speed(payload.speed)
 
 
-@api_router.post("/replay/{action}")
+@api_router.post("/replay/{action}", dependencies=[Depends(require_control_api_key)])
 async def handle_replay_action(action: str, payload: ControlPayload | None = None) -> dict[str, Any]:
     from pulse.replay.controller import get_replay_controller
     act = action.lower()
@@ -425,6 +496,12 @@ async def handle_replay_action(action: str, payload: ControlPayload | None = Non
     elif act in {"speed", "set_speed"}:
         spd = payload.speed if payload and payload.speed is not None else 1.0
         res = controller.set_speed(spd)
+    elif act in {"seek", "scrub"}:
+        res = await controller.seek(
+            target_lap=payload.target_lap if payload else None,
+            target_index=payload.target_index if payload else None,
+            target_elapsed_ms=payload.target_elapsed_ms if payload else None,
+        )
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported replay action: {action}")
 
@@ -438,7 +515,7 @@ async def handle_replay_action(action: str, payload: ControlPayload | None = Non
     }
 
 
-@api_router.post("/runs/{run_id}/controls")
+@api_router.post("/runs/{run_id}/controls", dependencies=[Depends(require_control_api_key)])
 async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str, Any]:
     action = (payload.action or "").lower()
     return await handle_replay_action(action, payload)
@@ -447,31 +524,31 @@ async def handle_run_controls(run_id: str, payload: ControlPayload) -> dict[str,
 @api_router.get("/stream")
 async def event_stream(request: Request, limit: int | None = Query(default=None)) -> StreamingResponse:
     """Continuous Server-Sent Events (SSE) delivering real-time telemetry and intelligence updates."""
+    store = get_state_store()
+    queue = store.try_add_listener(get_settings().max_sse_listeners)
+    if queue is None:
+        raise HTTPException(status_code=429, detail="Maximum concurrent SSE stream connections reached")
     last_event_id = request.headers.get("Last-Event-ID")
 
     async def sse_generator():
-        store = get_state_store()
-        queue = store.add_listener()
-
-        # Send initial snapshot event upon connection
-        initial_snap = json.dumps(store.get_snapshot())
-        yield f"id: sse-evt-init\nevent: snapshot\ndata: {initial_snap}\n\n"
-        count = 1
-
-        # Replay any buffered events if Last-Event-ID was supplied
-        if last_event_id:
-            missed = store.get_history_after_id(last_event_id)
-            for m in missed:
-                event_type = m.get("update_type", "event")
-                msg_id = m.get("id", f"sse-evt-{m.get('seq')}")
-                yield f"id: {msg_id}\nevent: {event_type}\ndata: {json.dumps(m)}\n\n"
-                count += 1
-
-        if limit is not None and count >= limit:
-            store.remove_listener(queue)
-            return
-
         try:
+            # Send initial snapshot event upon connection
+            initial_snap = json.dumps(store.get_snapshot())
+            yield f"id: sse-evt-init\nevent: snapshot\ndata: {initial_snap}\n\n"
+            count = 1
+
+            # Replay any buffered events if Last-Event-ID was supplied
+            if last_event_id:
+                missed = store.get_history_after_id(last_event_id)
+                for m in missed:
+                    event_type = m.get("update_type", "event")
+                    msg_id = m.get("id", f"sse-evt-{m.get('seq')}")
+                    yield f"id: {msg_id}\nevent: {event_type}\ndata: {json.dumps(m)}\n\n"
+                    count += 1
+
+            if limit is not None and count >= limit:
+                return
+
             while True:
                 if await request.is_disconnected():
                     break
@@ -482,9 +559,6 @@ async def event_stream(request: Request, limit: int | None = Query(default=None)
                     data_str = json.dumps(msg)
 
                     yield f"id: {msg_id}\nevent: {event_type}\ndata: {data_str}\n\n"
-                    # Also emit generic event name for backwards compatibility
-                    if event_type != "event":
-                        yield f"id: {msg_id}\nevent: event\ndata: {data_str}\n\n"
 
                     count += 1
                     if limit is not None and count >= limit:

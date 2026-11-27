@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2021-abu-dhabi",
+  "meeting_id": "f1-2021-abu-dhabi",
+  "session_name": "Abu Dhabi Grand Prix 2021",
+  "circuit_id": "yas_marina",
+  "total_laps": 58,
+  "total_drivers": 20,
+  "duration_seconds": 600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

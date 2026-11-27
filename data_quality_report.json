@@ -1,14 +1,8 @@
 {
-  "capture_id": "pulse-capture-f1-2023-silverstone-race-v1",
+  "capture_id": "f1-2023-silverstone-race",
   "manifest_sha256_verified": true,
-  "total_canonical_records": 943,
-  "source_feed_records": {
-    "session_entry_list": 20,
-    "lap_timing_records": 903,
-    "pit_stops": 24,
-    "race_control_events": 10,
-    "weather_observations": 4
-  },
+  "total_canonical_records": 72642,
+  "source_feed_records": {},
   "schema_validation": {
     "total_evaluated": 943,
     "passed": 943,

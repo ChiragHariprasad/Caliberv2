@@ -1,0 +1,17 @@
+{
+  "capture_id": "f1-2026-suzuka-race",
+  "provider": "PULSE_SYNTHETIC_SIMULATOR",
+  "session_id": "f1-2026-suzuka-race",
+  "session_name": "Formula 1 Japanese Grand Prix",
+  "total_canonical_records": 72617,
+  "circuit_id": "suzuka",
+  "total_laps": 53,
+  "duration_seconds": 3600,
+  "data_regime": "SYNTHETIC",
+  "regime": "SYNTHETIC",
+  "dataset_classification": "SYNTHETIC_SIMULATOR",
+  "is_synthetic": true,
+  "provenance_status": "SYNTHETIC_SIMULATION_CAPTURE",
+  "licence_reference": "PULSE-SYNTHETIC-SIM-INTERNAL",
+  "raw_archive_note": "Legacy raw envelopes preserved verbatim; runtime loader normalizes synthetic/lab provenance honestly."
+}

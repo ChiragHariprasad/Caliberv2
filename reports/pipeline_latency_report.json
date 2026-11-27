@@ -1,0 +1,450 @@
+{
+  "timestamp_utc": "2026-11-26T11:43:28.233083+00:00",
+  "total_benchmark_duration_seconds": 1768.92,
+  "per_event_layer_benchmarks_ms": {
+    "layer_1a_kafka_serial_rtt_ms": {
+      "min": 9.1844,
+      "median": 15.7576,
+      "avg": 18.242,
+      "max": 527.5757,
+      "range": 518.3913,
+      "stdev": 32.5335,
+      "p95": 21.9081,
+      "p99": 33.3657,
+      "count": 250
+    },
+    "layer_1b_kafka_batch50_ms": {
+      "min": 27.3767,
+      "median": 31.2437,
+      "avg": 32.9358,
+      "max": 62.3472,
+      "range": 34.9705,
+      "stdev": 7.4891,
+      "p95": 38.4939,
+      "p99": null,
+      "count": 20,
+      "events_total": 1000,
+      "elapsed_sec": 0.6589,
+      "throughput_evt_per_sec": 1517.68
+    },
+    "layer_1c_kafka_enqueue_flush_5000": {
+      "events": 5000,
+      "elapsed_sec": 0.1804,
+      "ms_per_event": 0.0361,
+      "throughput_evt_per_sec": 27719.75
+    },
+    "layer_2_stream_normalization_cpu_ms": {
+      "min": 0.0079,
+      "median": 0.0234,
+      "avg": 0.0195,
+      "max": 0.1261,
+      "range": 0.1182,
+      "stdev": 0.0085,
+      "p95": 0.025,
+      "p99": 0.0372,
+      "count": 1000
+    },
+    "flink_live_cluster_metrics": {
+      "job_id": "7a8d209f2e3bbaa5faff6e9656654096",
+      "name": "pulse-canonical-normalizer-v3",
+      "state": "RUNNING",
+      "duration_ms": 1727149,
+      "read_records": 662038,
+      "write_records": 662038,
+      "checkpoints_completed": 346,
+      "checkpoints_failed": 0,
+      "last_checkpoint_timestamp": null
+    },
+    "layer_3_agent_1_compute_ms": {
+      "min": 0.0689,
+      "median": 0.0861,
+      "avg": 0.1561,
+      "max": 0.655,
+      "range": 0.5861,
+      "stdev": 0.1726,
+      "p95": null,
+      "p99": null,
+      "count": 13
+    },
+    "layer_3_agent_2_compute_ms": {
+      "min": 0.081,
+      "median": 0.0872,
+      "avg": 0.0943,
+      "max": 0.1349,
+      "range": 0.0539,
+      "stdev": 0.0189,
+      "p95": null,
+      "p99": null,
+      "count": 8
+    },
+    "layer_3_agent_3_compute_ms": {
+      "min": 0.0219,
+      "median": 0.6441,
+      "avg": 0.6147,
+      "max": 1.7476,
+      "range": 1.7257,
+      "stdev": 0.3401,
+      "p95": 1.1539,
+      "p99": 1.3698,
+      "count": 600
+    },
+    "layer_3_agent_4_compute_ms": {
+      "min": 0.0099,
+      "median": 0.0118,
+      "avg": 0.0895,
+      "max": 0.9621,
+      "range": 0.9522,
+      "stdev": 0.2474,
+      "p95": 0.7292,
+      "p99": null,
+      "count": 22
+    },
+    "layer_3_agents_compute_aggregated_ms": {
+      "min": 0.0099,
+      "median": 0.6206,
+      "avg": 0.581,
+      "max": 1.7476,
+      "range": 1.7377,
+      "stdev": 0.3556,
+      "p95": 1.1434,
+      "p99": 1.3698,
+      "count": 643
+    },
+    "layer_3_agent_1_with_kafka_publish_ms": {
+      "min": 11.7146,
+      "median": 17.3112,
+      "avg": 63.1614,
+      "max": 545.2929,
+      "range": 533.5783,
+      "stdev": 145.9433,
+      "p95": null,
+      "p99": null,
+      "count": 13
+    },
+    "layer_3_agent_4_with_kafka_publish_ms": {
+      "min": 0.007,
+      "median": 0.0083,
+      "avg": 6.4046,
+      "max": 76.2262,
+      "range": 76.2192,
+      "stdev": 20.7764,
+      "p95": 64.4735,
+      "p99": null,
+      "count": 22
+    },
+    "layer_4_consequence_fusion_compute_ms": {
+      "min": 0.0031,
+      "median": 0.16,
+      "avg": 0.263,
+      "max": 5.8706,
+      "range": 5.8675,
+      "stdev": 0.4919,
+      "p95": 0.6537,
+      "p99": 3.0961,
+      "count": 315
+    },
+    "layer_5_statestore_persistence_ms": {
+      "min": 0.0408,
+      "median": 0.0474,
+      "avg": 0.0811,
+      "max": 2.3274,
+      "range": 2.2866,
+      "stdev": 0.2334,
+      "p95": 0.1311,
+      "p99": 0.5466,
+      "count": 100
+    },
+    "layer_7_sse_queue_delivery_ms": {
+      "min": 0.0434,
+      "median": 0.0502,
+      "avg": 0.0846,
+      "max": 2.338,
+      "range": 2.2946,
+      "stdev": 0.2343,
+      "p95": 0.139,
+      "p99": 0.5499,
+      "count": 100
+    },
+    "layer_6_api_serving_ms": {
+      "min": 0.5668,
+      "median": 1.8855,
+      "avg": 2.2195,
+      "max": 6.5332,
+      "range": 5.9664,
+      "stdev": 0.9694,
+      "p95": 3.883,
+      "p99": 5.5142,
+      "count": 120
+    }
+  },
+  "multi_run_full_pipeline_benchmarks_ms": {
+    "num_runs": 10,
+    "run_1_cold_ms": 188119.09,
+    "warm_runs_2_to_n_ms": {
+      "min": 107483.5692,
+      "median": 181623.5004,
+      "avg": 175643.9029,
+      "max": 200675.1645,
+      "range": 93191.5953,
+      "stdev": 29577.4675,
+      "p95": null,
+      "p99": null,
+      "count": 9
+    },
+    "stages": {
+      "0.VALIDATE_CAPTURE_MANIFEST": {
+        "min": 0.8377,
+        "median": 1.7323,
+        "avg": 4.5774,
+        "max": 29.6688,
+        "range": 28.8311,
+        "stdev": 8.836,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "1.PREFLIGHT": {
+        "min": 2704.4001,
+        "median": 3690.1591,
+        "avg": 3601.4496,
+        "max": 4067.2799,
+        "range": 1362.8798,
+        "stdev": 416.0213,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "2.HISTORICAL_CAPTURE_INGEST_KAFKA": {
+        "min": 71836.4679,
+        "median": 132718.3829,
+        "avg": 126951.6924,
+        "max": 141441.6025,
+        "range": 69605.1346,
+        "stdev": 20644.6771,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "3.FLINK_STREAM_NORMALIZATION": {
+        "min": 8222.3994,
+        "median": 10642.8912,
+        "avg": 10372.6637,
+        "max": 12032.4717,
+        "range": 3810.0723,
+        "stdev": 1376.9638,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "4.AGENT_1_EVENT_CONTROL": {
+        "min": 407.5476,
+        "median": 1120.8885,
+        "avg": 921.3236,
+        "max": 1147.5075,
+        "range": 739.9599,
+        "stdev": 335.6919,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "5.AGENT_2_TRACK_STATE": {
+        "min": 184.9867,
+        "median": 561.2668,
+        "avg": 470.9064,
+        "max": 592.3775,
+        "range": 407.3908,
+        "stdev": 166.2507,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "6.AGENT_3_VEHICLE_RESPONSE": {
+        "min": 6059.8046,
+        "median": 13850.5868,
+        "avg": 12858.5975,
+        "max": 16441.9688,
+        "range": 10382.1642,
+        "stdev": 3496.4193,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "7.AGENT_4_TYRE_STRATEGY": {
+        "min": 2254.3446,
+        "median": 4145.4162,
+        "avg": 3833.8635,
+        "max": 4646.2948,
+        "range": 2391.9502,
+        "stdev": 873.0998,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "8.AGENT_5_CONSEQUENCE_FUSION": {
+        "min": 6243.8351,
+        "median": 13500.0348,
+        "avg": 12884.2126,
+        "max": 17689.6509,
+        "range": 11445.8158,
+        "stdev": 3754.2226,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "9.FAULT_INJECTION_AND_DATA_QUALITY": {
+        "min": 16.8664,
+        "median": 64.1618,
+        "avg": 57.3099,
+        "max": 78.2305,
+        "range": 61.3641,
+        "stdev": 21.6698,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "10.RACE_INTELLIGENCE_EVALUATION": {
+        "min": 0.8981,
+        "median": 1.2072,
+        "avg": 5.9601,
+        "max": 48.7822,
+        "range": 47.8841,
+        "stdev": 15.0484,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      },
+      "11.STATE_STORE_LINEAGE_AND_API": {
+        "min": 2053.3036,
+        "median": 2236.8367,
+        "avg": 2243.4595,
+        "max": 2429.0937,
+        "range": 375.7901,
+        "stdev": 97.578,
+        "p95": null,
+        "p99": null,
+        "count": 10
+      }
+    },
+    "full_pipeline_total": {
+      "min": 107483.5692,
+      "median": 184871.2934,
+      "avg": 176891.4213,
+      "max": 200675.1645,
+      "range": 93191.5953,
+      "stdev": 28163.5696,
+      "p95": null,
+      "p99": null,
+      "count": 10
+    }
+  },
+  "seek_wal_and_api_benchmarks": {
+    "trials": 10,
+    "cold_seek_36321_first_run_ms": 88449.23,
+    "cold_seek_36321_warm_runs_2_to_n_ms": {
+      "min": 79210.5485,
+      "median": 86538.8967,
+      "avg": 94600.0461,
+      "max": 125345.1855,
+      "range": 46134.637,
+      "stdev": 16150.7658,
+      "p95": null,
+      "p99": null,
+      "count": 9
+    },
+    "cold_seek_36321_all_runs_ms": {
+      "min": 79210.5485,
+      "median": 87494.0653,
+      "avg": 93984.9649,
+      "max": 125345.1855,
+      "range": 46134.637,
+      "stdev": 15350.813,
+      "p95": null,
+      "p99": null,
+      "count": 10
+    },
+    "cached_keyframe_seek_36500_ms": {
+      "min": 2827.1008,
+      "median": 3715.465,
+      "avg": 3816.4693,
+      "max": 5676.1104,
+      "range": 2849.0096,
+      "stdev": 798.8147,
+      "p95": null,
+      "p99": null,
+      "count": 10
+    },
+    "keyframe_vs_cold_median_speedup": 23.55,
+    "sia_hash_mismatches": 0,
+    "wal_restore_midrace_ms": {
+      "min": 919.0539,
+      "median": 1400.1546,
+      "avg": 1553.4284,
+      "max": 2961.6838,
+      "range": 2042.6299,
+      "stdev": 592.1201,
+      "p95": null,
+      "p99": null,
+      "count": 10
+    },
+    "snapshot_midrace_ms": {
+      "min": 7.55,
+      "median": 10.2781,
+      "avg": 51.9939,
+      "max": 2092.8081,
+      "range": 2085.2581,
+      "stdev": 294.5075,
+      "p95": 12.8084,
+      "p99": null,
+      "count": 50
+    },
+    "snapshot_payload_kb": 113.05,
+    "integrity_verify_all_chains_ms": {
+      "min": 1760.1186,
+      "median": 2003.692,
+      "avg": 1970.0382,
+      "max": 2062.9082,
+      "range": 302.7896,
+      "stdev": 90.7129,
+      "p95": null,
+      "p99": null,
+      "count": 10
+    },
+    "verified_chain_count": 637
+  },
+  "resource_footprint": {
+    "python_rss_start_mb": 0.0,
+    "python_rss_end_mb": 0.0,
+    "docker_containers": [
+      {
+        "container": "kafka-1",
+        "cpu": "6.60%",
+        "mem_usage": "2.207GiB / 15.37GiB",
+        "mem_pct": "14.36%"
+      },
+      {
+        "container": "kafka-2",
+        "cpu": "5.33%",
+        "mem_usage": "1.504GiB / 15.37GiB",
+        "mem_pct": "9.79%"
+      },
+      {
+        "container": "kafka-3",
+        "cpu": "6.59%",
+        "mem_usage": "1.558GiB / 15.37GiB",
+        "mem_pct": "10.13%"
+      },
+      {
+        "container": "calibre-flink-jobmanager",
+        "cpu": "64.25%",
+        "mem_usage": "1.456GiB / 15.37GiB",
+        "mem_pct": "9.47%"
+      },
+      {
+        "container": "calibre-flink-taskmanager",
+        "cpu": "102.31%",
+        "mem_usage": "1.034GiB / 15.37GiB",
+        "mem_pct": "6.73%"
+      }
+    ]
+  }
+}

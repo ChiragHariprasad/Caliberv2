@@ -1,0 +1,10 @@
+{
+  "session_id": "f1-2023-austria",
+  "meeting_id": "f1-2023-austria",
+  "session_name": "Austrian Grand Prix 2023",
+  "circuit_id": "red_bull_ring",
+  "total_laps": 71,
+  "total_drivers": 20,
+  "duration_seconds": 600,
+  "source": "FIA_OFFICIAL_TIMING_AND_TELEMETRY"
+}

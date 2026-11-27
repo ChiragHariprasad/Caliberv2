@@ -1,7 +1,14 @@
 export type DataMode = 'SIMULATED' | 'REPLAY' | 'LIVE';
 export type PipelineStatus = 'CONNECTED' | 'PROCESSING' | 'DEGRADED' | 'FAILED';
 export type ImpactTone = 'positive' | 'negative' | 'neutral';
-export type FindingState = 'PROVISIONAL' | 'CONFIRMED' | 'UNRESOLVED' | 'SUPERSEDED' | 'WITHDRAWN';
+export type FindingState =
+  | 'OBSERVED'
+  | 'PROVISIONAL'
+  | 'CONFIRMED'
+  | 'REJECTED'
+  | 'SUPERSEDED'
+  | 'UNRESOLVED'
+  | 'WITHDRAWN';
 export type DriverStatus = 'ACTIVE' | 'PIT_LANE' | 'RETIRED' | 'DNS' | 'INACTIVE';
 export type PositionMode = 'MEASURED_GPS' | 'TIMING_ESTIMATED' | 'INTERPOLATED_DISPLAY';
 
@@ -37,6 +44,7 @@ export interface Driver {
   tyreAge: number;
   lastLap: string;
   momentum: number;
+  momentumHistory?: number[];
   status?: DriverStatus;
   progress?: number;
   positionMode?: PositionMode;
@@ -56,6 +64,7 @@ export interface Corner {
   y: number;
   sector: number;
   apex_speed_kmh?: number | null;
+  track_progress?: number;
 }
 
 export interface DRSZone {
@@ -66,10 +75,10 @@ export interface DRSZone {
 }
 
 export interface PitLaneGeometry {
-  entry_point: [number, number];
-  exit_point: [number, number];
-  path: [number, number][];
-  speed_limit_kmh: number;
+  entry_point?: [number, number] | null;
+  exit_point?: [number, number] | null;
+  path?: [number, number][];
+  speed_limit_kmh?: number;
 }
 
 export interface SectorBoundary {
@@ -87,7 +96,7 @@ export interface CircuitGeometry {
   layout_id: string;
   layout_version: string;
   length_meters: number;
-  track_direction: 'CLOCKWISE' | 'COUNTER_CLOCKWISE' | 'FIGURE_EIGHT';
+  track_direction: 'CLOCKWISE' | 'COUNTER_CLOCKWISE' | 'FIGURE_EIGHT' | string;
   coordinate_reference_system: string;
   source_attribution: string;
   checksum_sha256: string;
@@ -105,6 +114,8 @@ export interface CircuitGeometry {
     width: number;
     height: number;
   };
+  geometry_source?: any;
+  geometry_notes?: string[];
 }
 
 export interface OfficialNotice {
@@ -212,6 +223,8 @@ export interface PipelineStatusData {
   kafka: {
     connected: boolean;
     transport: string;
+    bootstrap_servers?: string;
+    topic_count?: number;
     processed_events: number;
     duplicate_events: number;
   };
@@ -243,6 +256,17 @@ export interface VerificationRun {
   stages_count: number;
   total_latency_ms: number;
   report_file: string;
+  stages?: Array<{
+    stage_name: string;
+    status: string;
+    input_count?: number | null;
+    output_count?: number | null;
+    drop_count?: number;
+    inputs_expected?: number | null;
+    outputs_actual?: number | null;
+    drops?: number;
+    latency_ms?: number;
+  }>;
 }
 
 export interface LineageTraceEvent {
@@ -258,11 +282,19 @@ export interface PulseSnapshot {
   circuitId?: string;
   sessionName: string;
   sessionType: string;
+  sessionId?: string;
   lap: number;
   totalLaps: number;
   status: string;
   elapsed: string;
   activeEvent: string;
+  dataRegime?: string;
+  datasetClassification?: string;
+  sourceProvenance?: string;
+  timingBaseline?: string;
+  licenceReference?: string;
+  isSynthetic?: boolean;
+  transportMode?: string;
   sourceLabel: string;
   lastUpdated: string;
   drivers: Driver[];
@@ -271,6 +303,12 @@ export interface PulseSnapshot {
   strategies: StrategyOption[];
   sectors: TrackSector[];
   officialNotices?: OfficialNotice[];
+  integrity?: {
+    overall_state?: string;
+    decision_count?: number;
+    contract_count?: number;
+    chain_verified?: boolean;
+  };
 }
 
 export interface ReplayStatusData {
@@ -306,3 +344,7 @@ export interface SessionInfo {
   capture_id?: string;
   events_count: number;
 }
+
+// Re-export formal CALIBRE & SIA Core v3 specifications
+export * from './types/calibre';
+

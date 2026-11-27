@@ -1,0 +1,9 @@
+feed_name,provider,record_count,status,licensing,notes
+session_entry_list,Jolpica-F1 / Ergast,20,VERIFIED,CC-BY-NC-4.0,Complete 20-driver grid with grid & finish pos
+lap_and_sector_timing,Jolpica-F1 / Ergast,903,VERIFIED,CC-BY-NC-4.0,52 laps across all 20 drivers
+pit_stop_records,Jolpica-F1 / Ergast,24,VERIFIED,CC-BY-NC-4.0,24 official pit stops with durations
+race_control_events,FIA Official Documents,10,VERIFIED,Public Official Bulletins,Green Flag VSC SC Restarts Checkered Flag Doc 49
+weather_observations,Meteo France / FIA,4,VERIFIED,Official FIA Meteorological Service,Air and track temperatures humidity dry
+stewards_decisions,FIA Panel of Stewards,1,VERIFIED,Official Published Bulletin,Doc 49 5-second penalty to Car 18 Art 38.3
+can_bus_vehicle_telemetry,Formula 1 TV / FOM,0,UNAVAILABLE,Proprietary Gated,Programmatic extraction restricted by terms of service
+team_radio_audio,Formula 1 TV / FOM,0,UNAVAILABLE,Proprietary Multimedia,No scraping or synthetic radio fabrication

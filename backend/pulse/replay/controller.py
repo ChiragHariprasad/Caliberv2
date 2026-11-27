@@ -6,6 +6,7 @@ import logging
 from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
+from collections.abc import Awaitable, Callable
 from typing import Any
 from uuid import uuid4
 
@@ -34,6 +35,8 @@ class ReplayController:
     """
 
     ALLOWED_SPEEDS: list[float] = [0.25, 0.5, 1.0, 2.0, 5.0]
+    CHECKPOINT_INTERVAL: int = 2000
+    MAX_CHECKPOINTS_PER_SESSION: int = 35
 
     def __init__(self, bus: PulseEventBus | None = None) -> None:
         self.bus = bus or get_event_bus()
@@ -51,9 +54,55 @@ class ReplayController:
         self.envelopes: list[EventEnvelope] = []
         self._task: asyncio.Task[None] | None = None
         self._lock = asyncio.Lock()
+        self._event_processor: Callable[..., Awaitable[None]] | None = None
+        self._reset_hook: Callable[[], None] | None = None
+        self._checkpoints: dict[str, dict[int, bytes]] = {}
 
         # Load initial default session envelopes
         self._load_session_envelopes(self.session_id)
+
+    def set_event_processor(self, processor: Callable[..., Awaitable[None]] | None) -> None:
+        """Install the canonical processing path used by playback and seek rebuilds.
+
+        A processor receives an envelope and a ``publish`` keyword.  Normal
+        playback uses ``publish=True``; seek reconstruction uses
+        ``publish=False`` so rebuilding a run cannot duplicate source events
+        on the transport.
+        """
+        self._event_processor = processor
+
+    def set_reset_hook(self, hook: Callable[[], None] | None) -> None:
+        """Register a callback to be invoked whenever replay state is reset or seeked."""
+        self._reset_hook = hook
+
+    def _for_current_run(self, envelope: EventEnvelope) -> EventEnvelope:
+        """Shallow-clone source envelope into the active replay-run namespace (avoids deepcopy overhead)."""
+        new_run = envelope.run.model_copy(
+            update={
+                "run_id": self.run_id,
+                "session_instance_id": self.session_id,
+                "mode": RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED,
+            }
+        )
+        return envelope.model_copy(
+            update={
+                "event_id": f"{envelope.event_id}-{self.run_id}",
+                "run": new_run,
+            }
+        )
+
+    async def _process(self, envelope: EventEnvelope, *, publish: bool) -> None:
+        if self._event_processor is not None:
+            await self._event_processor(envelope, publish=publish)
+            return
+
+        # Standalone controller path (no external processor wired)
+        get_state_store().record_canonical_event(envelope)
+
+        if publish:
+            topic = raw_topic_for_event(envelope.event_type)
+            key = routing_key(self.session_id, envelope.subject.driver_number, envelope.subject.segment_id)
+            await self.bus.publish(topic, key, envelope)
 
     def _load_session_envelopes(self, session_id: str) -> bool:
         """Loads canonical envelopes for the chosen session into memory."""
@@ -69,32 +118,66 @@ class ReplayController:
             return False
 
         self.session_id = session_id
-        self.capture_id = meta.capture_id or ""
+        self.capture_id = meta.capture_id or session_id
         self.mode = "REPLAY" if meta.availability_status == "AVAILABLE_HISTORICAL" else "SIMULATED"
 
-        if meta.availability_status == "AVAILABLE_HISTORICAL":
-            capture_dir = Path("captures/f1-2023-silverstone-race")
-            if not capture_dir.exists():
-                capture_dir = Path("captures") / self.capture_id
-            env_file = capture_dir / "envelopes.jsonl"
-            if env_file.exists():
-                with open(env_file, "r", encoding="utf-8") as f:
-                    for line in f:
-                        if line.strip():
-                            self.envelopes.append(EventEnvelope.model_validate(json.loads(line)))
+        # Search multiple candidate locations for the captures directory to support
+        # running from repo root, backend subdirectory, WSL mounts, or test runners.
+        repo_root = Path(__file__).resolve().parents[3]
+        candidate_dirs = [
+            repo_root / "captures" / self.capture_id,
+            repo_root / "captures" / self.session_id,
+            Path("captures") / self.capture_id,
+            Path("captures") / self.session_id,
+            Path("../captures") / self.capture_id,
+            Path("../captures") / self.session_id,
+            Path("../../captures") / self.capture_id,
+            Path("../../captures") / self.session_id,
+        ]
 
+        env_file: Path | None = None
+        for cdir in candidate_dirs:
+            candidate_file = cdir / "envelopes.jsonl"
+            if candidate_file.exists():
+                env_file = candidate_file
+                break
+
+        if env_file is not None and env_file.exists():
+            is_sim = meta.data_regime == "SYNTHETIC" or meta.availability_status == "AVAILABLE_SIMULATION"
+            resolved_provider = "PULSE_SYNTHETIC_SIM" if is_sim else "LAB_COMPOSED_ARCHIVE"
+            resolved_licence = meta.licence_reference
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip():
+                        raw = json.loads(line)
+                        src = raw.get("source")
+                        if isinstance(src, dict):
+                            raw_provider = str(src.get("provider", ""))
+                            raw_lic = str(src.get("licence_reference") or "")
+                            if raw_provider in {
+                                "FIA_OFFICIAL_TIMING",
+                                "FIA_OFFICIAL_TIMING_AND_TELEMETRY",
+                                "JOLPICA_F1_AND_FIA_OFFICIAL",
+                            } or raw_lic == "FIA-F1-DATA-ACQUISITION-V1":
+                                payload = raw.setdefault("payload", {})
+                                if isinstance(payload, dict) and "_legacy_source_claim" not in payload:
+                                    payload["_legacy_source_claim"] = raw_provider
+                                src["provider"] = resolved_provider
+                                src["licence_reference"] = resolved_licence
+                        self.envelopes.append(EventEnvelope.model_validate(raw))
         elif meta.availability_status == "AVAILABLE_SIMULATION":
             from pulse.simulator.scenarios import build_vsc_scenario
             self.envelopes = build_vsc_scenario()
 
         self.status = ReplayStatus.READY
         logger.info(
-            "ReplayController loaded %d envelopes for session [%s] (mode: %s)",
+            "ReplayController loaded %d envelopes for session [%s] (mode: %s, file: %s)",
             len(self.envelopes),
             self.session_id,
             self.mode,
+            str(env_file) if env_file else "none",
         )
-        return True
+        return len(self.envelopes) > 0
 
     def get_status(self) -> dict[str, Any]:
         """Provides current playback state and progress metrics."""
@@ -125,32 +208,76 @@ class ReplayController:
             "progressPercent": round((self.current_index / max(1, len(self.envelopes))) * 100, 1),
         }
 
+    async def _switch_session_internal(self, session_id: str) -> dict[str, Any]:
+        """Internal session switch helper without acquiring lock (caller must hold lock or be un-locked)."""
+        if self._task and not self._task.done():
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
+
+        self.status = ReplayStatus.RESETTING
+        if self._reset_hook is not None:
+            self._reset_hook()
+        store = get_state_store()
+        store.retire_run(self.run_id)
+        store.switch_session(session_id)
+        self._load_session_envelopes(session_id)
+        self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
+        store.begin_run(self.run_id)
+        self.status = ReplayStatus.READY
+
+        status_payload = self.get_status()
+        store.notify_replay_status(status_payload)
+        return status_payload
+
     async def switch_session(self, session_id: str) -> dict[str, Any]:
         """Switches active playback session and reinitializes state."""
         async with self._lock:
-            if self._task and not self._task.done():
-                self._task.cancel()
-                try:
-                    await self._task
-                except asyncio.CancelledError:
-                    pass
+            return await self._switch_session_internal(session_id)
 
-            self.status = ReplayStatus.RESETTING
-            store = get_state_store()
-            store.switch_session(session_id)
-            self._load_session_envelopes(session_id)
-            self.run_id = f"run-{session_id}-{uuid4().hex[:6]}"
-            self.status = ReplayStatus.READY
+    async def _reset_internal(self) -> dict[str, Any]:
+        """Internal reset helper without acquiring lock (caller must hold lock or be un-locked)."""
+        if self._task and not self._task.done():
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
 
-            status_payload = self.get_status()
-            store.notify_replay_status(status_payload)
-            return status_payload
+        self.status = ReplayStatus.RESETTING
+        if self._reset_hook is not None:
+            self._reset_hook()
+        self.current_index = 0
+        self.published_count = 0
+        self.elapsed_ms = 0
+        self.last_event_time_utc = None
+        self.drop_count = 0
+        old_run_id = self.run_id
+        self.run_id = f"run-{uuid4().hex[:8]}"
+
+        store = get_state_store()
+        store.retire_run(old_run_id)
+        store.switch_session(self.session_id)
+        store.begin_run(self.run_id)
+        self.status = ReplayStatus.READY
+
+        status_payload = self.get_status()
+        store.notify_replay_status(status_payload)
+        logger.info("Replay reset completed: new run_id=%s", self.run_id)
+        return status_payload
+
+    async def reset(self) -> dict[str, Any]:
+        """Resets replay cursor to beginning under a fresh run ID."""
+        async with self._lock:
+            return await self._reset_internal()
 
     async def start(self, session_id: str | None = None, speed: float | None = None) -> dict[str, Any]:
         """Starts or unpauses replay playback."""
         async with self._lock:
             if session_id and session_id != self.session_id:
-                await self.switch_session(session_id)
+                await self._switch_session_internal(session_id)
 
             if speed is not None:
                 self.set_speed(speed)
@@ -158,8 +285,15 @@ class ReplayController:
             if self.status == ReplayStatus.PAUSED:
                 return self.resume()
 
-            if self.status == ReplayStatus.COMPLETED or self.current_index >= len(self.envelopes):
-                await self.reset()
+            if self.status == ReplayStatus.COMPLETED or (len(self.envelopes) > 0 and self.current_index >= len(self.envelopes)):
+                await self._reset_internal()
+
+            if len(self.envelopes) == 0:
+                logger.warning("Replay start requested but 0 envelopes available for session [%s]", self.session_id)
+                self.status = ReplayStatus.READY
+                status_payload = self.get_status()
+                get_state_store().notify_replay_status(status_payload)
+                return status_payload
 
             self.status = ReplayStatus.RUNNING
             if self._task is None or self._task.done():
@@ -180,7 +314,7 @@ class ReplayController:
 
     def resume(self) -> dict[str, Any]:
         """Resumes playback from the current cursor."""
-        if self.status == ReplayStatus.PAUSED:
+        if self.status in {ReplayStatus.PAUSED, ReplayStatus.READY}:
             self.status = ReplayStatus.RUNNING
             if self._task is None or self._task.done():
                 self._task = asyncio.create_task(self._replay_loop())
@@ -189,31 +323,6 @@ class ReplayController:
             logger.info("Replay resumed from index %d", self.current_index)
             return status_payload
         return self.get_status()
-
-    async def reset(self) -> dict[str, Any]:
-        """Resets replay cursor to beginning under a fresh run ID."""
-        async with self._lock:
-            if self._task and not self._task.done():
-                self._task.cancel()
-                try:
-                    await self._task
-                except asyncio.CancelledError:
-                    pass
-
-            self.status = ReplayStatus.RESETTING
-            self.current_index = 0
-            self.published_count = 0
-            self.elapsed_ms = 0
-            self.run_id = f"run-{uuid4().hex[:8]}"
-
-            store = get_state_store()
-            store.switch_session(self.session_id)
-            self.status = ReplayStatus.READY
-
-            status_payload = self.get_status()
-            store.notify_replay_status(status_payload)
-            logger.info("Replay reset completed: new run_id=%s", self.run_id)
-            return status_payload
 
     def set_speed(self, speed: float) -> dict[str, Any]:
         """Adjusts playback acceleration factor."""
@@ -249,7 +358,8 @@ class ReplayController:
             elif target_lap is not None:
                 # Find index where lap completes or starts
                 for idx, env in enumerate(self.envelopes):
-                    if env.payload.get("lap", 1) >= target_lap:
+                    cur_lap = env.payload.get("lap") or env.payload.get("lap_number") or 1
+                    if cur_lap >= target_lap:
                         target_idx = idx
                         break
                 else:
@@ -262,13 +372,64 @@ class ReplayController:
                 else:
                     target_idx = len(self.envelopes)
 
-            # Rebuild state from index 0 up to target_idx
+            # Check if a keyframe checkpoint <= target_idx is cached for this session
             store = get_state_store()
-            store.switch_session(self.session_id)
+            old_run_id = self.run_id
+            self.run_id = f"run-{self.session_id}-{uuid4().hex[:6]}"
+            store.retire_run(old_run_id)
+            if self._reset_hook is not None:
+                self._reset_hook()
 
-            for i in range(target_idx):
-                env = self.envelopes[i]
-                store.record_canonical_event(env)
+            sess_ckpts = self._checkpoints.setdefault(self.session_id, {})
+            start_idx = 0
+            restored = False
+            for ckpt_idx in sorted((idx for idx in sess_ckpts if idx <= target_idx), reverse=True):
+                try:
+                    store.restore_checkpoint(sess_ckpts[ckpt_idx])
+                    store.begin_run(self.run_id)
+                    start_idx = ckpt_idx
+                    restored = True
+                    break
+                except Exception as exc:
+                    logger.warning("Corrupted replay checkpoint at idx=%d popped; falling back (%s)", ckpt_idx, exc)
+                    sess_ckpts.pop(ckpt_idx, None)
+            if not restored:
+                store.switch_session(self.session_id)
+                store.begin_run(self.run_id)
+                start_idx = 0
+
+            self.last_event_time_utc = (
+                self.envelopes[start_idx - 1].time.event_time_utc if start_idx > 0 else None
+            )
+            self.elapsed_ms = (
+                (self.envelopes[start_idx - 1].time.session_elapsed_ms or 0) if start_idx > 0 else 0
+            )
+            self.drop_count = 0
+
+            ia = store.agents.get("agent-06-integrity")
+            if ia and hasattr(ia, "set_wal_paused"):
+                ia.set_wal_paused(True)
+
+            interval = max(1, int(self.CHECKPOINT_INTERVAL))
+            try:
+                for i in range(start_idx, target_idx):
+                    await self._process(self._for_current_run(self.envelopes[i]), publish=False)
+                    done_idx = i + 1
+                    if done_idx % interval == 0 and done_idx not in sess_ckpts:
+                        if len(sess_ckpts) >= self.MAX_CHECKPOINTS_PER_SESSION:
+                            oldest_key = min(sess_ckpts.keys())
+                            sess_ckpts.pop(oldest_key, None)
+                        sess_ckpts[done_idx] = store.export_checkpoint()
+                    if (i - start_idx) % 200 == 199:
+                        await asyncio.sleep(0)
+            except Exception:
+                self.status = ReplayStatus.FAILED
+                store.notify_replay_status(self.get_status())
+                logger.exception("Replay seek reconstruction failed at index %d", self.current_index)
+                raise
+            finally:
+                if ia and hasattr(ia, "set_wal_paused"):
+                    ia.set_wal_paused(False)
 
             self.current_index = target_idx
             self.published_count = target_idx
@@ -283,6 +444,8 @@ class ReplayController:
 
             status_payload = self.get_status()
             store.notify_replay_status(status_payload)
+            store.notify_session_state()
+            store.notify_driver_state()
             logger.info("Replay seek completed: target_index=%d / %d", self.current_index, len(self.envelopes))
             return status_payload
 
@@ -300,44 +463,47 @@ class ReplayController:
                 if self.status in {ReplayStatus.RESETTING, ReplayStatus.FAILED, ReplayStatus.COMPLETED}:
                     break
 
-                env = self.envelopes[self.current_index]
-                env.run.run_id = self.run_id
-                env.run.session_instance_id = self.session_id
-                env.run.mode = RunMode.REPLAY if self.mode == "REPLAY" else RunMode.SIMULATED
+                env = self._for_current_run(self.envelopes[self.current_index])
 
-                topic = raw_topic_for_event(env.event_type)
-                key = routing_key(self.session_id, env.subject.driver_number, env.subject.segment_id)
-
-                # Publish event to event bus & Kafka broker
+                # Send normal playback through the shared processor. A
+                # processing failure is terminal for this run: advancing the
+                # cursor would silently skip evidence and corrupt replay
+                # state.
                 try:
-                    await self.bus.publish(topic, key, env)
+                    await self._process(env, publish=True)
                     self.published_count += 1
                 except Exception as e:
                     self.drop_count += 1
-                    logger.warning("Replay failed to publish event %s: %s", env.event_id, e)
+                    raise RuntimeError(f"Replay failed to process event {env.event_id}") from e
 
                 self.last_event_time_utc = env.time.event_time_utc
                 self.elapsed_ms = env.time.session_elapsed_ms or 0
 
-                # Apply to StateStore and notify SSE stream
-                store.record_canonical_event(env)
-
                 self.current_index += 1
 
-                # Every 5 events or on significant events, broadcast replay status
-                if self.current_index % 5 == 0 or env.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "DRIVER_RETIRED"}:
+                # Every 10 events (~0.5s at 20Hz) or on significant events, broadcast replay status
+                if self.current_index % 10 == 0 or env.event_type in {"VSC_DEPLOYED", "SAFETY_CAR_DEPLOYED", "PIT_STOP", "DRIVER_RETIRED"}:
                     store.notify_replay_status(self.get_status())
 
-                # Event-time scheduling
+                # Event-time scheduling: wall_clock_delay = delta / speed
                 if self.current_index < len(self.envelopes):
                     next_env = self.envelopes[self.current_index]
                     t_cur = env.time.session_elapsed_ms or 0
                     t_nxt = next_env.time.session_elapsed_ms or t_cur
-                    delta_ms = max(0, t_nxt - t_cur)
-                    # Smooth delay: map delta_ms into [40ms, 2500ms] divided by playback speed
-                    scaled_delay_ms = min(2500.0, max(40.0, float(delta_ms)))
-                    wall_clock_sec = (scaled_delay_ms / 1000.0) / max(0.1, self.speed)
-                    await asyncio.sleep(wall_clock_sec)
+                    delta_ms = min(2500, max(0, t_nxt - t_cur))
+                    if delta_ms > 0:
+                        wall_clock_sec = (delta_ms / 1000.0) / max(0.1, self.speed)
+                        # Chunked responsive sleep to allow immediate pause/reset/seek reaction
+                        end_sleep = asyncio.get_running_loop().time() + wall_clock_sec
+                        while asyncio.get_running_loop().time() < end_sleep:
+                            if self.status != ReplayStatus.RUNNING:
+                                break
+                            rem = end_sleep - asyncio.get_running_loop().time()
+                            await asyncio.sleep(min(0.025, max(0.001, rem)))
+                    else:
+                        # Prevent microsecond bursts if two events share the same millisecond timestamp
+                        min_paced = max(0.002, 0.010 / max(0.1, self.speed))
+                        await asyncio.sleep(min_paced)
 
             self.status = ReplayStatus.COMPLETED
             store.notify_replay_status(self.get_status())

@@ -30,10 +30,10 @@ class DRSZone(BaseModel):
 
 
 class PitLaneGeometry(BaseModel):
-    model_config = ConfigDict(protected_namespaces=())
-    entry_point: list[float]  # [x, y]
-    exit_point: list[float]   # [x, y]
-    path: list[list[float]]   # list of [x, y]
+    model_config = ConfigDict(protected_namespaces=(), extra="allow")
+    entry_point: list[float] | None = None  # [x, y]
+    exit_point: list[float] | None = None   # [x, y]
+    path: list[list[float]] = Field(default_factory=list)
     speed_limit_kmh: int = 60
 
 
@@ -46,7 +46,7 @@ class SectorBoundary(BaseModel):
 
 
 class CircuitGeometry(BaseModel):
-    model_config = ConfigDict(protected_namespaces=())
+    model_config = ConfigDict(protected_namespaces=(), extra="allow")
     circuit_id: str
     name: str
     country: str
@@ -69,4 +69,6 @@ class CircuitGeometry(BaseModel):
     view_box: dict[str, float] = Field(
         default_factory=lambda: {"min_x": 0.0, "min_y": 0.0, "width": 1000.0, "height": 650.0}
     )
+    geometry_source: Any | None = None
+    geometry_notes: Any | None = None
 

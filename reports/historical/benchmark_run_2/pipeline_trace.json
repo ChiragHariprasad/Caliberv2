@@ -1,0 +1,175 @@
+[
+  {
+    "timestamp": "2026-11-26T11:17:07.447160+00:00",
+    "stage": "MANIFEST_VALIDATION",
+    "event": "CAPTURE_VERIFIED",
+    "payload": {
+      "capture_id": "f1-2023-silverstone-race",
+      "meeting_id": null,
+      "verified_files_count": 0,
+      "drivers_registered": 20,
+      "manifest_sha256_status": "ALL_HASHES_MATCH",
+      "telemetry_policy": "CAN_BUS_MARKED_UNAVAILABLE_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:17:11.442441+00:00",
+    "stage": "PREFLIGHT",
+    "event": "CLUSTER_ONLINE",
+    "payload": {
+      "kafka_broker": "localhost:19092,localhost:19093,localhost:19094",
+      "flink_job_id": "7a8d209f2e3bbaa5faff6e9656654096",
+      "flink_job_name": "pulse-canonical-normalizer-v3",
+      "flink_job_state": "RUNNING",
+      "checkpoints_completed": 614
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:23.303267+00:00",
+    "stage": "HISTORICAL_INGEST",
+    "event": "ALL_ENVELOPES_PUBLISHED",
+    "payload": {
+      "events_published_count": 72642,
+      "topics_used": [
+        "pulse.raw.weather.v1",
+        "pulse.raw.pit.events.v1",
+        "pulse.raw.timing.positions.v1",
+        "pulse.raw.race_control.v1",
+        "pulse.raw.timing.laps.v1",
+        "pulse.raw.tyres.stints.v1"
+      ],
+      "historical_capture_id": "pulse-capture-f1-2023-silverstone-race-v1"
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:33.203050+00:00",
+    "stage": "FLINK_NORMALIZATION",
+    "event": "ALL_CANONICAL_CONFIRMED",
+    "payload": {
+      "canonical_events_normalized": 72642,
+      "expected_events": 72642,
+      "missing_events": 0,
+      "flink_job_name": "pulse-canonical-normalizer-v3",
+      "flink_read_records": 740930,
+      "flink_write_records": 740930,
+      "flink_checkpoints": 642,
+      "verified_from_kafka_topics": [
+        "pulse.norm.race_events.v1",
+        "pulse.norm.driver_laps.v1",
+        "pulse.norm.driver_state.v1",
+        "pulse.norm.track_segments.v1",
+        "pulse.norm.tyre_stints.v1"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:34.331728+00:00",
+    "stage": "AGENT_1",
+    "event": "HISTORICAL_FINDINGS_CONFIRMED",
+    "payload": {
+      "count": 17,
+      "types": [
+        "RACE_EVENT_LIFECYCLE",
+        "INCIDENT_TRACK_HAZARD",
+        "STEWARD_ACTION",
+        "DRIVER_EVENT_EXPOSURE",
+        "DRIVER_RETIREMENT"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:34.919387+00:00",
+    "stage": "AGENT_2",
+    "event": "FINDINGS_VERIFIED",
+    "payload": {
+      "count": 8
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:47.822280+00:00",
+    "stage": "AGENT_3",
+    "event": "LAP_INTELLIGENCE_PROCESSED",
+    "payload": {
+      "laps_processed": 600,
+      "findings_count": 241
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:19:51.645289+00:00",
+    "stage": "AGENT_4",
+    "event": "STRATEGY_FINDINGS_VERIFIED",
+    "payload": {
+      "count": 68
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:20:04.079871+00:00",
+    "stage": "AGENT_5",
+    "event": "REVISION_CHAIN_CONFIRMED",
+    "payload": {
+      "assessments_produced": 245,
+      "drivers_evaluated": [
+        16,
+        4,
+        1,
+        44,
+        27,
+        63,
+        10,
+        24,
+        23,
+        77,
+        2,
+        31,
+        14,
+        20,
+        11,
+        18,
+        55,
+        21,
+        81,
+        22
+      ],
+      "revision_history_depth": 245
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:20:04.144331+00:00",
+    "stage": "FAULT_HANDLING",
+    "event": "QUALITY_SCENARIOS_VERIFIED",
+    "payload": {
+      "missing_telemetry_handled": true,
+      "insufficient_data_outcomes_agent_3": 1,
+      "late_finding_revision_applied": true,
+      "zero_synthetic_curves_verified": true
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:20:04.145922+00:00",
+    "stage": "EVALUATION",
+    "event": "METRICS_COMPUTED",
+    "payload": {
+      "total_official_notices": 10,
+      "unique_trigger_events_detected": 13,
+      "notice_coverage_ratio": 1.3,
+      "pit_window_opportunities_count": 8,
+      "pit_window_median_saving_sec": 13.16,
+      "pit_window_median_uncertainty_sec": 3.0,
+      "calibration_statuses": [
+        "PRIOR_UNMEASURED+DRIVER_STINT_CALIBRATED"
+      ],
+      "telemetry_policy_compliance": "VERIFIED_COMPLIANT"
+    }
+  },
+  {
+    "timestamp": "2026-11-26T11:20:06.387240+00:00",
+    "stage": "PERSISTENCE",
+    "event": "LINEAGE_VERIFIED",
+    "payload": {
+      "statestore_findings_count": 335,
+      "statestore_assessments_count": 246,
+      "agents_registered_count": 5,
+      "api_endpoint_verified": false
+    }
+  }
+]

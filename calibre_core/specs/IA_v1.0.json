@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRE Integrity Assessment Specification (IA v1.0)",
+  "description": "Deterministic verdict output schema with 4-state validity timelines, named witnesses, and hash chain.",
+  "type": "object",
+  "required": [
+    "content_hash",
+    "record_hash",
+    "revision_number",
+    "previous_record_hash",
+    "knowledge_time",
+    "revision_reason",
+    "content"
+  ],
+  "properties": {
+    "content_hash": {
+      "type": "string",
+      "pattern": "^(sha256:)?[0-9a-f]{64}$"
+    },
+    "record_hash": {
+      "type": "string",
+      "pattern": "^(sha256:)?[0-9a-f]{64}$"
+    },
+    "revision_number": { "type": "integer", "minimum": 1 },
+    "previous_record_hash": { "type": "string" },
+    "knowledge_time": { "type": "integer" },
+    "revision_reason": {
+      "type": "string",
+      "enum": ["INITIAL", "EVIDENCE_CHANGE", "LATE_EVIDENCE", "CLOCK_EVENT", "FINALIZED", "CONTRACT_CHANGE", "VOIDED"]
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "contract",
+        "decision_instance_id",
+        "scope",
+        "state",
+        "validity_timeline",
+        "maturity_status",
+        "finality_status",
+        "witnesses",
+        "limitations"
+      ],
+      "properties": {
+        "contract": { "type": "object" },
+        "decision_instance_id": { "type": "string" },
+        "scope": { "type": "object" },
+        "state": {
+          "type": "string",
+          "enum": ["HEALTHY", "SUSPECT", "UNKNOWN", "DEGRADED"]
+        },
+        "validity_timeline": { "type": "array" },
+        "maturity_status": {
+          "type": "string",
+          "enum": ["OPEN", "STATE_RESOLVED", "TUPLE_RESOLVED"]
+        },
+        "finality_status": {
+          "type": "string",
+          "enum": ["PENDING", "FINAL"]
+        },
+        "witnesses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "role", "detail"],
+            "properties": {
+              "code": { "type": "string" },
+              "role": { "type": "string" },
+              "detail": { "type": "string" }
+            }
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "roles": { "type": "object" },
+        "constraints": { "type": "object" },
+        "corroboration": { "type": "object" },
+        "resilience": { "type": "object" },
+        "envelope": { "type": "object" }
+      }
+    }
+  }
+}
+
